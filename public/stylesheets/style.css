@@ -6,3 +6,11 @@ body {
 a {
   color: #00B7FF;
 }
+
+#mapid {
+    height: 500px;
+}
+
+#container{
+    width: 50%;
+}
