@@ -16,4 +16,14 @@ router.post('getTime', (req, res, next) => {
     res.json({ "Current time": currDate });
 });
 
+// serves register.hbs page which is also login
+router.get('/register', (req, res, next) => {
+    res.render('register');
+});
+
+router.get('/exampleBet', (req, res, next) => {
+    res.render('exampleBet');
+})
+
+
 module.exports = router;

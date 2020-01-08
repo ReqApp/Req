@@ -1,8 +1,25 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    padding: 50px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    background-color: rgb(119, 119, 119);
 }
 
 a {
-  color: #00B7FF;
+    color: #00B7FF;
+}
+
+.QRCode {
+    border: 2px solid black;
+    box-shadow: 16px 21px 37px -13px rgba(0, 0, 0, 0.75);
+}
+
+#QRPopup {
+    padding: 10px 10px 10px 10px;
+    display: inline-block;
+    background-color: rgb(255, 255, 255);
+}
+
+#popupText {
+    margin: 4px 0px 0px 0px;
+    text-align: center
 }
