@@ -1,9 +1,5 @@
-const TILESRC = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-const METADATA = { attribution : 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors' };
-const DEFAULT_RAD = 100;
 const MIN_BET_RAD = 20;
 
-var map;
 var area;
 var marker;
 
@@ -20,29 +16,22 @@ $(document).ready(function(){
     
     betNameDOM.val(betData.betName);
     radiusDOM.val(betData.radius);
-    loadMap();
-
+    loadMap('mapID');
+    
+    // Wait for user position to be obtained
+    $(window).on('locRetrieved', function (data) {
+        console.log('locRetrieved', data.location);
+        addMapMarkers(data.location);
+    });
+    
 });
 
-//Function to load map with user location
-function loadMap(){
-    // Create map
-    map = L.map('mapid');
-    L.tileLayer(TILESRC, METADATA).addTo(map);
-    
-    var locateSettings = {setView: true, watch:false, enableHighAccuracy:true}
-    
-    map.locate(locateSettings).on('locationfound', createMap).on('locationerror', function(err){
-        console.log(err);
-        alert("Could not find location");
-    });
-
-}
-
-function createMap(pos){
+function addMapMarkers(pos){
     console.log(pos.accuracy);
     //DEBUG setting location
-    pos = setLocation(pos);
+    if(pos.accuracy > 100){
+        pos = setLocation(pos);
+    }
     // Check for level of accuracy
     if(pos.accuracy > 100){
         console.log("Location could not accurately be determined");
@@ -62,7 +51,7 @@ function createMap(pos){
             
             // Create default marker and circle
             marker.bindPopup(formatPopUp(betData), {closeButton : false, className: 'popUp'}).openPopup();
-            map.setZoomAround(latLong, 16, {animate : true});
+            map.setZoomAround(latLong, 15, {animate : true});
             area = L.circle(latLong, {
                 color: 'blue',
                 fillColor: 'blue',
@@ -101,8 +90,13 @@ function formatPopUp(betData){
 
 // DEBUG function for setting user position
 function setLocation(position){
+
     position.latitude = 53.337840;
     position.longitude = -9.180165;
+    /*
+    position.latitude = 53.282110;
+    position.longitude = -9.062186;
+    */
     position.accuracy = 40;
     return position;
 }
