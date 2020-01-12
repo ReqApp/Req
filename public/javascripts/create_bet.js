@@ -51,13 +51,24 @@ function addMapMarkers(pos){
             
             // Create default marker and circle
             marker.bindPopup(formatPopUp(betData), {closeButton : false, className: 'popUp'}).openPopup();
-            map.setZoomAround(latLong, 15, {animate : true});
-            area = L.circle(latLong, {
+            
+            const zoomDuration = 1;
+            
+            map.flyTo(latLong, 16, {animate : true, duration: zoomDuration, easeLinearity : .43});
+            
+            window.setTimeout(function(){
+                area = L.circle(latLong, {
                 color: 'blue',
                 fillColor: 'blue',
                 fillOpacity: 0.25,
-                radius: DEFAULT_RAD
-            }).addTo(map);
+                radius: 0
+                }).addTo(map);
+                
+                betArea = new BetArea(area);
+                betArea.expand(DEFAULT_RAD);
+                
+            }, zoomDuration * 1000);
+            
             
             // Update popUp when input fields are changed
             locationDOM.keyup(function(){

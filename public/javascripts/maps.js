@@ -21,3 +21,21 @@ function createMap(location){
     evt.location = location;
     $(window).trigger(evt);
 }
+
+// Adds functionality to circle marker
+class BetArea {
+    constructor(circle){
+        this.circle = circle;
+    }
+    expand(limRad){
+        var wait = setInterval((function(){
+            var currRad = this.circle.getRadius();
+            if(currRad < limRad){
+                this.circle.setRadius(currRad + 10);
+            }
+            else{
+                clearInterval(wait);
+            }
+        }).bind(this), 20);
+    }
+}
