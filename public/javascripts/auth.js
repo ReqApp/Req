@@ -1,5 +1,23 @@
 $(document).ready(function() {
 
+    function validateInput(input, type) {
+        if (type === 'password') {
+            if (input.length > 8) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (type === "username") {
+            if (input.length < 32 && input.length > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return /\S+@\S+\.\S+/.test(email);
+        }
+    }
+
     $.getScript("//cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js")
         // .done(function( script, textStatus ) {
         //     console.log( textStatus );
@@ -8,24 +26,55 @@ $(document).ready(function() {
             $("div.log").text("Triggered ajaxError handler.");
         });
 
-    function validateInput(input) {
-        if (input.length > 0 && input.length < 25) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     $('#submitButton').click(function(e) {
         e.preventDefault();
         let requestType = $('#currMode').html();
+        const username = $('#usernameBox').val();
+        const password = $('#passwordBox').val();
 
-        if (escape($('#usernameBox').val()) == $('#usernameBox').val() &&
-            escape($('#passwordBox').val()) == $('#passwordBox').val() &&
-            validateInput(escape($('#usernameBox').val())) &&
-            validateInput(escape($('#passwordBox').val()))) {
+        let run = true;
 
-            if (requestType === 'Register') {
+        // if (escape($('#usernameBox').val()) == $('#usernameBox').val() &&
+        //     escape($('#passwordBox').val()) == $('#passwordBox').val() &&
+        //     validateInput(escape($('#usernameBox').val())) &&
+        //     validateInput(escape($('#passwordBox').val()))) {
+
+        if (!(username === encodeURIComponent(username))) {
+            swal({
+                icon: 'error',
+                title: 'Oops...',
+                text: "Username cannot contain those characters"
+            });
+            run = false;
+        }
+        if (!validateInput(username, "username")) {
+            swal({
+                icon: 'error',
+                title: 'Oops...',
+                text: "Username be between 1 and 32 characters in length"
+            });
+            run = false;
+        }
+
+        if (!validateInput(password, "password")) {
+            swal({
+                icon: 'error',
+                title: 'Oops...',
+                text: "Password must be more than 8 characters in length"
+            });
+            run = false;
+        }
+
+        if (!validateInput(password, "email")) {
+            swal({
+                icon: 'error',
+                title: 'Oops...',
+                text: "Invalid email address"
+            });
+            run = false;
+        }
+
+            if (requestType === 'Register' && run) {
 
                 $.ajax({
                     type: 'POST',
@@ -33,7 +82,8 @@ $(document).ready(function() {
                     dataType: 'json',
                     data: {
                         "user_name": $('#usernameBox').val(),
-                        "password": $('#passwordBox').val()
+                        "password": $('#passwordBox').val(),
+                        "email":$("#emailBox").val()
                     },
                     success: function(token) {
                         $(location).attr('href', '/');
@@ -46,7 +96,7 @@ $(document).ready(function() {
                         })
                     }
                 });
-            } else {
+            } else if (requestType === "Login" && run) {
                 $.ajax({
                     type: 'POST',
                     url: '/users/login',
@@ -69,14 +119,6 @@ $(document).ready(function() {
                     }
                 });
             }
-        } else {
-            swal({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Illegal characters in username or password'
-            })
-        }
-
     });
 
     $('#usernameBox').keydown(function() {
