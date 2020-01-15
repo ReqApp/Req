@@ -23,3 +23,10 @@ a {
     margin: 4px 0px 0px 0px;
     text-align: center
 }
+#mapID {
+    height: 500px;
+}
+
+#container{
+    width: 50%;
+}
