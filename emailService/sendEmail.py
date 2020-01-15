@@ -1,12 +1,13 @@
-# Quickstart gudie: https://pypi.org/project/EZGmail/
+# Quickstart gudie: https://pypi.org/projectpip/EZGmail/
 import ezgmail
 import sys
 
+checkList = ["\"","`"]
+
+print("{} {} {}".format(sys.argv[1], sys.argv[2], sys.argv[3]))
 if len(sys.argv) == 4:
-    try:
+    if not any(x in str for x in checkList):
         ezgmail.send(sys.argv[1], sys.argv[2], sys.argv[3])
         print("[{}] {} - {}".format(sys.argv[1], sys.argv[2], sys.argv[3]))
-    except:
-        print("Invalid input")
 else:
     print("Usage: python3 sendEmail.py emailAddress subjectText bodyText")

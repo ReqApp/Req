@@ -21,4 +21,25 @@ router.get('/exampleBet', (req, res, next) => {
     res.render('exampleBet');
 })
 
+router.get('/members', (req, res, next) => {
+    if (req.cookies.Authorization) {
+        let jwtString = req.cookies.Authorization.split(' ');
+        let profile = verifyJwt(jwtString[1]);
+            if (profile) {
+                res.render('members');
+            } else {
+                res.render('notAllowed');
+            }
+    } else {
+        res.render('notAllowed');
+    }
+    
+});
+
+function verifyJwt(jwtString) {
+    let val = jwt.verify(jwtString, 'fgjhidWSGHDSbgnkjsmashthegaffteasandcoffee');
+    return val;
+}
+
+
 module.exports = router;

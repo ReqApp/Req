@@ -1,7 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/users');
+//var UnverifiedUser = require('../models/unverifiedUsers');
 var jwt = require('jsonwebtoken');
+var randomstring = require("randomstring");
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -32,10 +34,11 @@ function validateInput(input, type) {
 router.post('/register', (req, res, next) => {
     let username = req.body.user_name;
     let password = req.body.password;
+    let email = req.body.email;
 
     /*
      **  Check if username and password fits the bill before
-     ** sending it onto mongo
+     **  sending it onto mongo
      */
     if (!(username === encodeURIComponent(username))) {
         res.json({
@@ -72,6 +75,16 @@ router.post('/register', (req, res, next) => {
                 "body": "Username already in use"
             });
         } else {
+            // successful, make the user an account
+
+            // instead we are going to want to send an email with a code to verifiy an email address
+            // then call another function to make the account
+            const loginCode = randomstring.generate(8);
+            const spawn = require("child_process").spawn;
+            const pythonProcess = spawn('python3',["emailService/sendEmail.py", email , `Activate your account ${username}`, `${loginCode.toString()}s`]);
+            pythonProcess.stdout.on('data', (data) => {
+                console.log(data.toString());
+            });
 
             let newUser = new User();
 

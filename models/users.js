@@ -14,6 +14,9 @@ var usersSchema = new Schema({
         type: String,
         minlength: 8
     },
+    email: {
+        type: String,
+    },
     fbID: {
         type: String,
         default: null
