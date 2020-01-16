@@ -1,4 +1,4 @@
 var mongoose = require('mongoose');
-var connection = mongoose.connect('mongodb://mongodb5435oc:to1quk@danu7.it.nuigalway.ie:8717/mongodb5435oc', { useNewUrlParser: true, useUnifiedTopology: true });
+var connection = mongoose.connect('mongodb://mongodb5436oc:qi4bah@danu7.it.nuigalway.ie:8717/mongodb5436', { useNewUrlParser: true, useUnifiedTopology: true });
 
 exports.connection = connection;
