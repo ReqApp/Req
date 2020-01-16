@@ -17,7 +17,11 @@ ____
 ### `/routes/index.js`
 | Request type  | URL | Return value|  Information |
 | ------------- | ------------- | ------------- | ------------- |
-| **POST**  | `/getTime` | `{"currentTime":1578497528128}` | Ccurrent time in milliseconds since January 1st 1970.  |
+| **POST**  | `/getTime` | `{"currentTime":1578497528128}` | Current time in milliseconds since January 1st 1970.  |
+
+| Request type  | URL | Return value|  Information |
+| ------------- | ------------- | ------------- | ------------- |
+| **POST**  | `/createBet/addBetToDataBase` | `Saved Bet` | Takes a bet object and stores it in the bet collection in database  |
 ____
 
 ## Sending Emails
