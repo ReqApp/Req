@@ -10,12 +10,14 @@ var usersSchema = new Schema({
         minlength: 1,
         maxlength: 32
     },
+    email: {
+        type:String,
+        minlength: 5,
+        maxlength: 64
+    },
     password: {
         type: String,
         minlength: 8
-    },
-    email: {
-        type: String,
     },
     fbID: {
         type: String,

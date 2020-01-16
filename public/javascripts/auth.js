@@ -14,7 +14,7 @@ $(document).ready(function() {
                 return false;
             }
         } else {
-            return /\S+@\S+\.\S+/.test(email);
+            return true;
         }
     }
 
@@ -86,7 +86,7 @@ $(document).ready(function() {
                         "email":$("#emailBox").val()
                     },
                     success: function(token) {
-                        $(location).attr('href', '/');
+                        $(location).attr('href', '/users/verifyAccount');
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         swal({
