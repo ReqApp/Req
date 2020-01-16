@@ -10,6 +10,11 @@ var usersSchema = new Schema({
         minlength: 1,
         maxlength: 32
     },
+    email: {
+        type:String,
+        minlength: 5,
+        maxlength: 64
+    },
     password: {
         type: String,
         minlength: 8
@@ -26,8 +31,9 @@ usersSchema.methods.generateHash = (password) => {
         return bcrypt.hashSync(password, bcrypt.genSaltSync());
     }
     // synchronously compares the hashes 
-usersSchema.methods.validPassword = (password) => {
-        return bcrypt.compareSync(password, this.password);
-    }
-    // Exports usersSchema as User to other scripts
+usersSchema.methods.validPassword = function(password) {
+    return bcrypt.compareSync(password, this.password);
+}
+
+// Exports usersSchema as User to other scripts
 module.exports = mongoose.model('User', usersSchema);
