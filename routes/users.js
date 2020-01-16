@@ -16,7 +16,14 @@ router.get('/register', (req, res, next) => {
     res.render('register');
 });
 
+router.get('/verifyAccount', (req, res, next) => {
+    res.render('verifyAccount');
+});
+
 function validateInput(input, type) {
+    /**
+     * Validate the password and usernames kind of
+     */
     if (type === 'password') {
         if (input.length > 8) {
             return true;
@@ -33,110 +40,118 @@ function validateInput(input, type) {
 }
 
 router.post('/register', (req, res, next) => {
-    let run = true;
-    let username = req.body.user_name;
-    let password = req.body.password;
-    let email = req.body.email;
-
-    const conditions = ["\"", "<", ">","'","`"];
-
-    let test1 = conditions.some(el => email.includes(el));
-    if (test1) {
+    /**
+     * Handles post requests from register page
+     */
+    if (req.body.user_name && req.body.password && req.body.email) {
+        let run = true;
+        let username = req.body.user_name;
+        let password = req.body.password;
+        let email = req.body.email;
+    
+        /**
+         * Used to clean email for invalid characters
+         */
+        const conditions = ["\"", "<", ">","'","`"];
+    
+        let test1 = conditions.some(el => email.includes(el));
+        if (test1) {
+            res.status(401).json({
+                "status":"error",
+                "body":"Invalid characters in email address"
+            });
+            run = false;
+        }
+    
+        /*
+         **  Check if username and password fits the bill before
+         **  sending it onto mongo
+         */
+        if (!(username === encodeURIComponent(username))) {
+            res.status(401).json({
+                "status": "error",
+                "body": "Username cannot contain those characters"
+            });
+            run = false;
+        }
+    
+        if (!validateInput(username, "username")) {
+            res.status(401).json({
+                "status": "error",
+                "body": "Username must be between 1 and 32 characters long"
+            });
+            run = false;
+        }
+    
+        if (!validateInput(password, "password")) {
+            res.status(401).json({
+                "status": "error",
+                "body": "Password must be more than 8 characters in length"
+            });
+            run = false;
+        }
+        /**
+         * If no input has been invalid, continue
+         */
+        if (run) {
+            User.findOne({ "user_name": username }, (err, foundUser) => {
+                if (err) {
+                    res.send(err);
+                }
+                if (foundUser) {
+                    res.status(401).json({
+                        "status": "information",
+                        "body": "Username or email address already in use"
+                    });
+                } else {    
+                    /**
+                     * instead we are going to want to send an email with a code to verifiy an email address
+                     *  then call another function to make the account
+                     */
+                    const loginCode = randomstring.generate(6);
+                    /**
+                     * Exec the python script to send the login code to the user
+                     */
+                    const spawn = require("child_process").spawn;
+                    const pythonProcess = spawn('python3',["emailService/sendEmail.py", email , `Activate your account ${username}`, `${loginCode.toString()}`]);
+                    pythonProcess.stdout.on('data', (data) => {
+                        console.log(data.toString());
+                    });
+                    /**
+                     * Add entry in unverified usesr table
+                     */
+                    let newUser = new UnverifiedUser();
+                    newUser.user_name = username;
+                    newUser.email = email;
+                    newUser.password = newUser.generateHash(password);
+                    newUser.activationCode = loginCode;
+        
+                    newUser.save((err, user) => {
+                            if (err) {
+                                throw err;
+                            }
+                        });
+    
+                    res.status(200).json({
+                        "status":"information",
+                        "body":"success"
+                    });
+                }
+            });
+        }
+    } else {
         res.status(401).json({
             "status":"error",
-            "body":"Invalid characters in email address"
-        });
-        run = false;
-    }
-
-    /*
-     **  Check if username and password fits the bill before
-     **  sending it onto mongo
-     */
-    if (!(username === encodeURIComponent(username))) {
-        res.status(401).json({
-            "status": "error",
-            "body": "Username cannot contain those characters"
-        });
-        run = false;
-    }
-
-    if (!validateInput(username, "username")) {
-        res.status(401).json({
-            "status": "error",
-            "body": "Username must be between 1 and 32 characters long"
-        });
-        run = false;
-    }
-
-    if (!validateInput(password, "password")) {
-        res.status(401).json({
-            "status": "error",
-            "body": "Password must be more than 8 characters in length"
-        });
-        run = false;
-    }
-    if (run) {
-        User.findOne({ "user_name": username }, (err, foundUser) => {
-            if (err) {
-                res.send(err);
-            }
-    
-            if (foundUser) {
-                res.status(401).json({
-                    "status": "information",
-                    "body": "Username or email address already in use"
-                });
-            } else {
-                // successful, make the user an account
-    
-                // instead we are going to want to send an email with a code to verifiy an email address
-                // then call another function to make the account
-                const loginCode = randomstring.generate(6);
-                const spawn = require("child_process").spawn;
-                const pythonProcess = spawn('python3',["emailService/sendEmail.py", email , `Activate your account ${username}`, `${loginCode.toString()}s`]);
-                pythonProcess.stdout.on('data', (data) => {
-                    console.log(data.toString());
-                });
-
-                let newUser = new UnverifiedUser();
-                newUser.user_name = username;
-                newUser.email = email;
-                newUser.password = newUser.generateHash(password);
-                newUser.activationCode = loginCode;
-    
-                newUser.save((err, user) => {
-                        if (err) {
-                            throw err;
-                        }
-                       console.log("New user saved");
-                       console.log(user);
-                    });
-
-                res.status(200).json({
-                    "status":"y",
-                    "body":"success"
-                });
-
-                // let newUser = new User();
-    
-                // newUser.user_name = username;
-                // newUser.password = newUser.generateHash(password);
-                // newUser.accessToken = createJwt({ user_name: username });
-    
-                // newUser.save((err, user) => {
-                //     if (err) {
-                //         throw err;
-                //     }
-                //     res.cookie('Authorization', 'Bearer ' + user.accessToken);
-                //     res.json({ "success": "account created :)" });
-                // });
-            }
+            "body":"Invalid POST parameters"
         });
     }
+    
 });
 
 router.post('/verifyAccount', (req, res, next) => {
+    /**
+     * Handles requests of the login code
+     */
     if (req.body.activationCode) {
         const activationCode = req.body.activationCode;
         const searchQuery = /^[0-9a-zA-Z]+$/;
@@ -147,8 +162,10 @@ router.post('/verifyAccount', (req, res, next) => {
                 if (err) {
                     res.send(err);
                 }
-                console.log("The first find:" +foundUser);
-                
+                /**
+                 * If the activation code exists for a user, save that user into the
+                 * permanent table
+                 */                
                 let newUser = new User();
     
                 newUser.user_name = foundUser.user_name;
@@ -162,7 +179,6 @@ router.post('/verifyAccount', (req, res, next) => {
                     }
                     res.cookie('Authorization', 'Bearer ' + user.accessToken);
                     res.json({ "success": "account created :)" });
-                    console.log("Made this:" +user);
                 });
             });
         } else {
@@ -174,44 +190,43 @@ router.post('/verifyAccount', (req, res, next) => {
 
 // handles POST requests to /login
 router.post('/login', function(req, res, next) {
-    var username = req.body.user_name;
-    var password = req.body.password;
-
-    // if a user matching login credentials exists
-    User.findOne({ "user_name": username }, function(err, user) {
-        if (err) {
-            throw err;
-        }
-
-        if (user) {
-            // compare hashes of passwords
-            if (user.validPassword(password)) {
-                // create token to tell it's them
-                user.accessToken = createJwt({ user_name: username });
-                user.save();
-                // save the JWT to schema entry
-                res.cookie('Authorization', 'Bearer ' + user.accessToken);
-                res.json({ "success": "logged in" });
+    if (req.body.user_name && req.body.password) {
+        const username = req.body.user_name;
+        const password = req.body.password;
+    
+        // if a user matching login credentials exists
+        User.findOne({ "user_name": username }, function(err, user) {
+            if (err) {
+                throw err;
+            }
+    
+            if (user) {
+                // compare hashes of passwords
+                if (user.validPassword(password)) {
+                    // create token to tell it's them
+                    user.accessToken = createJwt({ user_name: username });
+                    user.save();
+                    // save the JWT to schema entry
+                    res.cookie('Authorization', 'Bearer ' + user.accessToken);
+                    res.json({ "success": "logged in" });
+                } else {
+                    // if hashes don't match
+                    res.status(401).send({
+                        "status": "error",
+                        "body": "Email or password invalid"
+                    });
+                }
+                // if no user found
             } else {
-                // if hashes don't match
                 res.status(401).send({
                     "status": "error",
-                    "body": "Email or password invalid"
+                    "body": "Username not found"
                 });
             }
-            // if no user found
-        } else {
-            res.status(401).send({
-                "status": "error",
-                "body": "Username not found"
-            });
-        }
-    });
+        });
+    }
+    
 
-});
-
-router.get('/verifyAccount', (req, res, next) => {
-    res.render('verifyAccount');
 });
 
 function createJwt(profile) {

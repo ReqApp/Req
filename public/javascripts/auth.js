@@ -144,17 +144,22 @@ $(document).ready(function() {
         let currentMode = $('#currMode').html();
 
         if (currentMode == 'Login') {
+            console.log("Login mode");
             $('#currMode').html('Register');
+            $('#emailDiv').html('<input type="text" id="emailBox" placeholder=" Email" class="text-center" maxlength="64">');
+            $('usernameBox').attr('placeholder', ' Email ');
             $('#submitButton').html('Register');
             $('#switchText').html(`Not new? <a href="" id="switchInterface"> Login here`);
-            return;
         }
 
         if (currentMode == 'Register') {
+            console.log("Register mode");
             $('#currMode').html('Login');
+            $('#emailDiv').html('');            
+            $('usernameBox').attr('placeholder', ' Email');
             $('#submitButton').html('Login');
             $('#switchText').html(`New? <a href="" id="switchInterface"> Register here`);
-            return;
+            
         }
     })
 
