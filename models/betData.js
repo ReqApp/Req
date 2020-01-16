@@ -1,13 +1,15 @@
-var mongoose = require('mongooose');
+var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 require('./util.js')
 
 var betSchema = new Schema({
-    title : {type : String},
-    location_Name : {type : String},
+    title : String, 
+    location_Name : String,
     // TODO add fields for odds, user, bet statement, comments etc
-    latlong : [Number],
-    radius : {type : Number}
+    latitude : Number,
+    longitude : Number,
+    radius : Number
+    
 });
 
 module.exports = mongoose.model('Bets', betSchema);
