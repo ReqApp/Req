@@ -163,4 +163,31 @@ $(document).ready(function() {
         }
     })
 
+    $('#forgotPassword').click((event) => {
+        event.preventDefault();
+        const username = $('#usernameBox').val();
+        if (validateInput(username, "username")) {
+            $.ajax({
+                type: 'POST',
+                url: '/users/forgotPassword',
+                dataType: 'json',
+                data: {
+                    "user_name": username
+                },
+                success: function(res) {
+                    $(location).attr('href', `localhost:8673/users/forgotPassword`);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    // console.log(jqXHR.responseJSON.body);
+                    // swal("Oops", jqXHR.responseJSON.body, 'Not GOOD!');
+                    swal({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: jqXHR.responseJSON.body
+                    })
+                }
+            });
+        }
+        
+    });
 });

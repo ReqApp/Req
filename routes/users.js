@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models/users');
 var UnverifiedUser = require('../models/unverifiedUsers');
+var forgotPasswordUser = require('../models/forgotPasswordUsers');
 var jwt = require('jsonwebtoken');
 var randomstring = require("randomstring");
 
@@ -18,6 +19,10 @@ router.get('/register', (req, res, next) => {
 
 router.get('/verifyAccount', (req, res, next) => {
     res.render('verifyAccount');
+});
+
+router.get('/forgotPassword', (req, res, next) => {
+    res.render('forgotPassword');
 });
 
 function validateInput(input, type) {
@@ -104,7 +109,7 @@ router.post('/register', (req, res, next) => {
                         "body": "Username or email address already in use"
                     });
                 } else {    
-                    /**
+                    /**F
                      * instead we are going to want to send an email with a code to verifiy an email address
                      *  then call another function to make the account
                      */
@@ -118,7 +123,7 @@ router.post('/register', (req, res, next) => {
                         console.log(data.toString());
                     });
                     /**
-                     * Add entry in unverified usesr table
+                     * Add entry in unverified user table
                      */
                     let newUser = new UnverifiedUser();
                     newUser.user_name = username;
@@ -225,8 +230,74 @@ router.post('/login', function(req, res, next) {
             }
         });
     }
-    
+});
+/**
+ * change this to email to stop spam abuse
+ */
 
+router.post('/forgotPassword', (req, res, next) => {
+    if (req.body.user_name) {
+        if (validateInput(req.body.user_name, "usename")) {
+            const username = req.body.user_name;
+
+            User.findOne({"user_name":username}, (err, foundUser) => {
+                if (err) {
+                    res.send(err);
+                }
+
+                let newUser = new forgotPasswordUser();
+                newUser.user_name = foundUser.user_name;
+                newUser.email = foundUser.email;
+                const resetUrlString = randomstring.generate(10);
+                // TODO this is a temp localhost fix
+                newUser.resetCode = resetUrlString;
+                newUser.resetUrl = `http://localhost:8673/users/forgotPassword?from=${resetUrlString}`;
+                newUser.save((err, user) => {
+                    if (err) {
+                        throw err;
+                    }
+                });
+
+                const spawn = require("child_process").spawn;
+                const pythonProcess = spawn('python3',["emailService/sendEmail.py", foundUser.email , `Update your password ${foundUser.user_name}`, `${newUser.resetUrl}`]);
+                pythonProcess.stdout.on('data', (data) => {
+                    console.log(data.toString());
+                    res.json({
+                        "status":"information",
+                        "body":`${newUser.resetCode}`
+                    });
+                });
+            });
+        }
+    }
+});
+
+router.post('/resetPassword', (req, res, next) => {
+    if (req.body.newPassword) {
+        if (validateInput(req.body.newPassword, "password")) {
+            forgotPasswordUser.findOne({resetUrl:req.body.fromUrl}, (err, foundUser) => {
+                if (err) {
+                    res.send(err);
+                }
+                console.log(foundUser);
+                var deleteUser = foundUser;
+            });
+
+            User.update({user_name:deleteUser.user_name}, {
+                password: deleteUser.generateHash(req.body.newPassword)
+            });
+
+            res.status(200).json({
+                "status":"information",
+                "body":"success"
+            })
+        }
+
+    }
+    res.status(400).json({
+        "status":"error",
+        "body":"Not found"
+    });
 });
 
 function createJwt(profile) {
