@@ -74,51 +74,53 @@ $(document).ready(function() {
             run = false;
         }
 
-            if (requestType === 'Register' && run) {
+        if (requestType === 'Register' && run) {
 
-                $.ajax({
-                    type: 'POST',
-                    url: '/users/register',
-                    dataType: 'json',
-                    data: {
-                        "user_name": $('#usernameBox').val(),
-                        "password": $('#passwordBox').val(),
-                        "email":$("#emailBox").val()
-                    },
-                    success: function(token) {
-                        $(location).attr('href', '/users/verifyAccount');
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        swal({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: jqXHR.responseJSON.body
-                        })
-                    }
-                });
-            } else if (requestType === "Login" && run) {
-                $.ajax({
-                    type: 'POST',
-                    url: '/users/login',
-                    dataType: 'json',
-                    data: {
-                        "user_name": $('#usernameBox').val(),
-                        "password": $('#passwordBox').val()
-                    },
-                    success: function(token) {
-                        $(location).attr('href', '/');
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        // console.log(jqXHR.responseJSON.body);
-                        // swal("Oops", jqXHR.responseJSON.body, 'Not GOOD!');
-                        swal({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: jqXHR.responseJSON.body
-                        })
-                    }
-                });
-            }
+            $.ajax({
+                type: 'POST',
+                url: '/users/register',
+                dataType: 'json',
+                data: {
+                    "user_name": $('#usernameBox').val(),
+                    "password": $('#passwordBox').val(),
+                    "email": $("#emailBox").val()
+                },
+                success: function(token) {
+                    $(location).attr('href', '/users/verifyAccount');
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    swal({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: jqXHR.responseJSON.body
+                    })
+                }
+            });
+        } else if (requestType === "Login" && run) {
+            console.log("sending req");
+            $.ajax({
+                type: 'POST',
+                url: '/users/login',
+                dataType: 'json',
+                data: {
+                    "user_name": $('#usernameBox').val(),
+                    "password": $('#passwordBox').val()
+                },
+                success: function(token) {
+                    console.log("success for load new page");
+                    $(location).attr('href', '/');
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    // console.log(jqXHR.responseJSON.body);
+                    // swal("Oops", jqXHR.responseJSON.body, 'Not GOOD!');
+                    swal({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: jqXHR.responseJSON.body
+                    })
+                }
+            });
+        }
     });
 
     $('#usernameBox').keydown(function() {
@@ -155,12 +157,40 @@ $(document).ready(function() {
         if (currentMode == 'Register') {
             console.log("Register mode");
             $('#currMode').html('Login');
-            $('#emailDiv').html('');            
+            $('#emailDiv').html('');
             $('usernameBox').attr('placeholder', ' Email');
             $('#submitButton').html('Login');
             $('#switchText').html(`New? <a href="" id="switchInterface"> Register here`);
-            
+
         }
     })
 
+    $('#forgotPassword').click((event) => {
+        event.preventDefault();
+        const username = $('#usernameBox').val();
+        console.log("usernamey: " + username);
+        if (validateInput(username, "username")) {
+            $.ajax({
+                type: 'POST',
+                url: '/users/forgotPassword',
+                dataType: 'json',
+                data: {
+                    "user_name": username
+                },
+                success: function(res) {
+                    $(location).attr('href', `http://localhost:8673/users/forgotPassword`);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    // console.log(jqXHR.responseJSON.body);
+                    // swal("Oops", jqXHR.responseJSON.body, 'Not GOOD!');
+                    swal({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: jqXHR.responseJSON.body
+                    })
+                }
+            });
+        }
+
+    });
 });
