@@ -37,7 +37,7 @@ ____
 | BBC | `world, uk, business, politics, health, education, science_and_environment, technology, entertainment_and_arts, world/africa, world/asia, world/europe, world/latin_america, world/middle_east, world/us_and_canada, england, nothern_ireland, scotland, wales` |
 | CNN | `edition_world, edition_africa, edition_americas, edition_asia, edition_europe, edition_space, edition_us, edition_money_news_international, edition_technology, edition_entertainment, edition_sport, edition_football, edition_golf, edition_motorsport, edition_tennis`| 
 | RT | `news, usa, uk, sport, russia, business`| 
-| Guardian | no parameters| 
+| Guardian | `all`| 
 
 
 

@@ -328,21 +328,21 @@ func getFrequency(sitename, directory, word string) {
 		} else {
 			log.Fatal("Directory does not exist")
 		}
-	case "CNN":
+	case "cnn":
 		exists := contains(CNNList, directory)
 		if exists || directory == "all" {
 			run = true
 		} else {
 			log.Fatal("Directory does not exist")
 		}
-	case "RT":
+	case "rt":
 		exists := contains(RTList, directory)
 		if exists || directory == "all" {
 			run = true
 		} else {
 			log.Fatal("Directory does not exist")
 		}
-	case "GUARDIAN":
+	case "guardian":
 		run = true
 	default:
 		log.Fatal("Invalid sitename")
@@ -352,7 +352,12 @@ func getFrequency(sitename, directory, word string) {
 		count := 0
 		matchPattern := regexp.MustCompile(word)
 
-		csvFileName := fmt.Sprintf("%s.csv", strings.ToUpper(sitename))
+		csvFileName := ""
+		if sitename != "guardian" {
+			csvFileName = fmt.Sprintf("%s.csv", strings.ToUpper(sitename))
+		} else {
+			csvFileName = fmt.Sprintf("%s.csv", sitename)
+		}
 		csvFile, err := os.Open(csvFileName)
 		if err != nil {
 			log.Fatal(err)
