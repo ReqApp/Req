@@ -178,7 +178,7 @@ $(document).ready(function() {
                     "user_name": username
                 },
                 success: function(res) {
-                    $(location).attr('href', `localhost:8673/users/forgotPassword`);
+                    $(location).attr('href', `http://localhost:8673/users/forgotPassword`);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     // console.log(jqXHR.responseJSON.body);

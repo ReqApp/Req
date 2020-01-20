@@ -26,25 +26,6 @@ router.get('/forgotPassword', (req, res, next) => {
     res.render('forgotPassword');
 });
 
-function validateInput(input, type) {
-    /**
-     * Validate the password and usernames kind of
-     */
-    if (type === 'password') {
-        if (input.length > 8) {
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        if (input.length < 32 && input.length > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-}
-
 router.post('/register', (req, res, next) => {
     /**
      * Handles post requests from register page
@@ -118,11 +99,13 @@ router.post('/register', (req, res, next) => {
                     /**
                      * Exec the python script to send the login code to the user
                      */
-                    const spawn = require("child_process").spawn;
-                    const pythonProcess = spawn('python', ["emailService/sendEmail.py", email, `Activate your account ${username}`, `${loginCode.toString()}`]);
-                    pythonProcess.stdout.on('data', (data) => {
-                        console.log(data.toString());
+                    
+                    sendEmail(email, `Activate your account ${username}`, loginCode.toString()).then(() => {
+                        console.log(`verification email sent`);
+                    }, (err) => {
+                        console.log(err);
                     });
+4
                     /**
                      * Add entry in unverified user table
                      */
@@ -249,27 +232,14 @@ router.post('/forgotPassword', (req, res, next) => {
     if (req.body.user_name) {
         if (validateInput(req.body.user_name, "username")) {
             const username = req.body.user_name;
-            found = false;
 
-            forgotPasswordUser.findOne({ "user_name": username }, (err, foundUser) => {
-                if (err) {
-                    return reject(err)
-                } else {
-                    if (foundUser) {
-                        console.log(`found`);
-                        found = true;
-                    } else {
-                        console.log(`not found`);
-                    }
-                }
-            });
-
-            if (!found) {
-                User.findOne({ "user_name": username }, (err, foundUser) => {
+            checkIfExisting(username).then((username) => {
+                // if resolved promise
+                  if (!username) {
+                    User.findOne({ "user_name": username }, (err, foundUser) => {
                     if (err) {
                         res.send(err);
                     }
-                    console.log("finding someone");
                     if (foundUser) {
                         console.log(`found this lad ${foundUser}`);
                         let newUser = new forgotPasswordUser();
@@ -286,16 +256,24 @@ router.post('/forgotPassword', (req, res, next) => {
                             }
                         });
 
-                        const spawn = require("child_process").spawn;
-                        const pythonProcess = spawn('python', ["emailService/sendEmail.py", foundUser.email, `Update your password ${foundUser.user_name}`, `${newUser.resetUrl}`]);
-                        pythonProcess.stdout.on('data', (data) => {
-                            console.log(data.toString());
-                        });
+                        // const spawn = require("child_process").spawn;
+                        // const pythonProcess = spawn('python3', ["emailService/sendEmail.py", foundUser.email, `Update your password ${foundUser.user_name}`, `${newUser.resetUrl}`]);
+                        // pythonProcess.stdout.on('data', (data) => {
+                        //     console.log(data.toString());
+                        // });
 
-                        console.log("sending back good response");
-                        res.status(200).send({
-                            "status": "information",
-                            "body": `Password reset email sent`
+                        sendEmail(foundUser.email, `Update your password ${foundUser.user_name}`, newUser.resetUrl).then(() => {
+                            res.status(200).send({
+                                "status": "information",
+                                "body": `Password reset email sent`
+                            });
+                        }, (err) => {
+                            console.log(err);
+                        });
+                    } else {
+                        res.status(400).send({
+                            "status": "error",
+                            "body": "Check your email"
                         });
                     }
 
@@ -308,6 +286,12 @@ router.post('/forgotPassword', (req, res, next) => {
                     "body": "Check your email"
                 });
             }
+            }, (err) => {
+                // if rejected promise
+                console.log(`BAD RESULT: ${err}`);
+            });
+
+          
         }
     } else {
         res.status(400).send({
@@ -317,8 +301,6 @@ router.post('/forgotPassword', (req, res, next) => {
     }
 });
 
-
-// Bearer%20eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJxdWFudGl6ZUl0IiwiaWF0IjoxNTc5NDUxOTI3LCJleHAiOjE1Nzk3MTExMjd9.LIgpvYTxms9rAiB0PoAD3NWrRaA4-4K1yaBBtBnAjyI
 router.post('/resetPassword', (req, res, next) => {
     if (req.body.newPassword) {
 
@@ -329,34 +311,20 @@ router.post('/resetPassword', (req, res, next) => {
                 }
                 if (foundUser) {
 
-                    const resetPass = User.findOne({ email: foundUser.email }, (err, theUser) => {
-                        if (err) {
-                            res.send(err);
-                        }
-                        if (theUser) {
-                            theUser.password = theUser.generateHash(req.body.newPassword);
-                            theUser.save((err) => {
-                                if (err) {
-                                    res.send(err);
-                                } else {
-                                    console.log("password changed");
-                                    res.status(200).json({
-                                        "status": "information",
-                                        "body": "password changed"
-                                    });
-                                }
-                            });
-                            resetPass.then(() => {
-                                forgotPasswordUser.deleteOne({ "user_name": theUser.user_name }, (err) => {
-                                    if (err) {
-                                        res.send(err);
-                                    } else {
-                                        console.log("Deleted from forgotten table");
-                                    }
+                    resetPassword(foundUser.email, req.body.newPassword).then((username) => {
+                        forgotPasswordUser.deleteOne({ "user_name": username }, (err) => {
+                            if (err) {
+                                res.send(err);
+                            } else {
+                                console.log("Deleted from forgotten table");
+                                res.status(200).send({
+                                    "status": "error",
+                                    "body": "Invalid input"
                                 });
-                            })
-
-                        }
+                            }
+                        });
+                    }, (err) => {
+                        console.log(err);
                     });
 
                 }
@@ -377,5 +345,106 @@ function createJwt(profile) {
         expiresIn: "3d"
     });
 };
+
+function checkIfExisting(username) {
+    // if there is a forgotten email entry already existing (a link)
+    return new Promise(function(resolve, reject) { 
+        forgotPasswordUser.findOne({ "user_name": username }, (err, foundUser) => {
+            if (err) {
+                reject(Error(err))
+            } else {
+                if (foundUser) {
+                    console.log(`found`);
+                    resolve(null);
+                } else {
+                    console.log(`not found`);
+                    resolve(username);
+                }
+            }
+        });
+    });
+}
+
+function resetPassword(email, newPassword) {
+    return new Promise((resolve, reject) => {
+        User.findOne({ email: email }, (err, theUser) => {
+            if (err) {
+                res.send(err);
+            }
+            if (theUser) {
+                theUser.password = theUser.generateHash(newPassword);
+                theUser.save((err) => {
+                    if (err) {
+                        res.send(err);
+                        reject(Error(err));
+                    } else {
+                        console.log("password changed");
+                        resolve(theUser.user_name);
+                    }
+                });
+            }
+        });
+    });
+}
+
+function sendEmail(email, subject, body) {
+    return new Promise((resolve, reject) => {
+        const spawn = require("child_process").spawn;
+        const pythonProcess = spawn('python3', ["emailService/sendEmail.py", email, subject, body]);
+        pythonProcess.stdout.on('data', (data) => {
+            console.log(data.toString());
+            resolve()
+        });
+        pythonProcess.stderr.on('data', (data) => {
+            reject(Error(data));
+        });
+    });
+}
+
+function forgotPasswordExists(fromUrl) {
+    forgotPasswordUser.findOne({ resetUrl: req.body.fromUrl }, (err, foundUser) => {
+        if (err) {
+            res.send(err);
+        }
+        if (foundUser) {
+            resolve(foundUser.email)
+            // resetPassword(foundUser.email, req.body.newPassword).then((username) => {
+            //     forgotPasswordUser.deleteOne({ "user_name": username }, (err) => {
+            //         if (err) {
+            //             res.send(err);
+            //         } else {
+            //             console.log("Deleted from forgotten table");
+            //             res.status(200).send({
+            //                 "status": "error",
+            //                 "body": "Invalid input"
+            //             });
+            //         }
+            //     });
+            // }, (err) => {
+            //     console.log(err);
+            // });
+
+        }
+    });
+}
+
+function validateInput(input, type) {
+    /**
+     * Validate the password and usernames kind of
+     */
+    if (type === 'password') {
+        if (input.length > 8) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        if (input.length < 32 && input.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
 
 module.exports = router;
