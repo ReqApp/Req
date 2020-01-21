@@ -30,14 +30,18 @@ ____
 ## Frequency from articleScraper
 `/articleStats/articleGetWindows` or `/articleStats/articleGetLinux`
 * Returns the **case** sensitive amount of matches of the search term in the article titles of the directory of the sitename chosen.
-* Basic usage: `articleGet.. -s sitename directory searchTerm`
+* Basic usage: `[articleGetWindows or articleGetLinux] -s sitename directory month year searchTerm`
+* Any time from 12/2019 to present is in the files. Might add more logs if it's back from 7/2019
 
-| Site  |  directories |
+| sitename  |  directories |
 | ------------- | ------------- | 
 | BBC | `world, uk, business, politics, health, education, science_and_environment, technology, entertainment_and_arts, world/africa, world/asia, world/europe, world/latin_america, world/middle_east, world/us_and_canada, england, nothern_ireland, scotland, wales` |
 | CNN | `edition_world, edition_africa, edition_americas, edition_asia, edition_europe, edition_space, edition_us, edition_money_news_international, edition_technology, edition_entertainment, edition_sport, edition_football, edition_golf, edition_motorsport, edition_tennis`| 
 | RT | `news, usa, uk, sport, russia, business`| 
 | Guardian | `all`| 
+
+
+
 
 
 

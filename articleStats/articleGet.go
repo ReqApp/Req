@@ -13,6 +13,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"strconv"
 )
 
 // This struct holds a string of
@@ -58,6 +59,7 @@ var BBCList = []string{"world", "uk", "business", "politics", "health",
 	"world/africa", "world/asia", "world/europe", "world/latin_america", "world/middle_east",
 	"world/us_and_canada", "england", "northern_ireland", "scotland", "wales"}
 var RTList = []string{"news", "usa", "uk", "sport", "russia", "business"}
+
 
 func getPage(feedUrl string, section string, siteName string, successCount *int, linesWritten *int) {
 	// First see if the response header isn't a 404
@@ -111,6 +113,7 @@ func getPage(feedUrl string, section string, siteName string, successCount *int,
 	}
 }
 
+
 func writeGuardianCSV(siteName string, correctStruct *GuardianItems) int {
 	// Writes the Guardian CSV file, different to the others
 	// so a single function cannot be shared
@@ -140,6 +143,7 @@ func writeGuardianCSV(siteName string, correctStruct *GuardianItems) int {
 	linesWritten := len(correctStruct.Titles)
 	return linesWritten
 }
+
 
 func writeRTCSV(siteName string, section string, correctStruct RTItems) int {
 	// Writes the RT CSV file, again it's not the same as the others
@@ -172,6 +176,7 @@ func writeRTCSV(siteName string, section string, correctStruct RTItems) int {
 	linesWritten := len(correctStruct.RTItems)
 	return linesWritten
 }
+
 
 func writeCSV(siteName string, section string, correctStruct Items) int {
 	// Writes the CSV files for both CNN and BBC
@@ -217,6 +222,7 @@ func writeCSV(siteName string, section string, correctStruct Items) int {
 	return linesWritten
 }
 
+
 func writeErrorLog(section string, siteName string, feedUrl string, failMessage string) {
 	currTime := time.Now()
 	timeString := fmt.Sprintf("%d/%d/%d", currTime.Day(), currTime.Month(), currTime.Year())
@@ -243,13 +249,9 @@ func writeErrorLog(section string, siteName string, feedUrl string, failMessage 
 	}
 }
 
+
 func scrapeBBC(id int, waitG *sync.WaitGroup, linesWritten *int) {
 	var successfulScrapes int = 0
-	// BBCList := []string{"world", "uk", "business", "politics", "health",
-	// 	"education", "science_and_environment", "technology", "entertainment_and_arts",
-	// 	"world/africa", "world/asia", "world/europe", "world/latin_america", "world/middle_east",
-	// 	"world/us_and_canada", "england", "northern_ireland", "scotland", "wales"}
-
 	for _, dir := range BBCList {
 		currUrl := fmt.Sprintf("http://feeds.bbci.co.uk/news/%s/rss.xml", dir)
 		getPage(currUrl, dir, "BBC", &successfulScrapes, linesWritten)
@@ -262,13 +264,9 @@ func scrapeBBC(id int, waitG *sync.WaitGroup, linesWritten *int) {
 	waitG.Done()
 }
 
+
 func scrapeCNN(id int, waitG *sync.WaitGroup, linesWritten *int) {
 	var successfulScrapes int = 0
-	// CNNList := []string{"edition", "edition_world", "edition_africa", "edition_americas",
-	// 	"edition_asia", "edition_europe", "edition_meast", "edition_us", "money_news_international",
-	// 	"edition_technology", "edition_space", "edition_entertainment", "edition_sport",
-	// 	"edition_football", "edition_golf", "edition_motorsport", "edition_tennis"}
-
 	for _, dir := range CNNList {
 		currUrl := fmt.Sprintf("http://rss.cnn.com/rss/%s.rss", dir)
 		getPage(currUrl, dir, "CNN", &successfulScrapes, linesWritten)
@@ -281,6 +279,7 @@ func scrapeCNN(id int, waitG *sync.WaitGroup, linesWritten *int) {
 	waitG.Done()
 }
 
+
 func scrapeGuardian(id int, waitG *sync.WaitGroup, linesWritten *int) {
 	var successfulScrapes int = 0
 	currUrl := "https://www.theguardian.com/sitemaps/news.xml"
@@ -288,6 +287,7 @@ func scrapeGuardian(id int, waitG *sync.WaitGroup, linesWritten *int) {
 
 	waitG.Done()
 }
+
 
 func scrapeRT(id int, waitG *sync.WaitGroup, linesWritten *int) {
 	var successfulScrapes int = 0
@@ -305,6 +305,7 @@ func scrapeRT(id int, waitG *sync.WaitGroup, linesWritten *int) {
 	waitG.Done()
 }
 
+
 func contains(s []string, e string) bool {
 	for _, a := range s {
 		if a == e {
@@ -314,11 +315,20 @@ func contains(s []string, e string) bool {
 	return false
 }
 
-func getFrequency(sitename, directory, word string) {
+
+func getFrequency(sitename, directory, month, year, word string) {
 	run := false
 	// fmt.Printf("[%s %s %s]\n", sitename, directory, word)
 	sitename = strings.ToLower(sitename)
 	directory = strings.ToLower(directory)
+	monthInt, err := strconv.Atoi(month)
+	if err != nil {
+		log.Fatal(err)
+	}
+	yearInt, err := strconv.Atoi(year)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	switch sitename {
 	case "bbc":
@@ -351,6 +361,8 @@ func getFrequency(sitename, directory, word string) {
 	if run {
 		count := 0
 		matchPattern := regexp.MustCompile(word)
+		dateMatch := fmt.Sprintf("%d/%d", monthInt, yearInt)
+		dateMatchPattern := regexp.MustCompile(dateMatch)
 
 		csvFileName := ""
 		if sitename != "guardian" {
@@ -372,30 +384,35 @@ func getFrequency(sitename, directory, word string) {
 			if err != nil {
 				log.Fatal(err)
 			}
-			if directory == "all" {
-				match := matchPattern.FindAllStringIndex(record[2], -1)
-				count += len(match)
-			} else {
-				if record[1] == directory {
-					match := matchPattern.FindAllStringIndex(record[2], -1)
-					count += len(match)
+
+			matchDate := dateMatchPattern.FindAllStringIndex(record[0], -1)
+			
+			if len(matchDate) > 0 {
+				if directory == "all" {
+					matchWord := matchPattern.FindAllStringIndex(record[2], -1)
+					count += len(matchWord)
+				} else {
+					if record[1] == directory {
+						matchWord := matchPattern.FindAllStringIndex(record[2], -1)
+						count += len(matchWord)
+					}
 				}
-			}
+			}	
 		}
 		fmt.Printf("%d\n", count)
 	}
-
 }
 
 func main() {
 	// Uses go routines to achieve
 	// faster scraping times overall
-
+	
 	if len(os.Args) > 1 {
 		if os.Args[1] == "-s" && len(os.Args) > 3 {
-			getFrequency(os.Args[2], os.Args[3], os.Args[4])
+			getFrequency(os.Args[2], os.Args[3], os.Args[4], os.Args[5], os.Args[6])
 		} else {
-			fmt.Printf("./articleGet -s siteName directory searchTerm")
+			fmt.Printf("./articleGet... -s siteName directory month year searchTerm\n")
+			fmt.Printf("                   string    string    int   int   string")
 		}
 	} else {
 		var waitG sync.WaitGroup
