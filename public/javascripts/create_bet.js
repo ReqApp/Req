@@ -1,22 +1,28 @@
 const MIN_BET_RAD = 20;
 
+// Visual elements of bet
 var area;
 var marker;
 
+// User input DOM elements
 var betNameDOM;
 var locationDOM;
 var radiusDOM;
 
-var betData = {betName : 'New Bet', location: 'location', radius: DEFAULT_RAD};
+// Object containing information about bet
+var betData = {title : 'New Bet', location_Name: 'location', latitude : 0, longitude : 0, radius: DEFAULT_RAD};
 
 $(document).ready(function(){
+    // Get input elements
     betNameDOM = $('#betName');
     locationDOM = $('#location');
     radiusDOM = $('#rad');
     
-    betNameDOM.val(betData.betName);
+    // Set default bet data
+    betNameDOM.val(betData.title);
     radiusDOM.val(betData.radius);
-    loadMap('mapID');
+    
+    loadMap('mapID'); // Function located in maps.js
     
     // Wait for user position to be obtained
     $(window).on('locRetrieved', function (data) {
@@ -24,7 +30,16 @@ $(document).ready(function(){
         addMapMarkers(data.location);
     });
     
+    // Add bet to database
+    $('#createBet').click(addBetToDataBase);
 });
+
+
+function addBetToDataBase(){        
+    $.post('/createBet/addBetToDataBase', betData, function(data){
+        console.log("Added data to database");
+    }, 'json')
+}
 
 function addMapMarkers(pos){
     console.log(pos.accuracy);
@@ -37,7 +52,12 @@ function addMapMarkers(pos){
         console.log("Location could not accurately be determined");
     }
     else{
+        // Include lat and long in data to add to database
         var latLong = L.latLng(pos.latitude, pos.longitude);
+        betData.latitude = latLong.lat;
+        betData.longitude = latLong.lng;
+        
+        // Adding location marker to map
         marker = L.marker(latLong);
         marker.addTo(map);
 
@@ -77,7 +97,7 @@ function addMapMarkers(pos){
             });
             
             betNameDOM.keyup(function(){
-                betData.betName = betNameDOM.val();
+                betData.title = betNameDOM.val();
                 marker._popup.setContent(formatPopUp(betData));
             });
             
@@ -96,7 +116,7 @@ function addMapMarkers(pos){
 
 // Returns formatted string content of popup
 function formatPopUp(betData){
-    return '<b>' + betData.betName + '</b><br>Location: ' + betData.location + '<br>Radius: ' + betData.radius;
+    return '<b>' + betData.title + '</b><br>Location: ' + betData.location + '<br>Radius: ' + betData.radius;
 }
 
 // DEBUG function for setting user position

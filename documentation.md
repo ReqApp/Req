@@ -15,6 +15,7 @@ ____
 
 ## APIs
 ### `/routes/index.js`
+
 #### `/getTime`
 | Request type  | Output |
 | ------------- | ------------- | ------------- |
@@ -33,6 +34,11 @@ ____
 | month   |  1-12  | 
 | year   |  2019/2020  | 
 |  searchTerm | **case** sensitive search term   | 
+
+| Request type  | URL | Return value|  Information |
+| ------------- | ------------- | ------------- | ------------- |
+| **POST**  | `/createBet/addBetToDataBase` | `Saved Bet` | Takes a bet object and stores it in the bet collection in database  |
+
 ____
 
 # Services
