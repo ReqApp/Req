@@ -68,6 +68,10 @@ router.get('/createBet', function(req, res, next){
     res.render('create_bet', {title: 'CreateBet'});
 });
 
+router.get('/findBets', function(req, res, next){
+    res.render('find_bets', {title : 'FindBets'});
+});
+
 router.post('/createArticleBet', (req, res, next) => {
     if (req.body.betType) {
         switch (req.body.betType) {
