@@ -26,20 +26,80 @@ router.get('/members', (req, res, next) => {
         let jwtString = req.cookies.Authorization.split(' ');
         let profile = verifyJwt(jwtString[1]);
             if (profile) {
-                res.render('members');
+                res.render('home');
             } else {
-                res.render('notAllowed');
+                res.render('forgotPassword');
             }
     } else {
-        res.render('notAllowed');
+
+        res.render('home');
     }
     
 });
+
+router.post('/createArticleBet', (req, res, next) => {
+    if (req.body.betType) {
+        switch (req.body.betType) {
+            case 'article':
+                makeArticleBet(req.body).then((response) => {
+                    if (response) {
+                        res.status(200).json({
+                            "status":"information",
+                            "body":response
+                        });
+                    } else {
+
+                    }
+                }, (err) => {
+                    console.log(err);
+                    res.status(400).json({
+                        "status":"error",
+                        "body":"invalid request"
+                    });
+                });
+                break;
+                
+            default:
+                console.log('default bet request');
+                res.status(200).json({
+                    "status":"information",
+                    "body":"request to bet sent!"
+                });
+                break;
+        }
+    } else {
+        res.status(400).json({
+            "status":"error",
+            "body":"invalid request"
+        });
+    }
+}); 
 
 function verifyJwt(jwtString) {
     let val = jwt.verify(jwtString, 'fgjhidWSGHDSbgnkjsmashthegaffteasandcoffee');
     return val;
 }
 
+function makeArticleBet(input) {
+    return new Promise((resolve, reject) => {
+        if (input.sitename && input.directory && input.month && input.year && input.searchTerm) {    
+            var child = require('child_process').execFile;
+            var executablePath = "./articleStats/articleGet";
+            var parameters = ["-s",input.sitename, input.directory, input.month, input.year, input.searchTerm];
+    
+            child(executablePath, parameters, function(err, data) {
+                if (err) {
+                    console.log(err);
+                    reject(null);
+                } else {
+                    resolve(data.toString());
+                }
+            });
+    
+        } else {
+           reject(null);
+        }
+    });
+}
 
 module.exports = router;

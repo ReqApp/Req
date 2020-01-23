@@ -15,9 +15,24 @@ ____
 
 ## APIs
 ### `/routes/index.js`
-| Request type  | URL | Return value|  Information |
-| ------------- | ------------- | ------------- | ------------- |
-| **POST**  | `/getTime` | `{"currentTime":1578497528128}` | Ccurrent time in milliseconds since January 1st 1970.  |
+#### `/getTime`
+| Request type  | Output |
+| ------------- | ------------- | ------------- |
+| **POST**  | `{"currentTime":1578497528128}` |
+|  **Inputs** |  |
+| nothing  |
+
+#### `/createArticleBet`
+| Request type  | Output | 
+| ------------- | ------------- | 
+ **POST**| {"status":"information","body":"42"}| 
+| **Inputs** | |
+| betType | `article` |
+| sitename  |  `BBC, CNN, RT, Guardian`  | 
+| directory  |  a valid directory (see docs below for articleScraping)  | 
+| month   |  1-12  | 
+| year   |  2019/2020  | 
+|  searchTerm | **case** sensitive search term   | 
 ____
 
 ## Sending Emails
