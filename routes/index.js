@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models/users');
 var jwt = require('jsonwebtoken');
+
+// Bet stuff
 var Bet = require('../models/betData');
 var calcDistance = require('./calcDistance');
 
@@ -66,6 +68,10 @@ router.get('/members', (req, res, next) => {
     
 router.get('/createBet', function(req, res, next){
     res.render('create_bet', {title: 'CreateBet'});
+});
+
+router.get('/findBets', function(req, res, next){
+    res.render('find_bets', {title : 'FindBets'});
 });
 
 router.post('/createArticleBet', (req, res, next) => {
