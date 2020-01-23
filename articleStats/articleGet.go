@@ -10,10 +10,10 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
-	"strconv"
 )
 
 // This struct holds a string of
@@ -59,7 +59,6 @@ var BBCList = []string{"world", "uk", "business", "politics", "health",
 	"world/africa", "world/asia", "world/europe", "world/latin_america", "world/middle_east",
 	"world/us_and_canada", "england", "northern_ireland", "scotland", "wales"}
 var RTList = []string{"news", "usa", "uk", "sport", "russia", "business"}
-
 
 func getPage(feedUrl string, section string, siteName string, successCount *int, linesWritten *int) {
 	// First see if the response header isn't a 404
@@ -113,7 +112,6 @@ func getPage(feedUrl string, section string, siteName string, successCount *int,
 	}
 }
 
-
 func writeGuardianCSV(siteName string, correctStruct *GuardianItems) int {
 	// Writes the Guardian CSV file, different to the others
 	// so a single function cannot be shared
@@ -143,7 +141,6 @@ func writeGuardianCSV(siteName string, correctStruct *GuardianItems) int {
 	linesWritten := len(correctStruct.Titles)
 	return linesWritten
 }
-
 
 func writeRTCSV(siteName string, section string, correctStruct RTItems) int {
 	// Writes the RT CSV file, again it's not the same as the others
@@ -176,7 +173,6 @@ func writeRTCSV(siteName string, section string, correctStruct RTItems) int {
 	linesWritten := len(correctStruct.RTItems)
 	return linesWritten
 }
-
 
 func writeCSV(siteName string, section string, correctStruct Items) int {
 	// Writes the CSV files for both CNN and BBC
@@ -222,7 +218,6 @@ func writeCSV(siteName string, section string, correctStruct Items) int {
 	return linesWritten
 }
 
-
 func writeErrorLog(section string, siteName string, feedUrl string, failMessage string) {
 	currTime := time.Now()
 	timeString := fmt.Sprintf("%d/%d/%d", currTime.Day(), currTime.Month(), currTime.Year())
@@ -249,7 +244,6 @@ func writeErrorLog(section string, siteName string, feedUrl string, failMessage 
 	}
 }
 
-
 func scrapeBBC(id int, waitG *sync.WaitGroup, linesWritten *int) {
 	var successfulScrapes int = 0
 	for _, dir := range BBCList {
@@ -263,7 +257,6 @@ func scrapeBBC(id int, waitG *sync.WaitGroup, linesWritten *int) {
 	}
 	waitG.Done()
 }
-
 
 func scrapeCNN(id int, waitG *sync.WaitGroup, linesWritten *int) {
 	var successfulScrapes int = 0
@@ -279,7 +272,6 @@ func scrapeCNN(id int, waitG *sync.WaitGroup, linesWritten *int) {
 	waitG.Done()
 }
 
-
 func scrapeGuardian(id int, waitG *sync.WaitGroup, linesWritten *int) {
 	var successfulScrapes int = 0
 	currUrl := "https://www.theguardian.com/sitemaps/news.xml"
@@ -287,7 +279,6 @@ func scrapeGuardian(id int, waitG *sync.WaitGroup, linesWritten *int) {
 
 	waitG.Done()
 }
-
 
 func scrapeRT(id int, waitG *sync.WaitGroup, linesWritten *int) {
 	var successfulScrapes int = 0
@@ -305,7 +296,6 @@ func scrapeRT(id int, waitG *sync.WaitGroup, linesWritten *int) {
 	waitG.Done()
 }
 
-
 func contains(s []string, e string) bool {
 	for _, a := range s {
 		if a == e {
@@ -314,7 +304,6 @@ func contains(s []string, e string) bool {
 	}
 	return false
 }
-
 
 func getFrequency(sitename, directory, month, year, word string) {
 	run := false
@@ -366,9 +355,9 @@ func getFrequency(sitename, directory, month, year, word string) {
 
 		csvFileName := ""
 		if sitename != "guardian" {
-			csvFileName = fmt.Sprintf("%s.csv", strings.ToUpper(sitename))
+			csvFileName = fmt.Sprintf("articleStats/%s.csv", strings.ToUpper(sitename))
 		} else {
-			csvFileName = fmt.Sprintf("%s.csv", sitename)
+			csvFileName = fmt.Sprintf("artcleStats/%s.csv", sitename)
 		}
 		csvFile, err := os.Open(csvFileName)
 		if err != nil {
@@ -386,7 +375,7 @@ func getFrequency(sitename, directory, month, year, word string) {
 			}
 
 			matchDate := dateMatchPattern.FindAllStringIndex(record[0], -1)
-			
+
 			if len(matchDate) > 0 {
 				if directory == "all" {
 					matchWord := matchPattern.FindAllStringIndex(record[2], -1)
@@ -397,18 +386,19 @@ func getFrequency(sitename, directory, month, year, word string) {
 						count += len(matchWord)
 					}
 				}
-			}	
+			}
 		}
-		fmt.Printf("%d\n", count)
+		fmt.Printf("%d", count)
 	}
 }
 
 func main() {
 	// Uses go routines to achieve
 	// faster scraping times overall
-	
+
 	if len(os.Args) > 1 {
 		if os.Args[1] == "-s" && len(os.Args) > 3 {
+			// fmt.Printf("\n\n%s %s %s %s %s\n\n", os.Args[2], os.Args[3], os.Args[4], os.Args[5], os.Args[6])
 			getFrequency(os.Args[2], os.Args[3], os.Args[4], os.Args[5], os.Args[6])
 		} else {
 			fmt.Printf("./articleGet... -s siteName directory month year searchTerm\n")

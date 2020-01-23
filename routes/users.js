@@ -91,7 +91,10 @@ router.post('/register', (req, res, next) => {
                         "body": "Username or email address already in use"
                     });
                 } else {
-                    /**F
+
+                    checkIfExisting(username, "unverified").then((data) => {
+                        if (data) {
+/**
                      * instead we are going to want to send an email with a code to verifiy an email address
                      *  then call another function to make the account
                      */
@@ -100,8 +103,7 @@ router.post('/register', (req, res, next) => {
                      * Exec the python script to send the login code to the user
                      */
                     
-                    sendEmail(email, `Activate your account ${username}`, loginCode.toString()).then(() => {
-                        console.log(`verification email sent`);
+                    sendEmail(email, `Activate your account ${data}`, loginCode.toString()).then(() => {
                     }, (err) => {
                         console.log(err);
                     });
@@ -124,6 +126,15 @@ router.post('/register', (req, res, next) => {
                     res.status(200).json({
                         "status": "information",
                         "body": "success"
+                    });
+
+                    res.render('verifyAccount');
+                        } else {
+                            res.status(400).send({
+                                "status": "error",
+                                "body": "Check your email"
+                            });
+                        }
                     });
                 }
             });
@@ -233,15 +244,14 @@ router.post('/forgotPassword', (req, res, next) => {
         if (validateInput(req.body.user_name, "username")) {
             const username = req.body.user_name;
 
-            checkIfExisting(username).then((username) => {
+            checkIfExisting(username, "forgotten").then((username) => {
                 // if resolved promise
-                  if (!username) {
+                  if (username) {
                     User.findOne({ "user_name": username }, (err, foundUser) => {
                     if (err) {
                         res.send(err);
                     }
                     if (foundUser) {
-                        console.log(`found this lad ${foundUser}`);
                         let newUser = new forgotPasswordUser();
 
                         newUser.user_name = foundUser.user_name;
@@ -346,23 +356,42 @@ function createJwt(profile) {
     });
 };
 
-function checkIfExisting(username) {
-    // if there is a forgotten email entry already existing (a link)
-    return new Promise(function(resolve, reject) { 
-        forgotPasswordUser.findOne({ "user_name": username }, (err, foundUser) => {
-            if (err) {
-                reject(Error(err))
-            } else {
-                if (foundUser) {
-                    console.log(`found`);
-                    resolve(null);
+function checkIfExisting(username, type) {
+    if (type === "forgotten") {
+        // if there is a forgotten email entry already existing (a link)
+        return new Promise(function(resolve, reject) { 
+            forgotPasswordUser.findOne({ "user_name": username }, (err, foundUser) => {
+                if (err) {
+                    reject(Error(err))
                 } else {
-                    console.log(`not found`);
-                    resolve(username);
+                    if (foundUser) {
+                        console.log(`found`);
+                        resolve(null);
+                    } else {
+                        console.log(`not found`);
+                        resolve(username);
+                    }
                 }
-            }
+            });
         });
-    });
+    } else if (type === "unverified") {
+        // if there is a forgotten email entry already existing (a link)
+        return new Promise(function(resolve, reject) { 
+            UnverifiedUser.findOne({ "user_name": username }, (err, foundUser) => {
+                if (err) {
+                    reject(Error(err))
+                } else {
+                    if (foundUser) {
+                        console.log(`found`);
+                        resolve(null);
+                    } else {
+                        console.log(`not found`);
+                        resolve(username);
+                    }
+                }
+            });
+        });
+    }
 }
 
 function resetPassword(email, newPassword) {
