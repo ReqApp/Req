@@ -39,7 +39,6 @@ router.get('/profile', function(req, res, next) {
     res.render('profile',{ welcome: 'profile page test' });
 });
 
-router.post('getTime', (req, res, next) => {
 router.post('/getTime', (req, res, next) => {
     const date = new Date();
     const currDate = date.getTime();
@@ -48,7 +47,7 @@ router.post('/getTime', (req, res, next) => {
 
 router.get('/exampleBet', (req, res, next) => {
     res.render('exampleBet');
-})
+});
 
 router.get('/members', (req, res, next) => {
     if (req.cookies.Authorization) {
@@ -63,6 +62,7 @@ router.get('/members', (req, res, next) => {
 
         res.render('home');
     }
+});
     
 router.get('/createBet', function(req, res, next){
     res.render('create_bet', {title: 'CreateBet'});
@@ -164,6 +164,6 @@ router.get('/getBets', function(req, res, next){
             res.json(bets);
         }
     });
-})
+});
 
 module.exports = router;
