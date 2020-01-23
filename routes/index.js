@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Bet = require('../models/betData');
+var calcDistance = require('./calcDistance');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -46,4 +47,25 @@ router.post('/createBet/addBetToDataBase', function(req, res, next){
         }
     })
 });
+
+// API for getting bets from database
+router.get('/getBets', function(req, res, next){
+    // Perform calculations server-side to increase perfromance
+    Bet.find({}).exec(function(err, bets){
+        if(err){
+            throw(err);
+        }else{
+            for(var i = 0; i < bets.length; i++){
+                var d = calcDistance({lat : bets[i].latitude, lng : bets[i].longitude}, {lat : req.query.latitude, lng : req.query.longitude});
+                console.log(d);
+                // Convert kilometers to metres
+                if((d * 1000) > bets[i].radius){
+                    bets.splice(i, 1);
+                }
+            }
+            res.json(bets);
+        }
+    });
+})
+
 module.exports = router;
