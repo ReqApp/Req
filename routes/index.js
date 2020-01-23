@@ -45,7 +45,7 @@ router.post('/createArticleBet', (req, res, next) => {
                     if (response) {
                         res.status(200).json({
                             "status":"information",
-                            "body":response
+                            "body": "invalid input"
                         });
                     } else {
 
@@ -54,7 +54,7 @@ router.post('/createArticleBet', (req, res, next) => {
                     console.log(err);
                     res.status(400).json({
                         "status":"error",
-                        "body":"invalid request"
+                        "body":err
                     });
                 });
                 break;
@@ -83,9 +83,9 @@ function verifyJwt(jwtString) {
 function makeArticleBet(input) {
     return new Promise((resolve, reject) => {
         if (input.sitename && input.directory && input.month && input.year && input.searchTerm) {    
-            var child = require('child_process').execFile;
-            var executablePath = "./articleStats/articleGet";
-            var parameters = ["-s",input.sitename, input.directory, input.month, input.year, input.searchTerm];
+            const child = require('child_process').execFile;
+            const executablePath = "./articleStats/articleGetLinux";
+            const parameters = ["-s",input.sitename, input.directory, input.month, input.year, input.searchTerm];
     
             child(executablePath, parameters, function(err, data) {
                 if (err) {
