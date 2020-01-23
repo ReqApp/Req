@@ -1,6 +1,2 @@
-<<<<<<< Updated upstream
-/node_modules/*
-=======
 node_modules/*
 articleStats/*.csv
->>>>>>> Stashed changes

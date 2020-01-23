@@ -103,3 +103,12 @@ function makeArticleBet(input) {
 }
 
 module.exports = router;
+router.get('/createBet', function(req, res, next){
+    res.render('create_bet', {title: 'CreateBet'});
+});
+
+router.get('/findBets', function(req, res, next){
+    res.render('find_bets', {title : 'FindBets'});
+});
+
+module.exports = router;
