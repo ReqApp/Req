@@ -172,4 +172,21 @@ router.get('/getBets', function(req, res, next){
     });
 });
 
+router.post('/addMultBets', function(req, res, next){
+    console.log(req.body);
+    Bet.insertMany(req.body.betData, function(err, bets){
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.json({success : true});
+        }
+    });
+
+})
+
+router.get('/debugTest', function(req, res, next){
+    res.render('debugAndTestingPage');
+});
+
 module.exports = router;
