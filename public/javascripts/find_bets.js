@@ -33,10 +33,20 @@ function getBets(latLong){
 
 function addBetsToMap(bets){
     var betMarkers = [];
+    var customIcon = L.icon({
+        iconUrl : 'http://localhost:80/images/location_marker.svg',
+        shadowURL : 'http://localhost:80/images/shadow_marker.png',
+        iconSize:     [38, 95], // size of the icon
+        shadowSize:   [50, 64], // size of the shadow
+        iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+        shadowAnchor: [4, 62],  // the same for the shadow
+        popupAnchor:  [-3, -60] // point from which the popup should open relative to the iconAnchor
+    });
+
     bets.forEach(bet => {
         // Add marker and popup on hover
         var latLng = L.latLng(bet.latitude, bet.longitude);
-        var marker = L.marker(latLng);
+        var marker = L.marker(latLng, {icon : customIcon});
         marker.bindPopup("<b>" + bet.title + "</b>", {closeButton : false});
         marker.on('mouseover', function(){
             marker.openPopup();
