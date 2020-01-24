@@ -159,19 +159,35 @@ router.get('/getBets', function(req, res, next){
         if(err){
             throw(err);
         }else{
-            for(var i = 0; i < bets.length; i++){
-                var d = calcDistance({lat : bets[i].latitude, lng : bets[i].longitude}, {lat : req.query.latitude, lng : req.query.longitude});
-                console.log(d);
+            var sendBets = [];
+            const LEN = bets.length;
+            for(var i = 0; i < LEN; i++){
+                var bet = bets.pop();
+                var d = calcDistance({lat : bet.latitude, lng : bet.longitude}, {lat : req.query.latitude, lng : req.query.longitude});
                 // Convert kilometers to metres
-                if((d * 1000) > bets[i].radius){
-                    bets.splice(i, 1);
+                if((d * 1000) <= bet.radius){
+                    sendBets.push(bet);
+                    /*
+                    console.log("Included")
+                    console.log("Bet Name: " + bet.title);
+                    console.log("Calculated Distance: " + (d * 1000).toString());
+                    console.log("Bet Radius: " + bet.radius.toString() + "\n");
+                    */  
+                }else{
+                    /*
+                    console.log("Not Included");
+                    console.log("Bet Name: " + bet.title);
+                    console.log("Calculated Distance: " + (d * 1000).toString());
+                    console.log("Bet Radius: " + bet.radius.toString() + "\n");
+                    */
                 }
             }
-            res.json(bets);
+            res.json(sendBets);
         }
     });
 });
 
+// Testing API for adding multiple bets to database
 router.post('/addMultBets', function(req, res, next){
     console.log(req.body);
     Bet.insertMany(req.body.betData, function(err, bets){

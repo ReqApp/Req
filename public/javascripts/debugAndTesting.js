@@ -1,9 +1,11 @@
+// Function for auto-generating bets in specified area
 function generateRandomBets(){
     // Max lat, min lng, min, lat, max lng
     const GALWAY = [53.345586, -9.202011, 53.264998, -8.909720];
+    const NUIG = [53.288905, -9.071247, 53.277547, -9.056773];
     const NUM_BETS = 50;
 
-    var coords = genRandomCoords(GALWAY, NUM_BETS);
+    var coords = genRandomCoords(NUIG, NUM_BETS);
     var bets = [];
 
     for(var i = 0 ; i < NUM_BETS; i++){
