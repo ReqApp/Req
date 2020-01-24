@@ -1,0 +1,48 @@
+
+<div class="card" style="width: 25rem;">
+      <h5 class="card-header text-center pl-0 pr-0" id="currMode">Create article bet</h5>
+
+       <div class="form-group text-center">
+        <select class="form-control text-center" id="sitenameMenu" style="width:40%">
+            <option>BBC</option>
+            <option>CNN</option>
+            <option>RT</option>
+            <option>Guardian</option>
+        </select>
+        </div>
+    
+        <div id="directoryDiv">
+            <div class="form-group text-center">
+                <select class="form-control text-center" id="directoryMenu" style="width:40%">
+                    <option>-</option>
+                </select>
+            </div>
+        </div>
+
+       <div class="form-group text-center">
+        <select class="form-control text-center" id="yearMenu" style="width:40%">
+            <option>2019</option>
+            <option>2020</option>
+        </select>
+        </div>
+
+        <div id="monthsDiv">
+            <div class="form-group text-center">
+                <select class="form-control text-center" id="monthMenu" style="width:40%">
+                    <option>-</option>
+                </select>
+            </div>
+        </div>
+
+
+      <div class="card-body pb-1 text-center">
+        <input type="text" id="searchTermBox" placeholder=" searchTerm" class="mb-2 text-center" maxlength="16">
+      </div>
+     
+      <div class="card-body pt-1 text-center">
+        <button type="button" class="btn btn-primary" id="submitButton">Submit</button>
+      </div>
+  </div>
+    <div id="resDiv"></div>
+
+<script src="../javascripts/articleBetScript.js"></script>
