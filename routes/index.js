@@ -5,6 +5,7 @@ var jwt = require('jsonwebtoken');
 
 // Bet stuff
 var Bet = require('../models/betData');
+var BetRegion = require('../models/bettingRegions');
 var calcDistance = require('./calcDistance');
 
 /* GET home page. */
@@ -149,7 +150,7 @@ router.post('/createBet/addBetToDataBase', function(req, res, next){
         else{
             res.json(savedBet);
         }
-    })
+    });
 });
 
 // API for getting bets from database
@@ -203,6 +204,48 @@ router.post('/addMultBets', function(req, res, next){
 
 router.get('/debugTest', function(req, res, next){
     res.render('debugAndTestingPage');
+});
+
+// API for adding new betting region
+router.post('/addBettingRegion', function(req, res, next){
+    var region = new BetRegion(req.body);
+    region.save(function(err, savedRegion){
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.json(savedRegion);
+        }
+    });
+});
+
+// API for getting available betting regions
+router.get('/getBettingRegions', function(req, res, next){
+    // Perform calculations server-side to increase perfromance
+    BetRegion.find({}).exec(function(err, betRegions){
+        if(err){
+            throw(err);
+        }else{
+            console.log(betRegions);
+            var regionsToSend = [];
+            const LEN = betRegions.length;
+            for(var i = 0; i < LEN; i++){
+                var betRegion = betRegions.pop();
+                var d = calcDistance({lat : betRegion.latitude, lng : betRegion.longitude}, {lat : req.query.latitude, lng : req.query.longitude});
+                // Convert kilometers to metres
+                if((d * 1000) <= betRegion.radius){
+                    regionsToSend.push(betRegion);
+                    console.log("Calculated Distance: " + (d * 1000).toString());
+                    console.log("Bet Radius: " + betRegion.radius.toString() + "\n");
+                }else{
+                    console.log("Calculated Distance: " + (d * 1000).toString());
+                    console.log("Bet Radius: " + betRegion.radius.toString() + "\n");
+                }
+            }
+            console.log(regionsToSend);
+            res.json(regionsToSend);
+        }
+    });
 });
 
 module.exports = router;

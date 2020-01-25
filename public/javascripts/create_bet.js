@@ -27,13 +27,69 @@ $(document).ready(function(){
     // Wait for user position to be obtained
     $(window).on('locRetrieved', function (data) {
         console.log('locRetrieved', data.location);
+        getAvailableRegions(data.location);
+        // Allow user to choose
+        // Allow user to create new bet in region
+        // Store bet in database and inlude in selected region document
         addMapMarkers(data.location);
     });
     
     // Add bet to database
     $('#createBet').click(addBetToDataBase);
+    $('#createBetRegion').click(addNewBetRegion);
 });
 
+// Retrieve regions where user is located in from database
+function getAvailableRegions(userPos){
+    // Testing code
+    var locData = setLocation(userPos);
+
+    // Send user location to server
+    $.get('/getBettingRegions', {latitude : locData.latitude, longitude : locData.longitude }, function(betRegions, status, XHR){
+        // Check if any regions available
+        if(Array.isArray(betRegions) && betRegions.length){
+            displayRegions(betRegions);
+        }else{
+            console.log("There are no current betting regions in your area.");
+            // Allow user to define new region
+        }
+    }, 'json');
+}
+
+// Visually show existing regions on map where user in located in
+function displayRegions(betRegions){
+    // Add marker, circle and popup to map to denote region
+    betRegions.forEach(betRegion => {
+        var latLng = L.latLng(betRegion.latitude, betRegion.longitude);
+        var marker = L.marker(latLng);
+        marker.bindPopup(betRegion.region_name, {closeButton : false});
+        var circle = L.circle(latLng, {
+            color : 'red',
+            fillColor : 'red',
+            fillOpacity : 0.2,
+            radius : 0
+        });
+        marker.addTo(map);
+        circle.addTo(map);
+        betRegionCircle = new BetArea(circle);
+        betRegionCircle.expand(betRegion.radius);
+    });
+}
+
+// Allows user to define new region where bets can be created and placed
+function addNewBetRegion(){
+    var betRegion = {
+        region_name : betNameDOM.val(), 
+        latitude : betData.latitude, 
+        longitude : betData.longitude,
+        radius : radiusDOM.val(),
+        bet_ids : []
+    }
+
+    $.post('addBettingRegion', betRegion, function(data){
+        console.log('Added bet region to database');
+    }, 'json');
+}
 
 function addBetToDataBase(){        
     $.post('/createBet/addBetToDataBase', betData, function(data){
@@ -42,14 +98,12 @@ function addBetToDataBase(){
 }
 
 function addMapMarkers(pos){
-    console.log(pos.accuracy);
     //DEBUG setting location
-    if(pos.accuracy > 100){
-        pos = setLocation(pos);
-    }
+    pos = setLocation(pos);
     // Check for level of accuracy
     if(pos.accuracy > 100){
         console.log("Location could not accurately be determined");
+
     }
     else{
         // Include lat and long in data to add to database
