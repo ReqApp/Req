@@ -20,7 +20,7 @@ var bettingRegionSchema = new Schema({
         default : 0
     },
     bet_ids : {
-        type : [Number]
+        type : [mongoose.ObjectId]
     }
 });
 

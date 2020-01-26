@@ -48,6 +48,7 @@ function getAvailableRegions(userPos){
     $.get('/getBettingRegions', {latitude : locData.latitude, longitude : locData.longitude }, function(betRegions, status, XHR){
         // Check if any regions available
         if(Array.isArray(betRegions) && betRegions.length){
+            $('#selectRegion').html('<select id="dropDown"></select>')
             displayRegions(betRegions);
         }else{
             console.log("There are no current betting regions in your area.");
@@ -73,6 +74,7 @@ function displayRegions(betRegions){
         circle.addTo(map);
         betRegionCircle = new BetArea(circle);
         betRegionCircle.expand(betRegion.radius);
+        $('#dropDown').html('<option value=' + betRegion._id + '>' + betRegion.region_name + '</option>');
     });
 }
 
@@ -91,10 +93,24 @@ function addNewBetRegion(){
     }, 'json');
 }
 
-function addBetToDataBase(){        
-    $.post('/createBet/addBetToDataBase', betData, function(data){
+function addBetToDataBase(){      
+    // Use put request to add bet to region
+    // Send bet region id and bet id
+
+    var dataToSend = {};
+    $.post('/createBet/addBetToDataBase', betData, function(res){
         console.log("Added data to database");
-    }, 'json')
+        dataToSend.betID = res._id.toString();
+        dataToSend.regionID = $('#dropDown').val().toString();
+        $.ajax({
+            url : '/addBetToRegion',
+            type : 'PUT',
+            data : dataToSend,
+            success : function(res){
+                console.log(res);
+            }
+        });
+    }, 'json');
 }
 
 function addMapMarkers(pos){

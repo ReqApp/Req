@@ -7,6 +7,7 @@ var jwt = require('jsonwebtoken');
 var Bet = require('../models/betData');
 var BetRegion = require('../models/bettingRegions');
 var calcDistance = require('./calcDistance');
+var mongoose = require('mongoose');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -235,15 +236,36 @@ router.get('/getBettingRegions', function(req, res, next){
                 // Convert kilometers to metres
                 if((d * 1000) <= betRegion.radius){
                     regionsToSend.push(betRegion);
+                    /*
                     console.log("Calculated Distance: " + (d * 1000).toString());
                     console.log("Bet Radius: " + betRegion.radius.toString() + "\n");
+                    */
                 }else{
+                    /*
                     console.log("Calculated Distance: " + (d * 1000).toString());
                     console.log("Bet Radius: " + betRegion.radius.toString() + "\n");
+                    */
                 }
             }
-            console.log(regionsToSend);
+            //console.log(regionsToSend);
             res.json(regionsToSend);
+        }
+    });
+});
+
+// Allows user to add bet to betting region
+router.put('/addBetToRegion', function(req, res, next){
+    // Takes bet region id
+    console.log(req.body);
+    var regionID = mongoose.Types.ObjectId(req.body.regionID.toString());
+    var betID = mongoose.Types.ObjectId(req.body.betID.toString());
+    // Find corresponding region and include bet id in bets array and increment num bets
+    BetRegion.findOneAndUpdate({'_id' : regionID}, { '$push' : {'bet_ids' : betID}, '$inc' : { 'num_bets' : 1}}, {useFindAndModify: false}).exec(function(err, betRegion){
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.json(betRegion);
         }
     });
 });
