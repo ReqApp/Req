@@ -69,6 +69,7 @@ bets.get('/getBets', function(req, res, next){
     });
 });
 
+// Testing APIs
 // Testing API for adding multiple bets to database
 bets.post('/addMultBets', function(req, res, next){
     console.log(req.body);
@@ -82,6 +83,19 @@ bets.post('/addMultBets', function(req, res, next){
     });
 
 })
+
+// Testing API for adding multiple bet regions to database
+bets.post('/addMultRegions', function(req, res, next){
+    console.log(req.body);
+    BetRegion.insertMany(req.body.regions, function(err, regions){
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.json(regions);
+        }
+    });
+});
 
 // API for adding new betting region
 bets.post('/addBettingRegion', function(req, res, next){
