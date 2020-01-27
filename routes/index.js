@@ -4,6 +4,7 @@ var User = require('../models/users');
 var jwt = require('jsonwebtoken');
 
 // Bet stuff
+// TODO extract bet API's into seperate files using external routes
 var Bet = require('../models/betData');
 var BetRegion = require('../models/bettingRegions');
 var calcDistance = require('./calcDistance');

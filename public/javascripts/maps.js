@@ -1,3 +1,7 @@
+// TODO 
+    // optimise createbet and findbet scripts by defining common function here
+    // Possibly implement class system
+
 const TILESRC = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const METADATA = { attribution : 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors' };
 var locateSettings = {setView: true, watch:false, enableHighAccuracy:true}

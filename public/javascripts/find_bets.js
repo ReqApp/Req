@@ -14,13 +14,30 @@ $(document).ready(function(){
         // Allow time to zoom then load other visual elements
         window.setTimeout(function(){
             marker.bindPopup("Your are here", {closeButton : false, className: 'popUp'}).openPopup();
-            getBets(latLong);
+            // TODO
+                // Get bet regions available
+                // Allow user to select region
+                // Display bets only in that region
+            getBetsInRegion(latLong);
         }, 1000);
 
     })
 });
 
-function getBets(latLong){
+// Return regions that user in located in
+function getBetRegions(latLng){
+    // Send request to server to retrieve regions from database
+}
+
+// Visually display bet regions on map
+function showBettingRegion(betRegion){
+    // Create marker, popup and circle and add to map
+
+    // Create drop-down menu to allow user to select between regions
+}
+
+// On user selection, retrieve bets in selected region
+function getBetsInRegion(latLong){
     var lat = latLong.lat;
     var long = latLong.lng;
     $.get('/getBets', { latitude : lat, longitude : long}, function(availableBets, status, XHR){
@@ -31,6 +48,7 @@ function getBets(latLong){
     
 }
 
+// Display bets in region on map
 function addBetsToMap(bets){
     var betMarkers = [];
     var customIcon = L.icon({
@@ -72,6 +90,4 @@ function addBetsToMap(bets){
         var index = betMarkers.length - 1;
         betMarkers[index].addTo(map);
     });
-
-
 }

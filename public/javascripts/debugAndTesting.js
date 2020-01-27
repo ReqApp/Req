@@ -1,5 +1,13 @@
 // Function for auto-generating bets in specified area
 function generateRandomBets(){
+    // TODO 
+        // Add script for creating bet regions
+        // Update generate random bets to work with bet regions
+
+        // Accept bet region id as param
+        // Find bet region and generate bets inside that region
+        // Must be in circular area
+
     // Max lat, min lng, min, lat, max lng
     const GALWAY = [53.345586, -9.202011, 53.264998, -8.909720];
     const NUIG = [53.288905, -9.071247, 53.277547, -9.056773];
@@ -25,6 +33,11 @@ function generateRandomBets(){
     $.post('/addMultBets', {betData : bets}, function(data){
         console.log("Added bets to database");
     });
+
+}
+
+// Similar to previous function but must use bet region schema instead
+function generateRandomBetRegions(){
 
 }
 

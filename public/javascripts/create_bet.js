@@ -27,10 +27,9 @@ $(document).ready(function(){
     // Wait for user position to be obtained
     $(window).on('locRetrieved', function (data) {
         console.log('locRetrieved', data.location);
+        // TODO
+            // When user makes new region display immediatley on map
         getAvailableRegions(data.location);
-        // Allow user to choose
-        // Allow user to create new bet in region
-        // Store bet in database and inlude in selected region document
         addMapMarkers(data.location);
     });
     
