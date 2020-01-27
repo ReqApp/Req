@@ -12,19 +12,25 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/home', (req, res, next) => {
-    res.render('home');
+    if (req.cookies.Authorization) {
+        const jwtString = req.cookies.Authorization.split(' ');
+        const profile = verifyJwt(jwtString[1]);
+        if (profile) {
+            res.send('Hello ' + profile.user_name);
+        }
+    }
 })
 
 router.get('/exampleBet', (req, res, next) => {
     res.render('exampleBet');
 });
 
-router.get('/createBet', function(req, res, next){
-    res.render('create_bet', {title: 'CreateBet'});
+router.get('/createBet', function(req, res, next) {
+    res.render('create_bet', { title: 'CreateBet' });
 });
 
-router.get('/findBets', function(req, res, next){
-    res.render('find_bets', {title : 'FindBets'});
+router.get('/findBets', function(req, res, next) {
+    res.render('find_bets', { title: 'FindBets' });
 });
 
 router.post('/getTime', (req, res, next) => {
@@ -33,10 +39,8 @@ router.post('/getTime', (req, res, next) => {
     res.json({ "Current time": currDate });
 });
 
-router.get('/auth/google/callback', passport.authenticate('google'), (req, res, next) => {
-    res.send("reached callback url");
-
-
+router.get('/profile', (req, res, next) => {
+    res.send('Hello: ');
 });
 
 router.get('/articleBetFeed', (req, res, next) => {
@@ -150,5 +154,13 @@ router.get('/createBet', function(req, res, next) {
 router.get('/findBets', function(req, res, next) {
     res.render('find_bets', { title: 'FindBets' });
 });
+
+const authCheck = (req, res, next) => {
+    if (!req.user) {
+        res.redirect('users/register');
+    } else {
+        next();
+    }
+};
 
 module.exports = router;
