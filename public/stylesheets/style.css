@@ -1,7 +1,12 @@
 body {
     padding: 50px;
-    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-family: 'Source Code Pro', monospace;
     background-color: rgb(119, 119, 119);
+}
+
+* {
+    font-family: 'Source Code Pro', monospace;
 }
 
 a {
@@ -23,10 +28,11 @@ a {
     margin: 4px 0px 0px 0px;
     text-align: center
 }
+
 #mapID {
     height: 500px;
 }
 
-#container{
+#container {
     width: 50%;
 }
