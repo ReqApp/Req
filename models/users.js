@@ -19,7 +19,7 @@ var usersSchema = new Schema({
         type: String,
         minlength: 8
     },
-    fbID: {
+    googleID: {
         type: String,
         default: null
     },

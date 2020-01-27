@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
+const passport = require("passport");
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -11,15 +13,29 @@ router.get('/home', (req, res, next) => {
     res.render('home');
 })
 
+router.get('/exampleBet', (req, res, next) => {
+    res.render('exampleBet');
+});
+
+router.get('/createBet', function(req, res, next){
+    res.render('create_bet', {title: 'CreateBet'});
+});
+
+router.get('/findBets', function(req, res, next){
+    res.render('find_bets', {title : 'FindBets'});
+});
+
 router.post('/getTime', (req, res, next) => {
     const date = new Date();
     const currDate = date.getTime();
     res.json({ "Current time": currDate });
 });
 
-router.get('/exampleBet', (req, res, next) => {
-    res.render('exampleBet');
-})
+router.get('/auth/google/callback', passport.authenticate('google'), (req, res, next) => {
+    res.send("reached callback url");
+
+
+});
 
 router.get('/members', (req, res, next) => {
     if (req.cookies.Authorization) {
@@ -31,7 +47,6 @@ router.get('/members', (req, res, next) => {
                 res.render('forgotPassword');
             }
     } else {
-
         res.render('home');
     }
     
@@ -45,10 +60,13 @@ router.post('/createArticleBet', (req, res, next) => {
                     if (response) {
                         res.status(200).json({
                             "status":"information",
-                            "body": "invalid input"
+                            "body": response
                         });
                     } else {
-
+                        res.status(404).json({
+                            "status":"information",
+                            "body": "invalid response"
+                        });
                     }
                 }, (err) => {
                     console.log(err);
@@ -60,7 +78,6 @@ router.post('/createArticleBet', (req, res, next) => {
                 break;
                 
             default:
-                console.log('default bet request');
                 res.status(200).json({
                     "status":"information",
                     "body":"request to bet sent!"
@@ -74,6 +91,10 @@ router.post('/createArticleBet', (req, res, next) => {
         });
     }
 }); 
+
+// all o auth
+// new betting idea in concrete
+// MORE docs
 
 function verifyJwt(jwtString) {
     let val = jwt.verify(jwtString, 'fgjhidWSGHDSbgnkjsmashthegaffteasandcoffee');
@@ -95,20 +116,10 @@ function makeArticleBet(input) {
                     resolve(data.toString());
                 }
             });
-    
         } else {
            reject(null);
         }
     });
 }
-
-module.exports = router;
-router.get('/createBet', function(req, res, next){
-    res.render('create_bet', {title: 'CreateBet'});
-});
-
-router.get('/findBets', function(req, res, next){
-    res.render('find_bets', {title : 'FindBets'});
-});
 
 module.exports = router;

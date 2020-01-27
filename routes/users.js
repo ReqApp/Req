@@ -6,6 +6,7 @@ var forgotPasswordUser = require('../models/forgotPasswordUsers');
 var jwt = require('jsonwebtoken');
 var randomstring = require("randomstring");
 var util = require('util');
+const passport = require("passport");
 
 
 /* GET users listing. */
@@ -26,7 +27,19 @@ router.get('/forgotPassword', (req, res, next) => {
     res.render('forgotPassword');
 });
 
-router.post('/register', (req, res, next) => {
+router.get('/auth/google', passport.authenticate('google', {
+    scope: ['profile']
+}));
+
+router.get('/auth/google/callback', (req, res, next) => {
+    res.send("reached callback url");
+});
+
+router.post('/createOAuthAccount', (req, res, next) => {
+    console.log(`In router: ${req.config.data}`);
+}); 
+
+router.post('/register', (req, res, next) => {2
     /**
      * Handles post requests from register page
      */
