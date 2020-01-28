@@ -7,6 +7,7 @@ var jwt = require('jsonwebtoken');
 var randomstring = require("randomstring");
 var util = require('util');
 const passport = require("passport");
+const creds = require("../models/credentials");
 
 
 /* GET users listing. */
@@ -364,7 +365,7 @@ router.post('/resetPassword', (req, res, next) => {
 });
 
 function createJwt(profile) {
-    return jwt.sign(profile, 'fgjhidWSGHDSbgnkjsmashthegaffteasandcoffee', {
+    return jwt.sign(profile, creds.jwtSecret, {
         expiresIn: "3d"
     });
 };
@@ -440,33 +441,6 @@ function sendEmail(email, subject, body) {
         pythonProcess.stderr.on('data', (data) => {
             reject(Error(data));
         });
-    });
-}
-
-function forgotPasswordExists(fromUrl) {
-    forgotPasswordUser.findOne({ resetUrl: req.body.fromUrl }, (err, foundUser) => {
-        if (err) {
-            res.send(err);
-        }
-        if (foundUser) {
-            resolve(foundUser.email)
-            // resetPassword(foundUser.email, req.body.newPassword).then((username) => {
-            //     forgotPasswordUser.deleteOne({ "user_name": username }, (err) => {
-            //         if (err) {
-            //             res.send(err);
-            //         } else {
-            //             console.log("Deleted from forgotten table");
-            //             res.status(200).send({
-            //                 "status": "error",
-            //                 "body": "Invalid input"
-            //             });
-            //         }
-            //     });
-            // }, (err) => {
-            //     console.log(err);
-            // });
-
-        }
     });
 }
 

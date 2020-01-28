@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
 const passport = require("passport");
+const creds = require("../models/credentials");
 
 
 var articleBet = require('../models/articleBets');
@@ -98,7 +99,7 @@ router.post('/createArticleBet', (req, res, next) => {
 // MORE docs
 
 function verifyJwt(jwtString) {
-    let val = jwt.verify(jwtString, 'fgjhidWSGHDSbgnkjsmashthegaffteasandcoffee');
+    let val = jwt.verify(jwtString, creds.jwtSecret);
     return val;
 }
 
