@@ -24,11 +24,15 @@ router.get('/verifyAccount', (req, res, next) => {
     res.render('verifyAccount');
 });
 
-router.get('/check', (req, res, next) => {
+router.get('/profile', (req, res, next) => {
     if (req.cookies.Authorization) {
-        let jwtString = req.cookies.Authorization.split(' ');
-        let profile = verifyJwt(jwtString[1]);
-        console.log(profile);
+        const jwtString = req.cookies.Authorization.split(' ');
+        const profile = verifyJwt(jwtString[1]);
+        if (profile) {
+            res.send('Hello ' + profile.user_name);
+        }
+    } else {
+        res.render('register');
     }
 });
 
@@ -36,16 +40,10 @@ router.get('/forgotPassword', (req, res, next) => {
     res.render('forgotPassword');
 });
 
+
 router.get('/auth/google', passport.authenticate('google', {
     scope: ['profile']
 }));
-
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJlYXRFR0dTIiwiaWF0IjoxNTc5NDUyMDk2LCJleHAiOjE1Nzk3MTEyOTZ9._diuSd7WBPrpTNHrf9_syNQ5EA-9wYVCMXG2SakpzJw
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJDYXRoYWwgTydDYWxsYWdoYW4iLCJpYXQiOjE1ODAxNjg3MDQsImV4cCI6MTU4MDQyNzkwNH0.bbK1ex_Ygx-lpzJ16UIYovXsN-BWGZ0wN02yJH8fa4Y
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJDYXRoYWwgTydDYWxsYWdoYW4iLCJpYXQiOjE1ODAxNjg5NDMsImV4cCI6MTU4MDQyODE0M30.Eez20QrbQ8OQZ4hmFA3GqIq_5p3pX4cWQOAmco5QQqo
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJDYXRoYWwgTydDYWxsYWdoYW4iLCJpYXQiOjE1ODAxNjg5NDMsImV4cCI6MTU4MDQyODE0M30.Eez20QrbQ8OQZ4hmFA3GqIq_5p3pX4cWQOAmco5QQqo
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJDYXRoYWwgTydDYWxsYWdoYW4iLCJpYXQiOjE1ODAxNjkwNzEsImV4cCI6MTU4MDQyODI3MX0.YpwXMXOcm0JsRsVD_JKRjIJpI6neNtqGWoKowSB-h88
-
 
 router.get('/auth/google/callback', passport.authenticate('google'), (req, res, next) => {
     console.log("in callback: " + req.user);
@@ -53,6 +51,15 @@ router.get('/auth/google/callback', passport.authenticate('google'), (req, res, 
     res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
     res.render('index', { title: req.user_name });
 });
+
+router.get('/auth/github', passport.authenticate('github'));
+
+router.get('/auth/github/callback',  passport.authenticate('github', { failureRedirect: '/users/register' }), (req, res) => {
+    console.log("in callback: " + req.user);
+    // res.send("reached callback url");
+    res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
+    res.render('index', { title: req.user_name });
+  });
 
 router.post('/register', (req, res, next) => {
     /**
@@ -188,8 +195,9 @@ router.post('/verifyAccount', (req, res, next) => {
             UnverifiedUser.findOne({ "activationCode": activationCode }, (err, foundUser) => {
                 if (err) {
                     res.send(err);
-                }
-                /**
+                } else {
+                    if (foundUser) {
+                    /**
                  * If the activation code exists for a user, save that user into the
                  * permanent table
                  */
@@ -216,6 +224,8 @@ router.post('/verifyAccount', (req, res, next) => {
                         console.log("deleted someone");
                     }
                 });
+                    }
+                }
             });
         } else {
             console.log("Dodgy input");

@@ -23,6 +23,13 @@ var usersSchema = new Schema({
         type: String,
         default: null
     },
+    githubID: {
+        type: String,
+        defualt: null
+    },
+    profilePicture: {
+        type: String
+    },
     accessToken: String
 });
 

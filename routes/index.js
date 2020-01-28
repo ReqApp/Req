@@ -40,10 +40,6 @@ router.post('/getTime', (req, res, next) => {
     res.json({ "Current time": currDate });
 });
 
-router.get('/profile', (req, res, next) => {
-    res.send('Hello: ');
-});
-
 router.get('/articleBetFeed', (req, res, next) => {
     res.render('articleBets');
 });
@@ -96,11 +92,10 @@ router.post('/createArticleBet', (req, res, next) => {
             "body": "invalid request"
         });
     }
-});
 
-// all o auth
-// new betting idea in concrete
-// MORE docs
+});
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJDYXRoYWwgTydDYWxsYWdoYW4iLCJpYXQiOjE1ODAyMjAzNjIsImV4cCI6MTU4MDQ3OTU2Mn0.kUzSxgKIiF5gD-Ep3Uu-krjcN1iH-kwFVs3WjKuvw8o
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJDYXRoYWwgTydDYWxsYWdoYW4iLCJpYXQiOjE1ODAyMjAzNjIsImV4cCI6MTU4MDQ3OTU2Mn0.kUzSxgKIiF5gD-Ep3Uu-krjcN1iH-kwFVs3WjKuvw8o
 
 function verifyJwt(jwtString) {
     let val = jwt.verify(jwtString, creds.jwtSecret);
