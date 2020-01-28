@@ -1,42 +1,82 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "version": "1.0.0",
-        "title": "Req Documentation",
-        "description": "REST API documentation for Req Project"
-    },
-    "schemes": [
-        "https"
-    ],
-    "host": "localhost",
-    "basePath": "/api-docs",
-    "paths": {
-        "/persons": {
-            "get": {
-                "summary": "Gets some persons",
-                "description": "Returns a list containing all persons.",
-                "responses": {
-                    "200": {
-                        "description": "A list of Person",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "properties": {
-                                    "firstName": {
-                                        "type": "string"
-                                    },
-                                    "lastName": {
-                                        "type": "string"
-                                    },
-                                    "username": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Req Documentation",
+    "description": "REST API documentation for Req Project"
+  },
+  "schemes": [
+    "https"
+  ],
+  "host": "localhost",
+  "basePath": "/",
+  "paths": {
+    "/getBets": {
+      "get": {
+        "summary": "Returns available bets",
+        "tags": [
+          "Betting APIs"
+        ],
+        "description": "Calculates distance between user and bet centre. If distance is less than or equal to bet radius the bet is sent back",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "latitude",
+            "type": "number",
+            "description": "User's latitude"
+          },
+          {
+            "in": "query",
+            "name": "longitude",
+            "type": "number",
+            "description": "User's latitude"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of bet objects",
+            "schema": {
+              "type": "array",
+              "items": {
+                "properties": {
+                  "_id": {
+                    "type": "object"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "location_Name": {
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "type": "number"
+                  },
+                  "longitude": {
+                    "type": "number"
+                  },
+                  "radius": {
+                    "type": "number"
+                  }
                 }
+              }
             }
+          }
         }
+      }
+    },
+    "/createBet": {
+      "post": {
+        "summary": "Adds new bet to database",
+        "tags": [
+          "Betting APIs"
+        ],
+        "description": "Takes new bet and adds it to betting database",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
+  }
 }

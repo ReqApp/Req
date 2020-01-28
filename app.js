@@ -10,6 +10,7 @@ var usersRouter = require('./routes/users');
 // Swagger
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
+// In-file documentation
 const swaggerJSDoc = require('swagger-jsdoc');
 const options = {
   // List of files to be processed.
