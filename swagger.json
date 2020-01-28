@@ -1,0 +1,42 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Req Documentation",
+        "description": "REST API documentation for Req Project"
+    },
+    "schemes": [
+        "https"
+    ],
+    "host": "localhost",
+    "basePath": "/api-docs",
+    "paths": {
+        "/persons": {
+            "get": {
+                "summary": "Gets some persons",
+                "description": "Returns a list containing all persons.",
+                "responses": {
+                    "200": {
+                        "description": "A list of Person",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "properties": {
+                                    "firstName": {
+                                        "type": "string"
+                                    },
+                                    "lastName": {
+                                        "type": "string"
+                                    },
+                                    "username": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

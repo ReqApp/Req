@@ -7,6 +7,25 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+// Swagger
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
+const swaggerJSDoc = require('swagger-jsdoc');
+const options = {
+  // List of files to be processed.
+  apis: ['./routes/*.js'],
+  basePath: '/',
+  swaggerDefinition: {
+    info: {
+      description: 'Req REST API Documentation',
+      swagger: '2.0',
+      title: 'Req Documentation',
+      version: '1.0.0',
+    },
+  },
+};
+const swaggerSpec = swaggerJSDoc(options);
+
 var app = express();
 
 // view engine setup
@@ -21,6 +40,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+// Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
