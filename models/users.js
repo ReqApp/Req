@@ -11,7 +11,7 @@ var usersSchema = new Schema({
         maxlength: 32
     },
     email: {
-        type:String,
+        type: String,
         minlength: 5,
         maxlength: 64
     },
@@ -26,6 +26,10 @@ var usersSchema = new Schema({
     githubID: {
         type: String,
         defualt: null
+    },
+    steamID: {
+        type: String,
+        default: null
     },
     profilePicture: {
         type: String
