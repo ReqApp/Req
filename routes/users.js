@@ -1,13 +1,13 @@
-var express = require('express');
-var router = express.Router();
-var User = require('../models/users');
-var UnverifiedUser = require('../models/unverifiedUsers');
 var forgotPasswordUser = require('../models/forgotPasswordUsers');
-var jwt = require('jsonwebtoken');
+var UnverifiedUser = require('../models/unverifiedUsers');
 var randomstring = require("randomstring");
-var util = require('util');
+var User = require('../models/users');
 const passport = require("passport");
 const creds = require("../models/credentials");
+var jwt = require('jsonwebtoken');
+var express = require('express');
+var router = express.Router();
+var util = require('util');
 
 
 /* GET users listing. */
@@ -24,6 +24,14 @@ router.get('/verifyAccount', (req, res, next) => {
     res.render('verifyAccount');
 });
 
+router.get('/check', (req, res, next) => {
+    if (req.cookies.Authorization) {
+        let jwtString = req.cookies.Authorization.split(' ');
+        let profile = verifyJwt(jwtString[1]);
+        console.log(profile);
+    }
+});
+
 router.get('/forgotPassword', (req, res, next) => {
     res.render('forgotPassword');
 });
@@ -32,15 +40,21 @@ router.get('/auth/google', passport.authenticate('google', {
     scope: ['profile']
 }));
 
-router.get('/auth/google/callback', (req, res, next) => {
-    res.send("reached callback url");
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJlYXRFR0dTIiwiaWF0IjoxNTc5NDUyMDk2LCJleHAiOjE1Nzk3MTEyOTZ9._diuSd7WBPrpTNHrf9_syNQ5EA-9wYVCMXG2SakpzJw
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJDYXRoYWwgTydDYWxsYWdoYW4iLCJpYXQiOjE1ODAxNjg3MDQsImV4cCI6MTU4MDQyNzkwNH0.bbK1ex_Ygx-lpzJ16UIYovXsN-BWGZ0wN02yJH8fa4Y
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJDYXRoYWwgTydDYWxsYWdoYW4iLCJpYXQiOjE1ODAxNjg5NDMsImV4cCI6MTU4MDQyODE0M30.Eez20QrbQ8OQZ4hmFA3GqIq_5p3pX4cWQOAmco5QQqo
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJDYXRoYWwgTydDYWxsYWdoYW4iLCJpYXQiOjE1ODAxNjg5NDMsImV4cCI6MTU4MDQyODE0M30.Eez20QrbQ8OQZ4hmFA3GqIq_5p3pX4cWQOAmco5QQqo
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJDYXRoYWwgTydDYWxsYWdoYW4iLCJpYXQiOjE1ODAxNjkwNzEsImV4cCI6MTU4MDQyODI3MX0.YpwXMXOcm0JsRsVD_JKRjIJpI6neNtqGWoKowSB-h88
+
+
+router.get('/auth/google/callback', passport.authenticate('google'), (req, res, next) => {
+    console.log("in callback: " + req.user);
+    // res.send("reached callback url");
+    res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
+    res.render('index', { title: req.user_name });
 });
 
-router.post('/createOAuthAccount', (req, res, next) => {
-    console.log(`In router: ${req.config.data}`);
-}); 
-
-router.post('/register', (req, res, next) => {2
+router.post('/register', (req, res, next) => {
     /**
      * Handles post requests from register page
      */
@@ -108,41 +122,40 @@ router.post('/register', (req, res, next) => {2
 
                     checkIfExisting(username, "unverified").then((data) => {
                         if (data) {
-/**
-                     * instead we are going to want to send an email with a code to verifiy an email address
-                     *  then call another function to make the account
-                     */
-                    const loginCode = randomstring.generate(6);
-                    /**
-                     * Exec the python script to send the login code to the user
-                     */
-                    
-                    sendEmail(email, `Activate your account ${data}`, loginCode.toString()).then(() => {
-                    }, (err) => {
-                        console.log(err);
-                    });
-4
-                    /**
-                     * Add entry in unverified user table
-                     */
-                    let newUser = new UnverifiedUser();
-                    newUser.user_name = username;
-                    newUser.email = email;
-                    newUser.password = newUser.generateHash(password);
-                    newUser.activationCode = loginCode;
+                            /**
+                             * instead we are going to want to send an email with a code to verifiy an email address
+                             *  then call another function to make the account
+                             */
+                            const loginCode = randomstring.generate(6);
+                            /**
+                             * Exec the python script to send the login code to the user
+                             */
 
-                    newUser.save((err, user) => {
-                        if (err) {
-                            throw err;
-                        }
-                    });
+                            sendEmail(email, `Activate your account ${data}`, loginCode.toString()).then(() => {}, (err) => {
+                                console.log(err);
+                            });
+                            4
+                            /**
+                             * Add entry in unverified user table
+                             */
+                            let newUser = new UnverifiedUser();
+                            newUser.user_name = username;
+                            newUser.email = email;
+                            newUser.password = newUser.generateHash(password);
+                            newUser.activationCode = loginCode;
 
-                    res.status(200).json({
-                        "status": "information",
-                        "body": "success"
-                    });
+                            newUser.save((err, user) => {
+                                if (err) {
+                                    throw err;
+                                }
+                            });
 
-                    res.render('verifyAccount');
+                            res.status(200).json({
+                                "status": "information",
+                                "body": "success"
+                            });
+
+                            res.render('verifyAccount');
                         } else {
                             res.status(400).send({
                                 "status": "error",
@@ -260,62 +273,62 @@ router.post('/forgotPassword', (req, res, next) => {
 
             checkIfExisting(username, "forgotten").then((username) => {
                 // if resolved promise
-                  if (username) {
+                if (username) {
                     User.findOne({ "user_name": username }, (err, foundUser) => {
-                    if (err) {
-                        res.send(err);
-                    }
-                    if (foundUser) {
-                        let newUser = new forgotPasswordUser();
+                        if (err) {
+                            res.send(err);
+                        }
+                        if (foundUser) {
+                            let newUser = new forgotPasswordUser();
 
-                        newUser.user_name = foundUser.user_name;
-                        newUser.email = foundUser.email;
-                        const resetUrlString = randomstring.generate(10);
-                        newUser.resetCode = resetUrlString;
-                        // TODO this is a temp localhost fix
-                        newUser.resetUrl = `http://localhost:8673/users/forgotPassword?from=${resetUrlString}`;
-                        newUser.save((err, user) => {
-                            if (err) {
-                                throw err;
-                            }
-                        });
-
-                        // const spawn = require("child_process").spawn;
-                        // const pythonProcess = spawn('python3', ["emailService/sendEmail.py", foundUser.email, `Update your password ${foundUser.user_name}`, `${newUser.resetUrl}`]);
-                        // pythonProcess.stdout.on('data', (data) => {
-                        //     console.log(data.toString());
-                        // });
-
-                        sendEmail(foundUser.email, `Update your password ${foundUser.user_name}`, newUser.resetUrl).then(() => {
-                            res.status(200).send({
-                                "status": "information",
-                                "body": `Password reset email sent`
+                            newUser.user_name = foundUser.user_name;
+                            newUser.email = foundUser.email;
+                            const resetUrlString = randomstring.generate(10);
+                            newUser.resetCode = resetUrlString;
+                            // TODO this is a temp localhost fix
+                            newUser.resetUrl = `http://localhost:8673/users/forgotPassword?from=${resetUrlString}`;
+                            newUser.save((err, user) => {
+                                if (err) {
+                                    throw err;
+                                }
                             });
-                        }, (err) => {
-                            console.log(err);
-                        });
-                    } else {
-                        res.status(400).send({
-                            "status": "error",
-                            "body": "Check your email"
-                        });
-                    }
 
-                });
+                            // const spawn = require("child_process").spawn;
+                            // const pythonProcess = spawn('python3', ["emailService/sendEmail.py", foundUser.email, `Update your password ${foundUser.user_name}`, `${newUser.resetUrl}`]);
+                            // pythonProcess.stdout.on('data', (data) => {
+                            //     console.log(data.toString());
+                            // });
 
-            } else {
-                console.log("was existing already");
-                res.status(400).send({
-                    "status": "error",
-                    "body": "Check your email"
-                });
-            }
+                            sendEmail(foundUser.email, `Update your password ${foundUser.user_name}`, newUser.resetUrl).then(() => {
+                                res.status(200).send({
+                                    "status": "information",
+                                    "body": `Password reset email sent`
+                                });
+                            }, (err) => {
+                                console.log(err);
+                            });
+                        } else {
+                            res.status(400).send({
+                                "status": "error",
+                                "body": "Check your email"
+                            });
+                        }
+
+                    });
+
+                } else {
+                    console.log("was existing already");
+                    res.status(400).send({
+                        "status": "error",
+                        "body": "Check your email"
+                    });
+                }
             }, (err) => {
                 // if rejected promise
                 console.log(`BAD RESULT: ${err}`);
             });
 
-          
+
         }
     } else {
         res.status(400).send({
@@ -373,7 +386,7 @@ function createJwt(profile) {
 function checkIfExisting(username, type) {
     if (type === "forgotten") {
         // if there is a forgotten email entry already existing (a link)
-        return new Promise(function(resolve, reject) { 
+        return new Promise(function(resolve, reject) {
             forgotPasswordUser.findOne({ "user_name": username }, (err, foundUser) => {
                 if (err) {
                     reject(Error(err))
@@ -390,7 +403,7 @@ function checkIfExisting(username, type) {
         });
     } else if (type === "unverified") {
         // if there is a forgotten email entry already existing (a link)
-        return new Promise(function(resolve, reject) { 
+        return new Promise(function(resolve, reject) {
             UnverifiedUser.findOne({ "user_name": username }, (err, foundUser) => {
                 if (err) {
                     reject(Error(err))
@@ -444,6 +457,33 @@ function sendEmail(email, subject, body) {
     });
 }
 
+function forgotPasswordExists(fromUrl) {
+    forgotPasswordUser.findOne({ resetUrl: req.body.fromUrl }, (err, foundUser) => {
+        if (err) {
+            res.send(err);
+        }
+        if (foundUser) {
+            resolve(foundUser.email)
+                // resetPassword(foundUser.email, req.body.newPassword).then((username) => {
+                //     forgotPasswordUser.deleteOne({ "user_name": username }, (err) => {
+                //         if (err) {
+                //             res.send(err);
+                //         } else {
+                //             console.log("Deleted from forgotten table");
+                //             res.status(200).send({
+                //                 "status": "error",
+                //                 "body": "Invalid input"
+                //             });
+                //         }
+                //     });
+                // }, (err) => {
+                //     console.log(err);
+                // });
+
+        }
+    });
+}
+
 function validateInput(input, type) {
     /**
      * Validate the password and usernames kind of
@@ -461,6 +501,11 @@ function validateInput(input, type) {
             return false;
         }
     }
+}
+
+function verifyJwt(jwtString) {
+    let val = jwt.verify(jwtString, 'fgjhidWSGHDSbgnkjsmashthegaffteasandcoffee');
+    return val;
 }
 
 module.exports = router;

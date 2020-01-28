@@ -8,34 +8,23 @@ passport.use(new GoogleStrategy({
     clientSecret: creds.googleClientSecret,
     callbackURL: "/auth/google/callback"
 }, (accessToken, refreshToken, profile, done) => {
-    console.log(profile);
+    // console.log(profile);
 
-    checkIfExisting(profile.id).then((output) => {
-        if (output) {
-            let newUser = new User();
-            newUser.user_name = profile.displayName;
-            newUser.googleID = profile.id;
-        
-            newUser.save((err) => {
-                if (err) {
-                    throw new err;
-                }
+    User.findOne({ googleID: profile.id }).then((currentUser) => {
+        if (currentUser) {
+            // already have this user
+            console.log('user is: ', currentUser);
+            done(null, currentUser);
+        } else {
+            // if not, create user in our db
+            new User({
+                googleID: profile.id,
+                user_name: profile.displayName,
+                accessToken: createJwt({ user_name: profile.displayName })
+            }).save().then((newUser) => {
+                console.log('created new user: ', newUser);
+                done(null, newUser);
             });
-            /**
-             * MUST BE CHANGED BEFORE RELEASE
-             */
-            axios.post('http://localhost:8673/users/createOAuthAccount', {
-                displayName: newUser.user_name,
-                googleID: newUser.googleID
-              }).then(function (response) {
-                console.log(response);
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-
         }
-
-        done();
     });
 }));
