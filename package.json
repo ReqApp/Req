@@ -13,6 +13,7 @@
     "express": "^4.16.4",
     "hbs": "^4.1.0",
     "http-errors": "^1.6.3",
+    "js-sha3": "^0.8.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.8.7",
     "morgan": "^1.9.1",

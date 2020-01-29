@@ -3,8 +3,6 @@ var router = express.Router();
 var jwt = require('jsonwebtoken');
 const passport = require("passport");
 const creds = require("../models/credentials");
-
-
 var articleBet = require('../models/articleBets');
 
 /* GET home page. */
