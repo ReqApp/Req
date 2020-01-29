@@ -3,7 +3,6 @@ var UnverifiedUser = require('../models/unverifiedUsers');
 var randomstring = require("randomstring");
 var User = require('../models/users');
 const passport = require("passport");
-const creds = require("../models/credentials");
 var jwt = require('jsonwebtoken');
 var express = require('express');
 var router = express.Router();
@@ -403,7 +402,7 @@ router.post('/resetPassword', (req, res, next) => {
 });
 
 function createJwt(profile) {
-    return jwt.sign(profile, creds.jwtSecret, {
+    return jwt.sign(profile, process.env.JWTSECRET, {
         expiresIn: "3d"
     });
 };
@@ -502,7 +501,7 @@ function validateInput(input, type) {
 }
 
 function verifyJwt(jwtString) {
-    let val = jwt.verify(jwtString, creds.jwtSecret);
+    let val = jwt.verify(jwtString, process.env.JWTSECRET);
     return val;
 }
 

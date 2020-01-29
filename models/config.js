@@ -3,7 +3,6 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const GitHubStrategy = require('passport-github').Strategy;
 const SteamStrategy = require('passport-steam').Strategy;
 const User = require('../models/users');
-const creds = require("../models/credentials");
 const jwt = require('jsonwebtoken');
 
 passport.serializeUser((user, done) => {
@@ -17,14 +16,14 @@ passport.deserializeUser((id, done) => {
 });
 
 function createJwt(profile) {
-    return jwt.sign(profile, creds.jwtSecret, {
+    return jwt.sign(profile, process.env.JWTSECRET, {
         expiresIn: "3d"
     });
 };
 
 passport.use(new GoogleStrategy({
-    clientID: creds.googleClientID,
-    clientSecret: creds.googleClientSecret,
+    clientID: process.env.googleClientID,
+    clientSecret: process.env.googleClientSecret,
     callbackURL: "/users/auth/google/callback"
 }, (accessToken, refreshToken, profile, done) => {
     // console.log(profile._json.picture);
@@ -50,8 +49,8 @@ passport.use(new GoogleStrategy({
 }));
 
 passport.use(new GitHubStrategy({
-        clientID: creds.githubClientID,
-        clientSecret: creds.githubClientSecret,
+        clientID: process.env.githubClientID,
+        clientSecret: process.env.githubClientSecret,
         callbackURL: "/users/auth/github/callback"
     },
     function(accessToken, refreshToken, profile, cb) {
@@ -80,7 +79,7 @@ passport.use(new GitHubStrategy({
 passport.use(new SteamStrategy({
         returnURL: 'http://localhost:8673/users/auth/steam/callback',
         realm: 'http://localhost:8673',
-        apiKey: creds.steamAPIKey
+        apiKey: process.env.steamAPIKey
     },
     function(identifier, profile, done) {
         console.log(profile._json.steamid);

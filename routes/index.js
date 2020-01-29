@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
 const passport = require("passport");
-const creds = require("../models/credentials");
 var articleBet = require('../models/articleBets');
 
 /* GET home page. */
@@ -96,7 +95,7 @@ router.post('/createArticleBet', (req, res, next) => {
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJDYXRoYWwgTydDYWxsYWdoYW4iLCJpYXQiOjE1ODAyMjAzNjIsImV4cCI6MTU4MDQ3OTU2Mn0.kUzSxgKIiF5gD-Ep3Uu-krjcN1iH-kwFVs3WjKuvw8o
 
 function verifyJwt(jwtString) {
-    let val = jwt.verify(jwtString, creds.jwtSecret);
+    let val = jwt.verify(jwtString, process.env.JWTSECRET);
     return val;
 }
 
