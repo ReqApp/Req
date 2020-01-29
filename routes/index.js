@@ -20,14 +20,6 @@ router.get('/home', (req, res, next) => {
     }
 })
 
-router.get('/testing', (req, res, next) => {
-    res.json({ status: "success", message: "Welcome To Testing API" });
-});
-
-router.get('/tester', (req, res, next) => {
-    res.json({ status: "success", message: "Welcome To Testing API" });
-});
-
 router.get('/exampleBet', (req, res, next) => {
     res.render('exampleBet');
 });
@@ -40,10 +32,10 @@ router.get('/findBets', function(req, res, next) {
     res.render('find_bets', { title: 'FindBets' });
 });
 
-router.post('/getTime', (req, res, next) => {
+router.get('/getTime', (req, res, next) => {
     const date = new Date();
     const currDate = date.getTime();
-    res.json({ "Current time": currDate });
+    res.json({ "currentTime": currDate });
 });
 
 router.get('/articleBetFeed', (req, res, next) => {

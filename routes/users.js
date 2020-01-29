@@ -1,11 +1,9 @@
 var forgotPasswordUser = require('../models/forgotPasswordUsers');
 var UnverifiedUser = require('../models/unverifiedUsers');
-const keccak512 = require('js-sha3').keccak512;
 var randomstring = require("randomstring");
 var User = require('../models/users');
 const passport = require("passport");
 const creds = require("../models/credentials");
-const axios = require('axios');
 var jwt = require('jsonwebtoken');
 var express = require('express');
 var router = express.Router();
@@ -24,6 +22,10 @@ router.get('/register', (req, res, next) => {
 
 router.get('/verifyAccount', (req, res, next) => {
     res.render('verifyAccount');
+});
+
+router.get('/testing', (req, res, next) => {
+    res.json({ status: "success", message: "Welcome To Testing API" });
 });
 
 router.get('/profile', (req, res, next) => {
@@ -125,19 +127,7 @@ router.post('/register', (req, res, next) => {
         /**
          * If no input has been invalid, continue
          */
-
-        isPasswordCompromised(password).then((data) => {
-            if (data) {
-                console.log("is compromised");
-                res.status(401).json({
-                    "status":"error",
-                    "body":"Your password was found in leaked databases, please change it"
-                }); 
-            } else {
-                console.log("is not compromised no err");
-            }
-        }, (err) => {
-            console.log("not compromised");
+        if (run) {
             User.findOne({ "user_name": username }, (err, foundUser) => {
                 if (err) {
                     res.send(err);
@@ -185,20 +175,21 @@ router.post('/register', (req, res, next) => {
                             } else {
                                 res.status(400).send({
                                     "status": "error",
-                                    "body": "Check your email"
+                                    "body": "Check your email for reset link"
                                 });
                             }
                         });
                     }
                 }
             });
-        });    
-        } else {
-            res.status(401).json({
-                "status": "error",
-                "body": "Invalid POST parameters"
-            });
+        }
+    } else {
+        res.status(401).json({
+            "status": "error",
+            "body": "Invalid POST parameters"
+        });
     }
+
 });
 
 router.post('/verifyAccount', (req, res, next) => {
@@ -292,6 +283,11 @@ router.post('/login', function(req, res, next) {
                 });
             }
         });
+    } else {
+        res.status(401).send({
+            "status": "error",
+            "body": "Invalid parameters"
+        });
     }
 });
 /**
@@ -335,17 +331,16 @@ router.post('/forgotPassword', (req, res, next) => {
                         } else {
                             res.status(400).send({
                                 "status": "error",
-                                "body": "Check your email"
+                                "body": "Check your email for reset link"
                             });
                         }
 
                     });
 
                 } else {
-                    console.log("was existing already");
                     res.status(400).send({
                         "status": "error",
-                        "body": "Check your email"
+                        "body": "Check your email for reset link"
                     });
                 }
             }, (err) => {
@@ -356,7 +351,7 @@ router.post('/forgotPassword', (req, res, next) => {
 
         }
     } else {
-        res.status(400).send({
+        res.status(401).send({
             "status": "error",
             "body": "Invalid input"
         });
@@ -392,10 +387,15 @@ router.post('/resetPassword', (req, res, next) => {
                 }
             });
 
+        } else {
+            res.status(401).send({
+                "status": "error",
+                "body": "Invalid input"
+            });
         }
 
     } else {
-        res.status(400).send({
+        res.status(401).send({
             "status": "error",
             "body": "Invalid input"
         });
@@ -471,7 +471,7 @@ function resetPassword(email, newPassword) {
 function sendEmail(email, subject, body) {
     return new Promise((resolve, reject) => {
         const spawn = require("child_process").spawn;
-        const pythonProcess = spawn('python3', ["emailService/sendEmail.py", email, subject, body]);
+        const pythonProcess = spawn('python', ["emailService/sendEmail.py", email, subject, body]);
         pythonProcess.stdout.on('data', (data) => {
             console.log(data.toString());
             resolve()
@@ -499,26 +499,6 @@ function validateInput(input, type) {
             return false;
         }
     }
-}
-
-function isPasswordCompromised(input) {
-    return new Promise((resolve, reject) => {
-        const hashed = keccak512(input);
-
-        console.log(`https://passwords.xposedornot.com/api/v1/pass/anon/${hashed.slice(0,10)}`);
-        // resolve("yes");
-
-        axios.get(`https://passwords.xposedornot.com/api/v1/pass/anon/${hashed.slice(0,10)}`).then((data) => {
-            if (data.Error) {
-                resolve(null);
-            } else {
-                resolve(true);
-            }
-            
-        }).catch(((err) => {
-            reject(null);
-        }));
-    });
 }
 
 function verifyJwt(jwtString) {
