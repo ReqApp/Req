@@ -20,6 +20,14 @@ router.get('/home', (req, res, next) => {
     }
 })
 
+router.get('/testing', (req, res, next) => {
+    res.json({ status: "success", message: "Welcome To Testing API" });
+});
+
+router.get('/tester', (req, res, next) => {
+    res.json({ status: "success", message: "Welcome To Testing API" });
+});
+
 router.get('/exampleBet', (req, res, next) => {
     res.render('exampleBet');
 });
