@@ -1,32 +1,32 @@
 {
-  "name": "reqapp",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "start": "node ./bin/www",
-    "test": "mocha"
-  },
-  "dependencies": {
-    "axios": "^0.19.2",
-    "bcrypt-nodejs": "0.0.3",
-    "chai": "^4.2.0",
-    "chai-http": "^4.3.0",
-    "cookie-parser": "^1.4.4",
-    "debug": "^2.6.9",
-    "dotenv": "^8.2.0",
-    "express": "^4.16.4",
-    "hbs": "^4.1.0",
-    "http-errors": "^1.6.3",
-    "js-sha3": "^0.8.0",
-    "jsonwebtoken": "^8.5.1",
-    "mocha": "^7.0.1",
-    "mongoose": "^5.8.7",
-    "morgan": "^1.9.1",
-    "passport": "^0.4.1",
-    "passport-github": "^1.1.0",
-    "passport-google-oauth20": "^2.0.0",
-    "passport-steam": "^1.0.12",
-    "randomstring": "^1.1.5"
-  },
-  "devDependencies": {}
+    "name": "reqapp",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "start": "node ./bin/www",
+        "test": "mocha --exit"
+    },
+    "dependencies": {
+        "axios": "^0.19.2",
+        "bcrypt-nodejs": "0.0.3",
+        "chai": "^4.2.0",
+        "chai-http": "^4.3.0",
+        "cookie-parser": "^1.4.4",
+        "debug": "^2.6.9",
+        "dotenv": "^8.2.0",
+        "express": "^4.16.4",
+        "hbs": "^4.1.0",
+        "http-errors": "^1.6.3",
+        "js-sha3": "^0.8.0",
+        "jsonwebtoken": "^8.5.1",
+        "mocha": "^7.0.1",
+        "mongoose": "^5.8.7",
+        "morgan": "^1.9.1",
+        "passport": "^0.4.1",
+        "passport-github": "^1.1.0",
+        "passport-google-oauth20": "^2.0.0",
+        "passport-steam": "^1.0.12",
+        "randomstring": "^1.1.5"
+    },
+    "devDependencies": {}
 }
