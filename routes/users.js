@@ -129,65 +129,74 @@ router.post('/register', (req, res, next) => {
             });
             run = false;
         }
-        /**
-         * If no input has been invalid, continue
-         */
-        if (run) {
-            User.findOne({ "user_name": username }, (err, foundUser) => {
-                if (err) {
-                    res.send(err);
-                } else {
-                    if (foundUser) {
-                        console.log("username already here")
-                            // res.status(401).json({
-                            //     "status": "information",
-                            //     "body": "Username or email address already in use"
-                            // });
+        isPasswordCompromised(password).then((data) => {
+            console.log(`The data: ${data}`);
+            if (data) {
+                console.log("is compromised");
+                res.status(401).json({
+                    "status": "error",
+                    "body": "Your password was found in leaked databases, please change it"
+                });
+            }
+        }, (err) => {
+            console.log("not compromised");
+            if (run) {
+                User.findOne({ "user_name": username }, (err, foundUser) => {
+                    if (err) {
+                        res.send(err);
                     } else {
+                        if (foundUser) {
+                            console.log("username already here")
+                                // res.status(401).json({
+                                //     "status": "information",
+                                //     "body": "Username or email address already in use"
+                                // });
+                        } else {
 
-                        checkIfExisting(username, "unverified").then((data) => {
-                            if (data) {
-                                /**
-                                 * instead we are going to want to send an email with a code to verifiy an email address
-                                 *  then call another function to make the account
-                                 */
-                                const loginCode = randomstring.generate(6);
-                                /**
-                                 * Exec the python script to send the login code to the user
-                                 */
+                            checkIfExisting(username, "unverified").then((data) => {
+                                if (data) {
+                                    /**
+                                     * instead we are going to want to send an email with a code to verifiy an email address
+                                     *  then call another function to make the account
+                                     */
+                                    const loginCode = randomstring.generate(6);
+                                    /**
+                                     * Exec the python script to send the login code to the user
+                                     */
 
-                                sendEmail(email, `Activate your account ${data}`, loginCode.toString()).then(() => {}, (err) => {
-                                    console.log(err);
-                                });
-                                /**
-                                 * Add entry in unverified user table
-                                 */
-                                let newUser = new UnverifiedUser();
-                                newUser.user_name = username;
-                                newUser.email = email;
-                                newUser.password = newUser.generateHash(password);
-                                newUser.activationCode = loginCode;
+                                    sendEmail(email, `Activate your account ${data}`, loginCode.toString()).then(() => {}, (err) => {
+                                        console.log(err);
+                                    });
+                                    /**
+                                     * Add entry in unverified user table
+                                     */
+                                    let newUser = new UnverifiedUser();
+                                    newUser.user_name = username;
+                                    newUser.email = email;
+                                    newUser.password = newUser.generateHash(password);
+                                    newUser.activationCode = loginCode;
 
-                                newUser.save((err, user) => {
-                                    if (err) {
-                                        throw err;
-                                    }
-                                });
+                                    newUser.save((err, user) => {
+                                        if (err) {
+                                            throw err;
+                                        }
+                                    });
 
-                                // res.render('verifyAccount');
-                                // res.redirect('verifyAccount');
-                                res.status(200).send({ "status": "success" });
-                            } else {
-                                res.status(400).send({
-                                    "status": "error",
-                                    "body": "Check your email for reset link"
-                                });
-                            }
-                        });
+                                    // res.render('verifyAccount');
+                                    // res.redirect('verifyAccount');
+                                    res.status(200).send({ "status": "success" });
+                                } else {
+                                    res.status(400).send({
+                                        "status": "error",
+                                        "body": "Check your email for reset link"
+                                    });
+                                }
+                            });
+                        }
                     }
-                }
-            });
-        }
+                });
+            }
+        });
     } else {
         res.status(401).json({
             "status": "error",
@@ -306,7 +315,7 @@ router.post('/login', function(req, res, next) {
  */
 
 router.post('/forgotPassword', (req, res, next) => {
-    if (req.body.user_name)  {
+    if (req.body.user_name) {
         if (validateInput(req.body.user_name, "username")) {
             const username = req.body.user_name;
 
@@ -380,7 +389,7 @@ router.post('/resetPassword', (req, res, next) => {
                         res.send(err);
                     }
                     if (foundUser) {
-    
+
                         resetPassword(foundUser.email, req.body.newPassword).then((username) => {
                             forgotPasswordUser.deleteOne({ "user_name": username }, (err) => {
                                 if (err) {
@@ -396,10 +405,10 @@ router.post('/resetPassword', (req, res, next) => {
                         }, (err) => {
                             console.log(err);
                         });
-    
+
                     }
                 });
-    
+
             } else {
                 res.status(401).send({
                     "status": "error",
@@ -448,10 +457,8 @@ function checkIfExisting(username, type) {
                     reject(Error(err))
                 } else {
                     if (foundUser) {
-                        console.log(`found`);
                         resolve(null);
                     } else {
-                        console.log(`not found`);
                         resolve(username);
                     }
                 }
@@ -485,7 +492,7 @@ function resetPassword(email, newPassword) {
 function sendEmail(email, subject, body) {
     return new Promise((resolve, reject) => {
         const spawn = require("child_process").spawn;
-        const pythonProcess = spawn('python3', ["emailService/sendEmail.py", email, subject, body]);
+        const pythonProcess = spawn('python', ["emailService/sendEmail.py", email, subject, body]);
         pythonProcess.stdout.on('data', (data) => {
             console.log(data.toString());
             resolve()
@@ -508,7 +515,7 @@ function validateInput(input, type) {
         } else {
             return false;
         }
-    } else if (type == "username"){
+    } else if (type == "username") {
         if (input.length < 32 && input.length > 0) {
             return true;
         } else {
@@ -522,6 +529,26 @@ function validateInput(input, type) {
         }
     }
 }
+
+function isPasswordCompromised(input) {
+    return new Promise((resolve, reject) => {
+        const hashed = keccak512(input);
+
+        console.log(`https://passwords.xposedornot.com/api/v1/pass/anon/${hashed.slice(0,10)}`);
+
+        axios.get(`https://passwords.xposedornot.com/api/v1/pass/anon/${hashed.slice(0,10)}`).then((data) => {
+            if (data.Error) {
+                resolve(null);
+            } else {
+                resolve(true);
+            }
+
+        }).catch(((err) => {
+            reject(null);
+        }));
+    });
+}
+
 
 function verifyJwt(jwtString) {
     let val = jwt.verify(jwtString, process.env.JWTSECRET);
