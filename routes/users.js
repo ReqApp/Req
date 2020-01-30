@@ -1,10 +1,12 @@
 var forgotPasswordUser = require('../models/forgotPasswordUsers');
 var UnverifiedUser = require('../models/unverifiedUsers');
+const keccak512 = require('js-sha3').keccak512;
 var randomstring = require("randomstring");
 var User = require('../models/users');
 const passport = require("passport");
 var jwt = require('jsonwebtoken');
 var express = require('express');
+const axios = require("axios");
 var router = express.Router();
 var util = require('util');
 
@@ -129,17 +131,16 @@ router.post('/register', (req, res, next) => {
             });
             run = false;
         }
+
+
         isPasswordCompromised(password).then((data) => {
-            console.log(`The data: ${data}`);
             if (data) {
-                console.log("is compromised");
                 res.status(401).json({
                     "status": "error",
                     "body": "Your password was found in leaked databases, please change it"
                 });
             }
         }, (err) => {
-            console.log("not compromised");
             if (run) {
                 User.findOne({ "user_name": username }, (err, foundUser) => {
                     if (err) {
@@ -164,27 +165,28 @@ router.post('/register', (req, res, next) => {
                                      * Exec the python script to send the login code to the user
                                      */
 
-                                    sendEmail(email, `Activate your account ${data}`, loginCode.toString()).then(() => {}, (err) => {
+                                    sendEmail(email, `Activate your account ${data}`, loginCode.toString()).then(() => {
+                                        /**
+                                         * Add entry in unverified user table
+                                         */
+                                        let newUser = new UnverifiedUser();
+                                        newUser.user_name = username;
+                                        newUser.email = email;
+                                        newUser.password = newUser.generateHash(password);
+                                        newUser.activationCode = loginCode;
+
+                                        newUser.save((err, user) => {
+                                            if (err) {
+                                                throw err;
+                                            }
+                                        });
+
+                                        // res.render('verifyAccount');
+                                        // res.redirect('verifyAccount');
+                                        res.status(200).send({ "status": "success" });
+                                    }, (err) => {
                                         console.log(err);
                                     });
-                                    /**
-                                     * Add entry in unverified user table
-                                     */
-                                    let newUser = new UnverifiedUser();
-                                    newUser.user_name = username;
-                                    newUser.email = email;
-                                    newUser.password = newUser.generateHash(password);
-                                    newUser.activationCode = loginCode;
-
-                                    newUser.save((err, user) => {
-                                        if (err) {
-                                            throw err;
-                                        }
-                                    });
-
-                                    // res.render('verifyAccount');
-                                    // res.redirect('verifyAccount');
-                                    res.status(200).send({ "status": "success" });
                                 } else {
                                     res.status(400).send({
                                         "status": "error",
@@ -390,20 +392,31 @@ router.post('/resetPassword', (req, res, next) => {
                     }
                     if (foundUser) {
 
-                        resetPassword(foundUser.email, req.body.newPassword).then((username) => {
-                            forgotPasswordUser.deleteOne({ "user_name": username }, (err) => {
-                                if (err) {
-                                    res.send(err);
-                                } else {
-                                    console.log("Deleted from forgotten table");
-                                    res.status(200).send({
-                                        "status": "error",
-                                        "body": "Invalid input"
-                                    });
-                                }
-                            });
+                        isPasswordCompromised(req.body.newPassword).then((data) => {
+                            if (data) {
+                                console.log("compromised password");
+                                res.status(401).json({
+                                    "status": "error",
+                                    "body": "Your password was found in leaked databases, please change it"
+                                });
+                            }
                         }, (err) => {
-                            console.log(err);
+                            console.log("non compromised password");
+                            resetPassword(foundUser.email, req.body.newPassword).then((username) => {
+                                forgotPasswordUser.deleteOne({ "user_name": username }, (err) => {
+                                    if (err) {
+                                        res.send(err);
+                                    } else {
+                                        console.log("Deleted from forgotten table");
+                                        res.status(200).send({
+                                            "status": "error",
+                                            "body": "Invalid input"
+                                        });
+                                    }
+                                });
+                            }, (err) => {
+                                console.log(err);
+                            });
                         });
 
                     }
@@ -492,7 +505,7 @@ function resetPassword(email, newPassword) {
 function sendEmail(email, subject, body) {
     return new Promise((resolve, reject) => {
         const spawn = require("child_process").spawn;
-        const pythonProcess = spawn('python3', ["emailService/sendEmail.py", email, subject, body]);
+        const pythonProcess = spawn('python', ["emailService/sendEmail.py", email, subject, body]);
         pythonProcess.stdout.on('data', (data) => {
             console.log(data.toString());
             resolve()
@@ -533,16 +546,12 @@ function validateInput(input, type) {
 function isPasswordCompromised(input) {
     return new Promise((resolve, reject) => {
         const hashed = keccak512(input);
-
-        console.log(`https://passwords.xposedornot.com/api/v1/pass/anon/${hashed.slice(0,10)}`);
-
         axios.get(`https://passwords.xposedornot.com/api/v1/pass/anon/${hashed.slice(0,10)}`).then((data) => {
             if (data.Error) {
                 resolve(null);
             } else {
                 resolve(true);
             }
-
         }).catch(((err) => {
             reject(null);
         }));
