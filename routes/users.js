@@ -135,9 +135,15 @@ router.post('/register', (req, res, next) => {
 
         isPasswordCompromised(password).then((data) => {
             if (data) {
+
+                // Credit to https://github.com/EigerEx for this idea
+                const resArray = ["365online.com", "paypal.com", "wish.com", "https://onlinebanking.aib.ie/", "facebook.com", "gmail.com",
+                    "twitter.com", "stripe.com", "blackboard.nuigalway.ie", "instagram.com"
+                ];
+
                 res.status(401).json({
                     "status": "error",
-                    "body": "Your password was found in leaked databases, please change it"
+                    "body": `This password has been previously used on ${resArray[Math.floor(Math.random()*resArray.length)]}. This incident has been reported to an administrator`
                 });
             }
         }, (err) => {
@@ -383,14 +389,24 @@ router.post('/forgotPassword', (req, res, next) => {
 router.post('/resetPassword', (req, res, next) => {
     if (req.body.newPassword && req.body.fromUrl) {
 
+        console.log(req.body.newPassword, req.body.fromUrl);
+
         if (validateInput(req.body.fromUrl, "url")) {
+            console.log("url verified");
 
             if (validateInput(req.body.newPassword, "password")) {
+
+                console.log("pass verified");
                 forgotPasswordUser.findOne({ resetUrl: req.body.fromUrl }, (err, foundUser) => {
                     if (err) {
-                        res.send(err);
+                        // res.send(err);
+                        res.status(401).json({
+                            "status": "error",
+                            "body": err
+                        });
                     }
                     if (foundUser) {
+                        console.log(`found this: ${foundUser}`);
 
                         isPasswordCompromised(req.body.newPassword).then((data) => {
                             if (data) {
@@ -420,6 +436,11 @@ router.post('/resetPassword', (req, res, next) => {
                         });
 
                     }
+                    console.log("no matches");
+                    res.status(401).send({
+                        "status": "error",
+                        "body": "no matches"
+                    });
                 });
 
             } else {
