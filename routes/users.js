@@ -8,7 +8,6 @@ var express = require('express');
 var router = express.Router();
 var util = require('util');
 
-
 /* GET users listing. */
 router.get('/', function(req, res, next) {
     res.send('respond with a resource');
@@ -100,7 +99,7 @@ router.post('/register', (req, res, next) => {
          **  Check if username and password fits the bill before
          **  sending it onto mongo
          */
-        if (!(username === encodeURIComponent(username))) {
+        if (!(username === encodeURIComponent(username)) && run) {
             res.status(401).json({
                 "status": "error",
                 "body": "Username cannot contain those characters"
@@ -108,18 +107,25 @@ router.post('/register', (req, res, next) => {
             run = false;
         }
 
-        if (!validateInput(username, "username")) {
+        if (!validateInput(username, "username") && run) {
             res.status(401).json({
                 "status": "error",
                 "body": "Username must be between 1 and 32 characters long"
             });
             run = false;
         }
+        let test2 = conditions.some(el => password.includes(el));
 
-        if (!validateInput(password, "password")) {
+        if (!validateInput(password, "password") && test2 && run) {
             res.status(401).json({
                 "status": "error",
                 "body": "Password must be more than 8 characters in length"
+            });
+            run = false;
+        } else if (validateInput(password, "password") && test2 && run) {
+            res.status(401).json({
+                "status": "error",
+                "body": "Invalid characters in password"
             });
             run = false;
         }
@@ -238,10 +244,16 @@ router.post('/verifyAccount', (req, res, next) => {
                 }
             });
         } else {
-            console.log("Dodgy input");
+            res.status(401).send({
+                "status": "error",
+                "body": "Invalid input"
+            });
         }
     } else {
-        console.log("no activation code");
+        res.status(401).send({
+            "status": "error",
+            "body": "Invalid input"
+        });
     }
 
 });
@@ -294,7 +306,8 @@ router.post('/login', function(req, res, next) {
  */
 
 router.post('/forgotPassword', (req, res, next) => {
-    if (req.body.user_name) {
+    if (req.body.user_name)  {
+        console.log("forgot username with username inputted");
         if (validateInput(req.body.user_name, "username")) {
             const username = req.body.user_name;
 
@@ -350,6 +363,7 @@ router.post('/forgotPassword', (req, res, next) => {
 
         }
     } else {
+        console.log("forgot username no username inputted");
         res.status(401).send({
             "status": "error",
             "body": "Invalid input"
@@ -358,39 +372,42 @@ router.post('/forgotPassword', (req, res, next) => {
 });
 
 router.post('/resetPassword', (req, res, next) => {
-    if (req.body.newPassword) {
+    if (req.body.newPassword && req.body.fromUrl) {
 
-        if (validateInput(req.body.newPassword, "password")) {
-            forgotPasswordUser.findOne({ resetUrl: req.body.fromUrl }, (err, foundUser) => {
-                if (err) {
-                    res.send(err);
-                }
-                if (foundUser) {
+        if (validateInput(req.body.fromUrl, "url")) {
 
-                    resetPassword(foundUser.email, req.body.newPassword).then((username) => {
-                        forgotPasswordUser.deleteOne({ "user_name": username }, (err) => {
-                            if (err) {
-                                res.send(err);
-                            } else {
-                                console.log("Deleted from forgotten table");
-                                res.status(200).send({
-                                    "status": "error",
-                                    "body": "Invalid input"
-                                });
-                            }
+            if (validateInput(req.body.newPassword, "password")) {
+                forgotPasswordUser.findOne({ resetUrl: req.body.fromUrl }, (err, foundUser) => {
+                    if (err) {
+                        res.send(err);
+                    }
+                    if (foundUser) {
+    
+                        resetPassword(foundUser.email, req.body.newPassword).then((username) => {
+                            forgotPasswordUser.deleteOne({ "user_name": username }, (err) => {
+                                if (err) {
+                                    res.send(err);
+                                } else {
+                                    console.log("Deleted from forgotten table");
+                                    res.status(200).send({
+                                        "status": "error",
+                                        "body": "Invalid input"
+                                    });
+                                }
+                            });
+                        }, (err) => {
+                            console.log(err);
                         });
-                    }, (err) => {
-                        console.log(err);
-                    });
-
-                }
-            });
-
-        } else {
-            res.status(401).send({
-                "status": "error",
-                "body": "Invalid input"
-            });
+    
+                    }
+                });
+    
+            } else {
+                res.status(401).send({
+                    "status": "error",
+                    "body": "Invalid input"
+                });
+            }
         }
 
     } else {
@@ -470,7 +487,7 @@ function resetPassword(email, newPassword) {
 function sendEmail(email, subject, body) {
     return new Promise((resolve, reject) => {
         const spawn = require("child_process").spawn;
-        const pythonProcess = spawn('python', ["emailService/sendEmail.py", email, subject, body]);
+        const pythonProcess = spawn('python3', ["emailService/sendEmail.py", email, subject, body]);
         pythonProcess.stdout.on('data', (data) => {
             console.log(data.toString());
             resolve()
@@ -487,12 +504,20 @@ function validateInput(input, type) {
      */
     if (type === 'password') {
         if (input.length > 8) {
+            conditions = [];
+            let test2 = conditions.some(el => input.includes(el));
             return true;
         } else {
             return false;
         }
-    } else {
+    } else if (type == "username"){
         if (input.length < 32 && input.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    } else if (type === "url") {
+        if (encodeURIComponent(input) == input) {
             return true;
         } else {
             return false;
