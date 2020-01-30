@@ -18,3 +18,5 @@
     3. Add new API(s) using YAML. Documentation for swagger can be found here: `https://swagger.io/docs/specification/basic-structure/`
     4. When finished select `file -> convert and save as json` and overwrite old swagger.json file
 
+#### Registration flowchart
+![yes](https://i.imgur.com/pw19XkD.png)

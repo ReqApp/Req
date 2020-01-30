@@ -153,11 +153,10 @@ router.post('/register', (req, res, next) => {
                         res.send(err);
                     } else {
                         if (foundUser) {
-                            console.log("username already here")
-                                // res.status(401).json({
-                                //     "status": "information",
-                                //     "body": "Username or email address already in use"
-                                // });
+                            res.status(401).json({
+                                "status": "information",
+                                "body": "Username or email address already in use"
+                            });
                         } else {
 
                             checkIfExisting(username, "unverified").then((data) => {
