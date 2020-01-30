@@ -33,7 +33,7 @@ bets.get('/debugTest', function(req, res, next){
  */
 
 // API to handle adding bet to database
-bets.post('/createBet/addBetToDataBase', function(req, res, next){
+bets.post('/addBetToDataBase', function(req, res, next){
     var bet = new Bet(req.body);
     bet.save(function(err, savedBet){
         if(err){

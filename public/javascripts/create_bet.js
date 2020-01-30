@@ -87,7 +87,7 @@ function addNewBetRegion(){
         bet_ids : []
     }
 
-    $.post('addBettingRegion', betRegion, function(data){
+    $.post('/addBettingRegion', betRegion, function(data){
         console.log('Added bet region to database');
     }, 'json');
 }
@@ -97,7 +97,7 @@ function addBetToDataBase(){
     // Send bet region id and bet id
 
     var dataToSend = {};
-    $.post('/createBet/addBetToDataBase', betData, function(res){
+    $.post('/addBetToDataBase', betData, function(res){
         console.log("Added data to database");
         dataToSend.betID = res._id.toString();
         dataToSend.regionID = $('#dropDown').val().toString();
