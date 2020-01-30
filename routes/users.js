@@ -307,7 +307,6 @@ router.post('/login', function(req, res, next) {
 
 router.post('/forgotPassword', (req, res, next) => {
     if (req.body.user_name)  {
-        console.log("forgot username with username inputted");
         if (validateInput(req.body.user_name, "username")) {
             const username = req.body.user_name;
 
@@ -363,7 +362,6 @@ router.post('/forgotPassword', (req, res, next) => {
 
         }
     } else {
-        console.log("forgot username no username inputted");
         res.status(401).send({
             "status": "error",
             "body": "Invalid input"
