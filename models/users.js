@@ -11,7 +11,7 @@ var usersSchema = new Schema({
         maxlength: 32
     },
     email: {
-        type:String,
+        type: String,
         minlength: 5,
         maxlength: 64
     },
@@ -19,9 +19,20 @@ var usersSchema = new Schema({
         type: String,
         minlength: 8
     },
-    fbID: {
+    googleID: {
         type: String,
         default: null
+    },
+    githubID: {
+        type: String,
+        defualt: null
+    },
+    steamID: {
+        type: String,
+        default: null
+    },
+    profilePicture: {
+        type: String
     },
     accessToken: String
 });

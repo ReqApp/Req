@@ -46,5 +46,3 @@ $(document).ready(function() {
         }
     });
 });
-// $2a$10$ZLXMob4zBS0//MEdeGEId.zr7LirGqq6.EFiq6GKuwoN9VUxk2Oe2
-// $2a$10$ZLXMob4zBS0//MEdeGEId.zr7LirGqq6.EFiq6GKuwoN9VUxk2Oe2

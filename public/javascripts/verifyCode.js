@@ -2,7 +2,7 @@ $(document).ready(function() {
     $('#submitButton').click(function(e) {
         e.preventDefault();
         const activationCode = $('#codeBox').val();
-        console.log("The code: "+activationCode);
+        console.log("The code: " + activationCode);
         const searchQuery = /^[0-9a-zA-Z]+$/;
 
         if (activationCode.match(searchQuery)) {
@@ -14,7 +14,7 @@ $(document).ready(function() {
                     "activationCode": activationCode
                 },
                 success: function(token) {
-                    $(location).attr('href', '/');
+                    $(location).attr('href', 'http://localhost:8673/users/profile');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     swal({
