@@ -1,5 +1,5 @@
 const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const GitHubStrategy = require('passport-github').Strategy;
 const SteamStrategy = require('passport-steam').Strategy;
 const User = require('../models/users');
@@ -26,7 +26,6 @@ passport.use(new GoogleStrategy({
     clientSecret: process.env.googleClientSecret,
     callbackURL: "/users/auth/google/callback"
 }, (accessToken, refreshToken, profile, done) => {
-    // console.log(profile._json.picture);
 
     User.findOne({ googleID: profile.id }).then((currentUser) => {
         if (currentUser) {
