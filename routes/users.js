@@ -492,7 +492,7 @@ function resetPassword(email, newPassword) {
 function sendEmail(email, subject, body) {
     return new Promise((resolve, reject) => {
         const spawn = require("child_process").spawn;
-        const pythonProcess = spawn('python', ["emailService/sendEmail.py", email, subject, body]);
+        const pythonProcess = spawn('python3', ["emailService/sendEmail.py", email, subject, body]);
         pythonProcess.stdout.on('data', (data) => {
             console.log(data.toString());
             resolve()
