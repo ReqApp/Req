@@ -160,4 +160,20 @@ bets.put('/addBetToRegion', function(req, res, next){
     });
 });
 
+// Testing
+// Gets specific region by id
+bets.get('/getRegionByID', function(req, res, next){
+    console.log(req.query.id);
+    var id = mongoose.Types.ObjectId(req.query.id.toString());
+    console.log(id);
+    BetRegion.findById(id, function(err, betRegion){
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.json(betRegion);
+        }
+    });
+});
+
 module.exports = bets;
