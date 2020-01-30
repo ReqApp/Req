@@ -15,38 +15,8 @@ describe('Array', function() {
     });
 });
 
-describe("API testing", () => {
-    it("Register (normal)", done => {
-            chai
-                .request(app)
-                .post("/users/register")
-                .send({
-                    "user_name": "yaboi365"
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(401);
-                    expect(res.body.status).to.equals("error");
-                    expect(res.body.body).to.equals("Invalid POST parameters");
-                    done();
-                });
-        }),
-        it("Register (invalid params)", done => {
-            chai
-                .request(app)
-                .post("/users/register")
-                .send({
-                    "user_name": "yaboi3%%%65",
-                    "password": "aWeakP<script>alert()password",
-                    "email": "billGates@microsoft.com"
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(401);
-                    expect(res.body.status).to.equals("error");
-                    expect(res.body.body).to.equals("Username cannot contain those characters");
-                    done();
-                });
-        }),
-        it("Login (normal)", done => {
+describe("Login Testing", () => {
+        it("Invalid params", done => {
             chai
                 .request(app)
                 .post("/users/login")
@@ -60,7 +30,7 @@ describe("API testing", () => {
                     done();
                 });
         }),
-        it("Login (invalid)", done => {
+        it("Invalid password", done => {
             chai
                 .request(app)
                 .post("/users/login")
@@ -74,8 +44,8 @@ describe("API testing", () => {
                     expect(res.body.body).to.equals("Email or password invalid");
                     done();
                 });
-        }),
-        it("Forgot Password", done => {
+        }).timeout(4000),
+        it("Invalid params", done => {
             chai
                 .request(app)
                 .post("/users/forgotPassword")
@@ -89,12 +59,13 @@ describe("API testing", () => {
                     done();
                 });
         }),
-        it("Reset Password", done => {
+        it("Invalid Url", done => {
             chai
                 .request(app)
-                .post("/users/resetPassword")
+                .post("/users/forgotPassword")
                 .send({
-                    "<script>alert(1)": "<script>alert(1)<script>"
+                    "newPassword": "anycans4444555",
+                    "fromUrl":"\'console.log(`injection`)"
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(401);
@@ -103,23 +74,240 @@ describe("API testing", () => {
                     done();
                 });
         }),
-        it("Profile (not logged in)", done => {
+        it("Invalid params", done => {
             chai
                 .request(app)
-                .get("/users/profile")
+                .post("/users/verifyAccount")
+                .send({
+                    "user_name":"nothingInteresting"
+                })
                 .end((err, res) => {
-                    expect(res).to.have.status(200);
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid input");
+                    done();
+                })
+        }),
+        // it("Password injection", done => {
+        //     chai
+        //         .request(app)
+        //         .post("/users/resetPassword")
+        //         .send({
+        //             "newPassword": "\";console.log(`yuppa`)",
+        //             "fromUrl":"https://youtube.com"
+        //         })
+        //         .end((err, res) => {
+        //             expect(res).to.have.status(401);
+        //             expect(res.body.status).to.equals("error");
+        //             expect(res.body.body).to.equals("Invalid input");
+        //             done();
+        //         });
+        // }),
+        it("Invalid params", done => {
+            chai
+                .request(app)
+                .post("/users/verifyAccount")
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid input");
                     done();
                 });
         }),
-        it("getTime", done => {
+        it("Code injection", done => {
             chai
                 .request(app)
-                .get("/getTime")
+                .post("/users/verifyAccount")
+                .send({
+                    "activationCode":"db.collection.drop()"
+                })
                 .end((err, res) => {
-                    expect(res).to.have.status(200);
-                    res.body.should.have.property("currentTime");
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid input");
                     done();
-                });
+                })
+        }),
+        it("Code injection", done => {
+        chai
+            .request(app)
+            .post("/users/verifyAccount")
+            .send({
+                "activationCode":"db.collection.deleteMany"
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(401);
+                expect(res.body.status).to.equals("error");
+                expect(res.body.body).to.equals("Invalid input");
+                done();
+            })
         })
-})
+});
+
+describe("Register Testing", () => { 
+    it("Invalid params", done => {
+        chai
+            .request(app)
+            .post("/users/register")
+            .send({
+                "user_name": "yaboi365"
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(401);
+                expect(res.body.status).to.equals("error");
+                expect(res.body.body).to.equals("Invalid POST parameters");
+                done();
+            });
+    }),
+    it("Injection", done => {
+        chai
+            .request(app)
+            .post("/users/register")
+            .send({
+                "user_name": "yaboi3%%%65",
+                "password": "aWeakP<script>alert()password",
+                "email": "billGates@microsoft.com"
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(401);
+                expect(res.body.status).to.equals("error");
+                expect(res.body.body).to.equals("Username cannot contain those characters");
+                done();
+            });
+    }),
+    it("Invalid username", done => {
+        chai
+            .request(app)
+            .post("/users/register")
+            .send({
+                "user_name": "yaboi365xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                "password":"aldiBetterThanLidl",
+                "email":"email@mail.com"
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(401);
+                expect(res.body.status).to.equals("error");
+                expect(res.body.body).to.equals("Username must be between 1 and 32 characters long");
+                done();
+            });
+    }),
+    it("Username injection", done => {
+        chai
+            .request(app)
+            .post("/users/register")
+            .send({
+                "user_name": "\";console.log(`yuppa`)",
+                "password":"'console.log(`injection`)<",
+                "email":"yes@mail.com"
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(401);
+                expect(res.body.status).to.equals("error");
+                expect(res.body.body).to.equals("Username cannot contain those characters");
+                done();
+            });
+    }),
+    it("Password injection", done => {
+        chai
+            .request(app)
+            .post("/users/register")
+            .send({
+                "user_name": "bobTheBuilder",
+                "password":"'console.log(`injection`)<",
+                "email":"yes@mail.com"
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(401);
+                expect(res.body.status).to.equals("error");
+                expect(res.body.body).to.equals("Invalid characters in password");
+                done();
+            });
+    })
+});
+
+describe("Various APIS", () => {
+    it("Profile (not logged in)", done => {
+        chai
+            .request(app)
+            .get("/users/profile")
+            .end((err, res) => {
+                expect(res).to.have.status(200);
+                done();
+            });
+    }),
+    it("getTime", done => {
+        chai
+            .request(app)
+            .get("/getTime")
+            .end((err, res) => {
+                expect(res).to.have.status(200);
+                res.body.should.have.property("currentTime");
+                done();
+            });
+    }),
+    it("Invalid params", done => {
+        chai
+            .request(app)
+            .post("/createArticleBet")
+            .send({
+                "betType":"nothing"
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(401);
+                expect(res.body.body).to.equals("Invalid param");
+                done();
+            });
+    }),
+    it("Invalid params", done => {
+        chai
+            .request(app)
+            .post("/createArticleBet")
+            .send({
+                "betType":"article",
+                "sitename":"BBC",
+                "directory":"world",
+                "month":"12",
+                "year":"2020",
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(400);
+                expect(res.body.status).to.equals("error");
+                done();
+            });
+    }),
+    it("Injection", done => {
+        chai
+            .request(app)
+            .post("/createArticleBet")
+            .send({
+                "betType":"article",
+                "sitename":"BBC",
+                "directory":"\"console.log(`test`)",
+                "month":"12",
+                "year":"2020",
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(400);
+                expect(res.body.status).to.equals("error");
+                done();
+            });
+    }),
+    it("Valid search", done => {
+        chai
+            .request(app)
+            .post("/createArticleBet")
+            .send({
+                "betType":"article",
+                "sitename":"BBC",
+                "directory":"world",
+                "month":"1",
+                "year":"2020",
+                "searchTerm":"Trump"
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(200);
+                expect(res.body.status).to.equals("information");
+                done();
+            });
+    }).timeout(4000)
+});
