@@ -1,10 +1,11 @@
+var layerGroup;
+
 $(document).ready(function(){
     loadMap('mapID');
     $(window).on('locRetrieved', function(data){
         if(data.location.accuracy > 100){
-            // NUIG
-            data.location.latitude = 53.282110;
-            data.location.longitude = -9.062186;
+            data.location.latitude = 53.279322295634;
+            data.location.longitude = -9.06269563621165;
         }
         var latLong = L.latLng(data.location.latitude, data.location.longitude);
         var marker = L.marker(latLong);
@@ -16,9 +17,10 @@ $(document).ready(function(){
             marker.bindPopup("Your are here", {closeButton : false, className: 'popUp'}).openPopup();
             // TODO
                 // Get bet regions available
+                getBetRegions(latLong);
                 // Allow user to select region
                 // Display bets only in that region
-            getBetsInRegion(latLong);
+            //getBetsInRegion(latLong);
         }, 1000);
 
     })
@@ -27,6 +29,29 @@ $(document).ready(function(){
 // Return regions that user in located in
 function getBetRegions(latLng){
     // Send request to server to retrieve regions from database
+    $.get('/getBettingRegions', {latitude : latLng.lat, longitude : latLng.lng}, function(regions){
+        console.log("Available regions");
+        console.log(regions);
+        // Add regions to map
+        for(var i = 0; i < regions.length; i++){
+            $('#dropDown').append('<option value=' + regions[i]._id + '>' + regions[i].region_name + '</option>');
+        }
+        addBetsToMap(regions);
+        $('#selectRegion').click(function(){
+            // Clear region markers and add bet markers
+            console.log('Clearing markers...');
+            layerGroup.clearLayers();
+            
+            // Get bets in region using region id
+            var regionID = $('#dropDown').val();
+            $.get('/getBetsInRegion', {id : regionID}, function(bets){
+                console.log("Returned bets");
+                console.log(bets);
+                // Add bets to map
+            });
+        });
+    });
+
 }
 
 // Visually display bet regions on map
@@ -50,6 +75,7 @@ function getBetsInRegion(latLong){
 
 // Display bets in region on map
 function addBetsToMap(bets){
+    layerGroup = L.layerGroup().addTo(map);
     var betMarkers = [];
     var customIcon = L.icon({
         iconUrl : 'http://localhost:80/images/location_marker.svg',
@@ -80,7 +106,7 @@ function addBetsToMap(bets){
                 fillOpacity : 0.2,
                 radius: 0
             }
-        ).addTo(map);
+        ).addTo(layerGroup);
 
         betArea = new BetArea(circle);
         betArea.expand(bet.radius);
@@ -88,6 +114,6 @@ function addBetsToMap(bets){
         // Add visual elements to array and add to map
         betMarkers.push(marker);
         var index = betMarkers.length - 1;
-        betMarkers[index].addTo(map);
+        betMarkers[index].addTo(layerGroup);
     });
 }

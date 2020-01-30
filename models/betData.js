@@ -10,13 +10,16 @@ var betSchema = new Schema({
         type : String,
     },
     latitude : {
-        type :Number
+        type : Number
     },
     longitude : {
         type : Number
     },
     radius : {
-        type :Number
+        type : Number
+    },
+    bet_region_id : {
+        type : String
     }
 });
 

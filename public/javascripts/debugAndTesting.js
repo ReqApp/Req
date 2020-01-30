@@ -47,7 +47,8 @@ function generateRandomBets(){
                 location_Name: "Location: " + i.toString(),
                 latitude: randLat,
                 longitude: randLng,
-                radius: generateRandomNumInInterval(20, 100)
+                radius: generateRandomNumInInterval(20, 100),
+                bet_region_id: REGION_ID
             }
             newBets.push(newBet);
         }

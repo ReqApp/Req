@@ -45,6 +45,19 @@ bets.post('/addBetToDataBase', function(req, res, next){
     });
 });
 
+// API for getting bets in region
+bets.get('/getBetsInRegion', function(req, res, next){
+    var id = req.query.id;
+    Bet.find({bet_region_id : id}, function(err, bets){
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.json(bets);
+        }
+    });
+});
+
 // API for getting bets from database
 bets.get('/getBets', function(req, res, next){
     // Perform calculations server-side to increase perfromance
@@ -99,14 +112,14 @@ bets.post('/addBettingRegion', function(req, res, next){
     });
 });
 
-// API for getting available betting regions
+// API for getting available betting regi
 bets.get('/getBettingRegions', function(req, res, next){
     // Perform calculations server-side to increase perfromance
     BetRegion.find({}).exec(function(err, betRegions){
         if(err){
             throw(err);
         }else{
-            console.log(betRegions);
+            //console.log(betRegions);
             var regionsToSend = [];
             const LEN = betRegions.length;
             for(var i = 0; i < LEN; i++){
