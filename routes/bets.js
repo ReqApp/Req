@@ -5,7 +5,12 @@ var BetRegion = require('../models/bettingRegions');
 var calcDistance = require('./calcDistance');
 var mongoose = require('mongoose');
 
-// Rendering APIs
+/**
+ * <-------------------------------------------------------------------->
+ *                      Page Rendering APIs
+ * <-------------------------------------------------------------------->
+ */
+
 // Render create bet page
 bets.get('/createBet', function(req, res, next){
     res.render('create_bet', {title: 'CreateBet'});
@@ -20,6 +25,12 @@ bets.get('/findBets', function(req, res, next){
 bets.get('/debugTest', function(req, res, next){
     res.render('debugAndTestingPage');
 });
+
+/**
+ * <-------------------------------------------------------------------->
+ *                              Bet APIs
+ * <-------------------------------------------------------------------->
+ */
 
 // API to handle adding bet to database
 bets.post('/createBet/addBetToDataBase', function(req, res, next){
@@ -69,35 +80,13 @@ bets.get('/getBets', function(req, res, next){
     });
 });
 
-// Testing APIs
-// Testing API for adding multiple bets to database
-bets.post('/addMultBets', function(req, res, next){
-    //console.log(req.body);
-    Bet.insertMany(req.body.betData, function(err, bets){
-        if(err){
-            console.log(err);
-        }
-        else{
-            res.json(bets);
-        }
-    });
+/**
+ * <-------------------------------------------------------------------->
+ *                          Bet Region APIs
+ * <-------------------------------------------------------------------->
+ */
 
-})
-
-// Testing API for adding multiple bet regions to database
-bets.post('/addMultRegions', function(req, res, next){
-    console.log(req.body);
-    BetRegion.insertMany(req.body.regions, function(err, regions){
-        if(err){
-            console.log(err);
-        }
-        else{
-            res.json(regions);
-        }
-    });
-});
-
-// API for adding new betting region
+ // API for adding new betting region
 bets.post('/addBettingRegion', function(req, res, next){
     var region = new BetRegion(req.body);
     region.save(function(err, savedRegion){
@@ -160,6 +149,55 @@ bets.put('/addBetToRegion', function(req, res, next){
     });
 });
 
+// Gets specific region by id
+bets.get('/getRegionByID', function(req, res, next){
+    console.log(req.query.id);
+    var id = mongoose.Types.ObjectId(req.query.id.toString());
+    console.log(id);
+    BetRegion.findById(id, function(err, betRegion){
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.json(betRegion);
+        }
+    });
+});
+
+/**
+ * <-------------------------------------------------------------------->
+ *                      Testing and Debug APIs
+ * <-------------------------------------------------------------------->
+ */
+
+// API for adding multiple bets to database
+bets.post('/addMultBets', function(req, res, next){
+    //console.log(req.body);
+    Bet.insertMany(req.body.betData, function(err, bets){
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.json(bets);
+        }
+    });
+
+});
+
+// API for adding multiple bet regions to database
+bets.post('/addMultRegions', function(req, res, next){
+    console.log(req.body);
+    BetRegion.insertMany(req.body.regions, function(err, regions){
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.json(regions);
+        }
+    });
+});
+
+// API updates bet regions with multiple bets
 bets.put('/addMultBetsToRegion', function(req, res, next){
     // Takes bet region id
     console.log(req.body);
@@ -182,22 +220,6 @@ bets.put('/addMultBetsToRegion', function(req, res, next){
         }
     });
     
-});
-
-// Testing
-// Gets specific region by id
-bets.get('/getRegionByID', function(req, res, next){
-    console.log(req.query.id);
-    var id = mongoose.Types.ObjectId(req.query.id.toString());
-    console.log(id);
-    BetRegion.findById(id, function(err, betRegion){
-        if(err){
-            console.log(err);
-        }
-        else{
-            res.json(betRegion);
-        }
-    });
 });
 
 module.exports = bets;

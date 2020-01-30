@@ -4,12 +4,14 @@ function generateRandomBets(){
     const NUM_BETS = 20;
 
     $.get('/getRegionByID', {id : REGION_ID}, function(region){
+        console.log('Selected region:');
         console.log(region);
         // Extract location data from region
         var lat = region.latitude;
         var lng = region.longitude;
         var rad = region.radius;
 
+        // Holds auto bets to send to database
         var newBets = [];
 
         // Calculate max and min latitudes
@@ -37,8 +39,9 @@ function generateRandomBets(){
             //console.log("Max: " + max + " Min: " + min);
 
             var randLng = generateRandomNumInInterval(max, min);
-            console.log("Lng: " + randLng);
+            //console.log("Lng: " + randLng);
 
+            // Create new random bet object
             var newBet = {
                 title: "Random Bet: " + i.toString(),
                 location_Name: "Location: " + i.toString(),
@@ -48,21 +51,25 @@ function generateRandomBets(){
             }
             newBets.push(newBet);
         }
-        console.log(newBets);
+        //console.log(newBets);
+
+        // Use testing API for adding multiple bets at once
         $.post('/addMultBets', {betData : newBets}, function(bets){
+            console.log('Returned bets: ');
             console.log(bets);
-            // Add each bet id to betting region
+            // Create array of bet ids
             var ids = [];
             for(var i = 0; i < bets.length; i++){
                 ids.push(bets[i]._id.toString());
             }
 
+            // Add ids to bet region
             $.ajax({
                 url: '/addMultBetsToRegion',
                 type: 'PUT',
                 data: {regionID : REGION_ID, bets : ids},
                 success : function(betRegion){
-                    console.log("Updated bet region");
+                    console.log("Updated bet region:");
                     console.log(betRegion);
                 }
             });
@@ -81,6 +88,7 @@ function calculateChangeInLat(latOne, latTwo){
     return RAD_EARTH * c;
 }
 
+// Degrees to radian converter
 function degToRad(deg){
     return deg * (Math.PI /180);
     
