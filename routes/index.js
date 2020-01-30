@@ -68,7 +68,6 @@ router.post('/createArticleBet', (req, res, next) => {
                         });
                     }
                 }, (err) => {
-                    console.log(err);
                     res.status(400).json({
                         "status": "error",
                         "body": err
@@ -77,9 +76,9 @@ router.post('/createArticleBet', (req, res, next) => {
                 break;
 
             default:
-                res.status(200).json({
+                res.status(401).json({
                     "status": "information",
-                    "body": "request to bet sent!"
+                    "body": "Invalid param"
                 });
                 break;
         }
@@ -91,8 +90,6 @@ router.post('/createArticleBet', (req, res, next) => {
     }
 
 });
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJDYXRoYWwgTydDYWxsYWdoYW4iLCJpYXQiOjE1ODAyMjAzNjIsImV4cCI6MTU4MDQ3OTU2Mn0.kUzSxgKIiF5gD-Ep3Uu-krjcN1iH-kwFVs3WjKuvw8o
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJDYXRoYWwgTydDYWxsYWdoYW4iLCJpYXQiOjE1ODAyMjAzNjIsImV4cCI6MTU4MDQ3OTU2Mn0.kUzSxgKIiF5gD-Ep3Uu-krjcN1iH-kwFVs3WjKuvw8o
 
 function verifyJwt(jwtString) {
     let val = jwt.verify(jwtString, process.env.JWTSECRET);
@@ -102,44 +99,69 @@ function verifyJwt(jwtString) {
 function makeArticleBet(input) {
     return new Promise((resolve, reject) => {
         if (input.sitename && input.directory && input.month && input.year && input.searchTerm) {
-            const child = require('child_process').execFile;
-            const executablePath = "./articleStats/articleGetWindows";
-            const parameters = ["-s", input.sitename, input.directory, input.month, input.year, input.searchTerm];
-
-            child(executablePath, parameters, function(err, data) {
-                if (err) {
-                    console.log(err);
-                    reject(null);
-                } else {
-                    // log to DB and then send back ok signal
-                    newBet = new articleBet();
-                    newBet.title = `[${input.sitename}] - ${input.searchTerm}`;
-                    newBet.subtext = `${input.directory} - ${input.month}/${input.year}`;
-
-                    const date = new Date();
-                    const currDate = date.getTime();
-                    newBet.timePosted = currDate;
-
-                    newBet.save((err, user) => {
+            
+            if (validateInput(input.sitename, "article") && validateInput(input.sitename, "article") &&
+                validateInput(input.month, "article") && validateInput(input.year, "article") && 
+                validateInput(input.searchTerm,"article")) {
+                    const child = require('child_process').execFile;
+                    const executablePath = "./articleStats/articleGetLinux";
+                    const parameters = ["-s", input.sitename, input.directory, input.month, input.year, input.searchTerm];
+        
+                    child(executablePath, parameters, function(err, data) {
                         if (err) {
-                            throw err;
+                            console.log(err);
+                            reject(null);
                         } else {
-                            resolve(data.toString());
+                            // log to DB and then send back ok signal
+                            newBet = new articleBet();
+                            newBet.title = `[${input.sitename}] - ${input.searchTerm}`;
+                            newBet.subtext = `${input.directory} - ${input.month}/${input.year}`;
+        
+                            const date = new Date();
+                            const currDate = date.getTime();
+                            newBet.timePosted = currDate;
+        
+                            newBet.save((err, user) => {
+                                if (err) {
+                                    throw err;
+                                } else {
+                                    resolve(data.toString());
+                                }
+                            });
                         }
                     });
+                } else {
+                    res.status(401).send({
+                        "status":"error",
+                        "body":"Invalid characters in input"
+                    });
+                    reject(null);
                 }
-            });
-
-
-
-        } else {
-            console.log("invalid params given");
-            reject(null);
-        }
-    });
+                } else {
+                    res.status(401).send({
+                        "status":"error",
+                        "body":"Invalid input"
+                    });
+                    reject(null);
+                }
+        });
 }
 
-module.exports = router;
+
+
+function validateInput(input, type) {
+    const conditions = ["\"", "<", ">", "'", "`"];
+    let test = conditions.some(el => input.includes(el));
+
+    if (type == "article") {
+        if (test) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+}
+
 router.get('/createBet', function(req, res, next) {
     res.render('create_bet', { title: 'CreateBet' });
 });
@@ -147,13 +169,5 @@ router.get('/createBet', function(req, res, next) {
 router.get('/findBets', function(req, res, next) {
     res.render('find_bets', { title: 'FindBets' });
 });
-
-const authCheck = (req, res, next) => {
-    if (!req.user) {
-        res.redirect('users/register');
-    } else {
-        next();
-    }
-};
 
 module.exports = router;
