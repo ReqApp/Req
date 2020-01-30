@@ -72,13 +72,13 @@ bets.get('/getBets', function(req, res, next){
 // Testing APIs
 // Testing API for adding multiple bets to database
 bets.post('/addMultBets', function(req, res, next){
-    console.log(req.body);
+    //console.log(req.body);
     Bet.insertMany(req.body.betData, function(err, bets){
         if(err){
             console.log(err);
         }
         else{
-            res.json({success : true});
+            res.json(bets);
         }
     });
 
@@ -158,6 +158,30 @@ bets.put('/addBetToRegion', function(req, res, next){
             res.json(betRegion);
         }
     });
+});
+
+bets.put('/addMultBetsToRegion', function(req, res, next){
+    // Takes bet region id
+    console.log(req.body);
+    var regionID = mongoose.Types.ObjectId(req.body.regionID.toString());
+   
+    var bets = req.body.bets;
+    var ids = [];
+    for(var i = 0; i < bets.length; i++){
+        ids.push(mongoose.Types.ObjectId(bets[i].toString()));
+    }
+    var numBets = bets.length;
+    console.log(ids);
+    // Find corresponding region and include bet id in bets array and increment num bets
+    BetRegion.findOneAndUpdate({'_id' : regionID}, { '$push': { 'bet_ids': { '$each': ids }}, '$inc' : { 'num_bets' : numBets}}, {useFindAndModify: false}).exec(function(err, betRegion){
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.json(betRegion);
+        }
+    });
+    
 });
 
 // Testing

@@ -1,6 +1,7 @@
 // Function for auto-generating bets in specified region
 function generateRandomBets(){
     const REGION_ID = "5e2f72253c750c169c7c816c";
+    const NUM_BETS = 20;
 
     $.get('/getRegionByID', {id : REGION_ID}, function(region){
         console.log(region);
@@ -9,52 +10,65 @@ function generateRandomBets(){
         var lng = region.longitude;
         var rad = region.radius;
 
+        var newBets = [];
+
         // Calculate max and min latitudes
         var DELTA_DIS = (rad / 1000)  / 110.574;
         const MAX_LAT = lat + DELTA_DIS;
         const MIN_LAT = lat - DELTA_DIS;
 
-        // Generate random latitude in constraints
-        var randLat = generateRandomNumInInterval(MAX_LAT, MIN_LAT);
-        
-        // Calculate distance from original lat to random lat
-        const RAD_EARTH = 6371;
-        var changeLat = degToRad(lat - randLat);
-        var changeLng = degToRad(0);
-        var a = Math.sin(changeLat/2) * Math.sin(changeLat/2) + Math.cos(degToRad(lat)) * Math.cos(degToRad(randLat)) * Math.sin(changeLng/2) * Math.sin(changeLng/2);                                                         
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        DELTA_DIS =  RAD_EARTH * c;
+        for(var i = 0; i < NUM_BETS; i++){
+            // Generate random latitude in constraints
+            var randLat = generateRandomNumInInterval(MAX_LAT, MIN_LAT);
+            
+            // Calculate distance from original lat to random lat
+            DELTA_DIS = calculateChangeInLat(lat, randLat);
+            //console.log("Change in distance: " + DELTA_DIS);
 
-        console.log("Change in distance: " + DELTA_DIS);
+            // Get max change in longitude using trig (kilometres)
+            var alpha = Math.pow((rad / 1000), 2);
+            var beta = Math.pow(DELTA_DIS, 2);
+            var limit = Math.sqrt(alpha - beta);
+            //console.log("Length of side: " + limit);
 
-        // Get max change in longitude using trig (kilometres)
-        var alpha = Math.pow((rad / 1000), 2);
-        var beta = Math.pow(DELTA_DIS, 2);
-        var limit = Math.sqrt(alpha - beta);
+            // Max and minimum longitude values based on random lat value
+            var max = lng + (limit / 111.32) * Math.cos(degToRad(randLat));
+            var min = lng - (limit / 111.32) * Math.cos(degToRad(randLat));
+            //console.log("Max: " + max + " Min: " + min);
 
-        console.log("Length of side: " + limit);
+            var randLng = generateRandomNumInInterval(max, min);
+            console.log("Lng: " + randLng);
 
-        // Max and minimum longitude values based on random lat value
-        var max = lng + (limit / 111.32) * Math.cos(degToRad(randLat));
-        var min = lng - (limit / 111.32) * Math.cos(degToRad(randLat));
-
-        console.log("Max: " + max + " Min: " + min);
-
-        var randLng = generateRandomNumInInterval(max, min);
-
-        var bet = {
-            latitude: randLat,
-            longitude: randLng
+            var newBet = {
+                title: "Random Bet: " + i.toString(),
+                location_Name: "Location: " + i.toString(),
+                latitude: randLat,
+                longitude: randLng,
+                radius: generateRandomNumInInterval(20, 100)
+            }
+            newBets.push(newBet);
         }
+        console.log(newBets);
+        $.post('/addMultBets', {betData : newBets}, function(bets){
+            console.log(bets);
+            // Add each bet id to betting region
+            var ids = [];
+            for(var i = 0; i < bets.length; i++){
+                ids.push(bets[i]._id.toString());
+            }
 
-        console.log(bet);
+            $.ajax({
+                url: '/addMultBetsToRegion',
+                type: 'PUT',
+                data: {regionID : REGION_ID, bets : ids},
+                success : function(betRegion){
+                    console.log("Updated bet region");
+                    console.log(betRegion);
+                }
+            });
+        });
+
     }, 'json');
-    /*
-    $.post('/addMultBets', {betData : bets}, function(data){
-        console.log("Added bets to database");
-    });
-
-    */
 }
 
 // Returns (in kilometres) the change in latitude
