@@ -78,5 +78,209 @@
         }
       }
     }
+  },
+  "definitions": {
+    "betSchema": {
+      "description": "Mongoose schema for storing bet data",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "Random bet"
+        },
+        "location_Name": {
+          "type": "string",
+          "example": "NUIG"
+        },
+        "latitude": {
+          "type": "number",
+          "example": 53.33784
+        },
+        "longitude": {
+          "type": "number",
+          "example": -9.180165
+        },
+        "radius": {
+          "type": "number",
+          "example": "200(m)"
+        },
+        "bet_region_id": {
+          "type": "string",
+          "description": "Used to store object ID of parent Betting Region",
+          "example": "5e2f72253c750c169c7c816c"
+        }
+      }
+    },
+    "bettingRegionSchema": {
+      "description": "Schema used for storing data on betting regions",
+      "properties": {
+        "region_name": {
+          "type": "string",
+          "example": "NUIG"
+        },
+        "latitude": {
+          "type": "number",
+          "example": 53.33784
+        },
+        "longitude": {
+          "type": "number",
+          "example": -9.180165
+        },
+        "radius": {
+          "type": "number",
+          "example": "200(m)"
+        },
+        "num_bets": {
+          "type": "number",
+          "example": 50,
+          "description": "Stores number of bets in region"
+        },
+        "bet_ids": {
+          "type": "array",
+          "example": [],
+          "description": "Array of child bet IDs",
+          "items": {
+            "type": "object",
+            "description": "Mongoose object ID"
+          }
+        }
+      }
+    },
+    "commentsSchema": {
+      "properties": {
+        "user_name": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "date_created": {
+          "type": "object"
+        },
+        "up_votes": {
+          "type": "number",
+          "default": 0
+        },
+        "down_votes": {
+          "type": "number",
+          "default": 0
+        }
+      }
+    },
+    "forgotPasswordUsersSchema": {
+      "required": [
+        "user_name",
+        "email",
+        "resetCode",
+        "resetUrl"
+      ],
+      "properties": {
+        "user_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "email": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 64
+        },
+        "resetCode": {
+          "type": "string",
+          "minLength": 10
+        },
+        "resetUrl": {
+          "type": "string",
+          "minLength": 10
+        }
+      }
+    },
+    "unverifiedUsersSchema": {
+      "required": [
+        "user_name",
+        "email",
+        "activationCode"
+      ],
+      "properties": {
+        "user_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "email": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 64
+        },
+        "password": {
+          "type": "string",
+          "minLength": 8
+        },
+        "activationCode": {
+          "type": "string",
+          "minLength": 6
+        }
+      }
+    },
+    "usersSchema": {
+      "required": [
+        "user_name"
+      ],
+      "properties": {
+        "user_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "email": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 64
+        },
+        "password": {
+          "type": "string",
+          "minLength": 8
+        },
+        "googleID": {
+          "type": "string",
+          "default": null
+        },
+        "githubID": {
+          "type": "string",
+          "default": null
+        },
+        "steamID": {
+          "type": "string",
+          "default": null
+        },
+        "profilePicture": {
+          "type": "string"
+        },
+        "accessToken": {
+          "description": "JSON web token for sign-in",
+          "type": "string"
+        }
+      }
+    },
+    "articleBetsSchema": {
+      "required": [
+        "title"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "subtext": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "timePosted": {
+          "type": "string"
+        }
+      }
+    }
   }
 }
