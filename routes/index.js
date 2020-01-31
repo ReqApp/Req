@@ -136,7 +136,7 @@ function makeArticleBet(input) {
                 validateInput(input.month, "article") && validateInput(input.year, "article") &&
                 validateInput(input.searchTerm, "article")) {
                 const child = require('child_process').execFile;
-                const executablePath = "./articleStats/articleGetWindows";
+                const executablePath = "./articleStats/articleGetLinux";
                 const parameters = ["-s", input.sitename, input.directory, input.month, input.year, input.searchTerm];
 
                 child(executablePath, parameters, function(err, data) {

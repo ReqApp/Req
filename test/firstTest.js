@@ -7,14 +7,6 @@ let should = chai.should();
 const { expect } = chai;
 chai.use(chaiHTTP);
 
-// describe('Array', function() {
-//     describe('#indexOf()', function() {
-//         it('should return -1 when the value is not present', function() {
-//             assert.equal([1, 2, 3].indexOf(4), -1);
-//         });
-//     });
-// });
-
 describe("Login Testing", () => {
         it("Invalid params", done => {
             chai
@@ -37,6 +29,37 @@ describe("Login Testing", () => {
                 .send({
                     "user_name": "mcChicken",
                     "password": "You shouldn't be reading this"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Email or password invalid");
+                    done();
+                });
+        }).timeout(4000),
+        it("Invalid username", done => {
+            chai
+                .request(app)
+                .post("/users/login")
+                .send({
+                    "user_name": "anInvalidUsernameTooLong",
+                    "password": "aBadpassword"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Username not found");
+                    done();
+                });
+        }).timeout(4000),
+        it("Injection", done => {
+            chai
+                .request(app)
+                .post("/users/login")
+                .send({
+                    "user_name": "mcChicken",
+                    "password": "db.collection.drop()",
+                    "_id":"db.collection.drop()"
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(401);
@@ -141,7 +164,22 @@ describe("Login Testing", () => {
                 expect(res.body.body).to.equals("Invalid input");
                 done();
             })
-        })
+        }),
+        it("Invalid params", done => {
+            chai
+                .request(app)
+                .post("/users/resetPassword")
+                .send({
+                    "newPassword":"jellyfisherman",
+                    "fromUrl":"youtube.com"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("User does not exist");
+                    done();
+                })
+            })
 });
 
 describe("Register Testing", () => { 
@@ -303,6 +341,24 @@ describe("Various APIS", () => {
                 "month":"1",
                 "year":"2020",
                 "searchTerm":"Trump"
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(200);
+                expect(res.body.status).to.equals("information");
+                done();
+            });
+    }).timeout(4000),
+    it("Valid search", done => {
+        chai
+            .request(app)
+            .post("/createArticleBet")
+            .send({
+                "betType":"article",
+                "sitename":"CNN",
+                "directory":"all",
+                "month":"1",
+                "year":"2020",
+                "searchTerm":"putin"
             })
             .end((err, res) => {
                 expect(res).to.have.status(200);

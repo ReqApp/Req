@@ -31,11 +31,9 @@ $(document).ready(function() {
                     "fromUrl": window.location.href
                 },
                 success: function(res) {
-                    console.log("success");
                     $(location).attr('href', '/');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    console.log("error here");
                     swal({
                         icon: 'error',
                         title: 'Oops...',

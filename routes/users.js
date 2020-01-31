@@ -222,13 +222,16 @@ router.post('/verifyAccount', (req, res, next) => {
         const searchQuery = /^[0-9a-zA-Z]+$/;
 
         if (activationCode.match(searchQuery)) {
+            console.log(`${activationCode} matched the search query, not invalid input`);
 
             // Activation code is safe
             UnverifiedUser.findOne({ "activationCode": activationCode }, (err, foundUser) => {
                 if (err) {
                     res.send(err);
+                    console.log("err in unverified user lookup");
                 } else {
                     if (foundUser) {
+                        console.log(`Found in uverified lookup ${foundUser}`);
                         /**
                          * If the activation code exists for a user, save that user into the
                          * permanent table
@@ -388,14 +391,9 @@ router.post('/forgotPassword', (req, res, next) => {
 router.post('/resetPassword', (req, res, next) => {
     if (req.body.newPassword && req.body.fromUrl) {
 
-        console.log(req.body.newPassword, req.body.fromUrl);
-
-        if (validateInput(req.body.fromUrl, "url")) {
-            console.log("url verified");
-
+        if (validateInput(req.body.fromUrl, 'url')) {
             if (validateInput(req.body.newPassword, "password")) {
 
-                console.log("pass verified");
                 forgotPasswordUser.findOne({ resetUrl: req.body.fromUrl }, (err, foundUser) => {
                     if (err) {
                         // res.send(err);
@@ -405,24 +403,22 @@ router.post('/resetPassword', (req, res, next) => {
                         });
                     }
                     if (foundUser) {
-                        console.log(`found this: ${foundUser}`);
-
                         isPasswordCompromised(req.body.newPassword).then((data) => {
                             if (data) {
-                                console.log("compromised password");
+                                const resArray = ["365online.com", "paypal.com", "wish.com", "https://onlinebanking.aib.ie/", "facebook.com", "gmail.com",
+                                                "twitter.com", "stripe.com", "blackboard.nuigalway.ie", "instagram.com"
+                                                ];
                                 res.status(401).json({
                                     "status": "error",
-                                    "body": "Your password was found in leaked databases, please change it"
+                                    "body": `This password has been previously used on ${resArray[Math.floor(Math.random()*resArray.length)]}. This incident has been reported to an administrator`
                                 });
                             }
                         }, (err) => {
-                            console.log("non compromised password");
                             resetPassword(foundUser.email, req.body.newPassword).then((username) => {
                                 forgotPasswordUser.deleteOne({ "user_name": username }, (err) => {
                                     if (err) {
                                         res.send(err);
                                     } else {
-                                        console.log("Deleted from forgotten table");
                                         res.status(200).send({
                                             "status": "error",
                                             "body": "Invalid input"
@@ -434,12 +430,12 @@ router.post('/resetPassword', (req, res, next) => {
                             });
                         });
 
+                    } else {
+                        res.status(401).send({
+                            "status": "error",
+                            "body": "User does not exist"
+                        });
                     }
-                    console.log("no matches");
-                    res.status(401).send({
-                        "status": "error",
-                        "body": "no matches"
-                    });
                 });
 
             } else {
@@ -448,9 +444,15 @@ router.post('/resetPassword', (req, res, next) => {
                     "body": "Invalid input"
                 });
             }
+        } else {
+            res.status(401).send({
+                "status": "error",
+                "body": "Invalid Url"
+            });
         }
 
     } else {
+        console.log("invalid input");
         res.status(401).send({
             "status": "error",
             "body": "Invalid input"
@@ -525,7 +527,7 @@ function resetPassword(email, newPassword) {
 function sendEmail(email, subject, body) {
     return new Promise((resolve, reject) => {
         const spawn = require("child_process").spawn;
-        const pythonProcess = spawn('python', ["emailService/sendEmail.py", email, subject, body]);
+        const pythonProcess = spawn('python3', ["emailService/sendEmail.py", email, subject, body]);
         pythonProcess.stdout.on('data', (data) => {
             console.log(data.toString());
             resolve()
@@ -537,16 +539,18 @@ function sendEmail(email, subject, body) {
 }
 
 function validateInput(input, type) {
+    const conditions = ["\"", "<", ">", "'", "`"];
     /**
      * Validate the password and usernames kind of
      */
-    if (type === 'password') {
+    if (type == 'password') {
         if (input.length > 8) {
-            conditions = [];
             let test2 = conditions.some(el => input.includes(el));
-            return true;
-        } else {
-            return false;
+            if (test2) {
+                return false;
+            } else {
+                return true;
+            }
         }
     } else if (type == "username") {
         if (input.length < 32 && input.length > 0) {
@@ -554,14 +558,16 @@ function validateInput(input, type) {
         } else {
             return false;
         }
-    } else if (type === "url") {
-        if (encodeURIComponent(input) == input) {
-            return true;
-        } else {
+    } else if (type == 'url') {
+        let test2 = conditions.some(el => input.includes(el));
+        if (test2) {
             return false;
+        } else {
+            return true;
         }
     }
 }
+
 
 function isPasswordCompromised(input) {
     return new Promise((resolve, reject) => {
