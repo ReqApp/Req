@@ -8,28 +8,93 @@
   "schemes": [
     "https"
   ],
+  "tags": [
+    {
+      "name": "Betting APIs",
+      "description": "Stored in routes/bets.js"
+    },
+    {
+      "name": "User APIs",
+      "description": "Stored in routes/users.js"
+    },
+    {
+      "name": "Testing and Debugging APIs"
+    },
+    {
+      "name": "Index APIs",
+      "description": "Stored in routes/index.js"
+    }
+  ],
   "host": "localhost",
   "basePath": "/",
   "paths": {
-    "/getBets": {
-      "get": {
-        "summary": "Returns available bets",
+    "/addBetToDataBase": {
+      "post": {
+        "summary": "Takes bet object and stores it in database",
         "tags": [
           "Betting APIs"
         ],
-        "description": "Calculates distance between user and bet centre. If distance is less than or equal to bet radius the bet is sent back",
+        "description": "Stores bet object in bet collection",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/betSchema"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved bet object with added mongoose _id field",
+            "schema": {
+              "$ref": "#/definitions/betSchema"
+            }
+          }
+        }
+      }
+    },
+    "/addBettingRegion": {
+      "post": {
+        "summary": "Adds betting region to database",
+        "tags": [
+          "Betting APIs"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/bettingRegionSchema"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved region with added _id",
+            "schema": {
+              "$ref": "#/definitions/bettingRegionSchema"
+            }
+          }
+        }
+      }
+    },
+    "/getBetsInRegion": {
+      "get": {
+        "summary": "Returns available bets in region",
+        "tags": [
+          "Betting APIs"
+        ],
+        "description": "Finds bets created in a region using the region ID.",
         "parameters": [
           {
             "in": "query",
-            "name": "latitude",
-            "type": "number",
-            "description": "User's latitude"
-          },
-          {
-            "in": "query",
-            "name": "longitude",
-            "type": "number",
-            "description": "User's latitude"
+            "name": "id",
+            "type": "string",
+            "description": "ID of parent region",
+            "required": true
           }
         ],
         "responses": {
@@ -38,42 +103,532 @@
             "schema": {
               "type": "array",
               "items": {
-                "properties": {
-                  "_id": {
-                    "type": "object"
-                  },
-                  "title": {
-                    "type": "string"
-                  },
-                  "location_Name": {
-                    "type": "string"
-                  },
-                  "latitude": {
-                    "type": "number"
-                  },
-                  "longitude": {
-                    "type": "number"
-                  },
-                  "radius": {
-                    "type": "number"
-                  }
-                }
+                "$ref": "#/definitions/betSchema"
               }
             }
           }
         }
       }
     },
-    "/createBet": {
-      "post": {
-        "summary": "Adds new bet to database",
+    "/getBettingRegions": {
+      "get": {
+        "summary": "Gets bettings regions available to user",
         "tags": [
           "Betting APIs"
         ],
-        "description": "Takes new bet and adds it to betting database",
+        "description": "Calculates distance between user and centre of bet region using Haversine formula. If calculated distance is less than or equal to the bet region radius it is added to an array of response bet regions.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "latitude",
+            "type": "number",
+            "required": true,
+            "description": "Latitude of user"
+          },
+          {
+            "in": "query",
+            "name": "longitude",
+            "type": "number",
+            "required": true,
+            "description": "Longitude of user"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "An array of bet region objects",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/bettingRegionSchema"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getRegionByID": {
+      "get": {
+        "summary": "Gets specific region",
+        "tags": [
+          "Betting APIs"
+        ],
+        "description": "Finds and returns bet region using id",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Specified bet region",
+            "schema": {
+              "$ref": "#/definitions/bettingRegionSchema"
+            }
+          }
+        }
+      }
+    },
+    "/addBetToRegion": {
+      "put": {
+        "summary": "Adds bet to region",
+        "tags": [
+          "Betting APIs"
+        ],
+        "description": "Adds bet id to the array of child bet ids in the bet region specified. Also increments the number of bets field in region.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "IDs of region and bet",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "regionID": {
+                  "type": "string"
+                },
+                "betID": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated bet region",
+            "schema": {
+              "$ref": "#/definitions/bettingRegionSchema"
+            }
+          }
+        }
+      }
+    },
+    "/addMultBets": {
+      "post": {
+        "summary": "Adds multiple bets to database",
+        "tags": [
+          "Testing and Debugging APIs"
+        ],
+        "description": "Takes array of bets and stores them in database. Used to auto-generate bets.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "Array of bet objects",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/betSchema"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stored bets",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/betSchema"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/addMultRegions": {
+      "post": {
+        "summary": "Adds multiple bet regions to database",
+        "tags": [
+          "Testing and Debugging APIs"
+        ],
+        "description": "Takes an array of bet regions and adds them to database. Used to auto-generate betting regions.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "Array of betting regions",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/bettingRegionSchema"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stored regions",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/bettingRegionSchema"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/addMultBetsToRegion": {
+      "put": {
+        "summary": "Adds multiple bets to bet region",
+        "tags": [
+          "Testing and Debugging APIs"
+        ],
+        "description": "Adds ids of multiple bets to bet ids array in specific bet region. Incremements counter of number of bets by the number of bets added.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "Array of bet IDs and ID of bet region",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "regionID": {
+                  "type": "string"
+                },
+                "bets": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated bet region",
+            "schema": {
+              "$ref": "#/definitions/bettingRegionSchema"
+            }
+          }
+        }
+      }
+    },
+    "/users/register": {
+      "post": {
+        "summary": "Allows user to create account",
+        "tags": [
+          "User APIs"
+        ],
+        "description": "Sets up user's account",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "User credentials",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_name": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User account created",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Reset link sent to email",
+            "schema": {
+              "$ref": "#/definitions/bettingRegionSchema"
+            }
+          },
+          "401": {
+            "description": "User account could not be created",
+            "schema": {
+              "$ref": "#/definitions/bettingRegionSchema"
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "summary": "Allows user to login",
+        "tags": [
+          "User APIs"
+        ],
+        "description": "Allows user login if Username and password are valid.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_name": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User successfully logged in",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User could not be logged in",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/users/verifyAccount": {
+      "post": {
+        "summary": "Allows user to activate their account",
+        "tags": [
+          "User APIs"
+        ],
+        "description": "Allows user to enter verification code. If the code exists for a user, the user's account is fully activated and added to the database.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "activationCode": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account successfully activated",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Account not successfully activated",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/users/forgotPassword": {
+      "post": {
+        "summary": "Allows user to change password",
+        "tags": [
+          "User APIs"
+        ],
+        "description": "On success, sends email to user with link to reset their password.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email link successfully sent to user.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "401": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/users/resetPassword": {
+      "post": {
+        "summary": "Handles password reset from user",
+        "tags": [
+          "User APIs"
+        ],
+        "description": "Allows user to change password from link sent to their email.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "newPassword": {
+                  "type": "string"
+                },
+                "fromURL": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password changed",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "401": {
+            "description": "Invalid input",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/createArticleBet": {
+      "post": {
+        "summary": "Create new article bet",
+        "tags": [
+          "Index APIs"
+        ],
+        "description": "Allows user to create new article bet",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "betType": {
+                  "type": "string"
+                },
+                "sitename": {
+                  "type": "string"
+                },
+                "directory": {
+                  "type": "string"
+                },
+                "month": {
+                  "type": "string"
+                },
+                "year": {
+                  "type": "string"
+                },
+                "searchTerm": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bet created",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error",
+            "schema": {
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid data",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/getTime": {
+      "get": {
+        "summary": "Gets current time from server",
+        "tags": [
+          "Index APIs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Current time object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "currentTime": {
+                  "type": "object"
+                }
+              }
+            }
           }
         }
       }
@@ -128,7 +683,7 @@
         },
         "radius": {
           "type": "number",
-          "example": "200(m)"
+          "example": 200
         },
         "num_bets": {
           "type": "number",
@@ -279,6 +834,19 @@
         },
         "timePosted": {
           "type": "string"
+        }
+      }
+    },
+    "rest_API_Response": {
+      "description": "Format used to send response messages from server to client",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "error"
+        },
+        "body": {
+          "type": "string",
+          "example": "Invalid input"
         }
       }
     }
