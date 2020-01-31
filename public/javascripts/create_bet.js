@@ -1,3 +1,23 @@
+class CreateBetMap extends Map{
+    constructor(domID, options){
+        super(domID, options);
+        $(window).on('locRetrieved', this.showUserLocation.bind(this));
+    }
+    // Add marker to display user's location
+    showUserLocation(userLocation){
+        console.log(userLocation.location);
+        this.userLatLng = userLocation.location.latlng;
+        L.marker(this.userLatLng).addTo(this.map);
+    }
+    // Testing function to manually set user's location
+    set userPos(pos){
+        this.userLatLng = pos;
+    }
+    get latLng(){
+        return this.userLatLng;
+    }
+}
+
 const MIN_BET_RAD = 20;
 
 // Visual elements of bet
@@ -12,7 +32,22 @@ var radiusDOM;
 // Object containing information about bet
 var betData = {title : 'New Bet', location_Name: 'location', latitude : 0, longitude : 0, radius: DEFAULT_RAD};
 
-$(document).ready(function(){
+$(document).ready(function(){    
+    betMap = new CreateBetMap('mapID', options);
+    betMap.createMap();
+    betMap.locateUser();
+    $(window).on('locRetrieved', getAvailableRegions(betMap.latLng));
+    getAvailableRegions(betMap.latLng);
+
+    // Retrieve available bet regions
+    // Plot regions on map
+
+    // Allow user to select region
+    // Hide other bet regions from map
+    
+
+
+    /*
     // Get input elements
     betNameDOM = $('#betName');
     locationDOM = $('#location');
@@ -36,6 +71,7 @@ $(document).ready(function(){
     // Add bet to database
     $('#createBet').click(addBetToDataBase);
     $('#createBetRegion').click(addNewBetRegion);
+    */
 });
 
 // Retrieve regions where user is located in from database
@@ -44,7 +80,7 @@ function getAvailableRegions(userPos){
     var locData = setLocation(userPos);
 
     // Send user location to server
-    $.get('/getBettingRegions', {latitude : locData.latitude, longitude : locData.longitude }, function(betRegions, status, XHR){
+    $.get('/getBettingRegions', { latitude : locData.latitude, longitude : locData.longitude }, function(betRegions, status, XHR){
         // Check if any regions available
         if(Array.isArray(betRegions) && betRegions.length){
             $('#selectRegion').html('<select id="dropDown"></select>')

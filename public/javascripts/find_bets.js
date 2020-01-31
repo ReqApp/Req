@@ -48,10 +48,12 @@ function getBetRegions(latLng){
                 console.log("Returned bets");
                 console.log(bets);
                 // Add bets to map
+
+                addBetsToMap(bets);
+
             });
         });
     });
-
 }
 
 // Visually display bet regions on map

@@ -7,7 +7,43 @@ const METADATA = { attribution : 'Map data &copy; <a href="https://www.openstree
 var locateSettings = {setView: true, watch:false, enableHighAccuracy:true}
 const DEFAULT_RAD = 100;
 
+
 var map;
+
+const options = {
+     TILESRC : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+     METADATA : { attribution : 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors' },
+     LOCATE_SETTINGS : { setView : true, watch : false, enableHighAccuracy : true }
+}
+
+class Map {
+    constructor(domID, options){
+        this.options = options;
+        this.id = domID;
+        this.map;
+        this.betRegionLayer = L.layerGroup();
+        this.betLayer = L.layerGroup();
+    }
+    // Function to load map into DOM
+    createMap(){
+        this.map = L.map(this.id);
+        L.tileLayer(options.TILESRC, options.METADATA).addTo(this.map);
+    }
+    // Obtain user's location
+    locateUser(){
+        this.map.locate(options.LOCATE_SETTINGS).on('locationfound', this.locationReceived).on('locationerror', function(err){
+            console.log('Could not obtain user location');
+        });
+    }
+    // Publish user location found event
+    locationReceived(location){
+        var evt = $.Event('locRetrieved');
+        evt.location = location;
+        console.log(location);
+        $(window).trigger(evt);
+    }
+    
+}
 
 function loadMap(mapID){
     // Create map
@@ -17,6 +53,7 @@ function loadMap(mapID){
         console.log(err);
         alert("Could not find location");
     });
+    
 }
 
 function createMap(location){
