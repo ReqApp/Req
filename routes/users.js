@@ -389,73 +389,92 @@ router.post('/forgotPassword', (req, res, next) => {
 });
 
 router.post('/resetPassword', (req, res, next) => {
-    if (req.body.newPassword && req.body.fromUrl) {
+    let run = true;
 
-        if (validateInput(req.body.fromUrl, 'url')) {
-            if (validateInput(req.body.newPassword, "password")) {
+    if (!req.body.newPassword) { 
+        res.status(401).send({
+            "status": "error",
+            "body": "Invalid password input"
+        });
+        console.log("pass or url not here");
+        run = false;
+    }
+    if (!req.body.fromUrl) { 
+        res.status(401).send({
+            "status": "error",
+            "body": "Invalid Url"
+        });
+        console.log("pass or url not here");
+        run = false;
+    }
 
-                forgotPasswordUser.findOne({ resetUrl: req.body.fromUrl }, (err, foundUser) => {
-                    if (err) {
-                        res.status(401).json({
-                            "status": "error",
-                            "body": err
-                        });
-                    }
-                    if (foundUser) {
-                        isPasswordCompromised(req.body.newPassword).then((data) => {
-                            if (data) {
-                                const resArray = ["365online.com", "paypal.com", "wish.com", "https://onlinebanking.aib.ie/", "facebook.com", "gmail.com",
-                                                "twitter.com", "stripe.com", "blackboard.nuigalway.ie", "instagram.com"
-                                                ];
-                                res.status(401).json({
-                                    "status": "error",
-                                    "body": `This password has been previously used on ${resArray[Math.floor(Math.random()*resArray.length)]}. This incident has been reported to an administrator`
-                                });
-                            }
-                        }, (err) => {
-                            resetPassword(foundUser.email, req.body.newPassword).then((username) => {
-                                forgotPasswordUser.deleteOne({ "user_name": username }, (err) => {
-                                    if (err) {
-                                        res.send(err);
-                                    } else {
-                                        res.status(200).send({
-                                            "status": "error",
-                                            "body": "Invalid input"
-                                        });
-                                    }
-                                });
-                            }, (err) => {
-                                console.log(err);
-                            });
-                        });
-
-                    } else {
-                        res.status(401).send({
-                            "status": "error",
-                            "body": "User does not exist"
-                        });
-                    }
-                });
-
-            } else {
-                res.status(401).send({
-                    "status": "error",
-                    "body": "Invalid input"
-                });
-            }
-        } else {
-            res.status(401).send({
-                "status": "error",
-                "body": "Invalid Url"
-            });
-        }
-
-    } else {
+    if (!validateInput(req.body.fromUrl, 'url') && run) { 
+        res.status(401).send({
+            "status": "error",
+            "body": "Invalid Url"
+        });
+        console.log("url not ok");
+        run = false;
+    }
+    if (!validateInput(req.body.newPassword, "password") && run) { 
         res.status(401).send({
             "status": "error",
             "body": "Invalid input"
         });
+        console.log("new pass not ok");
+        run = false;
     }
+    console.log(`Run is ${run} before`);
+        if (run) {
+            console.log(`Run is ${run} after`);
+            forgotPasswordUser.findOne({ resetUrl: req.body.fromUrl }, (err, foundUser) => {
+                if (err) {
+                    // res.send(err);
+                    res.status(401).json({
+                        "status": "error",
+                        "body": err
+                    });
+                    console.log("sending error");
+                }
+                if (foundUser) {
+                    isPasswordCompromised(req.body.newPassword).then((data) => {
+                        if (data) {
+                            const resArray = ["365online.com", "paypal.com", "wish.com", "https://onlinebanking.aib.ie/", "facebook.com", "gmail.com",
+                                            "twitter.com", "stripe.com", "blackboard.nuigalway.ie", "instagram.com"
+                                            ];
+                            console.log("sending scary message");
+                            res.status(401).json({
+                                "status": "error",
+                                "body": `This password has been previously used on ${resArray[Math.floor(Math.random()*resArray.length)]}. This incident has been reported to an administrator`
+                            });
+                        }
+                    }, (err) => {
+                        resetPassword(foundUser.email, req.body.newPassword).then((username) => {
+                            forgotPasswordUser.deleteOne({ "user_name": username }, (err) => {
+                                if (err) {
+                                    res.send(err);
+                                } else {
+                                    console.log("sending correct")
+                                    res.status(200).send({
+                                        "status": "error",
+                                        "body": "deleted entry in forgotten"
+                                    });
+                                }
+                            });
+                        }, (err) => {
+                            console.log(err);
+                        });
+                    });
+    
+                } else {
+                    console.log("sending user not exists");
+                    res.status(401).send({
+                        "status": "error",
+                        "body": "User does not exist"
+                    });
+                }
+            });
+        }
 });
 
 function createJwt(profile) {
@@ -549,6 +568,8 @@ function validateInput(input, type) {
             } else {
                 return true;
             }
+        } else {
+            return false;
         }
     } else if (type == "username") {
         if (input.length < 32 && input.length > 0) {
