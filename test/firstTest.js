@@ -96,21 +96,7 @@ describe("Login Testing", () => {
                     expect(res.body.body).to.equals("Invalid input");
                     done();
                 });
-        }),
-        it("Invalid params", done => {
-            chai
-                .request(app)
-                .post("/users/verifyAccount")
-                .send({
-                    "user_name":"nothingInteresting"
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(401);
-                    expect(res.body.status).to.equals("error");
-                    expect(res.body.body).to.equals("Invalid input");
-                    done();
-                })
-        }),
+        })
         // it("Password injection", done => {
         //     chai
         //         .request(app)
@@ -126,60 +112,6 @@ describe("Login Testing", () => {
         //             done();
         //         });
         // }),
-        it("Invalid params", done => {
-            chai
-                .request(app)
-                .post("/users/verifyAccount")
-                .end((err, res) => {
-                    expect(res).to.have.status(401);
-                    expect(res.body.status).to.equals("error");
-                    expect(res.body.body).to.equals("Invalid input");
-                    done();
-                });
-        }),
-        it("Code injection", done => {
-            chai
-                .request(app)
-                .post("/users/verifyAccount")
-                .send({
-                    "activationCode":"db.collection.drop()"
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(401);
-                    expect(res.body.status).to.equals("error");
-                    expect(res.body.body).to.equals("Invalid input");
-                    done();
-                })
-        }),
-        it("Code injection", done => {
-        chai
-            .request(app)
-            .post("/users/verifyAccount")
-            .send({
-                "activationCode":"db.collection.deleteMany"
-            })
-            .end((err, res) => {
-                expect(res).to.have.status(401);
-                expect(res.body.status).to.equals("error");
-                expect(res.body.body).to.equals("Invalid input");
-                done();
-            })
-        }),
-        it("Invalid params", done => {
-            chai
-                .request(app)
-                .post("/users/resetPassword")
-                .send({
-                    "newPassword":"jellyfisherman",
-                    "fromUrl":"youtube.com"
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(401);
-                    expect(res.body.status).to.equals("error");
-                    expect(res.body.body).to.equals("User does not exist");
-                    done();
-                })
-            })
 });
 
 describe("Register Testing", () => { 
@@ -257,9 +189,110 @@ describe("Register Testing", () => {
             .end((err, res) => {
                 expect(res).to.have.status(401);
                 expect(res.body.status).to.equals("error");
-                expect(res.body.body).to.equals("Invalid characters in password");
+                expect(res.body.body).to.equals("Password must be more than 8 characters in length");
                 done();
             });
+    })
+});
+
+
+describe("Password Reset", () => {
+    it("Invalid Url", done => {
+        chai
+            .request(app)
+            .post("/users/resetPassword")
+            .end((err, res) => {
+                expect(res).to.have.status(401);
+                expect(res.body.status).to.equals("error");
+                expect(res.body.body).to.equals("Invalid input");
+                done();
+            });
+    }),
+    it("Injection", done => {
+        chai
+            .request(app)
+            .post("/users/resetPassword")
+            .send({
+                "newPassword":`"console.log('Injection')`,
+                "fromUrl":"http://localhost:8673/resetPassword"
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(401);
+                expect(res.body.status).to.equals("error");
+                expect(res.body.body).to.equals("Invalid input");
+                done();
+            });
+    }),
+    it("Invalid params", done => {
+        chai
+            .request(app)
+            .post("/users/resetPassword")
+            .send({
+                "newPassword":"jellyfisherman",
+                "fromUrl":"youtube.com"
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(401);
+                expect(res.body.status).to.equals("error");
+                expect(res.body.body).to.equals("User does not exist");
+                done();
+            })
+        })
+});
+
+describe("Verify Account", () => {
+    it("Invalid params", done => {
+        chai
+            .request(app)
+            .post("/users/verifyAccount")
+            .end((err, res) => {
+                expect(res).to.have.status(401);
+                expect(res.body.status).to.equals("error");
+                expect(res.body.body).to.equals("Invalid input");
+                done();
+            });
+    }),
+    it("Invalid params", done => {
+        chai
+            .request(app)
+            .post("/users/verifyAccount")
+            .send({
+                "user_name":"nothingInteresting"
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(401);
+                expect(res.body.status).to.equals("error");
+                expect(res.body.body).to.equals("Invalid input");
+                done();
+            })
+    }),
+    it("Code injection", done => {
+        chai
+            .request(app)
+            .post("/users/verifyAccount")
+            .send({
+                "activationCode":"db.collection.drop()"
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(401);
+                expect(res.body.status).to.equals("error");
+                expect(res.body.body).to.equals("Invalid input");
+                done();
+            })
+    }),
+    it("Code injection", done => {
+    chai
+        .request(app)
+        .post("/users/verifyAccount")
+        .send({
+            "activationCode":"db.collection.deleteMany"
+        })
+        .end((err, res) => {
+            expect(res).to.have.status(401);
+            expect(res.body.status).to.equals("error");
+            expect(res.body.body).to.equals("Invalid input");
+            done();
+        })
     })
 });
 

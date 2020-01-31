@@ -396,7 +396,6 @@ router.post('/resetPassword', (req, res, next) => {
 
                 forgotPasswordUser.findOne({ resetUrl: req.body.fromUrl }, (err, foundUser) => {
                     if (err) {
-                        // res.send(err);
                         res.status(401).json({
                             "status": "error",
                             "body": err
@@ -452,7 +451,6 @@ router.post('/resetPassword', (req, res, next) => {
         }
 
     } else {
-        console.log("invalid input");
         res.status(401).send({
             "status": "error",
             "body": "Invalid input"
