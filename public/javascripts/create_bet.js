@@ -13,116 +13,133 @@ class CreateBetMap extends Map{
     get userLocation(){
         return this._userLocation;
     }
-
 }
 
 const MIN_BET_RAD = 20;
 
-// Visual elements of bet
-var area;
-var marker;
-
-// User input DOM elements
-var betNameDOM;
-var locationDOM;
-var radiusDOM;
-
 // Object containing information about bet
 var betData = {title : 'New Bet', location_Name: 'location', latitude : 0, longitude : 0, radius: DEFAULT_RAD};
 
-$(document).ready(async () => {    
+$(document).ready(async () => {
+    // Map setup
     betMap = new CreateBetMap('mapID', options);
     betMap.createMap();
-    var result = await betMap.locateUser();
 
-    // Check if valid location returned
-    if(('lat' in result) && ('lng' in result)){
-        betMap.userLocation = result;
-        console.log(result);
-    }else{
-        console.log("Could not find user location")
-        console.log(result.message);
-    }
+    // Get input DOM elements
+    var betNameDOM = $('#betName');
+    var locationDOM = $('#location');
+    var radiusDOM = $('#rad');
+    var selectRegionDOM = $('#selectRegion');
 
-    // Manually set user location
-    betMap.userLocation = setLocation(betMap.userLocation);
-    betMap.showUserLocation(betMap.userLocation);
+    // Small delay for stability
+    window.setTimeout(async () => {
+        var result = await betMap.locateUser();
 
+        // Check if valid location returned
+        if('latlng' in result){
+            // Manually set user location
+            result.latlng = setLocation(result.latlng);
+            result.accuracy = 40;
+            // Check for location accuracy
+            if(result.accuracy > 100){
+                console.log("Your location could not be accuratly determined");
+            }else{
+                betMap.userLocation = result.latlng;
+            }
+        }else{
+            console.log("Could not find user location")
+            console.log(result.message);
+        }
     
+        betMap.showUserLocation(betMap.userLocation);
+        const zoomDuration = 1;
+        betMap.map.flyTo(betMap.userLocation, 15, {animate : true, duration: zoomDuration, easeLinearity : .43});
 
-    //getAvailableRegions(betMap.latLng);
+        setDOMDefaultValues(betNameDOM, locationDOM, radiusDOM, betMap.userLocation);
+    
+        // Get betting regions
+        // TODO update docs on query params change
+        var regions = await getBettingRegions(betMap.userLocation);
+        console.log(regions);
+        
+        // Check if user is in one or more bet regions
+        if(Array.isArray(regions) && regions.length){
+            betMap.displayBetRegions(regions, 'selectRegion', zoomDuration);
+        } else{
+            console.log("No available betting regions")
+        }
 
-    // Retrieve available bet regions
-    // Plot regions on map
+        // Create Bet/Bet region listeners
+        $('#createBet').click(addBetToDataBase);
+        $('#createBetRegion').click(addNewBetRegion);
 
-    // Allow user to select region
-    // Hide other bet regions from map
-    
+        
+        selectRegionDOM.change(() => {
+            var id = selectRegionDOM.val()
+            if(id != 'null'){
+                var layersToRemove = [];
+                betMap.betRegionLayer.eachLayer((layer) => {
+                    console.log("Leaflet id: " + layer._leaflet_id);
+                    console.log("Region id: " + id);
+                    if(!(layer._leaflet_id.toString() === id.toString())){
+                        layersToRemove.push(layer._leaflet_id);
+                    }else{
+                        console.log("Not equal");
+                    }
+                });
+                layersToRemove.forEach((id) =>{
+                    betMap.betRegionLayer.removeLayer(id);
+                });
+                console.log("Test");
+                betMap.betRegionLayer.addTo(betMap.map);
+            }
+        });
 
+        // Update popUp when input fields are changed
+        locationDOM.keyup(function(){
+            betData.location = locationDOM.val();
+            marker._popup.setContent(formatPopUp(betData));
+        });
+        
+        betNameDOM.keyup(function(){
+            betData.title = betNameDOM.val();
+            marker._popup.setContent(formatPopUp(betData));
+        });
+        
+        radiusDOM.keyup(function(){
+            betData.radius = radiusDOM.val();
+            marker._popup.setContent(formatPopUp(betData));
+            var val = parseInt(radiusDOM.val());
+            if(val >= MIN_BET_RAD){
+                area.setRadius(parseInt(radiusDOM.val()));
+            }
+        });
 
-    /*
-    // Get input elements
-    betNameDOM = $('#betName');
-    locationDOM = $('#location');
-    radiusDOM = $('#rad');
-    
-    // Set default bet data
-    betNameDOM.val(betData.title);
-    radiusDOM.val(betData.radius);
-    
-    loadMap('mapID'); // Function located in maps.js
-    
-    // Wait for user position to be obtained
-    $(window).on('locRetrieved', function (data) {
-        console.log('locRetrieved', data.location);
-        // TODO
-            // When user makes new region display immediatley on map
-        getAvailableRegions(data.location);
-        addMapMarkers(data.location);
-    });
-    
-    // Add bet to database
-    $('#createBet').click(addBetToDataBase);
-    $('#createBetRegion').click(addNewBetRegion);
-    */
+    }, 200);
 });
 
-// Retrieve regions where user is located in from database
-function getAvailableRegions(userPos){
-    // Testing code
-    var locData = setLocation(userPos);
-
-    // Send user location to server
-    $.get('/getBettingRegions', { latitude : locData.latitude, longitude : locData.longitude }, function(betRegions, status, XHR){
-        // Check if any regions available
-        if(Array.isArray(betRegions) && betRegions.length){
-            $('#selectRegion').html('<select id="dropDown"></select>')
-            displayRegions(betRegions);
-        }else{
-            console.log("There are no current betting regions in your area.");
-            // Allow user to define new region
+function setDOMDefaultValues(name, location, rad, userLocation){
+    name.val('New Bet');
+    rad.val('50');
+    console.log(userLocation);
+    // Reverse geocode lat and lng to predict location name of bet/betRegion
+    $.ajax('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=' + userLocation.lat + '&longitude=' + userLocation.lng + '&localityLanguage=en', 
+    { 
+        success : (data) => {
+            var len = data.localityInfo.informative.length;
+            var predictedLocation = data.localityInfo.informative[len - 1].name;
+            location.val(predictedLocation);
+        },
+        error: (jqXHR, exception) => {
+            console.log("Location could not be found");
         }
-    }, 'json');
+    });
 }
 
-// Visually show existing regions on map where user in located in
-function displayRegions(betRegions){
-    // Add marker, circle and popup to map to denote region
-    betRegions.forEach(betRegion => {
-        var latLng = L.latLng(betRegion.latitude, betRegion.longitude);
-        var marker = L.marker(latLng);
-        marker.bindPopup(betRegion.region_name, {closeButton : false});
-        var circle = L.circle(latLng, {
-            color : 'red',
-            fillColor : 'red',
-            fillOpacity : 0.2,
-            radius : 0
-        });
-        marker.addTo(map);
-        circle.addTo(map);
-        betRegionCircle = new BetArea(circle);
-        betRegionCircle.expand(betRegion.radius);
-        $('#dropDown').html('<option value=' + betRegion._id + '>' + betRegion.region_name + '</option>');
+// Get available regions from database
+function getBettingRegions(location){  
+    return new Promise((resolve, reject) => {
+        $.get('/getBettingRegions', {lat : location.lat, lng: location.lng}, (betRegions) =>  resolve(betRegions), 'json').fail(() => reject("Error"));
     });
 }
 

@@ -117,14 +117,14 @@ bets.get('/getBettingRegions', function(req, res, next){
     // Perform calculations server-side to increase perfromance
     BetRegion.find({}).exec(function(err, betRegions){
         if(err){
-            throw(err);
+            res.json(err);
         }else{
             //console.log(betRegions);
             var regionsToSend = [];
             const LEN = betRegions.length;
             for(var i = 0; i < LEN; i++){
                 var betRegion = betRegions.pop();
-                var d = calcDistance({lat : betRegion.latitude, lng : betRegion.longitude}, {lat : req.query.latitude, lng : req.query.longitude});
+                var d = calcDistance({lat : betRegion.latitude, lng : betRegion.longitude}, {lat : req.query.lat, lng : req.query.lng});
                 // Convert kilometers to metres
                 if((d * 1000) <= betRegion.radius){
                     regionsToSend.push(betRegion);
