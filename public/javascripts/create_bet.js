@@ -1,21 +1,19 @@
 class CreateBetMap extends Map{
     constructor(domID, options){
         super(domID, options);
-        $(window).on('locRetrieved', this.showUserLocation.bind(this));
     }
     // Add marker to display user's location
     showUserLocation(userLocation){
-        console.log(userLocation.location);
-        this.userLatLng = userLocation.location.latlng;
-        L.marker(this.userLatLng).addTo(this.map);
+        L.marker(this.userLocation).addTo(this.map);
     }
     // Testing function to manually set user's location
-    set userPos(pos){
-        this.userLatLng = pos;
+    set userLocation(position){
+        this._userLocation = position;
     }
-    get latLng(){
-        return this.userLatLng;
+    get userLocation(){
+        return this._userLocation;
     }
+
 }
 
 const MIN_BET_RAD = 20;
@@ -32,12 +30,27 @@ var radiusDOM;
 // Object containing information about bet
 var betData = {title : 'New Bet', location_Name: 'location', latitude : 0, longitude : 0, radius: DEFAULT_RAD};
 
-$(document).ready(function(){    
+$(document).ready(async () => {    
     betMap = new CreateBetMap('mapID', options);
     betMap.createMap();
-    betMap.locateUser();
-    $(window).on('locRetrieved', getAvailableRegions(betMap.latLng));
-    getAvailableRegions(betMap.latLng);
+    var result = await betMap.locateUser();
+
+    // Check if valid location returned
+    if(('lat' in result) && ('lng' in result)){
+        betMap.userLocation = result;
+        console.log(result);
+    }else{
+        console.log("Could not find user location")
+        console.log(result.message);
+    }
+
+    // Manually set user location
+    betMap.userLocation = setLocation(betMap.userLocation);
+    betMap.showUserLocation(betMap.userLocation);
+
+    
+
+    //getAvailableRegions(betMap.latLng);
 
     // Retrieve available bet regions
     // Plot regions on map
@@ -227,12 +240,11 @@ function formatPopUp(betData){
 // DEBUG function for setting user position
 function setLocation(position){
 
-    position.latitude = 53.337840;
-    position.longitude = -9.180165;
-    /*
-    position.latitude = 53.282110;
-    position.longitude = -9.062186;
-    */
-    position.accuracy = 40;
+    //position.lat = 53.337840;
+    //position.lng = -9.180165;
+    
+    position.lat = 53.282110;
+    position.lng = -9.062186;
+    
     return position;
 }

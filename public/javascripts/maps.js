@@ -21,6 +21,7 @@ class Map {
         this.options = options;
         this.id = domID;
         this.map;
+        this.userLocation = null;
         this.betRegionLayer = L.layerGroup();
         this.betLayer = L.layerGroup();
     }
@@ -30,19 +31,13 @@ class Map {
         L.tileLayer(options.TILESRC, options.METADATA).addTo(this.map);
     }
     // Obtain user's location
-    locateUser(){
-        this.map.locate(options.LOCATE_SETTINGS).on('locationfound', this.locationReceived).on('locationerror', function(err){
-            console.log('Could not obtain user location');
+    async locateUser(){
+        var promise = new Promise((resolve, reject) => {
+            this.map.locate(options.LOCATE_SETTINGS).on('locationfound', (location) =>  resolve(location.latlng)).on('locationerror', (err) => reject(err));
         });
+        var result = await promise;
+        return result;
     }
-    // Publish user location found event
-    locationReceived(location){
-        var evt = $.Event('locRetrieved');
-        evt.location = location;
-        console.log(location);
-        $(window).trigger(evt);
-    }
-    
 }
 
 function loadMap(mapID){
