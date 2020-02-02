@@ -37,14 +37,25 @@ router.post('/uploadImage', upload.single('imageUpload'), (req, res, next) => {
 
         uploadToImgur(req.file.path).then((response) => {
             if (response) {
-                console.log(response);
-                res.status(200).json({
-                    "status": response
+                checkImage(response).then((success) => {
+                    if (success) {
+                        // Image is safe
+                        res.status(200).json({
+                            "status": response
+                        });
+                    } else {
+                        // Image is NSFW
+                    }
+                }, (err) => {
+                    res.status(400).json({
+                        "status": "error",
+                        "body": "Please choose another image"
+                    });
                 });
             } else {
                 res.status(401).json({
                     "status": "error",
-                    "body": "invalid image"
+                    "body": "Invalid image"
                 });
             }
         }).then(() => {
@@ -58,33 +69,60 @@ router.post('/uploadImage', upload.single('imageUpload'), (req, res, next) => {
     } else {
         res.status(401).json({
             "status": "error",
-            "body": "invalid image"
+            "body": "Invalid image"
         });
     }
 });
 
-router.post('/checkImage', (req, res, next) => {
-    const endPoint = "https://api.uploadfilter.io/v1/nudity";
+function checkImage(imageUrl) {
+    return new Promise((resolve, reject) => {
+        const endPoint = "https://api.uploadfilter.io/v1/nudity";
 
-    axios({
-        method: 'get',
-        url: endPoint,
-        headers: {
-            'apikey': process.env.uploadFilterIOAPIKey,
-            'url': req.body.Url
-        }
-    }).then((response) => {
-        res.status(200).send({
-            "status": response.data.result.value
+        axios({
+            method: 'get',
+            url: endPoint,
+            headers: {
+                'apikey': process.env.uploadFilterIOAPIKey,
+                'url': imageUrl
+            }
+        }).then((response) => {
+            if (response.data.result.value < 0.2) {
+                // if the value is < 0.2 it's classified as safe
+                console.log("safe");
+                resolve(true);
+            } else {
+                console.log("nsfw");
+                resolve(null);
+            }
+        }).catch((err) => {
+            console.log("caught err callback")
+            reject(err);
         });
-    }).catch((err) => {
-        console.log(err);
-        res.status(400).json({
-            "status": "error",
-            "body": err
-        });
-    });
-});
+    })
+}
+
+// router.post('/checkImage', (req, res, next) => {
+//     const endPoint = "https://api.uploadfilter.io/v1/nudity";
+
+//     axios({
+//         method: 'get',
+//         url: endPoint,
+//         headers: {
+//             'apikey': process.env.uploadFilterIOAPIKey,
+//             'url': req.body.Url
+//         }
+//     }).then((response) => {
+//         res.status(200).send({
+//             "status": response.data.result.value
+//         });
+//     }).catch((err) => {
+//         console.log(err);
+//         res.status(400).json({
+//             "status": "error",
+//             "body": err
+//         });
+//     });
+// });
 
 function uploadToImgur(filePath) {
     return new Promise((resolve, reject) => {
