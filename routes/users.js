@@ -1,10 +1,12 @@
 var forgotPasswordUser = require('../models/forgotPasswordUsers');
 var UnverifiedUser = require('../models/unverifiedUsers');
+const keccak512 = require('js-sha3').keccak512;
 var randomstring = require("randomstring");
 var User = require('../models/users');
 const passport = require("passport");
 var jwt = require('jsonwebtoken');
 var express = require('express');
+const axios = require("axios");
 var router = express.Router();
 var util = require('util');
 
@@ -129,65 +131,79 @@ router.post('/register', (req, res, next) => {
             });
             run = false;
         }
-        /**
-         * If no input has been invalid, continue
-         */
-        if (run) {
-            User.findOne({ "user_name": username }, (err, foundUser) => {
-                if (err) {
-                    res.send(err);
-                } else {
-                    if (foundUser) {
-                        console.log("username already here")
-                            // res.status(401).json({
-                            //     "status": "information",
-                            //     "body": "Username or email address already in use"
-                            // });
+
+
+        isPasswordCompromised(password).then((data) => {
+            if (data) {
+
+                // Credit to https://github.com/EigerEx for this idea
+                const resArray = ["365online.com", "paypal.com", "wish.com", "https://onlinebanking.aib.ie/", "facebook.com", "gmail.com",
+                    "twitter.com", "stripe.com", "blackboard.nuigalway.ie", "instagram.com"
+                ];
+
+                res.status(401).json({
+                    "status": "error",
+                    "body": `This password has been previously used on ${resArray[Math.floor(Math.random()*resArray.length)]}. This incident has been reported to an administrator`
+                });
+            }
+        }, (err) => {
+            if (run) {
+                User.findOne({ "user_name": username }, (err, foundUser) => {
+                    if (err) {
+                        res.send(err);
                     } else {
+                        if (foundUser) {
+                            res.status(401).json({
+                                "status": "information",
+                                "body": "Username or email address already in use"
+                            });
+                        } else {
 
-                        checkIfExisting(username, "unverified").then((data) => {
-                            if (data) {
-                                /**
-                                 * instead we are going to want to send an email with a code to verifiy an email address
-                                 *  then call another function to make the account
-                                 */
-                                const loginCode = randomstring.generate(6);
-                                /**
-                                 * Exec the python script to send the login code to the user
-                                 */
+                            checkIfExisting(username, "unverified").then((data) => {
+                                if (data) {
+                                    /**
+                                     * instead we are going to want to send an email with a code to verifiy an email address
+                                     *  then call another function to make the account
+                                     */
+                                    const loginCode = randomstring.generate(6);
+                                    /**
+                                     * Exec the python script to send the login code to the user
+                                     */
 
-                                sendEmail(email, `Activate your account ${data}`, loginCode.toString()).then(() => {}, (err) => {
-                                    console.log(err);
-                                });
-                                /**
-                                 * Add entry in unverified user table
-                                 */
-                                let newUser = new UnverifiedUser();
-                                newUser.user_name = username;
-                                newUser.email = email;
-                                newUser.password = newUser.generateHash(password);
-                                newUser.activationCode = loginCode;
+                                    sendEmail(email, `Activate your account ${data}`, loginCode.toString()).then(() => {
+                                        /**
+                                         * Add entry in unverified user table
+                                         */
+                                        let newUser = new UnverifiedUser();
+                                        newUser.user_name = username;
+                                        newUser.email = email;
+                                        newUser.password = newUser.generateHash(password);
+                                        newUser.activationCode = loginCode;
 
-                                newUser.save((err, user) => {
-                                    if (err) {
-                                        throw err;
-                                    }
-                                });
+                                        newUser.save((err, user) => {
+                                            if (err) {
+                                                throw err;
+                                            }
+                                        });
 
-                                // res.render('verifyAccount');
-                                // res.redirect('verifyAccount');
-                                res.status(200).send({ "status": "success" });
-                            } else {
-                                res.status(400).send({
-                                    "status": "error",
-                                    "body": "Check your email for reset link"
-                                });
-                            }
-                        });
+                                        // res.render('verifyAccount');
+                                        // res.redirect('verifyAccount');
+                                        res.status(200).send({ "status": "success" });
+                                    }, (err) => {
+                                        console.log(err);
+                                    });
+                                } else {
+                                    res.status(400).send({
+                                        "status": "error",
+                                        "body": "Check your email for reset link"
+                                    });
+                                }
+                            });
+                        }
                     }
-                }
-            });
-        }
+                });
+            }
+        });
     } else {
         res.status(401).json({
             "status": "error",
@@ -206,13 +222,16 @@ router.post('/verifyAccount', (req, res, next) => {
         const searchQuery = /^[0-9a-zA-Z]+$/;
 
         if (activationCode.match(searchQuery)) {
+            console.log(`${activationCode} matched the search query, not invalid input`);
 
             // Activation code is safe
             UnverifiedUser.findOne({ "activationCode": activationCode }, (err, foundUser) => {
                 if (err) {
                     res.send(err);
+                    console.log("err in unverified user lookup");
                 } else {
                     if (foundUser) {
+                        console.log(`Found in uverified lookup ${foundUser}`);
                         /**
                          * If the activation code exists for a user, save that user into the
                          * permanent table
@@ -301,13 +320,9 @@ router.post('/login', function(req, res, next) {
         });
     }
 });
-/**
- * change this to email to stop spam abuse
- */
 
 router.post('/forgotPassword', (req, res, next) => {
-    if (req.body.user_name)  {
-        console.log("forgot username with username inputted");
+    if (req.body.user_name) {
         if (validateInput(req.body.user_name, "username")) {
             const username = req.body.user_name;
 
@@ -363,7 +378,6 @@ router.post('/forgotPassword', (req, res, next) => {
 
         }
     } else {
-        console.log("forgot username no username inputted");
         res.status(401).send({
             "status": "error",
             "body": "Invalid input"
@@ -377,37 +391,63 @@ router.post('/resetPassword', (req, res, next) => {
         if (validateInput(req.body.fromUrl, "url")) {
 
             if (validateInput(req.body.newPassword, "password")) {
-                forgotPasswordUser.findOne({ resetUrl: req.body.fromUrl }, (err, foundUser) => {
-                    if (err) {
-                        res.send(err);
-                    }
-                    if (foundUser) {
-    
-                        resetPassword(foundUser.email, req.body.newPassword).then((username) => {
-                            forgotPasswordUser.deleteOne({ "user_name": username }, (err) => {
-                                if (err) {
-                                    res.send(err);
-                                } else {
-                                    console.log("Deleted from forgotten table");
-                                    res.status(200).send({
-                                        "status": "error",
-                                        "body": "Invalid input"
-                                    });
-                                }
-                            });
-                        }, (err) => {
-                            console.log(err);
+
+                isPasswordCompromised(req.body.newPassword).then((data) => {
+                    if (data) {
+                        // Credit to https://github.com/EigerEx for this idea
+                        const resArray = ["365online.com", "paypal.com", "wish.com", "https://onlinebanking.aib.ie/", "facebook.com", "gmail.com",
+                            "twitter.com", "stripe.com", "blackboard.nuigalway.ie", "instagram.com"
+                        ];
+
+                        res.status(401).json({
+                            "status": "error",
+                            "body": `This password has been previously used on ${resArray[Math.floor(Math.random()*resArray.length)]}. This incident has been reported to an administrator`
                         });
-    
                     }
-                });
-    
+                }, (err) => {
+                    forgotPasswordUser.findOne({ resetUrl: req.body.fromUrl }, (err, foundUser) => {
+                        if (err) {
+                            res.send(err);
+                        }
+                        if (foundUser) {
+
+                            resetPassword(foundUser.email, req.body.newPassword).then((username) => {
+                                forgotPasswordUser.deleteOne({ "user_name": username }, (err) => {
+                                    if (err) {
+                                        res.send(err);
+                                    } else {
+                                        console.log("Deleted from forgotten table");
+                                        res.status(200).send({
+                                            "status": "information",
+                                            "body": "success"
+                                        });
+                                    }
+                                });
+                            }, (err) => {
+                                console.log(err);
+                            });
+
+                        } else {
+                            res.status(401).send({
+                                "status": "error",
+                                "body": "Invalid input"
+                            });
+                        }
+                    });
+                })
+
+
             } else {
                 res.status(401).send({
                     "status": "error",
                     "body": "Invalid input"
                 });
             }
+        } else {
+            res.status(401).send({
+                "status": "error",
+                "body": "Invalid input"
+            });
         }
 
     } else {
@@ -450,10 +490,8 @@ function checkIfExisting(username, type) {
                     reject(Error(err))
                 } else {
                     if (foundUser) {
-                        console.log(`found`);
                         resolve(null);
                     } else {
-                        console.log(`not found`);
                         resolve(username);
                     }
                 }
@@ -499,30 +537,50 @@ function sendEmail(email, subject, body) {
 }
 
 function validateInput(input, type) {
+    const conditions = ["\"", "<", ">", "'", "`"];
     /**
      * Validate the password and usernames kind of
      */
-    if (type === 'password') {
+    if (type == 'password') {
         if (input.length > 8) {
-            conditions = [];
             let test2 = conditions.some(el => input.includes(el));
-            return true;
+            if (test2) {
+                return false;
+            } else {
+                return true;
+            }
         } else {
             return false;
         }
-    } else if (type == "username"){
+    } else if (type == "username") {
         if (input.length < 32 && input.length > 0) {
             return true;
         } else {
             return false;
         }
-    } else if (type === "url") {
-        if (encodeURIComponent(input) == input) {
-            return true;
-        } else {
+    } else if (type == 'url') {
+        let test2 = conditions.some(el => input.includes(el));
+        if (test2) {
             return false;
+        } else {
+            return true;
         }
     }
+}
+
+function isPasswordCompromised(input) {
+    return new Promise((resolve, reject) => {
+        const hashed = keccak512(input);
+        axios.get(`https://passwords.xposedornot.com/api/v1/pass/anon/${hashed.slice(0,10)}`).then((data) => {
+            if (data.Error) {
+                resolve(null);
+            } else {
+                resolve(true);
+            }
+        }).catch(((err) => {
+            reject(null);
+        }));
+    });
 }
 
 function verifyJwt(jwtString) {

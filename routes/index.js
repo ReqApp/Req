@@ -25,19 +25,19 @@ router.get('/home', (req, res, next) => {
 
 /*GET users, return usernames */
 router.get('/getUsers', (req, res, next) => {
-    User.find({},{user_name:1}, function (err, users) {
+    User.find({}, { user_name: 1 }, function(err, users) {
         if (err)
             res.send(err);
 
-         res.json(users);
+        res.json(users);
     });
 });
 
 /*GET user by ID, retrieves id & username */
 router.get('/getUser/:id', (req, res, next) => {
     var id = req.params.id;
-    User.find({_id:id},{user_name:1}, (function (err, users) {
-        if(err)
+    User.find({ _id: id }, { user_name: 1 }, (function(err, users) {
+        if (err)
             res.send(err);
 
         res.json(users);
@@ -45,7 +45,7 @@ router.get('/getUser/:id', (req, res, next) => {
 });
 
 router.get('/profile', function(req, res, next) {
-    res.render('profile',{ welcome: 'profile page test' });
+    res.render('profile', { welcome: 'profile page test' });
 });
 
 router.get('/createBet', function(req, res, next) {
@@ -79,13 +79,13 @@ router.get('/members', (req, res, next) => {
         res.render('home');
     }
 });
-    
-router.get('/createBet', function(req, res, next){
-    res.render('create_bet', {title: 'CreateBet'});
+
+router.get('/createBet', function(req, res, next) {
+    res.render('create_bet', { title: 'CreateBet' });
 });
 
-router.get('/findBets', function(req, res, next){
-    res.render('find_bets', {title : 'FindBets'});
+router.get('/findBets', function(req, res, next) {
+    res.render('find_bets', { title: 'FindBets' });
 });
 
 router.post('/createArticleBet', (req, res, next) => {
@@ -131,52 +131,52 @@ function verifyJwt(jwtString) {
 function makeArticleBet(input) {
     return new Promise((resolve, reject) => {
         if (input.sitename && input.directory && input.month && input.year && input.searchTerm) {
-            
+
             if (validateInput(input.sitename, "article") && validateInput(input.sitename, "article") &&
-                validateInput(input.month, "article") && validateInput(input.year, "article") && 
-                validateInput(input.searchTerm,"article")) {
-                    const child = require('child_process').execFile;
-                    const executablePath = "./articleStats/articleGetLinux";
-                    const parameters = ["-s", input.sitename, input.directory, input.month, input.year, input.searchTerm];
-        
-                    child(executablePath, parameters, function(err, data) {
-                        if (err) {
-                            console.log(err);
-                            reject(null);
-                        } else {
-                            // log to DB and then send back ok signal
-                            newBet = new articleBet();
-                            newBet.title = `[${input.sitename}] - ${input.searchTerm}`;
-                            newBet.subtext = `${input.directory} - ${input.month}/${input.year}`;
-        
-                            const date = new Date();
-                            const currDate = date.getTime();
-                            newBet.timePosted = currDate;
-        
-                            newBet.save((err, user) => {
-                                if (err) {
-                                    throw err;
-                                } else {
-                                    resolve(data.toString());
-                                }
-                            });
-                        }
-                    });
-                } else {
-                    res.status(401).send({
-                        "status":"error",
-                        "body":"Invalid characters in input"
-                    });
-                    reject(null);
-                }
-                } else {
-                    res.status(401).send({
-                        "status":"error",
-                        "body":"Invalid input"
-                    });
-                    reject(null);
-                }
-        });
+                validateInput(input.month, "article") && validateInput(input.year, "article") &&
+                validateInput(input.searchTerm, "article")) {
+                const child = require('child_process').execFile;
+                const executablePath = "./articleStats/articleGetLinux";
+                const parameters = ["-s", input.sitename, input.directory, input.month, input.year, input.searchTerm];
+
+                child(executablePath, parameters, function(err, data) {
+                    if (err) {
+                        console.log(err);
+                        reject(null);
+                    } else {
+                        // log to DB and then send back ok signal
+                        newBet = new articleBet();
+                        newBet.title = `[${input.sitename}] - ${input.searchTerm}`;
+                        newBet.subtext = `${input.directory} - ${input.month}/${input.year}`;
+
+                        const date = new Date();
+                        const currDate = date.getTime();
+                        newBet.timePosted = currDate;
+
+                        newBet.save((err, user) => {
+                            if (err) {
+                                throw err;
+                            } else {
+                                resolve(data.toString());
+                            }
+                        });
+                    }
+                });
+            } else {
+                res.status(401).send({
+                    "status": "error",
+                    "body": "Invalid characters in input"
+                });
+                reject(null);
+            }
+        } else {
+            res.status(401).send({
+                "status": "error",
+                "body": "Invalid input"
+            });
+            reject(null);
+        }
+    });
 }
 
 
@@ -195,13 +195,12 @@ function validateInput(input, type) {
 }
 
 // API to handle adding bet to database
-router.post('/createBet/addBetToDataBase', function(req, res, next){
+router.post('/createBet/addBetToDataBase', function(req, res, next) {
     var bet = new Bet(req.body);
-    bet.save(function(err, savedBet){
-        if(err){
+    bet.save(function(err, savedBet) {
+        if (err) {
             console.log(err);
-        }
-        else{
+        } else {
             res.json(savedBet);
         }
     })
@@ -210,15 +209,15 @@ router.post('/createBet/addBetToDataBase', function(req, res, next){
 // API for getting bets from database
 router.get('/getBets', function(req, res, next) {
     // Perform calculations server-side to increase perfromance
-    Bet.find({}).exec(function(err, bets){
-        if(err){
-            throw(err);
-        }else{
-            for(var i = 0; i < bets.length; i++){
-                var d = calcDistance({lat : bets[i].latitude, lng : bets[i].longitude}, {lat : req.query.latitude, lng : req.query.longitude});
+    Bet.find({}).exec(function(err, bets) {
+        if (err) {
+            throw (err);
+        } else {
+            for (var i = 0; i < bets.length; i++) {
+                var d = calcDistance({ lat: bets[i].latitude, lng: bets[i].longitude }, { lat: req.query.latitude, lng: req.query.longitude });
                 console.log(d);
                 // Convert kilometers to metres
-                if((d * 1000) > bets[i].radius){
+                if ((d * 1000) > bets[i].radius) {
                     bets.splice(i, 1);
                 }
             }

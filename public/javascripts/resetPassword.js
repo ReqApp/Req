@@ -20,10 +20,8 @@ $(document).ready(function() {
 
     $('#submitButton').click(function(e) {
         e.preventDefault();
-        console.log("clicked");
         const newPassword = $('#passwordBox').val();
         if (validateInput(newPassword, "password")) {
-            console.log("sending: " + newPassword);
             $.ajax({
                 type: 'POST',
                 url: '/users/resetPassword',

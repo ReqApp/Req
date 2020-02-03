@@ -1,5 +1,13 @@
 $(document).ready(function() {
 
+    $('#file').change( function(e) {
+        
+        var img = URL.createObjectURL(e.target.files[0]);
+        console.log(e.target.files[0]);
+        console.log(img);
+        $('.profiler').attr('src', img);
+    });
+
     function validateInput(input, type) {
         if (type === 'password') {
             if (input.length > 8) {
@@ -75,7 +83,9 @@ $(document).ready(function() {
         }
 
         if (requestType === 'Register' && run) {
-
+            console.log($('#file')[0].files[0]);
+            let filer = new FormData($('#file')[0].files[0])
+            console.log(filer)
             $.ajax({
                 type: 'POST',
                 url: '/users/register',
