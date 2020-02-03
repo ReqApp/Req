@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
+var cors = require("cors");
 
 require('dotenv').config()
 
@@ -15,6 +16,7 @@ const passportSetup = require("./models/config");
 const passport = require("passport");
 
 var app = express();
+app.use(cors());
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
