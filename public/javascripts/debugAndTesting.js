@@ -1,6 +1,6 @@
 // Function for auto-generating bets in specified region
 function generateRandomBets(){
-    const REGION_ID = "5e2f72253c750c169c7c816c";
+    const REGION_ID = "5e374d91a136ff38880ae589";
     const NUM_BETS = 20;
 
     $.get('/getRegionByID', {id : REGION_ID}, function(region){
@@ -45,8 +45,8 @@ function generateRandomBets(){
             var newBet = {
                 title: "Random Bet: " + i.toString(),
                 location_Name: "Location: " + i.toString(),
-                latitude: randLat,
-                longitude: randLng,
+                latitude: parseFloat(randLat),
+                longitude: parseFloat(randLng),
                 radius: generateRandomNumInInterval(20, 100),
                 bet_region_id: REGION_ID
             }

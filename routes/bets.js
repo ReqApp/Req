@@ -47,12 +47,14 @@ bets.post('/addBetToDataBase', function(req, res, next){
 
 // API for getting bets in region
 bets.get('/getBetsInRegion', function(req, res, next){
-    var id = req.query.id;
-    Bet.find({bet_region_id : id}, function(err, bets){
+    var id = req.query.id.toString();
+    Bet.find({bet_region_id : id}, function(betRegion, err){
         if(err){
             console.log(err);
+            res.json(err);
         }
         else{
+            console.log(bets);
             res.json(bets);
         }
     });

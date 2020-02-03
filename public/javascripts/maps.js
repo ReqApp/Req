@@ -10,11 +10,11 @@ class Map {
         this.id = domID;
         this.map;
         this.userLocation = null;
+        this.userLocationMarker;
         
         // Used to load visual elements
         this.betRegionLayer = L.layerGroup();
         this.hiddenBetRegions = L.layerGroup();
-        this.betLayer = L.layerGroup();
     }
     // Function to load map into DOM
     createMap(){
@@ -56,6 +56,76 @@ class Map {
             }, zoomDuration * 1000);
         });
     }
+    verifyAndAddUserLocation(userLocation){
+        if('latlng' in userLocation){
+            // Manually set user location
+            userLocation.latlng = this.setLocation(userLocation.latlng);
+            userLocation.accuracy = 40;
+            // Check for location accuracy
+            if(userLocation.accuracy > 100){
+                console.log("Your location could not be accuratly determined");
+            }else{
+                this.userLocation = userLocation.latlng;
+            }
+        }else{
+            console.log("Could not find user location")
+            console.log(userLocation.message);
+        }
+    }
+    handleRegionSelection(selectRegionDOM){
+        // Get selected region ID
+        var id = selectRegionDOM.val();
+
+        // Null corresponds to all regions
+        if(id != 'null'){
+            // Check if selected region is hidden
+            if(this.hiddenBetRegions.getLayer(id)){
+                // Add to visible layer
+                this.betRegionLayer.addLayer(this.hiddenBetRegions.getLayer(id));
+                this.hiddenBetRegions.removeLayer(id);
+            }
+            // Remove other regions from visible layer
+            this.betRegionLayer.eachLayer((layer) => {
+                if(!(layer._leaflet_id.toString() === id.toString())){
+                    this.hiddenBetRegions.addLayer(layer);
+                    this.betRegionLayer.removeLayer(layer);
+                }        
+            });
+        }else{
+            console.log("Null");
+            // Display all available regions
+            this.hiddenBetRegions.eachLayer((layer) => {
+                this.betRegionLayer.addLayer(layer);
+                this.hiddenBetRegions.removeLayer(layer);
+            });
+        }
+        // Add selected region(s) to map and open popups
+        console.log(this.betRegionLayer.getLayers());
+        this.betRegionLayer.addTo(this.map);
+        this.betRegionLayer.eachLayer((layer) => {
+            var subLayers = layer.getLayers();
+            subLayers.forEach((layer) =>{
+                layer.openPopup();
+            });
+        });
+    }
+    // DEBUG function for setting user position
+    setLocation(position){
+        //position.lat = 53.337840;
+        //position.lng = -9.180165;
+        
+        position.lat = 53.282110;
+        position.lng = -9.062186;
+        
+        return position;
+    }
+    // Testing function to manually set user's location
+    set userLocation(position){
+        this._userLocation = position;
+    }
+    get userLocation(){
+        return this._userLocation;
+    }
 }
 
 // Adds functionality to circle marker
@@ -77,4 +147,11 @@ class BetArea {
             }
         }).bind(this), 1);
     }
+}
+
+// Get available regions from database
+function getBettingRegions(location){  
+    return new Promise((resolve, reject) => {
+        $.get('/getBettingRegions', {lat : location.lat, lng: location.lng}, (betRegions) =>  resolve(betRegions), 'json').fail(() => reject("Error"));
+    });
 }

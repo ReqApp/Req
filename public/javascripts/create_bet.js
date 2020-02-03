@@ -13,7 +13,6 @@ class CreateBetMap extends Map{
     constructor(domID, options){
         super(domID, options);
         this.betLayers = L.featureGroup();
-        this.userLocationMarker;
         this.betCircle;
     }
     // Add marker to display user's location
@@ -37,13 +36,6 @@ class CreateBetMap extends Map{
         var str = '<b>' + name + '</b><br>Location: ' + location + '<br>Radius: ' + radius;
         this.userLocationMarker._popup.setContent(str);
     }
-    // Testing function to manually set user's location
-    set userLocation(position){
-        this._userLocation = position;
-    }
-    get userLocation(){
-        return this._userLocation;
-    }
 }
 
 // Load elements on page
@@ -61,22 +53,7 @@ $(document).ready(async () => {
     // Small delay for stability
     window.setTimeout(async () => {
         var result = await betMap.locateUser();
-
-        // Check if valid location returned
-        if('latlng' in result){
-            // Manually set user location
-            result.latlng = setLocation(result.latlng);
-            result.accuracy = 40;
-            // Check for location accuracy
-            if(result.accuracy > 100){
-                console.log("Your location could not be accuratly determined");
-            }else{
-                betMap.userLocation = result.latlng;
-            }
-        }else{
-            console.log("Could not find user location")
-            console.log(result.message);
-        }
+        betMap.verifyAndAddUserLocation(result);
     
         const zoomDuration = 1;
         betMap.map.flyTo(betMap.userLocation, 15, {animate : true, duration: zoomDuration, easeLinearity : .43});
@@ -203,12 +180,7 @@ function setDOMDefaultValues(name, location, rad, userLocation){
     });
 }
 
-// Get available regions from database
-function getBettingRegions(location){  
-    return new Promise((resolve, reject) => {
-        $.get('/getBettingRegions', {lat : location.lat, lng: location.lng}, (betRegions) =>  resolve(betRegions), 'json').fail(() => reject("Error"));
-    });
-}
+
 
 // Allows user to define new region where bets can be created and placed
 function addNewBetRegion(newRegion){
@@ -234,15 +206,4 @@ function addBetToDataBase(newBet){
             }
         });
     }, 'json');
-}
-
-// DEBUG function for setting user position
-function setLocation(position){
-    //position.lat = 53.337840;
-    //position.lng = -9.180165;
-    
-    position.lat = 53.282110;
-    position.lng = -9.062186;
-    
-    return position;
 }
