@@ -2,8 +2,6 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models/users');
 var jwt = require('jsonwebtoken');
-var Bet = require('../models/betData');
-var calcDistance = require('./calcDistance');
 const passport = require("passport");
 var articleBet = require('../models/articleBets');
 
@@ -78,14 +76,6 @@ router.get('/members', (req, res, next) => {
     } else {
         res.render('home');
     }
-});
-
-router.get('/createBet', function(req, res, next) {
-    res.render('create_bet', { title: 'CreateBet' });
-});
-
-router.get('/findBets', function(req, res, next) {
-    res.render('find_bets', { title: 'FindBets' });
 });
 
 router.post('/createArticleBet', (req, res, next) => {
@@ -179,8 +169,6 @@ function makeArticleBet(input) {
     });
 }
 
-
-
 function validateInput(input, type) {
     const conditions = ["\"", "<", ">", "'", "`"];
     let test = conditions.some(el => input.includes(el));
@@ -194,36 +182,5 @@ function validateInput(input, type) {
     }
 }
 
-// API to handle adding bet to database
-router.post('/createBet/addBetToDataBase', function(req, res, next) {
-    var bet = new Bet(req.body);
-    bet.save(function(err, savedBet) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.json(savedBet);
-        }
-    })
-});
-
-// API for getting bets from database
-router.get('/getBets', function(req, res, next) {
-    // Perform calculations server-side to increase perfromance
-    Bet.find({}).exec(function(err, bets) {
-        if (err) {
-            throw (err);
-        } else {
-            for (var i = 0; i < bets.length; i++) {
-                var d = calcDistance({ lat: bets[i].latitude, lng: bets[i].longitude }, { lat: req.query.latitude, lng: req.query.longitude });
-                console.log(d);
-                // Convert kilometers to metres
-                if ((d * 1000) > bets[i].radius) {
-                    bets.splice(i, 1);
-                }
-            }
-            res.json(bets);
-        }
-    });
-});
-
 module.exports = router;
+
