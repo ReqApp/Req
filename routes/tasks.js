@@ -95,6 +95,7 @@ function checkImage(imageUrl) {
                 resolve(null);
             }
         }).catch((err) => {
+            console.log(`The err@ ${err}`)
             console.log("caught err callback")
             reject(err);
         });

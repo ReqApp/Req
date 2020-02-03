@@ -400,3 +400,17 @@ describe("Various APIS", () => {
                 });
         }).timeout(4000)
 });
+
+describe("Image Upload", () => {
+    it("No Image", done => {
+        chai
+            .request(app)
+            .post("/tasks/uploadImage")
+            .end((err, res) => {
+                expect(res).to.have.status(401);
+                expect(res.body.body).to.equals('Invalid image');
+                expect(res.body.status).to.equals("error");
+                done();
+            });
+        })
+})
