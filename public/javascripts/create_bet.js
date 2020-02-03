@@ -65,7 +65,6 @@ $(document).ready(async () => {
         setDOMDefaultValues(betNameDOM, locationDOM, radiusDOM, betMap.userLocation);
     
         // Get betting regions
-        // TODO update docs on query params change
         var regions = await getBettingRegions(betMap.userLocation);
         console.log(regions);
         
