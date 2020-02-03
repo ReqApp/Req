@@ -42,6 +42,10 @@ router.get('/getUser/:id', (req, res, next) => {
     }));
 });
 
+router.get('/reactTest', function(req, res, next){
+    res.send("Message from backend");
+})
+
 router.get('/profile', function(req, res, next) {
     res.render('profile', { welcome: 'profile page test' });
 });
