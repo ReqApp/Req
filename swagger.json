@@ -120,14 +120,14 @@
         "parameters": [
           {
             "in": "query",
-            "name": "latitude",
+            "name": "lat",
             "type": "number",
             "required": true,
             "description": "Latitude of user"
           },
           {
             "in": "query",
-            "name": "longitude",
+            "name": "lng",
             "type": "number",
             "required": true,
             "description": "Longitude of user"
