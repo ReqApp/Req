@@ -1,0 +1,5 @@
+node_modules/*
+backEnd/node_modules/*
+backEnd/articleStats/*.csv
+backEnd/models/credentials.js
+.env
