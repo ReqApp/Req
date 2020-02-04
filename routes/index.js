@@ -139,8 +139,7 @@ router.get('/getArticleBets', (req, res, next) => {
 });
 
 router.post('/createArticleBet', (req, res, next) => {
-    console.log(`farm: ${JSON.parse(req.body)}`);
-
+    console.log(req.body);
     if (req.body.betType) {
         switch (req.body.betType) {
             case 'article':

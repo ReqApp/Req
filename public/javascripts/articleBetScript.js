@@ -144,6 +144,8 @@ function loadContent() {
     request.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
 
+            resDiv.innerHTML = "";
+
             for (elem of JSON.parse(this.response)) {
                 resDiv.innerHTML += `<div class="card" id="${elem._id}">
                     <h5 class="card-header pt-1 pb-1">${elem.title}</h5>
@@ -163,21 +165,15 @@ function loadContent() {
 }
 
 function createBet(req) {
-    console.log(JSON.stringify(req));
-    let reqTest = {
-        "betType": "article",
-        "sitename": "BBC",
-        "directory": "all",
-        "month": "02",
-        "year": "2020",
-        "searchTerm": "the",
-        "ends": "06 Feb 2020"
-    }
     fetch('http://localhost:8673/createArticleBet', {
-        'method': 'POST',
-        body: reqTest,
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(req),
     }).then((res) => res.json()).then((data) => {
-        console.log(`Success: ${JSON.stringify(data)}`);
+        console.log(`Response: ${JSON.stringify(data)}`);
+        loadContent();
     }).catch((err) => {
         console.log(err);
     })
@@ -185,9 +181,6 @@ function createBet(req) {
 
 submitButton.addEventListener("click", (event) => {
     event.preventDefault();
-
-    // console.log(siteMenu.options[siteMenu.selectedIndex].value, directoryMenu.options[directoryMenu.selectedIndex].value);
-    // console.log(yearMenu.options[yearMenu.selectedIndex].value, monthMenu.options[monthMenu.selectedIndex].value);
 
     const site = siteMenu.options[siteMenu.selectedIndex].value;
     const dir = directoryMenu.options[directoryMenu.selectedIndex].value;
@@ -197,53 +190,16 @@ submitButton.addEventListener("click", (event) => {
     const searchTerm = document.getElementById('searchTermBox').value;
 
     const betInput = {
-            "betType": "article",
-            "sitename": site,
-            "directory": dir,
-            "month": month,
-            "year": year,
-            "searchTerm": searchTerm,
-            "ends": date
-        }
-        // console.log(`Bet input: ${betInput}`);
+        betType: "article",
+        sitename: site,
+        directory: dir,
+        month: month,
+        year: year,
+        searchTerm: searchTerm,
+        ends: date
+    }
 
     createBet(betInput);
-
-    // $.ajax({
-    //     type: 'POST',
-    //     url: '/createArticleBet',
-    //     dataType: 'json',
-    //     data: {
-    //         "betType": "article",
-    //         "sitename": site,
-    //         "directory": dir,
-    //         "month": month,
-    //         "year": year,
-    //         "searchTerm": $('#searchTermBox').val(),
-    //         "ends": date
-    //     },
-    //     success: function(response) {
-    //         console.log(`The response: ${JSON.stringify(response)}`);
-    //         // let searchObj = { site, dir, year, month }
-    //         // loadCard(response, searchObj);
-    //         loadBets();
-    //         // swal({
-    //         //     icon: 'success',
-    //         //     title: 'Response',
-    //         //     text: token.body
-    //         // })
-
-    //     },
-    //     error: function(jqXHR, textStatus, errorThrown) {
-    //         // console.log(jqXHR.responseJSON.body);
-    //         // swal("Oops", jqXHR.responseJSON.body, 'Not GOOD!');
-    //         swal({
-    //             icon: 'error',
-    //             title: 'Oops...',
-    //             text: jqXHR.responseJSON.body
-    //         });
-    //     }
-    // });
 });
 
 
