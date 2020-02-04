@@ -80,6 +80,46 @@ router.get('/members', (req, res, next) => {
     }
 });
 
+router.post('/updateOdds', (req, res, next) => {
+
+    if (req.body.id && req.body.type) {
+        articleBet.findOne({_id:req.body.id}, (err, foundBet) => {
+            if (err) {
+                res.send(err);
+            } else {
+                console.log(`Type: ${req.body.side} ${req.body.type}`)
+                if (req.body.type == "increment" && req.body.side == "for") {
+                    foundBet.for += 1;
+                } else if (req.body.type == "decrement" && req.body.side == "for") {
+                    foundBet.for -= 1;
+                }
+
+                if (req.body.type == "increment" && req.body.side == "against") {
+                    foundBet.against += 1;
+                } else if (req.body.type == "decrement" && req.body.side == "against") {
+                    foundBet.against -= 1;
+                }
+
+                foundBet.save((err) => {
+                    if (err) {
+                        res.send(err);
+                    }
+                })
+                res.status(200).json({
+                    "status":"success",
+                    "body": foundBet
+                });
+            }
+        });
+    }   else {
+        res.status(401).json({
+            "status":"error",
+            "body":"Invalid id"
+        });
+    }
+
+});
+
 router.get('/createBet', function(req, res, next) {
     res.render('create_bet', { title: 'CreateBet' });
 });
@@ -88,12 +128,23 @@ router.get('/findBets', function(req, res, next) {
     res.render('find_bets', { title: 'FindBets' });
 });
 
+router.get('/getArticleBets', (req, res, next) => {
+    articleBet.find({}).sort({timePosted:-1}).exec((err, data) => {
+        if (err) {
+            throw err;
+        } else {
+            res.json(data);
+        }
+    })
+}); 
+
 router.post('/createArticleBet', (req, res, next) => {
     if (req.body.betType) {
         switch (req.body.betType) {
             case 'article':
                 makeArticleBet(req.body).then((response) => {
                     if (response) {
+                        console.log(`Response: ${response}`);
                         res.status(200).json({
                             "status": "information",
                             "body": response
@@ -130,11 +181,13 @@ function verifyJwt(jwtString) {
 
 function makeArticleBet(input) {
     return new Promise((resolve, reject) => {
-        if (input.sitename && input.directory && input.month && input.year && input.searchTerm) {
+        if (input.sitename && input.directory && input.month && input.year && input.searchTerm && input.ends) {
 
             if (validateInput(input.sitename, "article") && validateInput(input.sitename, "article") &&
                 validateInput(input.month, "article") && validateInput(input.year, "article") &&
                 validateInput(input.searchTerm, "article")) {
+
+                const parsedTime = Date.parse(input.ends);
                 const child = require('child_process').execFile;
                 const executablePath = "./articleStats/articleGetLinux";
                 const parameters = ["-s", input.sitename, input.directory, input.month, input.year, input.searchTerm];
@@ -146,18 +199,22 @@ function makeArticleBet(input) {
                     } else {
                         // log to DB and then send back ok signal
                         newBet = new articleBet();
-                        newBet.title = `[${input.sitename}] - ${input.searchTerm}`;
+                        newBet.title = `How many times will the ${input.sitename} have '${input.searchTerm}' in article titles`;
                         newBet.subtext = `${input.directory} - ${input.month}/${input.year}`;
-
+                        newBet.result = data;
+                        newBet.for = Math.floor(Math.random() * 100);
+                        newBet.against = Math.floor(Math.random() * 100);
+                        newBet.ends = parsedTime;
                         const date = new Date();
                         const currDate = date.getTime();
                         newBet.timePosted = currDate;
 
                         newBet.save((err, user) => {
                             if (err) {
-                                throw err;
+                                reject(err);
                             } else {
-                                resolve(data.toString());
+                                console.log(user);
+                                resolve(user);
                             }
                         });
                     }
@@ -178,8 +235,6 @@ function makeArticleBet(input) {
         }
     });
 }
-
-
 
 function validateInput(input, type) {
     const conditions = ["\"", "<", ">", "'", "`"];

@@ -7,15 +7,29 @@ var articleBetSchema = new Schema({
         type: String,
         required: true,
         minlength: 1,
-        maxlength: 32
+        maxlength: 64
     },
     subtext: {
         type: String,
         minlength: 1,
         maxlength: 64
     },
+    result: {
+        type: String
+    },
     timePosted: {
         type: String,
+    },
+    for: {
+        type: Number,
+        default: 0
+    },
+    against: {
+        type: Number,
+        default: 0
+    },
+    ends: {
+        type: String
     }
 });
 

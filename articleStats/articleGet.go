@@ -357,7 +357,7 @@ func getFrequency(sitename, directory, month, year, word string) {
 		if sitename != "guardian" {
 			csvFileName = fmt.Sprintf("articleStats/%s.csv", strings.ToUpper(sitename))
 		} else {
-			csvFileName = fmt.Sprintf("artcleStats/%s.csv", sitename)
+			csvFileName = fmt.Sprintf("articleStats/%s.csv", sitename)
 		}
 		csvFile, err := os.Open(csvFileName)
 		if err != nil {

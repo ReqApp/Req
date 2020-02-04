@@ -1,9 +1,32 @@
 $(document).ready(() => {
 
+    function getTimeDiff(nowTime, commentTime) {
+        let timeDiff = nowTime - commentTime;
+
+        let seconds = (timeDiff / 1000).toFixed(0);
+        let minutes = (timeDiff / (1000 * 60)).toFixed(0);
+        let hours = (timeDiff / (1000 * 60 * 60)).toFixed(0);
+        let days = (timeDiff / (1000 * 60 * 60 * 24)).toFixed(0);
+
+        if (seconds < 60) {
+            return `${seconds}s left`;
+        } else if (minutes < 60) {
+            return `${minutes}m left`;
+        } else if (hours < 24) {
+            return `${hours}h left`;
+        } else {
+            return `${days}d left`;
+        }
+
+    }
+
+    loadBets();
+
     var siteMenu = document.getElementById("sitenameMenu");
     var yearMenu = document.getElementById("yearMenu");
     var submitButton = document.getElementById("submitButton");
     var resDiv = document.getElementById("resDiv");
+    var dateBox = document.getElementById("dateBox")
 
     function loadDirectoryForm(sitename) {
         var directory = document.getElementById("directoryDiv");
@@ -109,13 +132,43 @@ $(document).ready(() => {
     }
 
     function loadCard(res, search) {
-        resDiv.innerHTML += `<div class="card">
+        resDiv.innerHTML += `<div class="card" id="${res.body._id}">
         <h5 class="card-header pt-1 pb-1">${search.site} - ${search.dir}</h5>
         <div class="card-body">
-          <p class="card-text">[${search.month}/${search.year}] ${res}</p>
-          <a href="#" class="btn btn-info">Bet</a>
+          <p class="card-text">[${search.month}/${search.year}]</p>
+          <p class="card-text">${res.body.for} for ${res.body.against} against</p>
+
+          <a href="#" class="btn btn-info ${res.body._id}}">Bet for</a> <a href="" class="btn btn-info ${res.body._id}"> Bet against</a>
         </div>
       </div>`;
+    }
+
+    function loadBets() {
+        $.ajax({
+            url: '/getArticleBets',
+            type: 'GET',
+            success: (data) => {
+                console.log(data);
+                const currTime = new Date();
+
+
+                for (let i  = 0; i < data.length; i++) {
+                    resDiv.innerHTML += `<div class="card mt-2" id="${data[i]._id}">
+        <h5 class="card-header pt-1 pb-1">${data[i].title}</h5>
+        <div class="card-body">
+          <p class="card-text">${data[i].subtext}</p>
+          <p class="card-text">${data[i].for} for ${data[i].against} against</p>
+          <p class="card-text"> ${getTimeDiff(data[i].ends,currTime)} </p>
+          <button class="btn btn-info betButton" id="${data[i]._id}">Bet for</a> <button class="btn btn-info betButton" id="${data[i]._id}"> Bet against</a>
+        </div>
+      </div>`;
+                }
+
+            },
+            error: (jqXHR) => {
+                console.log(jqXHR.responseJSON);
+            }
+        })
     }
 
     siteMenu.addEventListener("click", (event) => {
@@ -138,6 +191,9 @@ $(document).ready(() => {
         const dir = directoryMenu.options[directoryMenu.selectedIndex].value;
         const year = yearMenu.options[yearMenu.selectedIndex].value;
         const month = monthMenu.options[monthMenu.selectedIndex].value;
+        const date = dateBox.value;
+
+        console.log(`Date: ${date}`);
 
         $.ajax({
             type: 'POST',
@@ -149,11 +205,13 @@ $(document).ready(() => {
                 "directory": dir,
                 "month": month,
                 "year": year,
-                "searchTerm": $('#searchTermBox').val()
+                "searchTerm": $('#searchTermBox').val(),
+                "ends": date
             },
-            success: function(token) {
+            success: function(response) {
+                console.log(`The response: ${JSON.stringify(response)}`);
                 let searchObj = { site, dir, year, month }
-                loadCard(token.body, searchObj);
+                loadCard(response, searchObj);
                 // swal({
                 //     icon: 'success',
                 //     title: 'Response',
@@ -172,5 +230,26 @@ $(document).ready(() => {
             }
         });
     });
+});
 
+
+$(document).on("click", ".betButton", function(e) {
+    console.log('from: ', e.target.id);
+    
+    $.ajax({
+        type: 'POST',
+        url: '/updateOdds',
+        data: {
+            "side":"for",
+            "id":e.target.id,
+            "type":"increment"
+        },
+        success: (response) => {
+            console.log(response);
+        },
+        error: (err) => {
+            console.log('err');
+        }
+    })
+	
 });

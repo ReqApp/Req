@@ -34,6 +34,10 @@ var usersSchema = new Schema({
     profilePicture: {
         type: String
     },
+    coins: {
+        type: Number,
+        default: 0
+    },
     accessToken: String
 });
 
