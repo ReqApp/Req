@@ -83,7 +83,7 @@ router.get('/members', (req, res, next) => {
 router.post('/updateOdds', (req, res, next) => {
 
     if (req.body.id && req.body.type) {
-        articleBet.findOne({_id:req.body.id}, (err, foundBet) => {
+        articleBet.findOne({ _id: req.body.id }, (err, foundBet) => {
             if (err) {
                 res.send(err);
             } else {
@@ -106,15 +106,15 @@ router.post('/updateOdds', (req, res, next) => {
                     }
                 })
                 res.status(200).json({
-                    "status":"success",
+                    "status": "success",
                     "body": foundBet
                 });
             }
         });
-    }   else {
+    } else {
         res.status(401).json({
-            "status":"error",
-            "body":"Invalid id"
+            "status": "error",
+            "body": "Invalid id"
         });
     }
 
@@ -129,16 +129,18 @@ router.get('/findBets', function(req, res, next) {
 });
 
 router.get('/getArticleBets', (req, res, next) => {
-    articleBet.find({}).sort({timePosted:-1}).exec((err, data) => {
+    articleBet.find({}).sort({ timePosted: -1 }).exec((err, data) => {
         if (err) {
             throw err;
         } else {
             res.json(data);
         }
     })
-}); 
+});
 
 router.post('/createArticleBet', (req, res, next) => {
+    console.log(`farm: ${JSON.parse(req.body)}`);
+
     if (req.body.betType) {
         switch (req.body.betType) {
             case 'article':
@@ -189,7 +191,7 @@ function makeArticleBet(input) {
 
                 const parsedTime = Date.parse(input.ends);
                 const child = require('child_process').execFile;
-                const executablePath = "./articleStats/articleGetLinux";
+                const executablePath = "./articleStats/articleGetWindows";
                 const parameters = ["-s", input.sitename, input.directory, input.month, input.year, input.searchTerm];
 
                 child(executablePath, parameters, function(err, data) {
@@ -220,6 +222,7 @@ function makeArticleBet(input) {
                     }
                 });
             } else {
+                console.log(`Input: ${input}`);
                 res.status(401).send({
                     "status": "error",
                     "body": "Invalid characters in input"
