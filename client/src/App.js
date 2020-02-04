@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+// Must install leaflet dependencies as well npm i leaflet prop-types react react-dom react-leaflet
 import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 import { Icon } from "leaflet";
 import logo from "./logo.svg";
