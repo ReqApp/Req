@@ -151,8 +151,8 @@ function loadContent() {
                     <h5 class="card-header pt-1 pb-1">${elem.title}</h5>
                     <div class="card-body">
                       <p class="card-text">${elem.subtext}</p>
-                      <p class="card-text">${elem.for} for ${elem.against} against</p>
-
+                      <p class="card-text">${elem.forUsers[0].user_name} ${elem.forUsers[0].betAmount} for</p>
+                      <p class="card-text">${getTimeDiff(elem.ends, new Date())}</p>
                       <a href="#" class="btn btn-info ${elem._id}}">Bet for</a> <a href="" class="btn btn-info ${elem._id}"> Bet against</a>
                     </div>
                   </div>`;
@@ -172,7 +172,7 @@ function createBet(req) {
         },
         body: JSON.stringify(req),
     }).then((res) => res.json()).then((data) => {
-        console.log(`Response: ${JSON.stringify(data)}`);
+        console.log(JSON.stringify(data));
         loadContent();
     }).catch((err) => {
         console.log(err);
@@ -188,6 +188,7 @@ submitButton.addEventListener("click", (event) => {
     const month = monthMenu.options[monthMenu.selectedIndex].value;
     const date = dateBox.value;
     const searchTerm = document.getElementById('searchTermBox').value;
+    const userBetAmount = document.getElementById('betAmountBox').value;
 
     const betInput = {
         betType: "article",
@@ -196,7 +197,8 @@ submitButton.addEventListener("click", (event) => {
         month: month,
         year: year,
         searchTerm: searchTerm,
-        ends: date
+        ends: date,
+        betAmount: userBetAmount
     }
 
     createBet(betInput);
@@ -222,5 +224,3 @@ submitButton.addEventListener("click", (event) => {
 //             console.log('err');
 //         }
 //     })
-
-// });

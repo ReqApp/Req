@@ -20,14 +20,14 @@ var articleBetSchema = new Schema({
     timePosted: {
         type: String,
     },
-    for: {
-        type: Number,
-        default: 0
-    },
-    against: {
-        type: Number,
-        default: 0
-    },
+    forUsers: [{
+           user_name: String,
+           betAmount: Number
+    }],
+    againstUsers: [{
+        user_name: String,
+        betAmount: Number
+    }],
     ends: {
         type: String
     }
