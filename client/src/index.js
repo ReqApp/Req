@@ -1,109 +1,77 @@
 import React, {createRef, Component} from 'react';
 import ReactDOM from 'react-dom';
 import { Map, Marker, Popup, TileLayer } from "react-leaflet";
+import { makeStyles } from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 import './index.css';
+import DisplayMap from'./maps.js';
 
-/*
-class ParentMap extends React.Component{
-    constructor(props){
-        super(props);
-        this.userLocation = {
-            locationFound : false,
-            latlng : {
-                lat : 0,
-                lng : 0
-            }
-        }
-
+class Bet extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      name: "Bet: " + this.props.num
     }
-
-    render(){
-        this.locateUser()
-        return(
-            <Map
-                center={this.state.latlng}
-                length={4}
-                onClick={this.handleClick}
-                onLocationfound={this.handleLocationFound}
-                ref={this.mapRef}
-                zoom={13}>
-                <TileLayer
-                attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                {marker}
-            </Map>
-        )
-    }
+  }
+  render(){
+    return(
+      <div>{this.state.name}</div>
+    )
+  }
 }
-*/
 
-class DisplayMap extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            hasLocation : false,
-            latlng: {
-                lat: 51.505,
-                lng: -0.09
-            },
-        }
-        this.mapRef = React.createRef();
 
-    }
+const useStyles = makeStyles({
+  root: {
+    minWidth: 275,
+  },
+  bullet: {
+    display: 'inline-block',
+    margin: '0 2px',
+    transform: 'scale(0.8)',
+  },
+  title: {
+    fontSize: 14,
+  },
+  pos: {
+    marginBottom: 12,
+  },
+});
 
-    handleClick = () => {
-      const map = this.mapRef.current
-      if (map != null) {
-        map.leafletElement.locate()
-      }
-    }
-  
-    handleLocationFound = (e: Object) => {
-      this.setState({
-        hasLocation: true,
-        latlng: e.latlng,
-      })
-    }
+export default function SimpleCard() {
+  const classes = useStyles();
 
-    render() {
-        const marker = this.state.hasLocation ? (
-          <Marker position={this.state.latlng}>
-            <Popup>You are here</Popup>
-          </Marker>
-        ) : null
-    
-        return (
-          <Map
-            center={this.state.latlng}
-            length={4}
-            onClick={this.handleClick}
-            onLocationfound={this.handleLocationFound}
-            ref={this.mapRef}
-            zoom={13}>
-            <TileLayer
-              attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            {marker}
-          </Map>
-        )
-      }
+  return (
+    <Card className={classes.root}>
+      <CardContent>
+        <Typography className={classes.title} color="textSecondary" gutterBottom>
+          Example Bet: 1  
+        </Typography>
+        <Typography variant="h5" component="h2">
+          Location: NUIG
+        </Typography>
+        <Typography className={classes.pos} color="textSecondary">
+          Will it rain tomorrow?
+        </Typography>
+        <DisplayMap/>
+      </CardContent>
+      <CardActions>
+        <Button size="small">Yes</Button>
+        <Button size="small">No</Button>
+      </CardActions>
+    </Card>
+  );
 }
+
 
 ReactDOM.render(
-    <DisplayMap />,
+    <SimpleCard />,
     document.getElementById('root')
 )
-
-
-/*
-  ReactDOM.render(
-    <Game />,
-    document.getElementById('root')
-  );
-*/
-  
 /*
 import App from './App';
 import * as serviceWorker from './serviceWorker';
