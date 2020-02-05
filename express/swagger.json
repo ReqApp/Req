@@ -25,7 +25,7 @@
       "description": "Stored in routes/index.js"
     }
   ],
-  "host": "localhost",
+  "host": "localhost:9000",
   "basePath": "/",
   "paths": {
     "/addBetToDataBase": {
