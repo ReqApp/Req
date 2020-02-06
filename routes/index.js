@@ -92,6 +92,7 @@ router.post('/getCoins', (req ,res, next) => {
                             "status":"information",
                             "body": data
                         });
+
                     } else {
                         res.status(400).json({
                             "status":"error",
@@ -142,9 +143,10 @@ router.post('/createArticleBet', (req, res, next) => {
         let jwt = req.cookies.Authorization.split(' ')[1];
         isSignedIn(jwt).then((data) => {
             if (data) {
+                const currUsername = data.user_name
                 hasEnoughCoins(data.user_name, req.body.betAmount).then((data) => {
                     if (data) {
-                        makeArticleBet(req.body).then((response) => {
+                        makeArticleBet(req.body, currUsername).then((response) => {
                             if (response) {
                                 console.log(`Response: ${response}`);
                                 res.status(200).json({
@@ -153,6 +155,7 @@ router.post('/createArticleBet', (req, res, next) => {
                                 });
                             }
                         }, (err) => {
+                            console.log("err from make article promise call")
                             res.status(400).json({
                                 "status": "error",
                                 "body": err
@@ -177,11 +180,47 @@ router.post('/createArticleBet', (req, res, next) => {
     }
 });
 
-function makeArticleBet(input) {
-    return new Promise((resolve, reject) => {
-        if (input.sitename && input.directory && input.month && input.year && input.searchTerm && input.ends && input.betAmount) {
+router.post('/updateBet', (req, res, next) => {
+    console.log("in update bet");
+    if (req.body.betID && req.body.betAmount) {
+        console.log(req.body);
+        let user = "burnItUp"
+        userObj = { 
+            username: user,
+            betID: req.body.betID,
+            betAmount: req.body.betAmount
+        }
+        hasEnoughCoins(user, req.body.betAmount).then((data) => {
+            if (data) {
+                console.log("has enough coins");
+                addToBet(userObj).then((response) => {
+                    if (response) {
+                        console.log(response);
+                    }   else {
+                        console.log("no bet found");
+                    }
+                });
+            } else {
+                res.status(400).json({
+                    "status":"error",
+                    "body":"Insufficient funds"
+                });
+            }
+        });
+    } else {
+        console.log(`Req body ${req.body}`);
+        res.status(400).json({
+            "status":"error",
+            "body":"Invalid params"
+        });
+    }
+});
 
-            if (validateInput(input.sitename, "article") && validateInput(input.sitename, "article") &&
+function makeArticleBet(input, username) {
+    return new Promise((resolve, reject) => {
+        if (input.sitename && input.directory && input.month && input.year && input.searchTerm && input.ends && input.betAmount && username) {
+
+            if (validateInput(input.sitename, "article") && validateInput(input.directory, "article") &&
                 validateInput(input.month, "article") && validateInput(input.year, "article") &&
                 validateInput(input.searchTerm, "article")) {
 
@@ -193,9 +232,11 @@ function makeArticleBet(input) {
                 child(executablePath, parameters, function(err, data) {
                     if (err) {
                         console.log(err);
+                        coneole.log("error runnning script")
                         reject(null);
                     } else {
                         // log to DB and then send back ok signal
+                        console.log(`Trying to save with ${username}`);
                         newBet = new articleBet({
                             title: `How many times will the ${input.sitename} have '${input.searchTerm}' in article titles`,
                             subtext: `${input.directory} - ${input.month}/${input.year}`,
@@ -203,24 +244,12 @@ function makeArticleBet(input) {
                             for: 0,
                             against: 0,
                             ends: parsedTime,
-                            forUsers: {user_name:"Cathal", betAmount: input.betAmount}
+                            forUsers: {user_name:username, betAmount: input.betAmount}
                         });
-                        // // newBet.title = `How many times will the ${input.sitename} have '${input.searchTerm}' in article titles`;
-                        // newBet.subtext = `${input.directory} - ${input.month}/${input.year}`;
-                        // newBet.result = data;
-                        // newBet.for = Math.floor(Math.random() * 100);
-                        // newBet.against = Math.floor(Math.random() * 100);
-                        // newBet.ends = parsedTime;
-
-                        // newBet.forUsers.user_name.push("Cathal");
-                        // newBet.forUsers.betAmount.push("130");
-
-                        // const date = new Date();
-                        // const currDate = date.getTime();
-                        // newBet.timePosted = currDate;
-
+                     
                         newBet.save((err, user) => {
                             if (err) {
+                                console.log("error saving user")
                                 reject(err);
                             } else {
                                 console.log(user);
@@ -231,17 +260,12 @@ function makeArticleBet(input) {
                 });
             } else {
                 console.log(`Input: ${input}`);
-                res.status(401).send({
-                    "status": "error",
-                    "body": "Invalid characters in input"
-                });
+                console.log("invalid chars in an input");
                 reject(null);
             }
         } else {
-            res.status(401).send({
-                "status": "error",
-                "body": "Invalid input"
-            });
+            console.log("invalid input numbers");
+            console.log(input, username);
             reject(null);
         }
     });
@@ -332,6 +356,26 @@ router.get('/getBets', function(req, res, next) {
         }
     });
 });
+
+function addToBet(userObj) {
+    return new Promise((resolve, reject) => {
+        articleBet.findOneAndUpdate({_id:userObj.betID},
+            {$push: {againstUsers: {user_name:userObj.username, betAmount: userObj.betAmount}}},
+             (err, result) => {
+            if (err) {
+                console.log("error in find");
+                reject(err);
+            } else {
+                if (result) {
+                    console.log(`Push result: ${result}`);
+                } else {
+                    console.log("failure pushing");
+                    resolve(null);
+                }
+            }
+        });
+    }) 
+}
 
 function isSignedIn(jwt) {
     return new Promise((resolve, reject) => {

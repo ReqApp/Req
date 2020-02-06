@@ -1,7 +1,7 @@
 console.log(document.cookie);
 
 function getJWT() {
-    if (document.cookie.length == 183) {
+    if (document.cookie.length > 160) {
         let jwt = document.cookie.split('%20')[1];
         console.log(jwt);
         getCoins({"jwt":jwt});

@@ -152,8 +152,9 @@ function loadContent() {
                     <div class="card-body">
                       <p class="card-text">${elem.subtext}</p>
                       <p class="card-text">${elem.forUsers[0].user_name} ${elem.forUsers[0].betAmount} for</p>
+                      <p class="card-text">${elem.againstUsers[0].user_name} ${elem.againstUsers[0].betAmount} against</p>
                       <p class="card-text">${getTimeDiff(elem.ends, new Date())}</p>
-                      <a href="#" class="btn btn-info ${elem._id}}">Bet for</a> <a href="" class="btn btn-info ${elem._id}"> Bet against</a>
+                      <a href="#" class="btn btn-info ${elem._id}For}">Bet for</a> <a href="" class="btn btn-info ${elem._id}"> Bet against</a>
                     </div>
                   </div>`;
             }
@@ -206,21 +207,3 @@ submitButton.addEventListener("click", (event) => {
 
 
 
-// $(document).on("click", ".betButton", function(e) {
-//     console.log('from: ', e.target.id);
-
-//     $.ajax({
-//         type: 'POST',
-//         url: '/updateOdds',
-//         data: {
-//             "side": "for",
-//             "id": e.target.id,
-//             "type": "increment"
-//         },
-//         success: (response) => {
-//             console.log(response);
-//         },
-//         error: (err) => {
-//             console.log('err');
-//         }
-//     })
