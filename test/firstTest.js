@@ -480,14 +480,28 @@ describe("Various APIS", () => {
 
 describe("Image Upload", () => {
     it("No Image", done => {
-        chai
-            .request(app)
-            .post("/tasks/uploadImage")
-            .end((err, res) => {
-                expect(res).to.have.status(401);
-                expect(res.body.body).to.equals('Invalid image');
-                expect(res.body.status).to.equals("error");
-                done();
-            });
-    })
+            chai
+                .request(app)
+                .post("/tasks/uploadImage")
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals('Invalid image');
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/tasks/uploadImage")
+                .send({
+                    "file": "nothing"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals('Invalid image');
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        })
 })
