@@ -1,9 +1,10 @@
-const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const GitHubStrategy = require('passport-github').Strategy;
 const SteamStrategy = require('passport-steam').Strategy;
 const User = require('../models/users');
+const passport = require('passport');
 const jwt = require('jsonwebtoken');
+
 
 passport.serializeUser((user, done) => {
     done(null, user.id);
@@ -30,7 +31,10 @@ passport.use(new GoogleStrategy({
     User.findOne({ googleID: profile.id }).then((currentUser) => {
         if (currentUser) {
             // already have this user
-            console.log('user is: ', currentUser);
+            console.log('user already existing: ', currentUser);
+            currentUser.accessToken = createJwt({user_name: currentUser.user_name});
+            console.log(`New access token: ${currentUser.accessToken}`);
+            currentUser.save();
             done(null, currentUser);
         } else {
             // if not, create user in our db
@@ -58,6 +62,9 @@ passport.use(new GitHubStrategy({
             if (currentUser) {
                 // already have this user
                 console.log('user is: ', currentUser);
+                currentUser.accessToken = createJwt({user_name: currentUser.user_name});
+                console.log(`New access token: ${currentUser.accessToken}`);
+                currentUser.save();
                 cb(null, currentUser);
             } else {
                 // if not, create user in our db
@@ -89,6 +96,9 @@ passport.use(new SteamStrategy({
             if (currentUser) {
                 // already have this user
                 console.log('user is: ', currentUser);
+                currentUser.accessToken = createJwt({user_name: currentUser.user_name});
+                console.log(`New access token: ${currentUser.accessToken}`);
+                currentUser.save();
                 done(null, currentUser);
             } else {
                 // if not, create user in our db

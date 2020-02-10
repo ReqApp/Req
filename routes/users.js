@@ -50,16 +50,13 @@ router.get('/auth/google', passport.authenticate('google', {
 }));
 
 router.get('/auth/google/callback', passport.authenticate('google'), (req, res, next) => {
-    res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
+    res.cookie('Authorization', 'Bearer '+req.user.accessToken);
     res.render('index', { title: req.user_name });
 });
-
 
 router.get('/auth/github', passport.authenticate('github'));
 
 router.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/users/register' }), (req, res) => {
-    console.log("in callback: " + req.user);
-    // res.send("reached callback url");
     res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
     res.render('index', { title: req.user_name });
 });
@@ -217,7 +214,12 @@ router.post('/verifyAccount', (req, res, next) => {
     /**
      * Handles requests of the login code
      */
-    if (req.body.activationCode) {
+    if (req.body.activationCode === undefined) {
+        res.status(401).send({
+            "status": "error",
+            "body": "Invalid input"
+        });
+    } else {
         const activationCode = req.body.activationCode;
         const searchQuery = /^[0-9a-zA-Z]+$/;
 
@@ -259,6 +261,11 @@ router.post('/verifyAccount', (req, res, next) => {
                                 console.log("deleted someone");
                             }
                         });
+                    } else {
+                        res.status(401).send({
+                            "status": "error",
+                            "body": "Invalid input"
+                        });
                     }
                 }
             });
@@ -268,57 +275,67 @@ router.post('/verifyAccount', (req, res, next) => {
                 "body": "Invalid input"
             });
         }
-    } else {
-        res.status(401).send({
-            "status": "error",
-            "body": "Invalid input"
-        });
     }
-
 });
 
 // handles POST requests to /login
 router.post('/login', function(req, res, next) {
-    if (req.body.user_name && req.body.password) {
+   
         const username = req.body.user_name;
         const password = req.body.password;
 
-        // if a user matching login credentials exists
-        User.findOne({ "user_name": username }, function(err, user) {
-            if (err) {
-                throw err;
-            }
-
-            if (user) {
-                // compare hashes of passwords
-                if (user.validPassword(password)) {
-                    // create token to tell it's them
-                    user.accessToken = createJwt({ user_name: username });
-                    user.save();
-                    // save the JWT to schema entry
-                    res.cookie('Authorization', 'Bearer ' + user.accessToken);
-                    res.json({ "success": "logged in" });
-                } else {
-                    // if hashes don't match
-                    res.status(401).send({
-                        "status": "error",
-                        "body": "Email or password invalid"
-                    });
-                }
-                // if no user found
-            } else {
-                res.status(401).send({
-                    "status": "error",
-                    "body": "Username not found"
-                });
-            }
+        if (username === undefined || password === undefined) {
+            res.status(400).json({
+                "status":"error",
+                "body": "Invalid parameters"
+            });
+        } else {
+ // if a user matching login credentials exists
+ User.findOne({ "user_name": username }, function(err, user) {
+    if (err) {
+        console.log("err thrown")
+        res.status(400).json({
+            "status":"error",
+            "body": err 
         });
+    }
+
+    if (user) {
+        // compare hashes of passwords
+        if (user.validPassword(password)) {
+            // create token to tell it's them
+            user.accessToken = createJwt({ user_name: username });
+            user.save();
+            // save the JWT to schema entry
+            res.cookie('Authorization', 'Bearer ' + user.accessToken);
+            res.status(200).json({
+                "status":"success",
+                "body":"Logged in successfully"
+            });
+        } else {
+            // if hashes don't match
+            res.status(401).send({
+                "status": "error",
+                "body": "Email or password invalid"
+            });
+        }
+        // if no user found
     } else {
         res.status(401).send({
             "status": "error",
-            "body": "Invalid parameters"
+            "body": "Username not found"
         });
     }
+});
+        }
+
+    // } else {
+    //     console.error.log("invalid params there");
+    //     res.status(401).send({
+    //         "status": "error",
+    //         "body": "Invalid parameters"
+    //     });
+    // }
 });
 
 router.post('/forgotPassword', (req, res, next) => {
@@ -573,6 +590,7 @@ function isPasswordCompromised(input) {
         const hashed = keccak512(input);
         axios.get(`https://passwords.xposedornot.com/api/v1/pass/anon/${hashed.slice(0,10)}`).then((data) => {
             if (data.Error) {
+                // Error in this case means that the password was NOT found
                 resolve(null);
             } else {
                 resolve(true);

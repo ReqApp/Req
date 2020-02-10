@@ -2,3 +2,5 @@ node_modules/*
 articleStats/*.csv
 models/credentials.js
 .env
+token.json
+credentials.json

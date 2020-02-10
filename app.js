@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require('mongoose');
 
 require('dotenv').config()
 
@@ -14,6 +15,8 @@ const passportSetup = require("./models/config");
 const passport = require("passport");
 
 var app = express();
+
+mongoose.set('useFindAndModify', false);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

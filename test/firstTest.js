@@ -1,3 +1,4 @@
+const froth = require('mocha-froth');
 var assert = require('assert');
 let chai = require("chai");
 let chaiHTTP = require("chai-http");
@@ -8,6 +9,21 @@ const { expect } = chai;
 chai.use(chaiHTTP);
 
 describe("Login Testing", () => {
+    it("Valid login", done => {
+        chai
+            .request(app)
+            .post("/users/login")
+            .send({
+                "user_name": process.env.testUserUsername,
+                "password": process.env.testUserPassword
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(200);
+                expect(res.body.status).to.equals("success");
+                expect(res.body.body).to.equals("Logged in successfully");
+                done();
+            });
+    }),
     it("Invalid params", done => {
             chai
                 .request(app)
@@ -16,7 +32,7 @@ describe("Login Testing", () => {
                     "user_name": "yaboi365"
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(401);
+                    expect(res).to.have.status(400);
                     expect(res.body.status).to.equals("error");
                     expect(res.body.body).to.equals("Invalid parameters");
                     done();
@@ -29,6 +45,21 @@ describe("Login Testing", () => {
                 .send({
                     "user_name": "mcChicken",
                     "password": "You shouldn't be reading this"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Email or password invalid");
+                    done();
+                });
+        }).timeout(4000),
+        it("Fuzzing password", done => {
+            chai
+                .request(app)
+                .post("/users/login")
+                .send({
+                    "user_name": "mcChicken",
+                    "password": `${froth(9,30)}`
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(401);
@@ -89,6 +120,20 @@ describe("Login Testing", () => {
                 .send({
                     "newPassword": "anycans4444555",
                     "fromUrl": "\'console.log(`injection`)"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid input");
+                    done();
+                });
+        }),
+        it("Fuzzing username", done => {
+            chai
+                .request(app)
+                .post("/users/forgotPassword")
+                .send({
+                    "user_name": `${froth(0,12)}`
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(401);
@@ -161,22 +206,6 @@ describe("Register Testing", () => {
                     expect(res.body.body).to.equals("Username cannot contain those characters");
                     done();
                 });
-        }),
-        it("Password injection", done => {
-            chai
-                .request(app)
-                .post("/users/register")
-                .send({
-                    "user_name": "bobTheBuilder",
-                    "password": "'console.log(`injection`)<",
-                    "email": "yes@mail.com"
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(401);
-                    expect(res.body.status).to.equals("error");
-                    expect(res.body.body).to.equals("Password must be more than 8 characters in length");
-                    done();
-                });
         })
 });
 
@@ -237,7 +266,22 @@ describe("Password Reset", () => {
                     expect(res.body.body).to.equals("Invalid input");
                     done();
                 })
-        })
+        }),
+            it(`Fuzzing`, done => {
+                chai
+                    .request(app)
+                    .post("/users/resetPassword")
+                    .send({
+                        "newPassword": `${froth(9,50)}`,
+                        "fromUrl": `${froth(30,90)}`
+                    })
+                    .end((err, res) => {
+                        expect(res).to.have.status(401);
+                        expect(res.body.status).to.equals("error");
+                        expect(res.body.body).to.equals("Invalid input");
+                        done();
+                    });
+                })
 });
 
 describe("Verify Account", () => {
@@ -293,7 +337,45 @@ describe("Verify Account", () => {
                     expect(res.body.body).to.equals("Invalid input");
                     done();
                 })
+        }),
+        it("Fuzzing", done => {
+            chai
+                .request(app)
+                .post("/users/verifyAccount")
+                .send({
+                    "activationCode": `${froth(30,90)}`
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid input");
+                    done();
+                })
         })
+    //     it("Fuzzing non existant code", done => {
+    //         for (k = 0; k < 5; k++) {
+    //             chai
+    //             .request(app)
+    //             .post("/users/verifyAccount")
+    //             .send({
+    //                 "activationCode": `${froth(3,30,{
+    //                     alphanumeric: true,
+    //                     quotes: false,
+    //                     backslashing: false,
+    //                     symbols: false,
+    //                     foreign: false
+    //                 })
+    //                 }`
+    //             })
+    //             .end((err, res) => {
+    //                 expect(res).to.have.status(401);
+    //                 expect(res.body.status).to.equals("error");
+    //                 expect(res.body.body).to.equals("Invalid input");
+
+    //             })
+    //     }
+    //     done();
+    // })
 });
 
 describe("Various APIS", () => {
@@ -324,8 +406,8 @@ describe("Various APIS", () => {
                     "betType": "nothing"
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(401);
-                    expect(res.body.body).to.equals("Invalid param");
+                    expect(res).to.have.status(400);
+                    expect(res.body.body).to.equals("Must be signed in");
                     done();
                 });
         }),
@@ -354,7 +436,7 @@ describe("Various APIS", () => {
                     "betType": "article",
                     "sitename": "BBC",
                     "directory": "\"console.log(`test`)",
-                    "month": "12",
+                    "month": "2",
                     "year": "2020",
                 })
                 .end((err, res) => {
@@ -363,25 +445,24 @@ describe("Various APIS", () => {
                     done();
                 });
         }),
-        it("Valid search", done => {
+        it("Invalid Amount", done => {
             chai
                 .request(app)
                 .post("/createArticleBet")
                 .send({
-                    "betType": "article",
                     "sitename": "BBC",
                     "directory": "world",
-                    "month": "1",
+                    "month": "2",
                     "year": "2020",
                     "searchTerm": "Trump"
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(200);
-                    expect(res.body.status).to.equals("information");
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
                     done();
                 });
         }).timeout(4000),
-        it("Valid search", done => {
+        it("Invalid search", done => {
             chai
                 .request(app)
                 .post("/createArticleBet")
@@ -394,8 +475,27 @@ describe("Various APIS", () => {
                     "searchTerm": "putin"
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(200);
-                    expect(res.body.status).to.equals("information");
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }).timeout(4000),
+        it("Invalid search", done => {
+            chai
+                .request(app)
+                .post("/createArticleBet")
+                .send({
+                    "sitename": "BBC",
+                    "directory": "world",
+                    "month": "2",
+                    "year": "2020",
+                    "searchTerm": "Trump",
+                    "uesr_name":"nobodiesUsernameForSure",
+                    "betAmount":"1000000000"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
                     done();
                 });
         }).timeout(4000)
