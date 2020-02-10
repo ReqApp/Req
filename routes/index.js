@@ -1,17 +1,16 @@
+var articleBet = require('../models/articleBets');
+var calcDistance = require('./calcDistance');
+var Bet = require('../models/betData');
+var User = require('../models/users');
+const passport = require("passport");
+var jwt = require('jsonwebtoken');
 var express = require('express');
 var router = express.Router();
-var User = require('../models/users');
-var jwt = require('jsonwebtoken');
-var Bet = require('../models/betData');
-var calcDistance = require('./calcDistance');
-const passport = require("passport");
-var articleBet = require('../models/articleBets');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'Express' });
 });
-
 
 router.get('/home', (req, res, next) => {
     if (req.cookies.Authorization) {
@@ -22,27 +21,6 @@ router.get('/home', (req, res, next) => {
         }
     }
 })
-
-/*GET users, return usernames */
-router.get('/getUsers', (req, res, next) => {
-    User.find({}, { user_name: 1 }, function(err, users) {
-        if (err)
-            res.send(err);
-
-        res.json(users);
-    });
-});
-
-/*GET user by ID, retrieves id & username */
-router.get('/getUser/:id', (req, res, next) => {
-    var id = req.params.id;
-    User.find({ _id: id }, { user_name: 1 }, (function(err, users) {
-        if (err)
-            res.send(err);
-
-        res.json(users);
-    }));
-});
 
 router.get('/profile', function(req, res, next) {
     res.render('profile', { welcome: 'profile page test' });
@@ -76,7 +54,7 @@ router.get('/members', (req, res, next) => {
         } else {
             res.render('forgotPassword');
         }
-    } else {``
+    } else {
         console.log(`Didn't verifiy jwt`);
         res.render('home');
     }
@@ -92,7 +70,6 @@ router.post('/getCoins', (req ,res, next) => {
                             "status":"information",
                             "body": data
                         });
-
                     } else {
                         res.status(400).json({
                             "status":"error",
@@ -218,7 +195,9 @@ router.post('/updateBet', (req, res, next) => {
 
 function makeArticleBet(input, username) {
     return new Promise((resolve, reject) => {
-        if (input.sitename && input.directory && input.month && input.year && input.searchTerm && input.ends && input.betAmount && username) {
+        if (input.sitename && input.directory && input.month && 
+            input.year && input.searchTerm && input.ends && 
+            input.betAmount && username) {
 
             if (validateInput(input.sitename, "article") && validateInput(input.directory, "article") &&
                 validateInput(input.month, "article") && validateInput(input.year, "article") &&
@@ -238,7 +217,7 @@ function makeArticleBet(input, username) {
                         // log to DB and then send back ok signal
                         console.log(`Trying to save with ${username}`);
                         newBet = new articleBet({
-                            title: `How many times will the ${input.sitename} have '${input.searchTerm}' in article titles`,
+                            title: `The ${input.sitename} will have more than 10 articles about'${input.searchTerm}' in ${input.month}/${input.year}`,
                             subtext: `${input.directory} - ${input.month}/${input.year}`,
                             result: data,
                             for: 0,
@@ -271,6 +250,8 @@ function makeArticleBet(input, username) {
     });
 }
 
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJtY0NoaWNrZW4iLCJpYXQiOjE1ODEzNDMzOTUsImV4cCI6MTU4MTYwMjU5NX0.VoXYKada3UK9k_8UZ8uHJURTfZ8GfeaUAHa1f8vQb78
+
 function hasEnoughCoins(username, transactionAmount) {
     return new Promise((resolve, reject) => {
         User.findOne({user_name:username}, (err, foundUser) => {
@@ -287,7 +268,6 @@ function hasEnoughCoins(username, transactionAmount) {
                         })
                         resolve(true);
                     } else {
-                        console.log(`${foundUser.coins} - ${transactionAmount}`);
                         resolve(null);
                     }
                 }
@@ -363,13 +343,10 @@ function addToBet(userObj) {
             {$push: {againstUsers: {user_name:userObj.username, betAmount: userObj.betAmount}}},
              (err, result) => {
             if (err) {
-                console.log("error in find");
                 reject(err);
             } else {
                 if (result) {
-                    console.log(`Push result: ${result}`);
                 } else {
-                    console.log("failure pushing");
                     resolve(null);
                 }
             }
@@ -393,7 +370,16 @@ function isSignedIn(jwt) {
 }
 
 function verifyJwt(jwtString) {
-    let val = jwt.verify(jwtString, process.env.JWTSECRET);
+    let val = null
+    try {
+        val = jwt.verify(jwtString, process.env.JWTSECRET);
+        console.log(`Verified ${val}`);
+    }   catch(err) {
+        // console.log(err);
+        if (err.name === "TokenExpiredError") {
+            val = null;
+        }
+    }
     return val;
 }
 

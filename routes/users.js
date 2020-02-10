@@ -50,16 +50,13 @@ router.get('/auth/google', passport.authenticate('google', {
 }));
 
 router.get('/auth/google/callback', passport.authenticate('google'), (req, res, next) => {
-    res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
+    res.cookie('Authorization', 'Bearer '+req.user.accessToken);
     res.render('index', { title: req.user_name });
 });
-
 
 router.get('/auth/github', passport.authenticate('github'));
 
 router.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/users/register' }), (req, res) => {
-    console.log("in callback: " + req.user);
-    // res.send("reached callback url");
     res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
     res.render('index', { title: req.user_name });
 });
