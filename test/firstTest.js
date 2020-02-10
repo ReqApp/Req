@@ -324,8 +324,8 @@ describe("Various APIS", () => {
                     "betType": "nothing"
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(401);
-                    expect(res.body.body).to.equals("Invalid param");
+                    expect(res).to.have.status(400);
+                    expect(res.body.body).to.equals("Must be signed in");
                     done();
                 });
         }),
@@ -354,7 +354,7 @@ describe("Various APIS", () => {
                     "betType": "article",
                     "sitename": "BBC",
                     "directory": "\"console.log(`test`)",
-                    "month": "12",
+                    "month": "2",
                     "year": "2020",
                 })
                 .end((err, res) => {
@@ -363,25 +363,24 @@ describe("Various APIS", () => {
                     done();
                 });
         }),
-        it("Valid search", done => {
+        it("Invalid search", done => {
             chai
                 .request(app)
                 .post("/createArticleBet")
                 .send({
-                    "betType": "article",
                     "sitename": "BBC",
                     "directory": "world",
-                    "month": "1",
+                    "month": "2",
                     "year": "2020",
                     "searchTerm": "Trump"
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(200);
-                    expect(res.body.status).to.equals("information");
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
                     done();
                 });
         }).timeout(4000),
-        it("Valid search", done => {
+        it("Invalid search", done => {
             chai
                 .request(app)
                 .post("/createArticleBet")
@@ -394,8 +393,8 @@ describe("Various APIS", () => {
                     "searchTerm": "putin"
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(200);
-                    expect(res.body.status).to.equals("information");
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
                     done();
                 });
         }).timeout(4000)

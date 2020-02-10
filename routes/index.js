@@ -154,6 +154,11 @@ router.post('/createArticleBet', (req, res, next) => {
             }
         })
 
+    } else {
+        res.status(400).json({
+            "status":"error",
+            "body":"Must be signed in"
+        });
     }
 });
 
@@ -251,6 +256,7 @@ function makeArticleBet(input, username) {
 }
 
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJtY0NoaWNrZW4iLCJpYXQiOjE1ODEzNDMzOTUsImV4cCI6MTU4MTYwMjU5NX0.VoXYKada3UK9k_8UZ8uHJURTfZ8GfeaUAHa1f8vQb78
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJtY0NoaWNrZW4iLCJpYXQiOjE1ODEzNDM0NTAsImV4cCI6MTU4MTYwMjY1MH0.MDAsYfFYOZRGIYHovSJOwIntut7WVthAbRtJrJGL_0w
 
 function hasEnoughCoins(username, transactionAmount) {
     return new Promise((resolve, reject) => {
