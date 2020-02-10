@@ -50,7 +50,7 @@ router.get('/auth/google', passport.authenticate('google', {
 }));
 
 router.get('/auth/google/callback', passport.authenticate('google'), (req, res, next) => {
-    res.cookie('Authorization', 'Bearer '+req.user.accessToken);
+    res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
     res.render('index', { title: req.user_name });
 });
 
@@ -224,7 +224,6 @@ router.post('/verifyAccount', (req, res, next) => {
         const searchQuery = /^[0-9a-zA-Z]+$/;
 
         if (activationCode.match(searchQuery)) {
-            console.log(`${activationCode} matched the search query, not invalid input`);
 
             // Activation code is safe
             UnverifiedUser.findOne({ "activationCode": activationCode }, (err, foundUser) => {
@@ -280,54 +279,54 @@ router.post('/verifyAccount', (req, res, next) => {
 
 // handles POST requests to /login
 router.post('/login', function(req, res, next) {
-   
-        const username = req.body.user_name;
-        const password = req.body.password;
 
-        if (username === undefined || password === undefined) {
-            res.status(400).json({
-                "status":"error",
-                "body": "Invalid parameters"
-            });
-        } else {
- // if a user matching login credentials exists
- User.findOne({ "user_name": username }, function(err, user) {
-    if (err) {
-        console.log("err thrown")
+    const username = req.body.user_name;
+    const password = req.body.password;
+
+    if (username === undefined || password === undefined) {
         res.status(400).json({
-            "status":"error",
-            "body": err 
-        });
-    }
-
-    if (user) {
-        // compare hashes of passwords
-        if (user.validPassword(password)) {
-            // create token to tell it's them
-            user.accessToken = createJwt({ user_name: username });
-            user.save();
-            // save the JWT to schema entry
-            res.cookie('Authorization', 'Bearer ' + user.accessToken);
-            res.status(200).json({
-                "status":"success",
-                "body":"Logged in successfully"
-            });
-        } else {
-            // if hashes don't match
-            res.status(401).send({
-                "status": "error",
-                "body": "Email or password invalid"
-            });
-        }
-        // if no user found
-    } else {
-        res.status(401).send({
             "status": "error",
-            "body": "Username not found"
+            "body": "Invalid parameters"
+        });
+    } else {
+        // if a user matching login credentials exists
+        User.findOne({ "user_name": username }, function(err, user) {
+            if (err) {
+                console.log("err thrown")
+                res.status(400).json({
+                    "status": "error",
+                    "body": err
+                });
+            }
+
+            if (user) {
+                // compare hashes of passwords
+                if (user.validPassword(password)) {
+                    // create token to tell it's them
+                    user.accessToken = createJwt({ user_name: username });
+                    user.save();
+                    // save the JWT to schema entry
+                    res.cookie('Authorization', 'Bearer ' + user.accessToken);
+                    res.status(200).json({
+                        "status": "success",
+                        "body": "Logged in successfully"
+                    });
+                } else {
+                    // if hashes don't match
+                    res.status(401).send({
+                        "status": "error",
+                        "body": "Email or password invalid"
+                    });
+                }
+                // if no user found
+            } else {
+                res.status(401).send({
+                    "status": "error",
+                    "body": "Username not found"
+                });
+            }
         });
     }
-});
-        }
 
     // } else {
     //     console.error.log("invalid params there");
@@ -542,7 +541,7 @@ function resetPassword(email, newPassword) {
 function sendEmail(email, subject, body) {
     return new Promise((resolve, reject) => {
         const spawn = require("child_process").spawn;
-        const pythonProcess = spawn('python3', ["emailService/sendEmail.py", email, subject, body]);
+        const pythonProcess = spawn('python', ["emailService/sendEmail.py", email, subject, body]);
         pythonProcess.stdout.on('data', (data) => {
             console.log(data.toString());
             resolve()

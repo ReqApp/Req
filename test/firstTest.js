@@ -1,4 +1,4 @@
-const froth = require('mocha-froth');
+const randomstring = require('randomstring');
 var assert = require('assert');
 let chai = require("chai");
 let chaiHTTP = require("chai-http");
@@ -8,23 +8,24 @@ let should = chai.should();
 const { expect } = chai;
 chai.use(chaiHTTP);
 
+
 describe("Login Testing", () => {
     it("Valid login", done => {
-        chai
-            .request(app)
-            .post("/users/login")
-            .send({
-                "user_name": process.env.testUserUsername,
-                "password": process.env.testUserPassword
-            })
-            .end((err, res) => {
-                expect(res).to.have.status(200);
-                expect(res.body.status).to.equals("success");
-                expect(res.body.body).to.equals("Logged in successfully");
-                done();
-            });
-    }),
-    it("Invalid params", done => {
+            chai
+                .request(app)
+                .post("/users/login")
+                .send({
+                    "user_name": process.env.testUserUsername,
+                    "password": process.env.testUserPassword
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.status).to.equals("success");
+                    expect(res.body.body).to.equals("Logged in successfully");
+                    done();
+                });
+        }),
+        it("Invalid params", done => {
             chai
                 .request(app)
                 .post("/users/login")
@@ -59,7 +60,7 @@ describe("Login Testing", () => {
                 .post("/users/login")
                 .send({
                     "user_name": "mcChicken",
-                    "password": `${froth(9,30)}`
+                    "password": `${randomstring.generate(16)}`
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(401);
@@ -133,15 +134,15 @@ describe("Login Testing", () => {
                 .request(app)
                 .post("/users/forgotPassword")
                 .send({
-                    "user_name": `${froth(0,12)}`
+                    "user_name": `testUser`
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(401);
+                    expect(res).to.have.status(400);
                     expect(res.body.status).to.equals("error");
-                    expect(res.body.body).to.equals("Invalid input");
+                    expect(res.body.body).to.equals("Check your email for reset link");
                     done();
                 });
-        })
+        }).timeout(1000)
 });
 
 describe("Register Testing", () => {
@@ -267,21 +268,21 @@ describe("Password Reset", () => {
                     done();
                 })
         }),
-            it(`Fuzzing`, done => {
-                chai
-                    .request(app)
-                    .post("/users/resetPassword")
-                    .send({
-                        "newPassword": `${froth(9,50)}`,
-                        "fromUrl": `${froth(30,90)}`
-                    })
-                    .end((err, res) => {
-                        expect(res).to.have.status(401);
-                        expect(res.body.status).to.equals("error");
-                        expect(res.body.body).to.equals("Invalid input");
-                        done();
-                    });
+        it(`Fuzzing`, done => {
+            chai
+                .request(app)
+                .post("/users/resetPassword")
+                .send({
+                    "newPassword": `${randomstring.generate(30)}`,
+                    "fromUrl": `${randomstring.generate(30)}`
                 })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid input");
+                    done();
+                });
+        }).timeout(2500)
 });
 
 describe("Verify Account", () => {
@@ -343,7 +344,7 @@ describe("Verify Account", () => {
                 .request(app)
                 .post("/users/verifyAccount")
                 .send({
-                    "activationCode": `${froth(30,90)}`
+                    "activationCode": `${randomstring.generate(20)}`
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(401);
@@ -352,30 +353,6 @@ describe("Verify Account", () => {
                     done();
                 })
         })
-    //     it("Fuzzing non existant code", done => {
-    //         for (k = 0; k < 5; k++) {
-    //             chai
-    //             .request(app)
-    //             .post("/users/verifyAccount")
-    //             .send({
-    //                 "activationCode": `${froth(3,30,{
-    //                     alphanumeric: true,
-    //                     quotes: false,
-    //                     backslashing: false,
-    //                     symbols: false,
-    //                     foreign: false
-    //                 })
-    //                 }`
-    //             })
-    //             .end((err, res) => {
-    //                 expect(res).to.have.status(401);
-    //                 expect(res.body.status).to.equals("error");
-    //                 expect(res.body.body).to.equals("Invalid input");
-
-    //             })
-    //     }
-    //     done();
-    // })
 });
 
 describe("Various APIS", () => {
@@ -490,8 +467,8 @@ describe("Various APIS", () => {
                     "month": "2",
                     "year": "2020",
                     "searchTerm": "Trump",
-                    "uesr_name":"nobodiesUsernameForSure",
-                    "betAmount":"1000000000"
+                    "uesr_name": "nobodiesUsernameForSure",
+                    "betAmount": "1000000000"
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(400);
@@ -512,5 +489,5 @@ describe("Image Upload", () => {
                 expect(res.body.status).to.equals("error");
                 done();
             });
-        })
+    })
 })
