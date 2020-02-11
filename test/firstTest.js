@@ -8,8 +8,12 @@ let should = chai.should();
 const { expect } = chai;
 chai.use(chaiHTTP);
 
+const fuzzSUsername = randomstring.generate(20);
+const fuzzPassword = randomstring.generate(32);
+const fuzzVerificationCode = randomstring.generate(6);
 
-describe("Login Testing", () => {
+
+describe("========= Login Testing =========", () => {
     it("Valid login", done => {
             chai
                 .request(app)
@@ -24,7 +28,7 @@ describe("Login Testing", () => {
                     expect(res.body.body).to.equals("Logged in successfully");
                     done();
                 });
-        }),
+        }).timeout(1200),
         it("Invalid params", done => {
             chai
                 .request(app)
@@ -53,14 +57,14 @@ describe("Login Testing", () => {
                     expect(res.body.body).to.equals("Email or password invalid");
                     done();
                 });
-        }).timeout(4000),
+        }).timeout(2500),
         it("Fuzzing password", done => {
             chai
                 .request(app)
                 .post("/users/login")
                 .send({
                     "user_name": "mcChicken",
-                    "password": `${randomstring.generate(16)}`
+                    "password": `${fuzzPassword}`
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(401);
@@ -68,7 +72,7 @@ describe("Login Testing", () => {
                     expect(res.body.body).to.equals("Email or password invalid");
                     done();
                 });
-        }).timeout(4000),
+        }).timeout(1200),
         it("Invalid username", done => {
             chai
                 .request(app)
@@ -83,7 +87,7 @@ describe("Login Testing", () => {
                     expect(res.body.body).to.equals("Username not found");
                     done();
                 });
-        }).timeout(4000),
+        }).timeout(1000),
         it("Injection", done => {
             chai
                 .request(app)
@@ -99,7 +103,7 @@ describe("Login Testing", () => {
                     expect(res.body.body).to.equals("Email or password invalid");
                     done();
                 });
-        }).timeout(4000),
+        }).timeout(1000),
         it("Invalid params", done => {
             chai
                 .request(app)
@@ -144,8 +148,7 @@ describe("Login Testing", () => {
                 });
         }).timeout(1000)
 });
-
-describe("Register Testing", () => {
+describe("=========== Register Testing ===========", () => {
     it("Invalid params", done => {
             chai
                 .request(app)
@@ -211,7 +214,7 @@ describe("Register Testing", () => {
 });
 
 
-describe("Password Reset", () => {
+describe("========== Password Reset ==========", () => {
     it("Invalid Url", done => {
             chai
                 .request(app)
@@ -273,8 +276,8 @@ describe("Password Reset", () => {
                 .request(app)
                 .post("/users/resetPassword")
                 .send({
-                    "newPassword": `${randomstring.generate(30)}`,
-                    "fromUrl": `${randomstring.generate(30)}`
+                    "newPassword": `${fuzzPassword}`,
+                    "fromUrl": `${fuzzPassword}`
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(401);
@@ -282,10 +285,10 @@ describe("Password Reset", () => {
                     expect(res.body.body).to.equals("Invalid input");
                     done();
                 });
-        }).timeout(2500)
+        }).timeout(1200)
 });
 
-describe("Verify Account", () => {
+describe("========== Verify Account ========== ", () => {
     it("Invalid params", done => {
             chai
                 .request(app)
@@ -344,7 +347,7 @@ describe("Verify Account", () => {
                 .request(app)
                 .post("/users/verifyAccount")
                 .send({
-                    "activationCode": `${randomstring.generate(20)}`
+                    "activationCode": `${fuzzVerificationCode}`
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(401);
@@ -355,7 +358,7 @@ describe("Verify Account", () => {
         })
 });
 
-describe("Various APIS", () => {
+describe("============= Various APIS ==============", () => {
     it("Profile (not logged in)", done => {
             chai
                 .request(app)
@@ -438,7 +441,7 @@ describe("Various APIS", () => {
                     expect(res.body.status).to.equals("error");
                     done();
                 });
-        }).timeout(4000),
+        }).timeout(1000),
         it("Invalid search", done => {
             chai
                 .request(app)
@@ -456,7 +459,7 @@ describe("Various APIS", () => {
                     expect(res.body.status).to.equals("error");
                     done();
                 });
-        }).timeout(4000),
+        }).timeout(1000),
         it("Invalid search", done => {
             chai
                 .request(app)
@@ -475,10 +478,10 @@ describe("Various APIS", () => {
                     expect(res.body.status).to.equals("error");
                     done();
                 });
-        }).timeout(4000)
+        }).timeout(1000)
 });
 
-describe("Image Upload", () => {
+describe("============= Image Upload =============", () => {
     it("No Image", done => {
             chai
                 .request(app)
