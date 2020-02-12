@@ -115,6 +115,39 @@ router.post('/betOn', (req, res, next) => {
     })
 })
 
+// needs server side processing to anonymise the betting users before being sent back to the user
+router.post('/getTestBets', (req, res, next) => {
+  getBets().then((data) => {
+      if (data) {
+          anonymiseBetData(data).then((response) => {
+              if (response) {
+                res.status(200).json(response);
+              } else {
+                res.status(400).json({
+                    "status":"error",
+                    "body":"Error anonymising data nothing"
+                });
+              }
+          }, (err) => {
+            res.status(400).json({
+                "status":"error",
+                "body": "no bets to pull from: "+err
+            });
+          })
+      } else {
+          res.status(400).json({
+              "status":"error",
+              "body":"Could not get bets"
+          });
+      }
+  }, (err) => {
+      res.status(400).json({
+          "status":"error",
+          "body":"Error getting bets from DB"
+      });
+  })
+});
+
 function createBet(input) {
     return new Promise((resolve, reject) => {
         if (input.title && input.side && input.amount && input.deadline && input.username) {
@@ -157,6 +190,40 @@ function isSignedIn(reqCookies) {
     })
 }
 
+function anonymiseBetData(allBets) {
+    return new Promise((resolve, reject) => {
+        let betArr = [];
+
+        if (!allBets) {
+            reject("no bets to parse");
+        }
+
+        for (indivBet of allBets) {
+            let forTotal = 0;
+            let againstTotal = 0;
+            
+            if (indivBet.forUsers.length > 0) {
+                for (bet of indivBet.forUsers) {
+                    forTotal += bet.betAmount;
+                }
+            }
+            if (indivBet.againstUsers.length > 0) {
+                for (bet of indivBet.againstUsers) {
+                    againstTotal += bet.betAmount;
+                }
+            }
+            let tempBet = {
+                title: indivBet.title,
+                username: indivBet.user_name,
+                forBetTotal: forTotal,
+                againstBetTotal: againstTotal
+            }
+            betArr.push(tempBet);
+        }
+        resolve(betArr);
+    });
+}
+
 function isValidBetID(betID) {
     return new Promise((resolve, reject) => {
         testBets.findOne({_id:betID}, (err, res) => {
@@ -195,6 +262,22 @@ function hasEnoughCoins(username, transactionAmount) {
                 }
             }
         });
+    });
+}
+
+function getBets() {
+    return new Promise((resolve, reject) => {
+       testBets.find({}, (err, response) => {
+           if (err) {
+               reject(err);
+           } else {
+               if (response) {
+                   resolve(response);
+               } else {
+                   resolve(null);
+               }
+           }
+       })
     });
 }
 
