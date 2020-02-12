@@ -10,6 +10,7 @@ require('dotenv').config()
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var tasksRouter = require('./routes/tasks');
+var betsRouter = require('./routes/bets');
 
 const passportSetup = require("./models/config");
 const passport = require("passport");
@@ -33,6 +34,7 @@ app.use(passport.initialize());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/tasks', tasksRouter);
+app.use('/bets', betsRouter);
 
 // Swagger setup
 const swaggerUi = require('swagger-ui-express');
