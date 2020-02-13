@@ -1,6 +1,7 @@
 import React, {createRef, Component} from 'react';
 import ReactDOM from 'react-dom';
 import { Map, Marker, Popup, TileLayer } from "react-leaflet";
+import { geolocated } from "react-geolocated";
 import './index.css';
 
 class DisplayMap extends React.Component{

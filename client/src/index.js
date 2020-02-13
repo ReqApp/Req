@@ -2,9 +2,10 @@ import React, {createRef, Component} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import Bets from'./bets.js';
+import FindLocationBets from './findLocationBets.js';
 
 ReactDOM.render(
-    <Bets />,
+    <FindLocationBets />,
     document.getElementById('root')
 )
 /*
