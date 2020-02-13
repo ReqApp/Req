@@ -4,9 +4,15 @@ import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
 import DisplayMap from'./maps.js';
-import { Paper } from '@material-ui/core';
+import {Paper} from '@material-ui/core';
+import { CardHeader } from '@material-ui/core';
 
 class FindBetPage extends React.Component{
     constructor(props){
@@ -21,16 +27,37 @@ class FindBetPage extends React.Component{
                 textAlign: 'center',
                 color: theme.palette.text.secondary,
                 },
-            }))
+            })),
+            menuStyles : makeStyles(theme => ({
+                root: {
+                    flexGrow: 1,
+                },
+                menuButton: {
+                    marginRight: theme.spacing(2),
+                },
+                title: {
+                    flexGrow: 1,
+                },
+                }))
         }
-    }   
+    }
+
     render(){
         return(
             // Create grid for parts
             <div className={this.state.useStyles.root}>
                 <Grid container spacing = {3}>
                     <Grid item xs={12}>
-                        <Paper className={this.state.useStyles.paper}>Find Bets Near You</Paper>
+                        <AppBar position="static">
+                            <Toolbar>
+                                <IconButton edge="start" className={this.state.menuStyles.menuButton} color="inherit" aria-label="menu">
+                                <MenuIcon />
+                                </IconButton>
+                                <Typography variant="h6" className={this.state.menuStyles.title}>
+                                    Find Bets Near You
+                                </Typography>
+                            </Toolbar>
+                        </AppBar>
                     </Grid>
                     <Grid item xs={6}>
                         <Paper className={this.state.useStyles.paper}><DisplayMap /></Paper>
@@ -107,8 +134,10 @@ class BetRegionCards extends React.Component{
 function betRegionCard(region){
     return(
         <Card key={region._id}>
-            <CardContent>{region.region_name}</CardContent>
-            <Button>Select</Button>
+            <CardHeader title={region.region_name} subheader={"Number of Bets: " + region.num_bets}/>
+            <CardContent>
+            </CardContent>
+            <Button>Select Region</Button>
         </Card>
     )
 }
