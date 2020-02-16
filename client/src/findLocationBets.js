@@ -38,8 +38,21 @@ class FindBetPage extends React.Component{
                 title: {
                     flexGrow: 1,
                 },
-                }))
+                })),
+            betRegions : null,
+            loadingRegions : true,
+            shownRegion : null,
         }
+        this.handleRegionHover = this.handleRegionHover.bind(this);
+    }
+
+    componentDidMount(){
+        fetch("http://localhost:9000/getBettingRegions?lat=53.28211&lng=-9.062186").then(regions => regions.json()).then(regions => this.setState({loadingRegions : false, betRegions : regions})).catch(err => err);
+    }
+
+    handleRegionHover(id){
+        this.setState({shownRegion : id});
+        console.log(id);
     }
 
     render(){
@@ -60,12 +73,12 @@ class FindBetPage extends React.Component{
                         </AppBar>
                     </Grid>
                     <Grid item xs={6}>
-                        <Paper className={this.state.useStyles.paper}><DisplayMap /></Paper>
+                        <Paper className={this.state.useStyles.paper}><DisplayMap shownRegion={this.state.shownRegion}/></Paper>
                         { /* Get betting map */ }
 
                     </Grid>
                     <Grid item xs={6}>
-                        <Paper className={this.state.useStyles.paper}><BetRegionCards /></Paper>
+                        <Paper className={this.state.useStyles.paper}><BetRegionCards onRegionHover={this.handleRegionHover} loadingRegions={this.state.loadingRegions} betRegions={this.state.betRegions}/></Paper>
                         {/* Generate betting cards */ }
                     </Grid>
                 </Grid>
@@ -94,22 +107,26 @@ class BetRegionCards extends React.Component{
                   marginBottom: 12,
                 },
             }),
-            loadingRegions : true,
-            betRegions: null
         }
+        //this.highlightBetRegion = this.highlightBetRegion.bind(this);
     }
-
-    componentDidMount(){
-        fetch("http://localhost:9000/getBettingRegions?lat=53.28211&lng=-9.062186").then(regions => regions.json()).then(regions => this.setState({loadingRegions : false, betRegions : regions})).catch(err => err);
+    highlightBetRegion(id){
+        this.props.onRegionHover(id);
     }
 
     render(){
-        const {loadingRegions, betRegions} = this.state;
+        const {loadingRegions, betRegions} = this.props;
+
         if(!loadingRegions){
             var regionCards = [];
             if(Array.isArray(betRegions) && betRegions.length){
                 for(var i = 0; i < betRegions.length; i++){
-                    regionCards.push(betRegionCard(betRegions[i]));
+                    regionCards.push(<Card key={betRegions[i]._id} onMouseOver={this.highlightBetRegion.bind(this, betRegions[i]._id)}>
+                        <CardHeader title={betRegions[i].region_name} subheader={"Number of Bets: " + betRegions[i].num_bets}/>
+                        <CardContent>
+                        </CardContent>
+                        <Button>Select Region</Button>
+                    </Card>);
                 }
                 return (
                     <div>{regionCards}</div>
@@ -130,10 +147,10 @@ class BetRegionCards extends React.Component{
         }
     }
 }
-
+/*
 function betRegionCard(region){
     return(
-        <Card key={region._id}>
+        <Card key={region._id} onMouseOver={this.highlightBetRegion}>
             <CardHeader title={region.region_name} subheader={"Number of Bets: " + region.num_bets}/>
             <CardContent>
             </CardContent>
@@ -141,5 +158,6 @@ function betRegionCard(region){
         </Card>
     )
 }
+*/
 
 export default FindBetPage;

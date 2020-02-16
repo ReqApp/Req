@@ -34,74 +34,51 @@ class DisplayMap extends React.Component{
     }
 
     render() {
-      if(this.state.hasLocation){
-        if(!this.state.loadingRegions){
-          if(Array.isArray(this.state.betRegions) && this.state.betRegions.length){
-            const betRegions = this.state.betRegions;
-            var betRegionsMap = [];
+      const {hasLocation, loadingRegions, betRegions} = this.state;
+      const {shownRegion} = this.props;
+
+      // Check if userlocation found
+      var userMarker = null;
+      if(hasLocation){
+        userMarker = <Marker position={this.state.latlng}><Popup>You are here</Popup></Marker>;
+      }
+
+      // Check if bet regions found
+      var betRegionsMap = null;
+      if(!loadingRegions){
+        if(Array.isArray(betRegions) && betRegions.length){
+          betRegionsMap = [];
+          if(shownRegion != null){
+            betRegions.forEach((region) => {
+              if(region._id === shownRegion){
+                var center = [region.latitude, region.longitude];
+                betRegionsMap.push(<Marker key={region._id} position={center}/>);
+              }
+            });
+          }else{
             for(var i = 0; i < betRegions.length; i++){
               var center = [betRegions[i].latitude, betRegions[i].longitude];
-              betRegionsMap.push(<Circle key={betRegions[i]._id} center={center} color="red" radius={betRegions[i].radius}/>)
+              betRegionsMap.push(<Marker key={betRegions[i]._id} position={center}/>)
             }
-            return(
-              <Map
-                center={this.state.latlng}
-                length={4}
-                zoom={13}>
-                <TileLayer
-                  attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <Marker position={this.state.latlng}>
-                  <Popup>You are here</Popup>
-              </Marker>
-              {betRegionsMap}
-            </Map>
-            )
           }
-        }else{
-          return (
-              <Map
-                center={this.state.latlng}
-                length={4}
-                zoom={13}>
-                <TileLayer
-                  attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <Marker position={this.state.latlng}>
-                  <Popup>You are here</Popup>
-              </Marker>
-            </Map>
-          )
         }
-            return (
-              <Map
-                center={this.state.latlng}
-                length={4}
-                zoom={13}>
-                <TileLayer
-                  attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <Marker position={this.state.latlng}>
-                  <Popup>You are here</Popup>
-              </Marker>
-            </Map>)
-      }else{
-        return (
-          <Map
-            center={this.state.latlng}
-            length={4}
-            zoom={13}>
-            <TileLayer
-              attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-          </Map>
-        )
       }
+
+      return(
+        <Map
+          center={this.state.latlng}
+          length={4}
+          zoom={15}>
+          <TileLayer
+            attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          {userMarker}
+          {betRegionsMap}
+        </Map>
+      )
     }
+    
 }
 
 export default DisplayMap;
