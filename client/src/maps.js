@@ -34,8 +34,8 @@ class DisplayMap extends React.Component{
     }
 
     render() {
-      const {hasLocation, loadingRegions, betRegions} = this.state;
-      const {shownRegion} = this.props;
+      const {hasLocation} = this.state; 
+      const {shownRegion, loadingRegions, betRegions} = this.props;
 
       // Check if userlocation found
       var userMarker = null;
@@ -48,13 +48,14 @@ class DisplayMap extends React.Component{
       if(!loadingRegions){
         if(Array.isArray(betRegions) && betRegions.length){
           betRegionsMap = [];
-          if(shownRegion != null){
-            betRegions.forEach((region) => {
-              if(region._id === shownRegion){
-                var center = [region.latitude, region.longitude];
-                betRegionsMap.push(<Marker key={region._id} position={center}/>);
+          if(shownRegion != null){  
+            for(var i = 0; i < betRegions.length; i++){
+              var center = [betRegions[i].latitude, betRegions[i].longitude];
+              betRegionsMap.push(<Marker key={betRegions[i]._id} position={center}/>);
+              if(betRegions[i]._id === shownRegion){
+                betRegionsMap.push(<Circle key={"circle:" + betRegions[i]._id} center={center} radius={betRegions[i].radius} color='blue'/>);
               }
-            });
+            } 
           }else{
             for(var i = 0; i < betRegions.length; i++){
               var center = [betRegions[i].latitude, betRegions[i].longitude];
@@ -63,7 +64,6 @@ class DisplayMap extends React.Component{
           }
         }
       }
-
       return(
         <Map
           center={this.state.latlng}

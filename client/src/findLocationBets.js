@@ -12,22 +12,13 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import DisplayMap from'./maps.js';
 import {Paper} from '@material-ui/core';
+import Box from '@material-ui/core/Box';
 import { CardHeader } from '@material-ui/core';
 
 class FindBetPage extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            useStyles : makeStyles(theme => ({
-                root: {
-                flexGrow: 1,
-                },
-                paper: {
-                padding: theme.spacing(2),
-                textAlign: 'center',
-                color: theme.palette.text.secondary,
-                },
-            })),
             menuStyles : makeStyles(theme => ({
                 root: {
                     flexGrow: 1,
@@ -58,10 +49,10 @@ class FindBetPage extends React.Component{
     render(){
         return(
             // Create grid for parts
-            <div className={this.state.useStyles.root}>
-                <Grid container spacing = {3}>
-                    <Grid item xs={12}>
-                        <AppBar position="static">
+            <div>
+                <Grid container spacing = {1}>
+                    <Grid item sm={12} xs={12}>
+                        <AppBar position='static'>
                             <Toolbar>
                                 <IconButton edge="start" className={this.state.menuStyles.menuButton} color="inherit" aria-label="menu">
                                 <MenuIcon />
@@ -72,13 +63,12 @@ class FindBetPage extends React.Component{
                             </Toolbar>
                         </AppBar>
                     </Grid>
-                    <Grid item xs={6}>
-                        <Paper className={this.state.useStyles.paper}><DisplayMap shownRegion={this.state.shownRegion}/></Paper>
+                    <Grid item sm={8} xs={12}>
+                            <Paper><DisplayMap betRegions={this.state.betRegions} loadingRegions={this.state.loadingRegions} shownRegion={this.state.shownRegion}/></Paper>
                         { /* Get betting map */ }
-
                     </Grid>
-                    <Grid item xs={6}>
-                        <Paper className={this.state.useStyles.paper}><BetRegionCards onRegionHover={this.handleRegionHover} loadingRegions={this.state.loadingRegions} betRegions={this.state.betRegions}/></Paper>
+                    <Grid item sm={4} xs={12}>
+                        <Paper><BetRegionCards onRegionHover={this.handleRegionHover} loadingRegions={this.state.loadingRegions} betRegions={this.state.betRegions}/></Paper>
                         {/* Generate betting cards */ }
                     </Grid>
                 </Grid>
@@ -108,7 +98,6 @@ class BetRegionCards extends React.Component{
                 },
             }),
         }
-        //this.highlightBetRegion = this.highlightBetRegion.bind(this);
     }
     highlightBetRegion(id){
         this.props.onRegionHover(id);
@@ -147,17 +136,5 @@ class BetRegionCards extends React.Component{
         }
     }
 }
-/*
-function betRegionCard(region){
-    return(
-        <Card key={region._id} onMouseOver={this.highlightBetRegion}>
-            <CardHeader title={region.region_name} subheader={"Number of Bets: " + region.num_bets}/>
-            <CardContent>
-            </CardContent>
-            <Button>Select Region</Button>
-        </Card>
-    )
-}
-*/
 
 export default FindBetPage;
