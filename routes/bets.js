@@ -1,10 +1,10 @@
 const utilFuncs = require('../funcs/betFuncs');
+var testBets = require('../models/testBets');
+var User = require('../models/users');
 var jwt = require('jsonwebtoken');
 var express = require('express');
-var User = require('../models/users');
 var router = express.Router();
 var util = require('util');
-var testBets = require('../models/testBets');
 
 
 router.post('/makeBet', (req, res, next) => {
@@ -15,39 +15,39 @@ router.post('/makeBet', (req, res, next) => {
         "deadline": req.body.deadline,
         "username": req.body.username
     }
-    utilFuncs.hasEnoughCoins(req.body.username,  req.body.amount).then((data) => {
+    utilFuncs.hasEnoughCoins(req.body.username, req.body.amount).then((data) => {
         if (data) {
             utilFuncs.createBet(inputObj).then((response) => {
                 if (response) {
                     res.status(200).json({
-                        "status":"success",
-                        "body":"Bet made!"
+                        "status": "success",
+                        "body": "Bet made!"
                     });
                 } else {
-                   res.status(400).json({
-                       "status":"error",
-                       "body":"Bet not made no res"
-                   });
+                    res.status(400).json({
+                        "status": "error",
+                        "body": "Bet not made no res"
+                    });
                 }
             }, (err) => {
                 console.log(err);
                 res.status(400).json({
-                    "status":"err",
-                    "body":"ERR Bet not made"
+                    "status": "err",
+                    "body": "ERR Bet not made"
                 });
             })
         } else {
             console.log(`${inputObj.username} doesn't have enough coins`);
             res.status(400).json({
-                "status":"error",
-                "body":"Not enough coins"
+                "status": "error",
+                "body": "Not enough coins"
             });
         }
     }, (err) => {
         console.log(err);
         res.status(400).json({
-            "status":"error",
-            "body":"Error retrieving coin amount"
+            "status": "error",
+            "body": "Error retrieving coin amount"
         });
     });
 
@@ -113,53 +113,53 @@ router.post('/betOn', (req, res, next) => {
                         if (alreadyBetOn) {
                             // user has already bet on this post, update their val
                             res.status(400).json({
-                                "status":"error",
-                                "body":"You have already made a bet on this."
+                                "status": "error",
+                                "body": "You have already made a bet on this."
                             });
                         } else {
                             // User has not already made a bet for this post
                             utilFuncs.betOn(inputObj).then((response) => {
                                 if (response) {
                                     res.status(200).json({
-                                        "status":"success",
-                                        "body":"Bet successfully added"
+                                        "status": "error",
+                                        "body": "Bet successfully added"
                                     });
                                 } else {
                                     res.status(400).json({
-                                        "status":"error",
-                                        "body":"Bet could not be added"
+                                        "status": "error",
+                                        "body": "Bet could not be added"
                                     });
                                 }
                             }, (err) => {
                                 res.status(400).json({
-                                    "status":"error",
-                                    "body":"Error adding bet to DB"
+                                    "status": "error",
+                                    "body": "Error adding bet to DB"
                                 });
                             });
                         }
                     });
                 } else {
                     res.status(400).json({
-                        "status":"error",
-                        "body":"Insufficient funds"
+                        "status": "error",
+                        "body": "Insufficient funds"
                     });
                 }
             }, (err) => {
                 res.status(400).json({
-                    "status":"error",
-                    "body":"Error retrieving coin amount"
+                    "status": "error",
+                    "body": "Error retrieving coin amount"
                 });
             })
         } else {
             res.status(400).json({
-                "status":"error",
-                "body":"Invalid betID"
+                "status": "error",
+                "body": "Invalid betID"
             });
         }
     }, (err) => {
         res.status(400).json({
-            "status":"error",
-            "body":"Error validating bet ID"
+            "status": "error",
+            "body": "Error validating bet ID"
         });
     })
 })
@@ -168,35 +168,35 @@ router.post('/betOn', (req, res, next) => {
 // otherwise the user can see who has bet what amount of any kind
 router.post('/getTestBets', (req, res, next) => {
 
-  utilFuncs.getBets().then((data) => {
-      if (data) {
-          utilFuncs.anonymiseBetData(data).then((response) => {
-              if (response) {
-                res.status(200).json(response);
-              } else {
+    utilFuncs.getBets().then((data) => {
+        if (data) {
+            utilFuncs.anonymiseBetData(data).then((response) => {
+                if (response) {
+                    res.status(200).json(response);
+                } else {
+                    res.status(400).json({
+                        "status": "error",
+                        "body": "Error anonymising data nothing"
+                    });
+                }
+            }, (err) => {
                 res.status(400).json({
-                    "status":"error",
-                    "body":"Error anonymising data nothing"
+                    "status": "error",
+                    "body": "no bets to pull from: " + err
                 });
-              }
-          }, (err) => {
+            })
+        } else {
             res.status(400).json({
-                "status":"error",
-                "body": "no bets to pull from: "+err
+                "status": "error",
+                "body": "Could not get bets"
             });
-          })
-      } else {
-          res.status(400).json({
-              "status":"error",
-              "body":"Could not get bets"
-          });
-      }
-  }, (err) => {
-      res.status(400).json({
-          "status":"error",
-          "body":"Error getting bets from DB"
-      });
-  })
+        }
+    }, (err) => {
+        res.status(400).json({
+            "status": "error",
+            "body": "Error getting bets from DB"
+        });
+    })
 });
 
 module.exports = router;

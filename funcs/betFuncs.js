@@ -5,60 +5,57 @@ var jwt = require('jsonwebtoken');
 
 function getBets() {
     return new Promise((resolve, reject) => {
-       testBets.find({}, (err, response) => {
-           if (err) {
-               reject(err);
-           } else {
-               if (response) {
-                   resolve(response);
-               } else {
-                   resolve(null);
-               }
-           }
-       })
+        testBets.find({}, (err, response) => {
+            if (err) {
+                reject(err);
+            } else {
+                if (response) {
+                    resolve(response);
+                } else {
+                    resolve(null);
+                }
+            }
+        })
     });
 }
 
 function betOn(userObj) {
     return new Promise((resolve, reject) => {
         if (userObj.side === "yes") {
-            testBets.findOneAndUpdate({_id:userObj.betID},
-                {$push: {forUsers: {user_name:userObj.username, betAmount: userObj.amount}}},
-                 (err, result) => {
-                if (err) {
-                    reject(err);
-                    var User = require('../models/users');
-                } else {
-                    if (result) {
-                        console.log(`bet added`);
-                        resolve(true);
+            testBets.findOneAndUpdate({ _id: userObj.betID }, { $push: { forUsers: { user_name: userObj.username, betAmount: userObj.amount } } },
+                (err, result) => {
+                    if (err) {
+                        reject(err);
+                        var User = require('../models/users');
                     } else {
-                        resolve(null);
+                        if (result) {
+                            console.log(`bet added`);
+                            resolve(true);
+                        } else {
+                            resolve(null);
+                        }
                     }
-                }
-            });
+                });
         } else {
-            testBets.findOneAndUpdate({_id:userObj.betID},
-                {$push: {againstUsers: {user_name:userObj.username, betAmount: userObj.amount}}},
-                 (err, result) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    if (result) {
-                        resolve(true);
+            testBets.findOneAndUpdate({ _id: userObj.betID }, { $push: { againstUsers: { user_name: userObj.username, betAmount: userObj.amount } } },
+                (err, result) => {
+                    if (err) {
+                        reject(err);
                     } else {
-                        resolve(null);
+                        if (result) {
+                            resolve(true);
+                        } else {
+                            resolve(null);
+                        }
                     }
-                }
-            });
+                });
         }
-    }) 
+    })
 }
-
 
 function alreadyBetOn(userObj) {
     return new Promise((resolve, reject) => {
-        testBets.findOne({_id:userObj.betID}, (err, res) => {
+        testBets.findOne({ _id: userObj.betID }, (err, res) => {
             if (err) {
                 reject(err);
             } else {
@@ -77,21 +74,21 @@ function alreadyBetOn(userObj) {
                                     resolve(true);
                                 }
                             }
+                        }
+                        resolve(null);
                     }
-                    resolve(null);
-                }
 
                 } else {
-                    reject('Found no bet');
+                    reject('Invalid bet ID');
                 }
             }
-        }); 
+        });
     });
 }
 
 function hasEnoughCoins(username, transactionAmount) {
     return new Promise((resolve, reject) => {
-        User.findOne({user_name:username}, (err, foundUser) => {
+        User.findOne({ user_name: username }, (err, foundUser) => {
             if (err) {
                 reject(err);
             } else {
@@ -99,7 +96,7 @@ function hasEnoughCoins(username, transactionAmount) {
                     if (foundUser.coins >= transactionAmount) {
                         foundUser.coins -= transactionAmount;
                         foundUser.save((err) => {
-                            if(err) {
+                            if (err) {
                                 reject(err);
                             }
                         })
@@ -220,7 +217,7 @@ function decideBet(inputObj) {
 
 function isValidBetID(betID) {
     return new Promise((resolve, reject) => {
-        testBets.findOne({_id:betID}, (err, res) => {
+        testBets.findOne({ _id: betID }, (err, res) => {
             if (err) {
                 reject(err);
             } else {
@@ -234,7 +231,6 @@ function isValidBetID(betID) {
     });
 }
 
-
 function anonymiseBetData(allBets) {
     return new Promise((resolve, reject) => {
         let betArr = [];
@@ -246,7 +242,7 @@ function anonymiseBetData(allBets) {
         for (indivBet of allBets) {
             let forTotal = 0;
             let againstTotal = 0;
-            
+
             if (indivBet.forUsers.length > 0) {
                 for (bet of indivBet.forUsers) {
                     forTotal += bet.betAmount;
@@ -316,13 +312,13 @@ function verifyJwt(jwtString) {
     return val;
 }
 
-module.exports.getBets = getBets;
 module.exports.betOn = betOn;
-module.exports.decideBet = decideBet;
+module.exports.getBets = getBets;
+module.exports.createBet = createBet;
 module.exports.verifyJwt = verifyJwt;
+module.exports.decideBet = decideBet;
 module.exports.isSignedIn = isSignedIn;
 module.exports.alreadyBetOn = alreadyBetOn;
+module.exports.isValidBetID = isValidBetID;
 module.exports.hasEnoughCoins = hasEnoughCoins;
 module.exports.anonymiseBetData = anonymiseBetData;
-module.exports.isValidBetID = isValidBetID;
-module.exports.createBet = createBet;
