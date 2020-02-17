@@ -113,6 +113,111 @@ function hasEnoughCoins(username, transactionAmount) {
     });
 }
 
+function payOut(username, percentage, winnings) {
+    return new Promise((resolve, reject) => {
+        User.findOne({user_name:username}, (err, foundUser) => {
+            if (err) {
+                reject(err);
+            }
+            if (foundUser) {
+                console.log(username, percentage, winnings);
+                
+                foundUser.coins += Math.floor(percentage * winnings);
+                foundUser.save((err) => {
+                    reject(err);
+                });
+    
+                resolve(percentage*winnings);
+            } else {
+                resolve(null);
+            }
+        })
+    })
+}
+
+function deleteBet(betID) {
+    return new Promise((resolve, reject) => {
+        testBets.deleteOne({_id:betID}, (err) => {
+            if (err) {
+                reject(err);
+            }
+        })
+    })
+}
+
+function decideBet(inputObj) {
+    return new Promise((resolve, reject) => {
+        let currTime = new Date();
+    
+        testBets.findOne({_id:inputObj.betID}, (err, foundBet) => {
+            if (err) {
+                reject(err);
+            }
+            if (foundBet) {
+                // currTime - deadline + half an hour
+                if (currTime.getTime() - (foundBet.deadline + 21600000) >= 0) {
+                    reject("Expired");
+                } else {
+                    // not expired, dish out the winnings
+                    anonymiseBetData([foundBet]).then((betData) => {
+                        if (betData) {
+                            // payout to the setter
+                            let totalBets = parseInt((betData[0].againstBetsTotal+betData[0].forBetsTotal),10)
+                            payOut(foundBet.user_name, 0.1, totalBets).then((response) => {
+                                console.log(`Paid out ${response} to setter`);
+                            });
+
+                            if (inputObj.result === "yes") {
+                                // if yes wins
+                                if (foundBet.forUsers.length > 0) {
+                                    for (bet of foundBet.forUsers) {
+
+                                        let payPercentage = ( bet.betAmount / parseInt(betData[0].forBetTotal,10) );
+                                        payOut(bet.user_name, payPercentage, betData[0].againstBetTotal).then((response) => {
+                                            if (response) {
+                                                console.log(`Paid out ${Math.floor(response) } successfully`);
+                                            } else {
+                                                console.log(`Paid out 0 unsuccessfully`);
+                                            }
+                                            // if paid out anything or nothing, still delete the bet
+                                            deleteBet(inputObj.betID).then((response) => {
+                                                if (response) {
+                                                    resolve(true);
+                                                }
+                                            }, (err) => {
+                                                reject(err);
+                                            })
+
+                                        }, (err) => {
+                                            reject(err);
+                                        })
+                                    }
+
+                                    resolve(true);
+                                } else {
+                                    console.log("no for users");
+                                }
+                            }
+                            if (inputObj.result === "no") {
+                                // if no wins
+                                if (foundBet.againstUsers.length > 0) {
+            
+                                }
+                            }
+                        } else {
+                            resolve(null);
+                        }
+                    }, (err) => {
+                        reject(err);
+                    })
+                }
+            } else  {
+                resolve(null);
+            }
+        });
+    })
+}
+
 function isValidBetID(betID) {
     return new Promise((resolve, reject) => {
         testBets.findOne({_id:betID}, (err, res) => {
@@ -137,7 +242,7 @@ function anonymiseBetData(allBets) {
         if (!allBets) {
             reject("no bets to parse");
         }
-
+        
         for (indivBet of allBets) {
             let forTotal = 0;
             let againstTotal = 0;
@@ -155,6 +260,7 @@ function anonymiseBetData(allBets) {
             let tempBet = {
                 title: indivBet.title,
                 username: indivBet.user_name,
+                deadline: indivBet.deadline,
                 forBetTotal: forTotal,
                 againstBetTotal: againstTotal
             }
@@ -212,6 +318,7 @@ function verifyJwt(jwtString) {
 
 module.exports.getBets = getBets;
 module.exports.betOn = betOn;
+module.exports.decideBet = decideBet;
 module.exports.verifyJwt = verifyJwt;
 module.exports.isSignedIn = isSignedIn;
 module.exports.alreadyBetOn = alreadyBetOn;

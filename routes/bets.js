@@ -53,6 +53,49 @@ router.post('/makeBet', (req, res, next) => {
 
 });
 
+router.post('/decideBet', (req, res, next) => {
+    let inputObj = {
+        betID: req.body.betID,
+        result: req.body.result,
+        accessToken: req.cookies.Authorization
+    }
+     
+    utilFuncs.isValidBetID(inputObj.betID).then((data) => {
+        if (data) {
+            utilFuncs.decideBet(inputObj).then((data) => {
+                if (data) {
+                    console.log(`Bet #${inputObj.betID} done`);
+                    res.status(200).json({
+                        "status":"error",
+                        "body":"success"
+                    });
+                } else {
+                    console.log(`Bet #${inputObj.betID} unsuccessful`);
+                    res.status(400).json({
+                        "status":"error",
+                        "body":"error paying out"
+                    });
+                }
+            }, (err) => {
+                res.status(400).json({
+                    "status":"error",
+                    "body":err
+                });
+            });
+        } else {
+            res.status(400).json({
+                "status":"error",
+                "body":"Invalid betID"
+            });
+        }
+    }, (err) => {
+        res.status(400).json({
+            "status":"error",
+            "body":"Error checking betID"
+        });
+    });
+});
+
 router.post('/betOn', (req, res, next) => {
     let inputObj = {
         "betID": req.body.betID,
@@ -78,7 +121,7 @@ router.post('/betOn', (req, res, next) => {
                             utilFuncs.betOn(inputObj).then((response) => {
                                 if (response) {
                                     res.status(200).json({
-                                        "status":"error",
+                                        "status":"success",
                                         "body":"Bet successfully added"
                                     });
                                 } else {
@@ -92,7 +135,7 @@ router.post('/betOn', (req, res, next) => {
                                     "status":"error",
                                     "body":"Error adding bet to DB"
                                 });
-                            }); 
+                            });
                         }
                     });
                 } else {
