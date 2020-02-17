@@ -1,29 +1,10 @@
 import React, {createRef, Component} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-//import Bets from'./bets.js';
-import Header from './components/header'
-import Slider from './components/slider'
-import Team from './components/team'
-import About from './components/about'
-import Footer from './components/footer'
-
-class App extends Component{
-    render(){
-        return(
-            <div>
-        <Header></Header>
-        <Slider></Slider>
-        <About></About>
-        <Team></Team>
-        <Footer></Footer>
-            </div>
-        );
-    }
-};
+import Bets from'./bets.js';
 
 ReactDOM.render(
-    <App />,
+    <Bets />,
     document.getElementById('root')
 )
 /*
