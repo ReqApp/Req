@@ -5,21 +5,26 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var cors = require("cors");
+var mongoose = require('mongoose');
 
 require('dotenv').config()
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var tasksRouter = require('./routes/tasks');
+var betsRouter = require('./routes/bets');
 
 const passportSetup = require("./models/config");
 const passport = require("passport");
 
 var app = express();
+
+mongoose.set('useFindAndModify', false);
+
 app.use(cors());
 app.use(express.static('public'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -36,6 +41,7 @@ app.use(passport.initialize());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/tasks', tasksRouter);
+app.use('/bets', betsRouter);
 
 // Swagger setup
 const swaggerUi = require('swagger-ui-express');

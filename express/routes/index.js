@@ -1,20 +1,19 @@
+var articleBet = require('../models/articleBets');
+const utilFuncs = require('../funcs/betFuncs');
 var express = require('express');
 var router = express.Router();
 var User = require('../models/users');
 var jwt = require('jsonwebtoken');
-const passport = require("passport");
-var articleBet = require('../models/articleBets');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'Express' });
 });
 
-
 router.get('/home', (req, res, next) => {
     if (req.cookies.Authorization) {
         const jwtString = req.cookies.Authorization.split(' ');
-        const profile = verifyJwt(jwtString[1]);
+        const profile = utilFuncs.verifyJwt(jwtString[1]);
         if (profile) {
             res.send('Hello ' + profile.user_name);
         }
@@ -42,7 +41,7 @@ router.get('/getUser/:id', (req, res, next) => {
     }));
 });
 
-router.get('/reactTest', function(req, res, next){
+router.get('/reactTest', function(req, res, next) {
     res.send("Message from backend");
 })
 
@@ -71,7 +70,7 @@ router.get('/articleBetFeed', (req, res, next) => {
 router.get('/members', (req, res, next) => {
     if (req.cookies.Authorization) {
         let jwtString = req.cookies.Authorization.split(' ');
-        let profile = verifyJwt(jwtString[1]);
+        let profile = utilFuncs.verifyJwt(jwtString[1]);
         if (profile) {
             res.render('home');
         } else {
@@ -82,109 +81,72 @@ router.get('/members', (req, res, next) => {
     }
 });
 
-router.post('/createArticleBet', (req, res, next) => {
-    if (req.body.betType) {
-        switch (req.body.betType) {
-            case 'article':
-                makeArticleBet(req.body).then((response) => {
-                    if (response) {
-                        res.status(200).json({
-                            "status": "information",
-                            "body": response
-                        });
-                    }
-                }, (err) => {
+router.post('/getCoins', (req, res, next) => {
+    utilFunc.isSignedIn(req.cookies).then((data) => {
+        if (data) {
+            getCoins(data.user_name).then((data) => {
+                if (data || data == "0") {
+                    res.status(200).json({
+                        "status": "information",
+                        "body": data
+                    });
+                } else {
                     res.status(400).json({
                         "status": "error",
-                        "body": err
+                        "body": "Error getting coins"
                     });
+                }
+            }).catch((err) => {
+                res.status(400).json({
+                    "status": "error",
+                    "body": err
                 });
-                break;
-
-            default:
-                res.status(401).json({
-                    "status": "information",
-                    "body": "Invalid param"
-                });
-                break;
+            })
+        } else {
+            res.status(400).json({
+                "status": "error",
+                "body": "Invalid jwt"
+            });
         }
-    } else {
-        res.status(400).json({
-            "status": "error",
-            "body": "invalid request"
-        });
-    }
-
+    })
 });
 
-function verifyJwt(jwtString) {
-    let val = jwt.verify(jwtString, process.env.JWTSECRET);
-    return val;
-}
+// router.post('/createArticleBet', (req, res, next) => {
 
-function makeArticleBet(input) {
-    return new Promise((resolve, reject) => {
-        if (input.sitename && input.directory && input.month && input.year && input.searchTerm) {
+//     utilFuncs.hasEnoughCoins(req.body.username, req.body.betAmount).then((data) => {
+//         if (data) {
+//             utilFuncs.makeArticleBet(req.body, req.body.username).then((response) => {
+//                 if (response) {
+//                     console.log(`Response: ${response}`);
+//                     res.status(200).json({
+//                         "status": "information",
+//                         "body": response
+//                     });
+//                 }
+//             }, (err) => {
+//                 console.log("err from make article promise call")
+//                 res.status(400).json({
+//                     "status": "error",
+//                     "body": err
+//                 });
+//             });
+//         } else {
+//             res.status(400).json({
+//                 "status": "error",
+//                 "body": "Insufficient funds"
+//             });
+//         }
+//     })
+// });
 
-            if (validateInput(input.sitename, "article") && validateInput(input.sitename, "article") &&
-                validateInput(input.month, "article") && validateInput(input.year, "article") &&
-                validateInput(input.searchTerm, "article")) {
-                const child = require('child_process').execFile;
-                const executablePath = "./articleStats/articleGetLinux";
-                const parameters = ["-s", input.sitename, input.directory, input.month, input.year, input.searchTerm];
-
-                child(executablePath, parameters, function(err, data) {
-                    if (err) {
-                        console.log(err);
-                        reject(null);
-                    } else {
-                        // log to DB and then send back ok signal
-                        newBet = new articleBet();
-                        newBet.title = `[${input.sitename}] - ${input.searchTerm}`;
-                        newBet.subtext = `${input.directory} - ${input.month}/${input.year}`;
-
-                        const date = new Date();
-                        const currDate = date.getTime();
-                        newBet.timePosted = currDate;
-
-                        newBet.save((err, user) => {
-                            if (err) {
-                                throw err;
-                            } else {
-                                resolve(data.toString());
-                            }
-                        });
-                    }
-                });
-            } else {
-                res.status(401).send({
-                    "status": "error",
-                    "body": "Invalid characters in input"
-                });
-                reject(null);
-            }
+router.get('/getArticleBets', (req, res, next) => {
+    articleBet.find({}).sort({ timePosted: -1 }).exec((err, data) => {
+        if (err) {
+            throw err;
         } else {
-            res.status(401).send({
-                "status": "error",
-                "body": "Invalid input"
-            });
-            reject(null);
+            res.json(data);
         }
-    });
-}
-
-function validateInput(input, type) {
-    const conditions = ["\"", "<", ">", "'", "`"];
-    let test = conditions.some(el => input.includes(el));
-
-    if (type == "article") {
-        if (test) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-}
+    })
+});
 
 module.exports = router;
-
