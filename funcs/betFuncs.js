@@ -117,8 +117,6 @@ function payOut(username, percentage, winnings) {
                 reject(err);
             }
             if (foundUser) {
-                console.log(username, percentage, winnings);
-                
                 foundUser.coins += Math.floor(percentage * winnings);
                 foundUser.save((err) => {
                     reject(err);
@@ -137,6 +135,8 @@ function deleteBet(betID) {
         testBets.deleteOne({_id:betID}, (err) => {
             if (err) {
                 reject(err);
+            } else {
+                resolve(true);
             }
         })
     })
@@ -151,17 +151,19 @@ function decideBet(inputObj) {
                 reject(err);
             }
             if (foundBet) {
-                // currTime - deadline + half an hour
+                // currTime - deadline + a fair bit of time
                 if (currTime.getTime() - (foundBet.deadline + 21600000) >= 0) {
                     reject("Expired");
                 } else {
                     // not expired, dish out the winnings
                     anonymiseBetData([foundBet]).then((betData) => {
                         if (betData) {
+
                             // payout to the setter
-                            let totalBets = parseInt((betData[0].againstBetsTotal+betData[0].forBetsTotal),10)
-                            payOut(foundBet.user_name, 0.1, totalBets).then((response) => {
-                                console.log(`Paid out ${response} to setter`);
+                            const againstTotal = parseInt(betData[0].againstBetTotal,10);
+                            const forTotal = parseInt(betData[0].forBetTotal, 10);
+
+                            payOut(foundBet.user_name, 0.1, againstTotal + forTotal).then(() => {
                             });
 
                             if (inputObj.result === "yes") {
@@ -170,6 +172,7 @@ function decideBet(inputObj) {
                                     for (bet of foundBet.forUsers) {
 
                                         let payPercentage = ( bet.betAmount / parseInt(betData[0].forBetTotal,10) );
+
                                         payOut(bet.user_name, payPercentage, betData[0].againstBetTotal).then((response) => {
                                             if (response) {
                                                 console.log(`Paid out ${Math.floor(response) } successfully`);
@@ -189,17 +192,40 @@ function decideBet(inputObj) {
                                             reject(err);
                                         })
                                     }
-
-                                    resolve(true);
                                 } else {
                                     console.log("no for users");
+                                    resolve(null);
                                 }
                             }
                             if (inputObj.result === "no") {
                                 // if no wins
-                                if (foundBet.againstUsers.length > 0) {
-            
+                               if (foundBet.againstUsers.length > 0) {
+                                for (bet of foundBet.againstUsers) {
+
+                                    let payPercentage = ( bet.betAmount / parseInt(betData[0].againstBetTotal,10) );
+                                    payOut(bet.user_name, payPercentage, betData[0].forBetTotal).then((response) => {
+                                        if (response) {
+                                            console.log(`Paid out ${Math.floor(response) } successfully`);
+                                        } else {
+                                            console.log(`Paid out 0 unsuccessfully`);
+                                        }
+                                        // if paid out anything or nothing, still delete the bet
+                                        deleteBet(inputObj.betID).then((response) => {
+                                            if (response) {
+                                                resolve(true);
+                                            }
+                                        }, (err) => {
+                                            reject(err);
+                                        })
+
+                                    }, (err) => {
+                                        reject(err);
+                                    })
                                 }
+                            } else {
+                                console.log("no against users");
+                                resolve(null);
+                            }
                             }
                         } else {
                             resolve(null);
@@ -217,17 +243,21 @@ function decideBet(inputObj) {
 
 function isValidBetID(betID) {
     return new Promise((resolve, reject) => {
-        testBets.findOne({ _id: betID }, (err, res) => {
-            if (err) {
-                reject(err);
-            } else {
-                if (res) {
-                    resolve(true);
+        if (betID) {
+            testBets.findOne({ _id: betID }, (err, res) => {
+                if (err) {
+                    reject(err);
                 } else {
-                    resolve(null);
+                    if (res) {
+                        resolve(true);
+                    } else {
+                        resolve(null);
+                    }
                 }
-            }
-        })
+            })
+        } else {
+            resolve(null);
+        }
     });
 }
 
@@ -307,6 +337,35 @@ function createBet(input) {
     })
 }
 
+function validate(input, type) {
+    switch (type) {
+        case 'id':
+            if (!input) {
+                console.log("no id");
+                return false;
+            }
+            if (input.match(/([^A-Za-z0-9]+)/g)) {
+                console.log("id didnt match");
+                return false;
+            } else {
+                console.log("id matched")
+                return true;
+            }
+        case 'result':
+            if (!input) {
+                console.log("no result");
+                return false;
+            }
+            console.log(input.toLowerCase() == "no");
+            if (input.toLowerCase() === "yes" || input.toLowerCase() === "no") {
+                return true;
+            } else {
+                console.log("result didn't match");
+                return false;
+            }
+    }
+}
+
 function verifyJwt(jwtString) {
     val = jwt.verify(jwtString, process.env.JWTSECRET);
     return val;
@@ -314,6 +373,7 @@ function verifyJwt(jwtString) {
 
 module.exports.betOn = betOn;
 module.exports.getBets = getBets;
+module.exports.validate = validate;
 module.exports.createBet = createBet;
 module.exports.verifyJwt = verifyJwt;
 module.exports.decideBet = decideBet;

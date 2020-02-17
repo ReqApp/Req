@@ -54,46 +54,55 @@ router.post('/makeBet', (req, res, next) => {
 });
 
 router.post('/decideBet', (req, res, next) => {
+
     let inputObj = {
         betID: req.body.betID,
         result: req.body.result,
         accessToken: req.cookies.Authorization
     }
-     
-    utilFuncs.isValidBetID(inputObj.betID).then((data) => {
-        if (data) {
-            utilFuncs.decideBet(inputObj).then((data) => {
-                if (data) {
-                    console.log(`Bet #${inputObj.betID} done`);
-                    res.status(200).json({
-                        "status":"error",
-                        "body":"success"
-                    });
-                } else {
-                    console.log(`Bet #${inputObj.betID} unsuccessful`);
+    if (utilFuncs.validate(req.body.betID, "id") && 
+        utilFuncs.validate(req.body.result, "result") ) {
+
+        utilFuncs.isValidBetID(inputObj.betID).then((validBetID) => {
+            if (validBetID) {
+                utilFuncs.decideBet(inputObj).then((success) => {
+                    if (success) {
+                        console.log(`Bet #${inputObj.betID} finished`);
+                        res.status(200).json({
+                            "status":"error",
+                            "body":"success"
+                        });
+                    } else {
+                        console.log(`Bet #${inputObj.betID} unsuccessful`);
+                        res.status(400).json({
+                            "status":"error",
+                            "body":"error paying out"
+                        });
+                    }
+                }, (err) => {
                     res.status(400).json({
                         "status":"error",
-                        "body":"error paying out"
+                        "body":err
                     });
-                }
-            }, (err) => {
+                });
+            } else {
                 res.status(400).json({
                     "status":"error",
-                    "body":err
+                    "body":"Invalid betID"
                 });
-            });
-        } else {
+            }
+        }, (err) => {
             res.status(400).json({
                 "status":"error",
-                "body":"Invalid betID"
+                "body":"Error checking betID"
             });
-        }
-    }, (err) => {
+        });
+    } else {
         res.status(400).json({
             "status":"error",
-            "body":"Error checking betID"
+            "body":"Invalid input"
         });
-    });
+    }
 });
 
 router.post('/betOn', (req, res, next) => {
@@ -121,7 +130,7 @@ router.post('/betOn', (req, res, next) => {
                             utilFuncs.betOn(inputObj).then((response) => {
                                 if (response) {
                                     res.status(200).json({
-                                        "status": "error",
+                                        "status": "success",
                                         "body": "Bet successfully added"
                                     });
                                 } else {
