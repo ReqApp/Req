@@ -6,7 +6,6 @@ var express = require('express');
 var router = express.Router();
 var util = require('util');
 
-
 router.post('/makeBet', (req, res, next) => {
     let inputObj = {
         "title": req.body.title,

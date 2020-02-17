@@ -6,6 +6,7 @@ const passport = require("passport");
 var jwt = require('jsonwebtoken');
 var express = require('express');
 var router = express.Router();
+var app = express();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -60,46 +61,42 @@ router.get('/members', (req, res, next) => {
     }
 });
 
-router.post('/getCoins', (req, res, next) => {
+router.post('/getCoins', (req ,res, next) => {
     if (req.body.jwt) {
         isSignedIn(req.body.jwt).then((data) => {
             if (data) {
                 getCoins(data.user_name).then((data) => {
                     if (data || data == "0") {
                         res.status(200).json({
-                            "status": "information",
+                            "status":"information",
                             "body": data
                         });
                     } else {
                         res.status(400).json({
-                            "status": "error",
-                            "body": "Error getting coins"
+                            "status":"error",
+                            "body":"Error getting coins"
                         });
                     }
                 }).catch((err) => {
                     res.status(400).json({
-                        "status": "error",
+                        "status":"error",
                         "body": err
                     });
-                })
+                })        
             } else {
                 res.status(400).json({
-                    "status": "error",
-                    "body": "Invalid jwt"
+                    "status":"error",
+                    "body":"Invalid jwt"
                 });
             }
         })
     } else {
         res.status(400).json({
-            "status": "error",
+            "status":"error",
             "body": "Invalid input"
         });
     }
 });
-
-router.get('/exampleShare', (req, res, next) => {
-    res.render('exampleBet');
-})
 
 router.get('/createBet', function(req, res, next) {
     res.render('create_bet', { title: 'CreateBet' });
@@ -144,24 +141,24 @@ router.post('/createArticleBet', (req, res, next) => {
                         });
                     } else {
                         res.status(400).json({
-                            "status": "error",
-                            "body": "Insufficient funds"
+                            "status":"error",
+                            "body":"Insufficient funds"
                         });
                     }
                 })
             } else {
                 // not signed in, dont let them make a bet
                 res.status(400).json({
-                    "stauts": "error",
-                    "body": "Not signed in"
+                    "stauts":"error",
+                    "body":"Not signed in"
                 });
             }
         })
 
     } else {
         res.status(400).json({
-            "status": "error",
-            "body": "Must be signed in"
+            "status":"error",
+            "body":"Must be signed in"
         });
     }
 });
@@ -171,7 +168,7 @@ router.post('/updateBet', (req, res, next) => {
     if (req.body.betID && req.body.betAmount) {
         console.log(req.body);
         let user = "burnItUp"
-        userObj = {
+        userObj = { 
             username: user,
             betID: req.body.betID,
             betAmount: req.body.betAmount
@@ -182,30 +179,30 @@ router.post('/updateBet', (req, res, next) => {
                 addToBet(userObj).then((response) => {
                     if (response) {
                         console.log(response);
-                    } else {
+                    }   else {
                         console.log("no bet found");
                     }
                 });
             } else {
                 res.status(400).json({
-                    "status": "error",
-                    "body": "Insufficient funds"
+                    "status":"error",
+                    "body":"Insufficient funds"
                 });
             }
         });
     } else {
         console.log(`Req body ${req.body}`);
         res.status(400).json({
-            "status": "error",
-            "body": "Invalid params"
+            "status":"error",
+            "body":"Invalid params"
         });
     }
 });
 
 function makeArticleBet(input, username) {
     return new Promise((resolve, reject) => {
-        if (input.sitename && input.directory && input.month &&
-            input.year && input.searchTerm && input.ends &&
+        if (input.sitename && input.directory && input.month && 
+            input.year && input.searchTerm && input.ends && 
             input.betAmount && username) {
 
             if (validateInput(input.sitename, "article") && validateInput(input.directory, "article") &&
@@ -232,9 +229,9 @@ function makeArticleBet(input, username) {
                             for: 0,
                             against: 0,
                             ends: parsedTime,
-                            forUsers: { user_name: username, betAmount: input.betAmount }
+                            forUsers: {user_name:username, betAmount: input.betAmount}
                         });
-
+                     
                         newBet.save((err, user) => {
                             if (err) {
                                 console.log("error saving user")
@@ -262,7 +259,7 @@ function makeArticleBet(input, username) {
 
 function hasEnoughCoins(username, transactionAmount) {
     return new Promise((resolve, reject) => {
-        User.findOne({ user_name: username }, (err, foundUser) => {
+        User.findOne({user_name:username}, (err, foundUser) => {
             if (err) {
                 reject(err);
             } else {
@@ -270,7 +267,7 @@ function hasEnoughCoins(username, transactionAmount) {
                     if (foundUser.coins >= transactionAmount) {
                         foundUser.coins -= transactionAmount;
                         foundUser.save((err) => {
-                            if (err) {
+                            if(err) {
                                 reject(err);
                             }
                         })
@@ -286,7 +283,7 @@ function hasEnoughCoins(username, transactionAmount) {
 
 function getCoins(username) {
     return new Promise((resolve, reject) => {
-        User.findOne({ user_name: username }, (err, foundUser) => {
+        User.findOne({user_name: username}, (err, foundUser) => {
             if (err) {
                 reject(err);
             } else {
@@ -347,17 +344,19 @@ router.get('/getBets', function(req, res, next) {
 
 function addToBet(userObj) {
     return new Promise((resolve, reject) => {
-        articleBet.findOneAndUpdate({ _id: userObj.betID }, { $push: { againstUsers: { user_name: userObj.username, betAmount: userObj.betAmount } } },
-            (err, result) => {
-                if (err) {
-                    reject(err);
+        articleBet.findOneAndUpdate({_id:userObj.betID},
+            {$push: {againstUsers: {user_name:userObj.username, betAmount: userObj.betAmount}}},
+             (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                if (result) {
                 } else {
-                    if (result) {} else {
-                        resolve(null);
-                    }
+                    resolve(null);
                 }
-            });
-    })
+            }
+        });
+    }) 
 }
 
 function isSignedIn(jwt) {
@@ -379,7 +378,7 @@ function verifyJwt(jwtString) {
     let val = null
     try {
         val = jwt.verify(jwtString, process.env.JWTSECRET);
-    } catch (err) {
+    }   catch(err) {
         // console.log(err);
         if (err.name === "TokenExpiredError") {
             val = null;

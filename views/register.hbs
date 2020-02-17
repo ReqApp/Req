@@ -4,6 +4,11 @@
     height:120px
 }
 </style>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
+  socket.emit('cans', "cans");
+</script>
 
 
 <div class="row justify-content-center">

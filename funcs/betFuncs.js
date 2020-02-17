@@ -341,26 +341,20 @@ function validate(input, type) {
     switch (type) {
         case 'id':
             if (!input) {
-                console.log("no id");
                 return false;
             }
             if (input.match(/([^A-Za-z0-9]+)/g)) {
-                console.log("id didnt match");
                 return false;
             } else {
-                console.log("id matched")
                 return true;
             }
         case 'result':
             if (!input) {
-                console.log("no result");
                 return false;
             }
-            console.log(input.toLowerCase() == "no");
             if (input.toLowerCase() === "yes" || input.toLowerCase() === "no") {
                 return true;
             } else {
-                console.log("result didn't match");
                 return false;
             }
     }
