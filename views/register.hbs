@@ -4,12 +4,17 @@
     height:120px
 }
 </style>
+
+
+<div id="timeDiv"></div>
 <script src="/socket.io/socket.io.js"></script>
 <script>
   var socket = io();
   socket.emit('cans', "cans");
+  socket.on('currentTime', (data) => {
+    document.getElementById("timeDiv").textContent = data;
+  });
 </script>
-
 
 <div class="row justify-content-center">
   <div class="card" style="width: 25rem;">
