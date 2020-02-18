@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import Bets from'./bets.js';
 import FindLocationBets from './findLocationBets.js';
+
+
 //import HomePage from './samples.js'
 
 ReactDOM.render(

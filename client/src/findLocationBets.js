@@ -7,13 +7,19 @@ import CardContent from '@material-ui/core/CardContent';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
+//import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import DisplayMap from'./maps.js';
 import {Paper} from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { CardHeader } from '@material-ui/core';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {Button, Nav, Navbar, NavDropdown, Form, FormControl, Jumbotron, Container, Row, Col, Tabs, Tab, Dropdown} from 'react-bootstrap/';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import './findLocationBets.css';
+
 
 class FindBetPage extends React.Component{
     constructor(props){
@@ -46,32 +52,84 @@ class FindBetPage extends React.Component{
         console.log(id);
     }
 
+
+
     render(){
+        var predictSearch = null;
+        if(!this.state.loadingRegions){
+            predictSearch = <div style={{ width: 300 }}>
+                <Autocomplete
+                    freeSolo
+                    id="free-solo-2-demo"
+                    disableClearable
+                    options={this.state.betRegions.map(region => region.region_name)}
+                    renderInput={params => (
+                    <TextField
+                        {...params}
+                        label="Search..."
+                        margin="normal"
+                        variant="outlined"
+                        fullWidth
+                        InputProps={{ ...params.InputProps, type: 'search' }}
+                    />
+                    )}
+                />
+            </div>
+        }
         return(
             // Create grid for parts
             <div>
-                <Grid container spacing = {1}>
-                    <Grid item sm={12} xs={12}>
-                        <AppBar position='static'>
-                            <Toolbar>
-                                <IconButton edge="start" className={this.state.menuStyles.menuButton} color="inherit" aria-label="menu">
-                                <MenuIcon />
-                                </IconButton>
-                                <Typography variant="h6" className={this.state.menuStyles.title}>
-                                    Find Bets Near You
-                                </Typography>
-                            </Toolbar>
-                        </AppBar>
-                    </Grid>
-                    <Grid item sm={8} xs={12}>
-                            <Paper><DisplayMap betRegions={this.state.betRegions} loadingRegions={this.state.loadingRegions} shownRegion={this.state.shownRegion}/></Paper>
-                        { /* Get betting map */ }
-                    </Grid>
-                    <Grid item sm={4} xs={12}>
-                        <Paper><BetRegionCards onRegionHover={this.handleRegionHover} loadingRegions={this.state.loadingRegions} betRegions={this.state.betRegions}/></Paper>
-                        {/* Generate betting cards */ }
-                    </Grid>
-                </Grid>
+                <Navbar bg="light" expand="lg" sticky="top">
+                <Navbar.Brand href="#home">Req</Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="mr-auto">
+                    <Nav.Link href="#home">Home</Nav.Link>
+                    <Nav.Link href="#link">Profile</Nav.Link>
+                    <NavDropdown title="Betting" id="basic-nav-dropdown">
+                        <NavDropdown.Item href="#action/3.1">Find bet near you</NavDropdown.Item>
+                        <NavDropdown.Item href="#action/3.2">Worldwide bets</NavDropdown.Item>
+                        <NavDropdown.Item href="#action/3.3">Article bets</NavDropdown.Item>
+                    </NavDropdown>
+                    </Nav>
+                    <Form inline>
+                    <Button variant="outline-primary">Logout</Button>
+                    </Form>
+                </Navbar.Collapse>
+                </Navbar>
+                <Container fluid className="main-content">
+                    <Row>
+                        <Col>
+                            <DisplayMap betRegions={this.state.betRegions} loadingRegions={this.state.loadingRegions} shownRegion={this.state.shownRegion}/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <h2>Popular Bets</h2>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Dropdown>
+                                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                                    Sort By
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item href="#/action-1">Popularity</Dropdown.Item>
+                                    <Dropdown.Item href="#/action-2">Closest</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </Col>
+                        <Col>
+                            {predictSearch}
+                        </Col>
+                        </Row>
+                    <Row>
+                        <Col xs={10}><BetRegionCards onRegionHover={this.handleRegionHover} loadingRegions={this.state.loadingRegions} betRegions={this.state.betRegions} sort="popular"/></Col>
+                        <Col>
+                        </Col>
+                    </Row>
+                </Container>
             </div>
         );
     }
@@ -104,18 +162,24 @@ class BetRegionCards extends React.Component{
     }
 
     render(){
-        const {loadingRegions, betRegions} = this.props;
+        const {loadingRegions, betRegions, sort} = this.props;
 
+        // If regions are loaded display cards
         if(!loadingRegions){
             var regionCards = [];
+            const display_num_regions = betRegions.length > 20 ? 20 : betRegions.length;
+            if(sort === "popular"){
+                betRegions.sort((a, b) => {return a.num_bets - b.num_bets});
+            }
+            betRegions.reverse();
             if(Array.isArray(betRegions) && betRegions.length){
-                for(var i = 0; i < betRegions.length; i++){
-                    regionCards.push(<Card key={betRegions[i]._id} onMouseOver={this.highlightBetRegion.bind(this, betRegions[i]._id)}>
-                        <CardHeader title={betRegions[i].region_name} subheader={"Number of Bets: " + betRegions[i].num_bets}/>
-                        <CardContent>
-                        </CardContent>
-                        <Button>Select Region</Button>
-                    </Card>);
+                for(var i = 0; i < display_num_regions ; i++){
+                { /*  onMouseOver={this.highlightBetRegion.bind(this, betRegions[i]._id) */}
+                    regionCards.push(<Jumbotron bg="light" key={betRegions[i]._id}>
+                        <h3>{betRegions[i].region_name}</h3>
+                        <h6>Number of Bets: {betRegions[i].num_bets}</h6>
+                        <Button>Select Region</Button><DisplayMap />
+                    </Jumbotron>);
                 }
                 return (
                     <div>{regionCards}</div>
