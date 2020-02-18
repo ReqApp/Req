@@ -1,5 +1,5 @@
 # Req
-![](https://travis-ci.com/IamCathal/Req.svg?token=NxDPAobZPqQisyLUpivy&branch=UserAuthentication)
+![](https://travis-ci.com/IamCathal/Req.svg?token=NxDPAobZPqQisyLUpivy&branch=master)
 #### How to get started working on this repo
 
 1. Open Github desktop, sign in if necessary
