@@ -1,5 +1,6 @@
 var BetRegion = require('../models/bettingRegions');
 var articleBet = require('../models/articleBets');
+const utilFuncs = require('../funcs/betFuncs');
 var testBets = require('../models/testBets');
 var router = require('express').Router();
 var Bet = require('../models/betData');
@@ -281,9 +282,9 @@ router.post('/makeBet', (req, res, next) => {
 router.post('/decideBet', (req, res, next) => {
 
     let inputObj = {
-        betID: req.body.betID,
-        result: req.body.result,
-        accessToken: req.cookies.Authorization
+        "betID": req.body.betID,
+        "result": req.body.result,
+        "accessToken": req.cookies.Authorization
     }
     if (utilFuncs.validate(req.body.betID, "id") &&
         utilFuncs.validate(req.body.result, "result")) {
@@ -294,8 +295,8 @@ router.post('/decideBet', (req, res, next) => {
                     if (success) {
                         console.log(`Bet #${inputObj.betID} finished`);
                         res.status(200).json({
-                            "status": "error",
-                            "body": "success"
+                            "status": "success",
+                            "body": "Bet finished successfully"
                         });
                     } else {
                         console.log(`Bet #${inputObj.betID} unsuccessful`);

@@ -316,11 +316,11 @@
     },
     "/users/register": {
       "post": {
-        "summary": "Allows user to create account",
+        "summary": "Allows users to create an account",
         "tags": [
           "User APIs"
         ],
-        "description": "Sets up user's account",
+        "description": "Registers a new unverified account",
         "parameters": [
           {
             "in": "body",
@@ -345,7 +345,7 @@
         ],
         "responses": {
           "200": {
-            "description": "User account created",
+            "description": "Account was successfully added to unverified user table.",
             "schema": {
               "type": "object",
               "properties": {
@@ -355,16 +355,18 @@
               }
             }
           },
-          "400": {
-            "description": "Reset link sent to email",
-            "schema": {
-              "$ref": "#/definitions/bettingRegionSchema"
-            }
-          },
           "401": {
-            "description": "User account could not be created",
+            "description": "User account could not be created.",
             "schema": {
-              "$ref": "#/definitions/bettingRegionSchema"
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                }
+              }
             }
           }
         }
@@ -372,7 +374,7 @@
     },
     "/users/login": {
       "post": {
-        "summary": "Allows user to login",
+        "summary": "User logins",
         "tags": [
           "User APIs"
         ],
@@ -401,14 +403,17 @@
             "schema": {
               "type": "object",
               "properties": {
-                "success": {
+                "status": {
+                  "type": "string"
+                },
+                "body": {
                   "type": "string"
                 }
               }
             }
           },
-          "401": {
-            "description": "User could not be logged in",
+          "400": {
+            "description": "User could not be logged in due to invalid input",
             "schema": {
               "$ref": "#/definitions/rest_API_Response"
             }
@@ -418,11 +423,11 @@
     },
     "/users/verifyAccount": {
       "post": {
-        "summary": "Allows user to activate their account",
+        "summary": "Verifies email address of a user",
         "tags": [
           "User APIs"
         ],
-        "description": "Allows user to enter verification code. If the code exists for a user, the user's account is fully activated and added to the database.",
+        "description": "Allows user to enter verification code that is emailed to them. If the code exists for a user, the user's account is fully activated and added to the database.",
         "parameters": [
           {
             "in": "body",
@@ -444,16 +449,27 @@
             "schema": {
               "type": "object",
               "properties": {
-                "success": {
+                "status": {
+                  "type": "string"
+                },
+                "body": {
                   "type": "string"
                 }
               }
             }
           },
-          "401": {
-            "description": "Account not successfully activated",
+          "400": {
+            "description": "Account not successfully activated. Invalid verification code used",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                }
+              }
             }
           }
         }
@@ -461,11 +477,11 @@
     },
     "/users/forgotPassword": {
       "post": {
-        "summary": "Allows user to change password",
+        "summary": "Resets password of an account",
         "tags": [
           "User APIs"
         ],
-        "description": "On success, sends email to user with link to reset their password.",
+        "description": "On success, sends email to user with link to reset their password. It queries the forgotten password table first to see if an email has already been sent with a reset password link. If so it reminds the user to check their inbox, else it sends an email with unique link to reset the user's password",
         "parameters": [
           {
             "in": "body",
@@ -485,13 +501,29 @@
           "200": {
             "description": "Email link successfully sent to user.",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
-            "description": "Error",
+            "description": "Most likely due to a reset link already been emailed to the user.",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                }
+              }
             }
           }
         }
@@ -503,7 +535,7 @@
         "tags": [
           "User APIs"
         ],
-        "description": "Allows user to change password from link sent to their email.",
+        "description": "Allows user to change password from link sent to their email. The user will submit their new password from a unique URL which will be used to map this new password to their account.",
         "parameters": [
           {
             "in": "body",
@@ -524,15 +556,31 @@
         ],
         "responses": {
           "200": {
-            "description": "Password changed",
+            "description": "Password successfully changed",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                }
+              }
             }
           },
-          "401": {
-            "description": "Invalid input",
+          "400": {
+            "description": "Invalid input given to the router.",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                }
+              }
             }
           }
         }
@@ -810,6 +858,10 @@
         },
         "profilePicture": {
           "type": "string"
+        },
+        "coins": {
+          "type": "Number",
+          "default": 0
         },
         "accessToken": {
           "description": "JSON web token for sign-in",

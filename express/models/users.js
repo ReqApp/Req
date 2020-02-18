@@ -31,6 +31,10 @@ var usersSchema = new Schema({
         type: String,
         default: null
     },
+    coins: {
+        type: Number,
+        default: 0
+    },
     profilePicture: {
         type: String
     },
