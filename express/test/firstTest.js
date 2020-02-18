@@ -28,7 +28,7 @@ describe("========= Login Testing =========", () => {
                     expect(res.body.body).to.equals("Logged in successfully");
                     done();
                 });
-        }).timeout(1200),
+        }).timeout(1800),
         it("Invalid params", done => {
             chai
                 .request(app)
@@ -72,7 +72,7 @@ describe("========= Login Testing =========", () => {
                     expect(res.body.body).to.equals("Email or password invalid");
                     done();
                 });
-        }).timeout(1200),
+        }).timeout(1800),
         it("Invalid username", done => {
             chai
                 .request(app)
@@ -87,7 +87,7 @@ describe("========= Login Testing =========", () => {
                     expect(res.body.body).to.equals("Username not found");
                     done();
                 });
-        }).timeout(1000),
+        }).timeout(1800),
         it("Injection", done => {
             chai
                 .request(app)
@@ -103,7 +103,7 @@ describe("========= Login Testing =========", () => {
                     expect(res.body.body).to.equals("Email or password invalid");
                     done();
                 });
-        }).timeout(1000),
+        }).timeout(1800),
         it("Invalid params", done => {
             chai
                 .request(app)
@@ -146,7 +146,7 @@ describe("========= Login Testing =========", () => {
                     expect(res.body.body).to.equals("Check your email for reset link");
                     done();
                 });
-        }).timeout(1000)
+        }).timeout(1800)
 });
 describe("=========== Register Testing ===========", () => {
     it("Invalid params", done => {
@@ -285,7 +285,7 @@ describe("========== Password Reset ==========", () => {
                     expect(res.body.body).to.equals("Invalid input");
                     done();
                 });
-        }).timeout(1200)
+        }).timeout(1800)
 });
 
 describe("========== Verify Account ========== ", () => {
@@ -441,7 +441,7 @@ describe("============= Various APIS ==============", () => {
                     expect(res.body.status).to.equals("error");
                     done();
                 });
-        }).timeout(1000),
+        }).timeout(1400),
         it("Invalid search", done => {
             chai
                 .request(app)
@@ -459,7 +459,7 @@ describe("============= Various APIS ==============", () => {
                     expect(res.body.status).to.equals("error");
                     done();
                 });
-        }).timeout(1000),
+        }).timeout(1400),
         it("Invalid search", done => {
             chai
                 .request(app)
@@ -478,7 +478,7 @@ describe("============= Various APIS ==============", () => {
                     expect(res.body.status).to.equals("error");
                     done();
                 });
-        }).timeout(1000)
+        }).timeout(1400)
 });
 
 describe("============= Image Upload =============", () => {
