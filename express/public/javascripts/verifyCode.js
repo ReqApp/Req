@@ -14,7 +14,7 @@ $(document).ready(function() {
                     "activationCode": activationCode
                 },
                 success: function(token) {
-                    $(location).attr('href', 'http://localhost:8673/users/profile');
+                    $(location).attr('href', 'http://localhost:9000/users/profile');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     swal({

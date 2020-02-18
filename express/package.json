@@ -36,6 +36,7 @@
         "passport-steam": "^1.0.12",
         "randomstring": "^1.1.5",
         "safe-buffer": "^5.2.0",
+        "socket.io": "^2.3.0",
         "store": "^2.0.12",
         "superagent": "^5.2.1",
         "swagger-ui-express": "^4.1.3",

@@ -1,5 +1,6 @@
 var forgotPasswordUser = require('../models/forgotPasswordUsers');
 var UnverifiedUser = require('../models/unverifiedUsers');
+var articleBet = require('../models/articleBets');
 const keccak512 = require('js-sha3').keccak512;
 var testBets = require('../models/testBets');
 var User = require('../models/users');
@@ -13,7 +14,7 @@ function getBets() {
             if (err) {
                 reject(err);
             } else {
-                if (response) {
+                if (response){
                     resolve(response);
                 } else {
                     resolve(null);
@@ -25,7 +26,6 @@ function getBets() {
 
 function validate(input, type) {
     const conditions = ["\"", "<", ">", "'", "`"];
-    console.log(input, type);
 
     switch (type) {
         case 'id':
@@ -59,10 +59,8 @@ function validate(input, type) {
             }
         case 'username':
             if (input.length < 32 && input.length > 0) {
-                console.log("true username");
                 return true;
             } else {
-                console.log("false username");
                 return false;
             }
         case 'url':
@@ -72,6 +70,8 @@ function validate(input, type) {
             } else {
                 return true;
             }
+        case 'article':
+            return true;
     }
 }
 
@@ -324,7 +324,7 @@ function makeArticleBet(input, username) {
 
                 const parsedTime = Date.parse(input.ends);
                 const child = require('child_process').execFile;
-                const executablePath = "./articleStats/articleGetWindows";
+                const executablePath = "./articleStats/articleGetLinux";
                 const parameters = ["-s", input.sitename, input.directory, input.month, input.year, input.searchTerm];
 
                 child(executablePath, parameters, function(err, data) {
@@ -334,7 +334,6 @@ function makeArticleBet(input, username) {
                         reject(null);
                     } else {
                         // log to DB and then send back ok signal
-                        console.log(`Trying to save with ${username}`);
                         newBet = new articleBet({
                             title: `The ${input.sitename} will have more than 10 articles about'${input.searchTerm}' in ${input.month}/${input.year}`,
                             subtext: `${input.directory} - ${input.month}/${input.year}`,
@@ -350,22 +349,43 @@ function makeArticleBet(input, username) {
                                 console.log("error saving user")
                                 reject(err);
                             } else {
-                                console.log(user);
                                 resolve(user);
                             }
                         });
                     }
                 });
             } else {
-                console.log(`Input: ${input}`);
-                console.log("invalid chars in an input");
+                // console.log(`Input: ${JSON.stringify(input)}`);
+                // console.log("invalid chars in an input");
                 reject(null);
             }
         } else {
-            console.log("invalid input numbers");
-            console.log(input, username);
-            reject(null);
+            // console.log("invalid input numbers");
+            // console.log(input);
+            resolve(null);
         }
+    });
+}
+
+function resetPassword(email, newPassword) {
+    return new Promise((resolve, reject) => {
+        User.findOne({ email: email }, (err, theUser) => {
+            if (err) {
+                res.send(err);
+            }
+            if (theUser) {
+                theUser.password = theUser.generateHash(newPassword);
+                theUser.save((err) => {
+                    if (err) {
+                        res.send(err);
+                        reject(Error(err));
+                    } else {
+                        console.log("password changed");
+                        resolve(theUser.user_name);
+                    }
+                });
+            }
+        });
     });
 }
 
@@ -465,55 +485,6 @@ function createBet(input) {
     })
 }
 
-function validate(input, type) {
-    const conditions = ["\"", "<", ">", "'", "`"];
-
-    switch (type) {
-        case 'id':
-            if (!input) {
-                return false;
-            }
-            if (input.match(/([^A-Za-z0-9]+)/g)) {
-                return false;
-            } else {
-                return true;
-            }
-        case 'result':
-            if (!input) {
-                return false;
-            }
-            if (input.toLowerCase() === "yes" || input.toLowerCase() === "no") {
-                return true;
-            } else {
-                return false;
-            }
-        case 'password':
-            if (input.length > 8) {
-                let test2 = conditions.some(el => input.includes(el));
-                if (test2) {
-                    return false;
-                } else {
-                    return true;
-                }
-            } else {
-                return false;
-            }
-        case 'username':
-            if (input.length < 32 && input.length > 0) {
-                return true;
-            } else {
-                return false;
-            }
-        case 'url':
-            let test2 = conditions.some(el => input.includes(el));
-            if (test2) {
-                return false;
-            } else {
-                return true;
-            }
-    }
-}
-
 function checkIfExisting(username, type) {
     if (type === "forgotten") {
         // if there is a forgotten email entry already existing (a link)
@@ -523,7 +494,6 @@ function checkIfExisting(username, type) {
                     reject(Error(err))
                 } else {
                     if (foundUser) {
-                        console.log(`found someone`);
                         resolve(null);
                     } else {
                         console.log(`not found`);
@@ -604,6 +574,7 @@ module.exports.isSignedIn = isSignedIn;
 module.exports.calcDistance = calcDistance;
 module.exports.alreadyBetOn = alreadyBetOn;
 module.exports.isValidBetID = isValidBetID;
+module.exports.resetPassword = resetPassword;
 module.exports.hasEnoughCoins = hasEnoughCoins;
 module.exports.makeArticleBet = makeArticleBet;
 module.exports.checkIfExisting = checkIfExisting;

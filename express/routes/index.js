@@ -111,33 +111,29 @@ router.post('/getCoins', (req, res, next) => {
     })
 });
 
-// router.post('/createArticleBet', (req, res, next) => {
 
-//     utilFuncs.hasEnoughCoins(req.body.username, req.body.betAmount).then((data) => {
-//         if (data) {
-//             utilFuncs.makeArticleBet(req.body, req.body.username).then((response) => {
-//                 if (response) {
-//                     console.log(`Response: ${response}`);
-//                     res.status(200).json({
-//                         "status": "information",
-//                         "body": response
-//                     });
-//                 }
-//             }, (err) => {
-//                 console.log("err from make article promise call")
-//                 res.status(400).json({
-//                     "status": "error",
-//                     "body": err
-//                 });
-//             });
-//         } else {
-//             res.status(400).json({
-//                 "status": "error",
-//                 "body": "Insufficient funds"
-//             });
-//         }
-//     })
-// });
+router.post('/createArticleBet', (req, res, next) => {
+    
+        utilFuncs.makeArticleBet(req.body, req.body.user_name).then((response) => {
+            if (response) {
+                console.log(`Response: ${response}`);
+                res.status(200).json({
+                    "status": "information",
+                    "body": response
+                });
+            } else {
+                res.status(400).json({
+                    "status": "error",
+                    "body": "Invalid input"
+                });
+            }
+        }, (err) => {
+            res.status(400).json({
+                "status": "error",
+                "body": err
+            });
+        });
+});
 
 router.get('/getArticleBets', (req, res, next) => {
     articleBet.find({}).sort({ timePosted: -1 }).exec((err, data) => {

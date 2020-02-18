@@ -229,7 +229,6 @@ router.post('/verifyAccount', (req, res, next) => {
             UnverifiedUser.findOne({ "activationCode": activationCode }, (err, foundUser) => {
                 if (err) {
                     res.send(err);
-                    console.log("err in unverified user lookup");
                 } else {
                     if (foundUser) {
                         console.log(`Found in uverified lookup ${foundUser}`);
@@ -292,7 +291,6 @@ router.post('/login', function(req, res, next) {
         // if a user matching login credentials exists
         User.findOne({ "user_name": username }, function(err, user) {
             if (err) {
-                console.log("err thrown")
                 res.status(400).json({
                     "status": "error",
                     "body": err
@@ -339,10 +337,8 @@ router.post('/login', function(req, res, next) {
 
 router.post('/forgotPassword', (req, res, next) => {
     if (req.body.user_name) {
-        console.log(req.body);
         if (utilFuncs.validate(req.body.user_name, "username")) {
             const username = req.body.user_name;
-            console.log("validated");
 
             utilFuncs.checkIfExisting(username, "forgotten").then((username) => {
                 // if resolved promise
@@ -359,7 +355,7 @@ router.post('/forgotPassword', (req, res, next) => {
                             const resetUrlString = randomstring.generate(10);
                             newUser.resetCode = resetUrlString;
                             // TODO this is a temp localhost fix
-                            newUser.resetUrl = `http://localhost:8673/users/forgotPassword?from=${resetUrlString}`;
+                            newUser.resetUrl = `http://localhost:9000/users/forgotPassword?from=${resetUrlString}`;
                             newUser.save((err, user) => {
                                 if (err) {
                                     throw err;
@@ -371,7 +367,10 @@ router.post('/forgotPassword', (req, res, next) => {
                                     "body": `Password reset email sent`
                                 });
                             }, (err) => {
-                                console.log(err);
+                                res.status(400).send({
+                                    "status": "information",
+                                    "body": err
+                                });
                             });
                         } else {
                             res.status(400).send({
@@ -429,7 +428,7 @@ router.post('/resetPassword', (req, res, next) => {
                         }
                         if (foundUser) {
 
-                            resetPassword(foundUser.email, req.body.newPassword).then((username) => {
+                            utilFuncs.resetPassword(foundUser.email, req.body.newPassword).then((username) => {
                                 forgotPasswordUser.deleteOne({ "user_name": username }, (err) => {
                                     if (err) {
                                         res.send(err);
