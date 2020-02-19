@@ -6,7 +6,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import DisplayMap from'./maps.js';
+import DisplayMap from'./pages/maps.js';
 
 const useStyles = makeStyles({
     root: {

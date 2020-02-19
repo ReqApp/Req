@@ -16,7 +16,7 @@ export default class Slider extends Component {
                     <p>Nam libero tempore, cum soluta nobis est eligendi optio <br />
                       cumque nihil impedit quo minus.</p>
                     <div className="video_service_btn">
-                      <a href="#" className="boxed-btn3">Begin Now</a>
+                      <a href="#" className="boxed-btn3">Place a bet now!</a>
                       <a href="#" className="boxed-btn3-white"> <i className="fa fa-play" />
                         Learn how to start</a>
                     </div>

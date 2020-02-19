@@ -48,7 +48,7 @@ export default class Header extends Component {
                     <div className="main-menu  d-none d-lg-block">
                       <nav>
                         <ul id="navigation">
-                          <li><a className="active" href="index.html">Home</a></li>
+                          <li><a className="active" href="/">Home</a></li>
                           <li><a href="about.html">About</a></li>
                           <li><a href="about.html">FAQ</a></li>
                           <li><a href="contact.html">Contact</a></li>
