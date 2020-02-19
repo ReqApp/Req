@@ -13,6 +13,12 @@
     a {
         color: black;
     }
+
+    #timeCenterDiv {
+        text-align: center;
+        float: center;
+        margin-top: 30px;
+    }
     
     .mainText {
         font-size: 80px;
@@ -39,3 +45,18 @@
     <a href="https://github.com/FilthyHound">Karl Gordon</a><br>
     <a href="https://github.com/Rorysweeney99">Rory Sweeney</a>
 </div>
+
+<div id="timeCenterDiv">
+    <div id="currTimeDiv"></div>
+</div>
+
+
+
+<script>
+    
+    var io = io();
+    io.on('currentTime', (time) => {
+        document.getElementById('currTimeDiv').innerHTML = `<h1>${time} until release</h1>`;
+    })
+  
+</script>

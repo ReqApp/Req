@@ -8,7 +8,7 @@ let should = chai.should();
 const { expect } = chai;
 chai.use(chaiHTTP);
 
-const fuzzSUsername = randomstring.generate(20);
+const fuzzUsername = randomstring.generate(20);
 const fuzzPassword = randomstring.generate(32);
 const fuzzVerificationCode = randomstring.generate(6);
 

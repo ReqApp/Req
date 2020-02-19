@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", hidePopup);
+var io = io();
 
 function hidePopup() {
     let popup = document.getElementById("QRPopup");
@@ -14,7 +15,7 @@ function getShortenedLink(url) {
         } else {
             fetch('https://goolnk.com/api/v1/shorten', {
                 method: 'POST',
-                body: `url=http://localhost:8673/exampleShare`
+                body: `url=${url}`
             }).then((res) => {
                 resolve(res);
             }, (err) => {
@@ -26,7 +27,6 @@ function getShortenedLink(url) {
 
 // If the element's ID isnt the click to show, hide it
 document.body.addEventListener("click", (event) => {
-    console.log(event.target.id);
     if (event.target.id !== "getQR") {
         hidePopup();
     }
@@ -37,6 +37,7 @@ document.getElementById("getQR").addEventListener("click", () => {
     document.getElementById("QRHere").src = `https://api.qrserver.com/v1/create-qr-code/?size=265x265&qzone=0&margin=0&data=${window.location.href}`;
 
     getShortenedLink(window.location.href).then((response) => {
+        io.emit('servedQR', response);
         document.getElementById("popupText").innerHTML = `<a href="https://goolnk.com/BZY3XX">https://goolnk.com/BZY3XX</a>`;
     }, (err) => {
         console.log('Error shortening link');

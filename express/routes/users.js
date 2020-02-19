@@ -219,6 +219,7 @@ router.post('/verifyAccount', (req, res, next) => {
             "status": "error",
             "body": "Invalid input"
         });
+
     } else {
         const activationCode = req.body.activationCode;
         const searchQuery = /^[0-9a-zA-Z]+$/;
@@ -289,6 +290,7 @@ router.post('/login', function(req, res, next) {
         });
     } else {
         // if a user matching login credentials exists
+        console.log(`Before DB Lookup ${new Date.getTime()}`)
         User.findOne({ "user_name": username }, function(err, user) {
             if (err) {
                 res.status(400).json({
@@ -298,6 +300,7 @@ router.post('/login', function(req, res, next) {
             }
 
             if (user) {
+                console.log(`Before valid password check ${new Date().getTime()}`)
                 // compare hashes of passwords
                 if (user.validPassword(password)) {
                     // create token to tell it's them
@@ -309,6 +312,7 @@ router.post('/login', function(req, res, next) {
                         "status": "success",
                         "body": "Logged in successfully"
                     });
+                    console.log(`After all ${new Date().getTime()}`);
                 } else {
                     // if hashes don't match
                     res.status(401).send({

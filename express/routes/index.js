@@ -8,6 +8,7 @@ var jwt = require('jsonwebtoken');
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'Express' });
+
 });
 
 router.get('/home', (req, res, next) => {
@@ -43,6 +44,10 @@ router.get('/getUser/:id', (req, res, next) => {
 
 router.get('/reactTest', function(req, res, next) {
     res.send("Message from backend");
+})
+
+router.get('/QRTest', (req, res, next) => {
+    res.render('exampleBet');
 })
 
 router.get('/profile', function(req, res, next) {
