@@ -210,7 +210,22 @@ describe("=========== Register Testing ===========", () => {
                     expect(res.body.body).to.equals("Username cannot contain those characters");
                     done();
                 });
-        })
+        }),
+        it("Valid registration", done => {
+            chai
+                .request(app)
+                .post("/users/register")
+                .send({
+                    "user_name": `${fuzzUsername}`,
+                    "password": "verySecurePass8()())())",
+                    "email": `${fuzzUsername}@gmail.com`
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.status).to.equals("success");
+                    done();
+                });
+        }).timeout(2300)
 });
 
 
@@ -285,7 +300,7 @@ describe("========== Password Reset ==========", () => {
                     expect(res.body.body).to.equals("Invalid input");
                     done();
                 });
-        }).timeout(1800)
+        }).timeout(2300)
 });
 
 describe("========== Verify Account ========== ", () => {

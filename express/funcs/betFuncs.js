@@ -525,7 +525,7 @@ function sendEmail(email, subject, body) {
         const spawn = require("child_process").spawn;
         const pythonProcess = spawn('python3', ["emailService/sendEmail.py", email, subject, body]);
         pythonProcess.stdout.on('data', (data) => {
-            console.log(data.toString());
+            // console.log(data.toString());
             resolve()
         });
         pythonProcess.stderr.on('data', (data) => {

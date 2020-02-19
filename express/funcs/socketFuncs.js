@@ -1,20 +1,12 @@
 function getTimeDiff(nowTime, commentTime) {
     let timeDiff = nowTime - commentTime;
 
-    let seconds = (timeDiff / 1000).toFixed(0);
-    let minutes = (timeDiff / (1000 * 60)).toFixed(0);
-    let hours = (timeDiff / (1000 * 60 * 60)).toFixed(0);
-    let days = (timeDiff / (1000 * 60 * 60 * 24)).toFixed(0);
+    const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
 
-    if (seconds < 60) {
-        return `${seconds}s`;
-    } else if (minutes < 60) {
-        return `${minutes}m`;
-    } else if (hours < 24) {
-        return `${hours}h`;
-    } else {
-        return `${days}d`;
-    }
+    return `${days} days<br>${hours} hours<br>${minutes} minutes<br>${seconds} seconds`;
 
 }
 
