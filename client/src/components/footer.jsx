@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {FooterLogo} from '../footer/footerLogo';
-import {SocialLinks} from '../footer/socialLinks';
+import {FooterSocialLinks} from '../footer/footerSocialLinks';
 import {Services} from '../footer/services';
 import {FooterPageLinks} from '../footer/footerPageLinks';
 import {ReqAddress} from '../footer/reqAddress';
@@ -20,7 +20,7 @@ export default class Footer extends Component {
                     Firmament morning sixth subdue darkness
                     creeping gathered divide.
                   </p>
-                  <SocialLinks/>
+                  <FooterSocialLinks/>
                 </div>
               </div>
               <div className="col-xl-2 offset-xl-1 col-md-6 col-lg-3">

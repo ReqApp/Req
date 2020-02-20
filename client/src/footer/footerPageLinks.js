@@ -10,7 +10,7 @@ export class FooterPageLinks extends React.Component{
         <ul>
           <li><a href='/about'>About </a></li>
           <li><a href='/maps'>Map Viewer</a></li>
-          <li><a href='faq'>FAQ</a></li>
+          <li><a href='/bets'>bets</a></li>
         </ul>        
       </div>);
     }

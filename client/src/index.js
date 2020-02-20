@@ -2,9 +2,10 @@ import React, {createRef, Component} from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter as Router, Route, Link, Switch} from 'react-router-dom';
 import './index.css';
-import Bets from'./bets.js';
+import Bets from './pages/bets.js';
 import {HomePage} from './pages/home';
 import {DisplayMap} from './pages/maps';
+import {FAQ} from './pages/faq';
 
 class App extends Component{
    render(){
@@ -15,6 +16,9 @@ class App extends Component{
                    </Route>
                    <Route path='/bets'>
                        <Bets/>
+                   </Route>
+                   <Route path='/faq'>
+                       <FAQ/>
                    </Route>
                    <Route path='/'>
                        <HomePage/>

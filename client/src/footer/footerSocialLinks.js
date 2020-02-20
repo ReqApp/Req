@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-export class SocialLinks extends React.Component{
+export class FooterSocialLinks extends React.Component{
     render(){
         return(<div className="socail_links">
         <ul>
