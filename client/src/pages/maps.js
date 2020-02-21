@@ -1,9 +1,9 @@
 import React, {createRef, Component} from 'react';
 import ReactDOM from 'react-dom';
 import { Map, Marker, Popup, TileLayer } from "react-leaflet";
-import './index.css';
+import '../index.css';
 
-class DisplayMap extends React.Component{
+export class DisplayMap extends React.Component{
     constructor(props){
         super(props);
         this.state = {
@@ -24,7 +24,7 @@ class DisplayMap extends React.Component{
       }
     }
   
-    handleLocationFound = (e: Object) => {
+    handleLocationFound = (e/*: Object*/) => {
       this.setState({
         hasLocation: true,
         latlng: e.latlng,

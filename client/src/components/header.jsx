@@ -1,4 +1,10 @@
 import React, { Component } from 'react'
+import {ContactList} from '../header/headerContactList';
+import {ReqLogo} from '../header/reqLogo';
+import {NavLinks} from '../header/navLinks';
+import { HeaderSocialLinks } from '../header/headerSocialLinks';
+import { HeaderBetButton } from '../header/headerBetButton';
+import {SearchButton} from '../header/searchButton';
 
 export default class Header extends Component {
   render() {
@@ -10,25 +16,10 @@ export default class Header extends Component {
             <div className="container">
               <div className="row">
                 <div className="col-xl-6 col-md-6 ">
-                  <div className="social_media_links">
-                    <a href="#">
-                      <i className="fa fa-linkedin" />
-                    </a>
-                    <a href="#">
-                      <i className="fa fa-facebook" />
-                    </a>
-                    <a href="#">
-                      <i className="fa fa-google-plus" />
-                    </a>
-                  </div>
+                <HeaderSocialLinks/>
                 </div>
                 <div className="col-xl-6 col-md-6">
-                  <div className="short_contact_list">
-                    <ul>
-                      <li><a href="#"> <i className="fa fa-envelope" /> info@docmed.com</a></li>
-                      <li><a href="#"> <i className="fa fa-phone" /> 1601-609 6780</a></li>
-                    </ul>
-                  </div>
+                  <ContactList/>
                 </div>
               </div>
             </div>
@@ -38,34 +29,15 @@ export default class Header extends Component {
               <div className="header_bottom_border">
                 <div className="row align-items-center">
                   <div className="col-xl-3 col-lg-2">
-                    <div className="logo">
-                      <a href="index.html">
-                        <img style={{width: '50px', height: '50px'}} src="/img/reqlogo.jpg" alt="" />
-                      </a>
-                    </div>
+                    <ReqLogo/>
                   </div>
                   <div className="col-xl-6 col-lg-7">
-                    <div className="main-menu  d-none d-lg-block">
-                      <nav>
-                        <ul id="navigation">
-                          <li><a className="active" href="index.html">Home</a></li>
-                          <li><a href="about.html">About</a></li>
-                          <li><a href="about.html">FAQ</a></li>
-                          <li><a href="contact.html">Contact</a></li>
-                        </ul>
-                      </nav>
-                    </div>
+                    <NavLinks/>
                   </div>
                   <div className="col-xl-3 col-lg-3 d-none d-lg-block">
                     <div className="Appointment">
-                      <div className="search_button">
-                        <a href="#">
-                          <i className="ti-search" />
-                        </a>
-                      </div>
-                      <div className="book_btn d-none d-lg-block">
-                        <a className="popup-with-form" href="#test-form">Make a Bet</a>
-                      </div>
+                      <SearchButton/>
+                      <HeaderBetButton/>
                     </div>
                   </div>
                   <div className="col-12">
