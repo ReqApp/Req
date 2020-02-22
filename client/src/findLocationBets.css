@@ -1,15 +1,19 @@
 .main-content{
-    width: 90%;
+    width: 100%;
     margin-top: 20px;
 }
 
-.tabs{
-    display: flex;
-    justify-content: center;
-    flex-direction: row;
+.floating-button{
+    width: 200px;
+    height: 40px;
+    position: fixed;
+    bottom: 20px;
+    right: 5px;
+    border-radius: 5px;
+    border: none;
+    z-index: 1000;
 }
 
-.tab{
-    margin-left: 50px;
-    margin-right: 50px;
+.map-modal-container{
+    height: 300px;
 }

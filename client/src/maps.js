@@ -1,6 +1,7 @@
 import React, {createRef, Component} from 'react';
 import ReactDOM from 'react-dom';
 import { Map, Marker, Popup, TileLayer, Circle, CircleMarker} from "react-leaflet";
+import {Button, Nav, Navbar, NavDropdown, Form, FormControl, Jumbotron, Container, Row, Col, Tabs, Tab, Dropdown, Modal} from 'react-bootstrap/';
 import './index.css';
 
 class DisplayMap extends React.Component{
@@ -33,6 +34,10 @@ class DisplayMap extends React.Component{
         }
     }
 
+    scrollToRegion(regionID){
+      this.props.scrollToRegion(regionID);
+    }
+
     render() {
       const {hasLocation} = this.state; 
       const {shownRegion, loadingRegions, betRegions} = this.props;
@@ -40,7 +45,7 @@ class DisplayMap extends React.Component{
       // Check if userlocation found
       var userMarker = null;
       if(hasLocation){
-        userMarker = <Marker position={this.state.latlng}><Popup>You are here</Popup></Marker>;
+        userMarker = <Marker position={this.state.latlng}><Popup><h6>You are here</h6><Button>Select</Button></Popup></Marker>;
       }
 
       // Check if bet regions found
@@ -51,7 +56,7 @@ class DisplayMap extends React.Component{
           if(shownRegion != null){  
             for(var i = 0; i < betRegions.length; i++){
               var center = [betRegions[i].latitude, betRegions[i].longitude];
-              betRegionsMap.push(<Marker key={betRegions[i]._id} position={center}/>);
+              betRegionsMap.push(<Marker key={betRegions[i]._id} position={center}><Popup><h6>{betRegions[i].region_name}</h6><Button onClick={this.scrollToRegion(betRegions[i]._id)}>See info</Button></Popup></Marker>);
               if(betRegions[i]._id === shownRegion){
                 betRegionsMap.push(<Circle key={"circle:" + betRegions[i]._id} center={center} radius={betRegions[i].radius} color='blue'/>);
               }
@@ -59,7 +64,7 @@ class DisplayMap extends React.Component{
           }else{
             for(var i = 0; i < betRegions.length; i++){
               var center = [betRegions[i].latitude, betRegions[i].longitude];
-              betRegionsMap.push(<Marker key={betRegions[i]._id} position={center}/>)
+              betRegionsMap.push(<Marker key={betRegions[i]._id} position={center}><Popup><h6>{betRegions[i].region_name}</h6><Button onClick={this.scrollToRegion(betRegions[i]._id)}>See Info</Button></Popup></Marker>);
             }
           }
         }
