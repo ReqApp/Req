@@ -4,6 +4,7 @@ import { Map, Marker, Popup, TileLayer, Circle, CircleMarker} from "react-leafle
 import {Button, Nav, Navbar, NavDropdown, Form, FormControl, Jumbotron, Container, Row, Col, Tabs, Tab, Dropdown, Modal} from 'react-bootstrap/';
 import './index.css';
 
+// Map Component
 class DisplayMap extends React.Component{
     constructor(props){
         super(props);
@@ -18,71 +19,100 @@ class DisplayMap extends React.Component{
         }
     }
 
+    // On mount gets user location and available bet regions
     componentDidMount(){
+      // Check if geolocation available
+      if(!this.props.miniMap){
         if(navigator.geolocation){
+          // Check for accuracy
           navigator.geolocation.getCurrentPosition((userPosition => {
-            console.log(userPosition);
             if(userPosition.coords.accuracy > 400){
+              // Set user's location
               this.setState({hasLocation : true, latlng : {lat : 53.28211, lng : -9.062186}});
             }else{
+              // Manually set user location for testing
               this.setState({hasLocation : true, latlng : { lat : userPosition.coords.latitude, lng : userPosition.coords.longitude }});
             }
-            fetch("http://localhost:9000/getBettingRegions?lat=" +  this.state.latlng.lat + "&lng=" + this.state.latlng.lng).then(regions => regions.json()).then(regions => this.setState({loadingRegions : false, betRegions : regions})).catch(err => err);
           }));
-        }else{
+        }
+        // Handle geolocation not supported
+        else{
           console.log("Not supported")
         }
+      }
     }
 
-    scrollToRegion(regionID){
+    // Allows user to select bet on map and view region card
+    scrollToRegion(regionID) {
       this.props.scrollToRegion(regionID);
     }
 
-    render() {
-      const {hasLocation} = this.state; 
-      const {shownRegion, loadingRegions, betRegions} = this.props;
-
-      // Check if userlocation found
-      var userMarker = null;
-      if(hasLocation){
-        userMarker = <Marker position={this.state.latlng}><Popup><h6>You are here</h6><Button>Select</Button></Popup></Marker>;
-      }
-
-      // Check if bet regions found
-      var betRegionsMap = null;
-      if(!loadingRegions){
-        if(Array.isArray(betRegions) && betRegions.length){
-          betRegionsMap = [];
-          if(shownRegion != null){  
+    fullMap(){
+        // Get state and prop variables
+        const {hasLocation} = this.state; 
+        const {loadingRegions, betRegions} = this.props;
+  
+        // Check if userlocation found
+        var userMarker = null;
+        if(hasLocation){
+          userMarker = <Marker position={this.state.latlng}><Popup><h6>You are here</h6><Button>Select</Button></Popup></Marker>;
+        }
+  
+        // Check if bet regions found
+        var betRegionsMap = null;
+        // Check if regions are loaded from server
+        if(!loadingRegions){
+          // Check if regions are available
+          if(Array.isArray(betRegions) && betRegions.length){
+            betRegionsMap = [];
+            // Add map markers and popups
             for(var i = 0; i < betRegions.length; i++){
               var center = [betRegions[i].latitude, betRegions[i].longitude];
-              betRegionsMap.push(<Marker key={betRegions[i]._id} position={center}><Popup><h6>{betRegions[i].region_name}</h6><Button onClick={this.scrollToRegion(betRegions[i]._id)}>See info</Button></Popup></Marker>);
-              if(betRegions[i]._id === shownRegion){
-                betRegionsMap.push(<Circle key={"circle:" + betRegions[i]._id} center={center} radius={betRegions[i].radius} color='blue'/>);
-              }
-            } 
-          }else{
-            for(var i = 0; i < betRegions.length; i++){
-              var center = [betRegions[i].latitude, betRegions[i].longitude];
-              betRegionsMap.push(<Marker key={betRegions[i]._id} position={center}><Popup><h6>{betRegions[i].region_name}</h6><Button onClick={this.scrollToRegion(betRegions[i]._id)}>See Info</Button></Popup></Marker>);
+              betRegionsMap.push(<Marker key={betRegions[i]._id} position={center}><Popup><h6>{betRegions[i].region_name}</h6><Button onClick={this.scrollToRegion.bind(this, betRegions[i]._id)}>See Info</Button></Popup></Marker>);
             }
           }
         }
+        return(
+            <Map className="full-map"
+              center={this.state.latlng}
+              length={4}
+              zoom={15}>
+              <TileLayer
+                attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              {userMarker}
+              {betRegionsMap}
+            </Map>
+        )
+    }
+
+    miniMap(){
+      const {regionDetails} = this.props;
+      let center = { lat: regionDetails.latitude, lng: regionDetails.longitude};
+      let marker = <Marker position={center}/>
+      let circle = <Circle center={center} radius={regionDetails.radius}/>
+      return (
+          <Map className="mini-map"
+            center={center}
+            zoom={13}>
+            <TileLayer
+            attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+            {marker}
+            {circle}
+          </Map>
+      )
+    }
+
+    render() {
+      if(this.props.miniMap){
+        return(
+          this.miniMap()
+        )
       }
       return(
-        <div>
-          <Map
-            center={this.state.latlng}
-            length={4}
-            zoom={15}>
-            <TileLayer
-              attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            {userMarker}
-            {betRegionsMap}
-          </Map>
-          </div>
+        this.fullMap()
       )
     }
     
