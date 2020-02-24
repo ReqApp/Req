@@ -73,7 +73,8 @@ class FindBetPage extends React.Component{
 
     handleGetBets = (id) => {
         console.log("Retreive bets for region: " + id);
-        this.setState({view : "bets"});
+        // Get bets in region and add to state
+        fetch("http://localhost:9000/getBetsInRegion?id=" + id).then(bets => bets.json()).then(bets => this.setState({bets : bets, view : "bets"})).catch(err => err);
     }
 
     render(){
@@ -99,6 +100,14 @@ class FindBetPage extends React.Component{
                 />
             </div>
         }
+        let cards = null;
+        if(this.state.view == "bets"){
+            cards = <BetCards bets={this.state.bets} />
+        }
+        else{
+            cards = <BetRegionCards onRegionHover={this.handleRegionHover} loadingRegions={this.state.loadingRegions} betRegions={this.state.betRegions} sort={this.state.sortBy} onGetBets={this.handleGetBets}/>
+        }
+
         return(     
             // Create grid for parts
             <div>
@@ -129,7 +138,7 @@ class FindBetPage extends React.Component{
                 <Container fluid className="main-content">
                     <Row>
                         <Col className="full-map-container">
-                            <DisplayMap miniMap={false} betRegions={this.state.betRegions} loadingRegions={this.state.loadingRegions} scrollToRegion={this.handleScrollToRegion}/>
+                            <DisplayMap miniMap={false} view={this.state.view} data={this.state.betRegions} loading={this.state.loadingRegions} scrollToRegion={this.handleScrollToRegion}/>
                         </Col>
                     </Row>
                     <Container>
@@ -155,7 +164,9 @@ class FindBetPage extends React.Component{
                         </Col>
                         </Row>
                     <Row>
-                        <Col><BetRegionCards onRegionHover={this.handleRegionHover} loadingRegions={this.state.loadingRegions} betRegions={this.state.betRegions} sort={this.state.sortBy} onGetBets={this.handleGetBets}/></Col>
+                        <Col>
+                            {cards}
+                        </Col>
                     </Row>
                     </Container>
                 </Container>
@@ -165,6 +176,38 @@ class FindBetPage extends React.Component{
     }
 }
 
+// Render card for each bet in region
+class BetCards extends React.Component{
+    constructor(props){
+        super(props);
+
+    }
+
+    render(){
+        let {bets} = this.props;
+        let betCards = [];
+
+        if(Array.isArray(bets) && bets.length){
+            for(let i = 0; i < bets.length; i++){
+                let newBetCard = <Paper key={bets[i]._id} elevation={3} className="region-cards">
+                    <h3>{bets[i].title}</h3>
+                </Paper>
+                betCards.push(newBetCard);
+            }
+            return(
+                <div>{betCards}</div>
+            )
+        }else{
+            return(
+                <Paper className="region-cards info" elevation={3}>
+                    <h3>Region does not contain any bets</h3>
+                </Paper>
+            )
+        }
+    }
+}
+
+// Renders card for each available region
 class BetRegionCards extends React.Component{
     constructor(props){
         super(props);

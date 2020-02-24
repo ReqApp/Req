@@ -14,8 +14,6 @@ class DisplayMap extends React.Component{
                 lat: 51.505,
                 lng: -0.09
             },
-            loadingRegions : true,
-            betRegions : null,
         }
     }
 
@@ -50,7 +48,7 @@ class DisplayMap extends React.Component{
     fullMap(){
         // Get state and prop variables
         const {hasLocation} = this.state; 
-        const {loadingRegions, betRegions} = this.props;
+        const {loading, data, view} = this.props;
   
         // Check if userlocation found
         var userMarker = null;
@@ -61,14 +59,14 @@ class DisplayMap extends React.Component{
         // Check if bet regions found
         var betRegionsMap = null;
         // Check if regions are loaded from server
-        if(!loadingRegions){
+        if(!loading){
           // Check if regions are available
-          if(Array.isArray(betRegions) && betRegions.length){
+          if(Array.isArray(data) && data.length){
             betRegionsMap = [];
             // Add map markers and popups
-            for(var i = 0; i < betRegions.length; i++){
-              var center = [betRegions[i].latitude, betRegions[i].longitude];
-              betRegionsMap.push(<Marker key={betRegions[i]._id} position={center}><Popup><h6>{betRegions[i].region_name}</h6><Button onClick={this.scrollToRegion.bind(this, betRegions[i]._id)}>See Info</Button></Popup></Marker>);
+            for(var i = 0; i < data.length; i++){
+              var center = [data[i].latitude, data[i].longitude];
+              betRegionsMap.push(<Marker key={data[i]._id} position={center}><Popup><h6>{data[i].region_name}</h6><Button onClick={this.scrollToRegion.bind(this, data[i]._id)}>See Info</Button></Popup></Marker>);
             }
           }
         }
