@@ -235,13 +235,15 @@ router.put('/addMultBetsToRegion', function(req, res, next) {
 
 router.post('/makeBet', (req, res, next) => {
     let inputObj = {
-        "title": req.body.title,
+        "type": req.body.type,
         "side": req.body.side,
+        "title": req.body.title,
         "amount": req.body.amount,
         "deadline": req.body.deadline,
-        "username": req.body.username
+        "username": req.body.username,
     }
-    utilFuncs.hasEnoughCoins(req.body.username, req.body.amount).then((data) => {
+
+    utilFuncs.hasEnoughCoins(req.body.username, 0).then((data) => {
         if (data) {
             utilFuncs.createBet(inputObj).then((response) => {
                 if (response) {
@@ -336,7 +338,9 @@ router.post('/betOn', (req, res, next) => {
         "betID": req.body.betID,
         "username": req.body.username,
         "amount": req.body.amount,
-        "side": req.body.side
+        "type": req.body.type,
+        "side": req.body.side,
+        "bet": req.body.bet
     }
 
     utilFuncs.isValidBetID(inputObj.betID).then((resp) => {

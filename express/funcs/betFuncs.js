@@ -77,68 +77,105 @@ function validate(input, type) {
 
 function betOn(userObj) {
     return new Promise((resolve, reject) => {
-        if (userObj.side === "yes") {
-            testBets.findOneAndUpdate({ _id: userObj.betID }, { $push: { forUsers: { user_name: userObj.username, betAmount: userObj.amount } } },
+        if (userObj.type === "binary") {
+            if (userObj.side === "yes") {
+                testBets.findOneAndUpdate({ _id: userObj.betID }, { $push: { forUsers: { user_name: userObj.username, betAmount: userObj.amount } } },
+                    (err, result) => {
+                        if (err) {
+                            reject(err);
+                            var User = require('../models/users');
+                        } else {
+                            if (result) {
+                                console.log(`bet added`);
+                                resolve(true);
+                            } else {
+                                resolve(null);
+                            }
+                        }
+                    });
+            } else {
+                testBets.findOneAndUpdate({ _id: userObj.betID }, { $push: { againstUsers: { user_name: userObj.username, betAmount: userObj.amount } } },
+                    (err, result) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            if (result) {
+                                resolve(true);
+                            } else {
+                                resolve(null);
+                            }
+                        }
+                    });
+            }
+        } else if (userObj.type === "multi") {
+            testBets.findOneAndUpdate({_id:userObj.betID}, { $push: { commonBets: {user_name: userObj.username, betAmount: userObj.betAmount, bet: userObj.bet } } },
                 (err, result) => {
                     if (err) {
                         reject(err);
-                        var User = require('../models/users');
                     } else {
                         if (result) {
-                            console.log(`bet added`);
                             resolve(true);
                         } else {
-                            resolve(null);
+                            resolve(false);
                         }
                     }
-                });
+                }) 
         } else {
-            testBets.findOneAndUpdate({ _id: userObj.betID }, { $push: { againstUsers: { user_name: userObj.username, betAmount: userObj.amount } } },
-                (err, result) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        if (result) {
-                            resolve(true);
-                        } else {
-                            resolve(null);
-                        }
-                    }
-                });
+            reject("Incorrect bet type");
         }
     })
 }
 
 function alreadyBetOn(userObj) {
     return new Promise((resolve, reject) => {
-        testBets.findOne({ _id: userObj.betID }, (err, res) => {
-            if (err) {
-                reject(err);
-            } else {
-                if (res) {
-                    if (userObj.side === "yes") {
-                        for (indivBet of res.forUsers) {
-                            if (indivBet.user_name === userObj.username) {
-                                resolve(true);
-                            }
-                        }
-                        resolve(null);
-                    } else {
-                        if (userObj.side === "no") {
-                            for (indivBet of res.againstUsers) {
+        if (userObj.type === "binary") {
+            testBets.findOne({ _id: userObj.betID }, (err, res) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    if (res) {
+                        if (userObj.side === "yes") {
+                            for (indivBet of res.forUsers) {
                                 if (indivBet.user_name === userObj.username) {
                                     resolve(true);
                                 }
                             }
+                            resolve(null);
+                        } else {
+                            if (userObj.side === "no") {
+                                for (indivBet of res.againstUsers) {
+                                    if (indivBet.user_name === userObj.username) {
+                                        resolve(true);
+                                    }
+                                }
+                            }
+                            resolve(null);
                         }
-                        resolve(null);
+    
+                    } else {
+                        reject('Invalid bet ID');
                     }
-
-                } else {
-                    reject('Invalid bet ID');
                 }
-            }
-        });
+            });
+        } else if (userObj.type === "multi") {
+            testBets.findOne({_id: userObj.betID}, (err, res) => {
+                if (err) {
+                    reject(err);
+                } 
+                if (res) {
+                    for (indivBet of res.commonBets) {
+                        if (indivBet.user_name === userObj.username) {
+                            resolve(true);
+                        }
+                    }
+                    resolve(null);
+                } else {
+                    reject("Invalid betID");
+                }
+            });
+        } else {
+            reject("Incorrect bet type");
+        }
     });
 }
 
@@ -448,7 +485,7 @@ function isSignedIn(reqCookies) {
     return new Promise((resolve, reject) => {
         if (reqCookies.Authorization) {
             let jwt = reqCookies.Authorization.split(' ')[1];
-            const profile = utilFuncs.verifyJwt(jwt);
+            const profile = verifyJwt(jwt);
             if (profile) {
                 resolve(profile);
             } else {
@@ -462,25 +499,49 @@ function isSignedIn(reqCookies) {
 
 function createBet(input) {
     return new Promise((resolve, reject) => {
-        if (input.title && input.side && input.amount && input.deadline && input.username) {
-            let newBet = new testBets();
-
-            newBet.title = input.title;
-            newBet.side = input.side;
-            newBet.amount = input.amount;
-            newBet.deadline = input.deadline;
-            newBet.user_name = input.username;
-
-            newBet.save((err) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(true);
-                }
-            });
-
+        if (input.type === "binary") {
+            if (input.title && input.side && input.deadline && input.username) {
+                let newBet = new testBets();
+    
+                newBet.title = input.title;
+                newBet.side = input.side;
+                newBet.deadline = input.deadline;
+                newBet.user_name = input.username;
+    
+                newBet.save((err) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(true);
+                    }
+                });
+    
+            } else {
+                resolve(false);
+            }
+        } else if (input.type === "multi") {
+            if (input.title && input.deadline && input.username) {
+                let newBet = new testBets();
+    
+                newBet.title = input.title;
+                newBet.side = input.side;
+                newBet.deadline = input.deadline;
+                newBet.user_name = input.username;
+    
+                newBet.save((err) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(true);
+                    }
+                });
+    
+            } else {
+                resolve(false);
+            }   
         } else {
-            resolve(false);
+            console.log("wasnt multi or binary")
+            reject("Invalid bet type");
         }
     })
 }

@@ -15,14 +15,16 @@ var testBetSchema = new Schema({
         minlength: 3,
         maxLength: 48
     },
+    type: {
+        type: String
+    },
     side: {
         type: String,
-        required: true
+        default: null
     },
     amount: {
         type: Number,
-        default: 0,
-        required: true
+        default: 0
     },
     deadline: {
         type: String,
@@ -36,6 +38,11 @@ var testBetSchema = new Schema({
         user_name: String,
         betAmount: Number
     }],
+    commonBets: [{
+        user_name: String,
+        betAmount: Number,
+        bet: Number
+    }]
 });
 
 module.exports = mongoose.model('testBets', testBetSchema);
