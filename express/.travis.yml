@@ -5,5 +5,6 @@ node_js:
 before_script:
   npm install -g swagger-ui-express
   npm link swagger-ui-express
+  pip3 install --user ezgmail
 script:
   - npm test
