@@ -25,14 +25,20 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import './findLocationBets.css';
 import matchSorter from 'match-sorter';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+// Add onclick handler in cards which retrieves bets in that region
+// Update map with bets
+// Update cards with bets
 
 class FindBetPage extends React.Component{
     constructor(props){
         super(props);
         this.state = {
             betRegions : null,
+            bets: null,
+            view: "regions",
             loadingRegions : true,
-            shownRegion : null,
             sortBy : "popular",
             showMap : false,
         }
@@ -65,10 +71,15 @@ class FindBetPage extends React.Component{
         this.setState({sortBy : event.target.value});
     }
 
+    handleGetBets = (id) => {
+        console.log("Retreive bets for region: " + id);
+        this.setState({view : "bets"});
+    }
+
     render(){
         var predictSearch = null;
         if(!this.state.loadingRegions){
-            predictSearch = <div style={{ width: 300}}>
+            predictSearch = <div className="float-container" style={{ width: 300}} >
                 <Autocomplete
                     freeSolo
                     id="free-solo-2-demo"
@@ -117,20 +128,20 @@ class FindBetPage extends React.Component{
                 </Navbar>
                 <Container fluid className="main-content">
                     <Row>
-                        <Col>
+                        <Col className="full-map-container">
                             <DisplayMap miniMap={false} betRegions={this.state.betRegions} loadingRegions={this.state.loadingRegions} scrollToRegion={this.handleScrollToRegion}/>
                         </Col>
                     </Row>
                     <Container>
                     <Row>
-                        <Col xs={8}>    
-                            <h2>Popular Bets</h2>
+                        <Col>    
+                            <h2 className="sort-by-title">Available Regions</h2>
                         </Col>
                     </Row>
                     <Row>
                         <Col>
                             <Dropdown>
-                                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                                <Dropdown.Toggle variant="primary" id="dropdown-basic" className="sort-by-dropdown">
                                     Sort By
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
@@ -144,7 +155,7 @@ class FindBetPage extends React.Component{
                         </Col>
                         </Row>
                     <Row>
-                        <Col><BetRegionCards onRegionHover={this.handleRegionHover} loadingRegions={this.state.loadingRegions} betRegions={this.state.betRegions} sort={this.state.sortBy}/></Col>
+                        <Col><BetRegionCards onRegionHover={this.handleRegionHover} loadingRegions={this.state.loadingRegions} betRegions={this.state.betRegions} sort={this.state.sortBy} onGetBets={this.handleGetBets}/></Col>
                     </Row>
                     </Container>
                 </Container>
@@ -166,8 +177,13 @@ class BetRegionCards extends React.Component{
         this.props.onRegionHover(id);
     }
 
+    handleGetBets(id){
+        this.props.onGetBets(id);
+    }
+
     render(){
         let {loadingRegions, betRegions, sort} = this.props;
+        let searchFlag = false;
         // If regions are loaded display cards
         if(!loadingRegions){
             var regionCards = [];
@@ -177,10 +193,11 @@ class BetRegionCards extends React.Component{
                 betRegions.reverse();
             }else{
                 betRegions = matchSorter(betRegions, sort, { keys: ['region_name']});
+                searchFlag = true;
             }
             if(Array.isArray(betRegions) && betRegions.length){
                 for(var i = 0; i < display_num_regions && i < betRegions.length; i++){
-                    var newCard = <Jumbotron key={betRegions[i]._id} id={betRegions[i]._id}>
+                    var newCard = <Paper elevation={3} key={betRegions[i]._id} id={betRegions[i]._id} className="region-cards">
                         <Container>
                             <Row>
                             <Col xs={8}>
@@ -200,7 +217,7 @@ class BetRegionCards extends React.Component{
                                 </Row>
                                 <Row>
                                     <Col>
-                                        <Button>See Bets in this Region</Button>
+                                        <Button onClick={this.handleGetBets.bind(this, betRegions[i]._id)}>See Bets in this Region</Button>
                                     </Col>
                                 </Row>
                             </Container>
@@ -210,24 +227,33 @@ class BetRegionCards extends React.Component{
                             </Col>
                             </Row>
                         </Container>
-                    </Jumbotron>
+                    </Paper>
                     regionCards.push(newCard);
                 }
                 return (
                     <div>{regionCards}</div>
                 )
             }else{
-                return (
-                    <Card><CardContent>There are no bet regions in your area</CardContent></Card>
-                )
+                if(searchFlag){
+                    return(
+                        <Paper className="region-cards info">
+                            <h3>Could not find any matching bet regions</h3>
+                        </Paper>
+                    )
+                }else{
+                    return (
+                        <Paper className="region-cards info">
+                            <h3>Looks like you are not in any betting regions right now</h3>
+                        </Paper>
+                    )
+                }
             }
         }else{
             return(
-                <Card>
-                    <CardContent>
-                        Loading Regions
-                </CardContent>
-                </Card>
+                <Paper className="region-cards info">
+                    <h3>Loading Regions...</h3>
+                    <CircularProgress />
+                </Paper>
             )
         }
     }
