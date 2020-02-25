@@ -79,7 +79,7 @@ function betOn(userObj) {
     return new Promise((resolve, reject) => {
         if (userObj.type === "binary") {
             if (userObj.side === "yes") {
-                testBets.findOneAndUpdate({ _id: userObj.betID }, { $push: { forUsers: { user_name: userObj.username, betAmount: userObj.amount } } },
+                testBets.findOneAndUpdate({ _id: userObj.betID }, { $push: { forUsers: { user_name: userObj.username, betAmount: userObj.betAmount } } },
                     (err, result) => {
                         if (err) {
                             reject(err);
@@ -94,7 +94,7 @@ function betOn(userObj) {
                         }
                     });
             } else {
-                testBets.findOneAndUpdate({ _id: userObj.betID }, { $push: { againstUsers: { user_name: userObj.username, betAmount: userObj.amount } } },
+                testBets.findOneAndUpdate({ _id: userObj.betID }, { $push: { againstUsers: { user_name: userObj.username, betAmount: userObj.betAmount } } },
                     (err, result) => {
                         if (err) {
                             reject(err);
@@ -457,25 +457,45 @@ function anonymiseBetData(allBets) {
         for (indivBet of allBets) {
             let forTotal = 0;
             let againstTotal = 0;
+            let commonTotal = 0;
 
-            if (indivBet.forUsers.length > 0) {
-                for (bet of indivBet.forUsers) {
-                    forTotal += bet.betAmount;
+
+            if (indivBet.type === "binary") {
+                if (indivBet.forUsers.length > 0) {
+                    for (bet of indivBet.forUsers) {
+                        forTotal += bet.betAmount;
+                    }
                 }
-            }
-            if (indivBet.againstUsers.length > 0) {
-                for (bet of indivBet.againstUsers) {
-                    againstTotal += bet.betAmount;
+                if (indivBet.againstUsers.length > 0) {
+                    for (bet of indivBet.againstUsers) {
+                        againstTotal += bet.betAmount;
+                    }
                 }
+                let tempBet = {
+                    title: indivBet.title,
+                    username: indivBet.user_name,
+                    deadline: indivBet.deadline,
+                    forBetTotal: forTotal,
+                    againstBetTotal: againstTotal
+                }
+                console.log(`Binary bet ${tempBet}`);
+                betArr.push(tempBet);
+            } else if (indivBet.type === "multi") {
+
+                if (indivBet.commonBets.length > 0) {
+                    for (bet of indivBet.commonBets) {
+                        console.log(bet)
+                        commonTotal += bet.betAmount
+                    }
+                }
+                let tempBet = {
+                    title: indivBet.title,
+                    username: indivBet.user_name,
+                    deadline: indivBet.deadline,
+                    betsTotal: commonTotal
+                }
+                betArr.push(tempBet);
             }
-            let tempBet = {
-                title: indivBet.title,
-                username: indivBet.user_name,
-                deadline: indivBet.deadline,
-                forBetTotal: forTotal,
-                againstBetTotal: againstTotal
-            }
-            betArr.push(tempBet);
         }
         resolve(betArr);
     });
@@ -507,7 +527,8 @@ function createBet(input) {
                 newBet.side = input.side;
                 newBet.deadline = input.deadline;
                 newBet.user_name = input.username;
-    
+                newBet.type= input.type;
+
                 newBet.save((err) => {
                     if (err) {
                         reject(err);
@@ -520,13 +541,17 @@ function createBet(input) {
                 resolve(false);
             }
         } else if (input.type === "multi") {
-            if (input.title && input.deadline && input.username) {
+            if (input.title && input.deadline && input.username && input.firstPlace &&
+                input.secondPlace && input.thirdPlace) {
                 let newBet = new testBets();
     
                 newBet.title = input.title;
-                newBet.side = input.side;
                 newBet.deadline = input.deadline;
                 newBet.user_name = input.username;
+                newBet.type= input.type;
+                newBet.firstPlace = input.firstPlace;
+                newBet.secondPlace = input.secondPlace;
+                newBet.thirdPlace = input.thirdPlace;
     
                 newBet.save((err) => {
                     if (err) {

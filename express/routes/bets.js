@@ -234,50 +234,73 @@ router.put('/addMultBetsToRegion', function(req, res, next) {
 });
 
 router.post('/makeBet', (req, res, next) => {
-    let inputObj = {
-        "type": req.body.type,
-        "side": req.body.side,
-        "title": req.body.title,
-        "amount": req.body.amount,
-        "deadline": req.body.deadline,
-        "username": req.body.username,
-    }
 
-    utilFuncs.hasEnoughCoins(req.body.username, 0).then((data) => {
-        if (data) {
-            utilFuncs.createBet(inputObj).then((response) => {
-                if (response) {
-                    res.status(200).json({
-                        "status": "success",
-                        "body": "Bet made!"
-                    });
+    const firstPlace = parseFloat(req.body.firstPlace);
+    const secondPlace = parseFloat(req.body.secondPlace);
+    const thirdPlace = parseFloat(req.body.thirdPlace);
+
+    if (isNaN(firstPlace) || isNaN(secondPlace) || isNaN(thirdPlace)) {
+        res.status(400).json({
+            "status":"error",
+            "body":"Invlid bet percentages entered"
+        })
+    } else {
+        console.log(firstPlace, secondPlace, thirdPlace);
+        let inputObj = {
+            "type": req.body.type,
+            "side": req.body.side,
+            "title": req.body.title,
+            "amount": req.body.amount,
+            "deadline": req.body.deadline,
+            "username": req.body.username,
+            "firstPlace": firstPlace,
+            "secondPlace": secondPlace,
+            "thirdPlace": thirdPlace
+        }
+    
+        if ((firstPlace + secondPlace + thirdPlace) != 1) {
+            res.status(400).json({
+                "status":"error",
+                "body":"Payout percentages don't add up to 100%"
+            })
+        } else {
+            utilFuncs.hasEnoughCoins(req.body.username, 0).then((data) => {
+                if (data) {parseInt
+                    utilFuncs.createBet(inputObj).then((response) => {
+                        if (response) {
+                            res.status(200).json({
+                                "status": "success",
+                                "body": "Bet made!"
+                            });
+                        } else {
+                            res.status(400).json({
+                                "status": "error",
+                                "body": "Bet not made no res"
+                            });
+                        }
+                    }, (err) => {
+                        console.log(err);
+                        res.status(400).json({
+                            "status": "err",
+                            "body": "ERR Bet not made"
+                        });
+                    })
                 } else {
+                    console.log(`${inputObj.username} doesn't have enough coins`);
                     res.status(400).json({
                         "status": "error",
-                        "body": "Bet not made no res"
+                        "body": "Not enough coins"
                     });
                 }
             }, (err) => {
                 console.log(err);
                 res.status(400).json({
-                    "status": "err",
-                    "body": "ERR Bet not made"
+                    "status": "error",
+                    "body": "Error retrieving coin amount"
                 });
-            })
-        } else {
-            console.log(`${inputObj.username} doesn't have enough coins`);
-            res.status(400).json({
-                "status": "error",
-                "body": "Not enough coins"
             });
         }
-    }, (err) => {
-        console.log(err);
-        res.status(400).json({
-            "status": "error",
-            "body": "Error retrieving coin amount"
-        });
-    });
+    }
 
 });
 
@@ -337,7 +360,7 @@ router.post('/betOn', (req, res, next) => {
     let inputObj = {
         "betID": req.body.betID,
         "username": req.body.username,
-        "amount": req.body.amount,
+        "betAmount": req.body.betAmount,
         "type": req.body.type,
         "side": req.body.side,
         "bet": req.body.bet
@@ -345,7 +368,7 @@ router.post('/betOn', (req, res, next) => {
 
     utilFuncs.isValidBetID(inputObj.betID).then((resp) => {
         if (resp) {
-            utilFuncs.hasEnoughCoins(req.body.username, req.body.amount).then((data) => {
+            utilFuncs.hasEnoughCoins(req.body.username, req.body.betAmount).then((data) => {
                 if (data) {
                     // add in func here to check if they already bet on it
                     utilFuncs.alreadyBetOn(inputObj).then((alreadyBetOn) => {

@@ -42,7 +42,19 @@ var testBetSchema = new Schema({
         user_name: String,
         betAmount: Number,
         bet: Number
-    }]
+    }],
+    firstPlace: {
+        type: Number,
+        default: 0
+    },
+    secondPlace: {
+        type: Number,
+        default: 0
+    },
+    thirdPlace: {
+        type: Number,
+        default: 0
+    }
 });
 
 module.exports = mongoose.model('testBets', testBetSchema);
