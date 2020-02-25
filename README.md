@@ -20,3 +20,11 @@
 
 #### Registration flowchart
 ![yes](https://i.imgur.com/KazYBEd.png)
+
+### Using Mobile-App
+1. Install expo-cli
+2. Download expo app on your phone (or use simulator)
+3. npm start once node modules are installed
+4. Scan QR code on phone
+5. If working in college best to use tunnel instead of LAN
+6. Good tutorial: `https://reactnative.dev/docs/getting-started`
