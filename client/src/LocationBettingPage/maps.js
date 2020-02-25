@@ -1,10 +1,9 @@
 import React, {createRef, Component} from 'react';
-import ReactDOM from 'react-dom';
 import { Map, Marker, Popup, TileLayer, Circle, CircleMarker} from "react-leaflet";
 import {Button, Nav, Navbar, NavDropdown, Form, FormControl, Jumbotron, Container, Row, Col, Tabs, Tab, Dropdown, Modal} from 'react-bootstrap/';
-import './index.css';
+import './findLocationBets.css'
 
-// Map Component
+// Map component
 class DisplayMap extends React.Component{
     constructor(props){
         super(props);
@@ -45,6 +44,16 @@ class DisplayMap extends React.Component{
       this.props.scrollToRegion(regionID);
     }
 
+    // Automatically open popup when loaded
+    openPopUp(marker){
+      if(marker && marker.leafletElement){
+        setTimeout(() => {
+          marker.leafletElement.openPopup();
+        }, 200);
+        
+      }
+    }
+
     fullMap(){
         // Get state and prop variables
         const {hasLocation} = this.state; 
@@ -53,7 +62,7 @@ class DisplayMap extends React.Component{
         // Check if userlocation found
         var userMarker = null;
         if(hasLocation){
-          userMarker = <Marker position={this.state.latlng}><Popup><h6>You are here</h6><Button>Select</Button></Popup></Marker>;
+          userMarker = <Marker position={this.state.latlng}><Popup closeButton={false} ref={this.openPopUp}><h6>You are here</h6><Button>Select</Button></Popup></Marker>;
         }
   
         // Check if bet regions found

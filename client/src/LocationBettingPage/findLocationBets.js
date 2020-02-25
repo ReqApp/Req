@@ -1,24 +1,9 @@
 import React, {createRef, Component} from 'react';
-import ReactDOM from 'react-dom'
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-//import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import DisplayMap from'./maps.js';
 import {Paper} from '@material-ui/core';
-import Box from '@material-ui/core/Box';
-import { CardHeader } from '@material-ui/core';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
-import FloatingActionButton from '@material-ui/core/Fab';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import {Button, Nav, Navbar, NavDropdown, Form, FormControl, Jumbotron, Container, Row, Col, Tabs, Tab, Dropdown, Modal} from 'react-bootstrap/';
 import TextField from '@material-ui/core/TextField';
@@ -27,10 +12,7 @@ import './findLocationBets.css';
 import matchSorter from 'match-sorter';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-// Add onclick handler in cards which retrieves bets in that region
-// Update map with bets
-// Update cards with bets
-
+// Main page for location betting
 class FindBetPage extends React.Component{
     constructor(props){
         super(props);
@@ -51,6 +33,7 @@ class FindBetPage extends React.Component{
         this.handleSearch = this.handleSearch.bind(this);
     }
 
+    // Load regions on first mout
     componentDidMount(){
         fetch("http://localhost:9000/getBettingRegions?lat=53.28211&lng=-9.062186").then(regions => regions.json()).then(regions => this.setState({loadingRegions : false, betRegions : regions})).catch(err => err);
     }
@@ -180,7 +163,6 @@ class FindBetPage extends React.Component{
 class BetCards extends React.Component{
     constructor(props){
         super(props);
-
     }
 
     render(){

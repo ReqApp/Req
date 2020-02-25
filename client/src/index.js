@@ -1,9 +1,7 @@
 import React, {createRef, Component} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Bets from'./bets.js';
-import FindLocationBets from './findLocationBets.js';
-
+import FindLocationBets from './LocationBettingPage/findLocationBets.js';
 
 //import HomePage from './samples.js'
 
