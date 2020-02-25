@@ -1,0 +1,72 @@
+html{
+    padding: 0px;
+    margin: 0px;
+  }
+  
+  body{
+    margin: 0px;
+    padding: 0px;
+  }
+  
+.main-content{
+    width: 100%;
+    margin-top: 0px;
+}
+
+.full-map {
+    width: 100%;
+    height: 70vh;
+    padding: 5px;
+  }
+  
+  .mini-map{
+    width: 100%;
+    height: 250px;
+  }
+
+.floating-button{
+    width: 200px;
+    height: 40px;
+    position: fixed;
+    bottom: 20px;
+    right: 5px;
+    border-radius: 5px;
+    border: none;
+    z-index: 1000;
+}
+
+.sort-by-title{
+    padding-top: 20px;
+}
+
+.full-map-container{
+    padding: 0px;
+}
+
+.float-container{
+    position: relative;
+    float: right;
+}
+
+.sort-by-dropdown{
+    margin-top: 15px;
+}
+
+.region-cards{
+    padding: 20px;  
+    margin-top: 20px;
+    /*background: #FBF9F9 !important;*/
+}
+
+/* .region-cards button{
+    background-color: #E8202F;
+} */
+
+.info{
+    text-align: center;
+}
+
+html {
+    scroll-behavior: smooth;
+    background: #FBF9F9;
+  }
