@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 require('./util.js')
 
-var testBetSchema = new Schema({
+var testBetsFinishedSchema = new Schema({
     user_name: {
         type: String,
         required: true,
@@ -43,18 +43,26 @@ var testBetSchema = new Schema({
         betAmount: Number,
         bet: Number
     }],
-    firstPlaceCut: {
+    firstPlace: {
         type: Number,
         default: 0
     },
-    secondPlaceCut: {
+    secondPlace: {
         type: Number,
         default: 0
     },
-    thirdPlaceCut: {
+    thirdPlace: {
         type: Number,
         default: 0
+    },
+    winners: [{
+        user_name: String,
+        payout: Number,
+        profilePicture: String
+    }],
+    result: {
+        type: Number
     }
 });
 
-module.exports = mongoose.model('testBets', testBetSchema);
+module.exports = mongoose.model('testBetsFinished', testBetsFinishedSchema);

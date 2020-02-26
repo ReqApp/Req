@@ -233,11 +233,11 @@ router.put('/addMultBetsToRegion', function(req, res, next) {
 
 router.post('/makeBet', (req, res, next) => {
 
-    const firstPlace = parseFloat(req.body.firstPlace);
-    const secondPlace = parseFloat(req.body.secondPlace);
-    const thirdPlace = parseFloat(req.body.thirdPlace);
+    const firstPlaceCut = parseFloat(req.body.firstPlaceCut);
+    const secondPlaceCut = parseFloat(req.body.secondPlaceCut);
+    const thirdPlaceCut = parseFloat(req.body.thirdPlaceCut);
 
-    if (isNaN(firstPlace) || isNaN(secondPlace) || isNaN(thirdPlace)) {
+    if (isNaN(firstPlaceCut) || isNaN(secondPlaceCut) || isNaN(thirdPlaceCut)) {
         res.status(400).json({
             "status":"error",
             "body":"Invlid bet percentages entered"
@@ -251,12 +251,12 @@ router.post('/makeBet', (req, res, next) => {
             "amount": req.body.amount,
             "deadline": req.body.deadline,
             "username": req.body.username,
-            "firstPlace": firstPlace,
-            "secondPlace": secondPlace,
-            "thirdPlace": thirdPlace
+            "firstPlaceCut": firstPlaceCut,
+            "secondPlaceCut": secondPlaceCut,
+            "thirdPlaceCut": thirdPlaceCut
         }
     
-        if ((firstPlace + secondPlace + thirdPlace) != 1) {
+        if ((firstPlaceCut + secondPlaceCut + thirdPlaceCut) != 1) {
             res.status(400).json({
                 "status":"error",
                 "body":"Payout percentages don't add up to 100%"
@@ -298,7 +298,6 @@ router.post('/makeBet', (req, res, next) => {
             });
         }
     }
-
 });
 
 router.post('/decideBet', (req, res, next) => {

@@ -1,4 +1,5 @@
 var forgotPasswordUser = require('../models/forgotPasswordUsers');
+var testBetsFinished = require('../models/testBetsFinished');
 var UnverifiedUser = require('../models/unverifiedUsers');
 var articleBet = require('../models/articleBets');
 const keccak512 = require('js-sha3').keccak512;
@@ -263,6 +264,49 @@ function decideBet(inputObj) {
                 if (new Date().getTime() - (foundBet.deadline + 21600000) >= 0) {
                     reject("Deadline has been exceeded");
                 } else {
+
+                    // if there were only bets on one side
+                    if (foundBet.forUsers.length > 0 && foundBet.againstUsers.length == 0) {
+                        // this was a one sided bet,
+                        // give the money back
+                        for (bet of foundBet.forUsers) {
+                            payOut(bet.user_name,1,bet.betAmount).then((response) => {
+                                if (response) {
+                                    console.log(`Paid back ${response} to ${bet.user_name}`);
+                                } else {
+                                    console.log(`Couldn't pay back ${response} to ${bet.uesr_name}`)
+                                }
+                            })
+                        }
+                        deleteBet(inputObj.betID).then((response) => {
+                            if (response) {
+                                resolve(true);
+                            }
+                        }, (err) => {
+                            reject(err);
+                        })
+                        resolve(null);
+                    }
+                    if (foundBet.againstUsers.length > 0 && foundBet.forUsers.length == 0) {
+                        for (bet of foundBet.againstUsers) {
+                            payOut(bet.user_name,1,bet.betAmount).then((response) => {
+                                if (response) {
+                                    console.log(`Paid back ${response} to ${bet.user_name}`);
+                                } else {
+                                    console.log(`Couldn't pay back ${response} to ${bet.uesr_name}`)
+                                }
+                            })
+                        }
+                        deleteBet(inputObj.betID).then((response) => {
+                            if (response) {
+                                resolve(true);
+                            }
+                        }, (err) => {
+                            reject(err);
+                        })
+                        resolve(null);
+                    }
+
                     // not expired, dish out the winnings
                     anonymiseBetData([foundBet]).then((betData) => {
                         if (betData) {
@@ -332,6 +376,7 @@ function decideBet(inputObj) {
                                     }
                                 } else {
                                     // there were no users betting against
+                                    // payout back the original amounts paid in
                                     resolve(null);
                                 }
                             }
@@ -341,46 +386,69 @@ function decideBet(inputObj) {
                                 rankAnswers(foundBet.commonBets, parseInt(inputObj.result,10)).then((sortedAnswers) => {
                                     // sort the answers based on their difference to the actual result
                                     if (sortedAnswers) {
-                                        payOut(sortedAnswers[0].user_name,foundBet.firstPlace,betData[0].betsTotal).then((response) => {
-                                            if (response) {
-                                                console.log(`Paid out ${response} to ${sortedAnswers[0].user_name} successfully`);
-                                            } else {
-                                                console.log(`Error paying out ${response} to ${sortedAnswers[0].user_name}`);
-                                                resolve(null);
-                                            }
-                                        })
-                                        if (sortedAnswers.length > 1) {
-                                            payOut(sortedAnswers[1].user_name,foundBet.secondPlace,betData[0].betsTotal).then((response) => {
+
+                                        if (sortedAnswers.length == 1) {
+                                            // there was one 1 bet made, pay them back what they put in
+                                            // creator does not get paid because then they could get 10% of fake winnings every time
+                                            payOut(sortedAnswers[0].user_name, 1, foundBet.commonBets[0].betAmount).then((response) => {
                                                 if (response) {
-                                                    console.log(`Paid out ${response} to ${sortedAnswers[1].user_name} successfully`);
+                                                    console.log(`Paid out ${response} to ${sortedAnswers[0].user_name} successfully [no other bets]`);
+                                                    deleteBet(inputObj.betID).then((response) => {
+                                                        if (response) {
+                                                            resolve(true);
+                                                        }
+                                                    }, (err) => {
+                                                        reject(err);
+                                                    })
+                                                    resolve(true);
                                                 } else {
-                                                    console.log(`Error paying out ${response} to ${sortedAnswers[1].user_name}`);
+                                                    console.log(`Error paying out ${response} to ${sortedAnswers[0].user_name} [no other bets]`);
+                                                    resolve(null);
+                                                }
+                                            });
+                                        } else {
+                                            // there was more than 1 person who made a bet on this post
+                                            payOut(sortedAnswers[0].user_name,foundBet.firstPlaceCut,betData[0].betsTotal).then((response) => {
+                                                if (response) {
+                                                    console.log(`Paid out ${response} to ${sortedAnswers[0].user_name} successfully`);
+                                                } else {
+                                                    console.log(`Error paying out ${response} to ${sortedAnswers[0].user_name}`);
                                                     resolve(null);
                                                 }
                                             })
-                                        }
-
-                                        if (sortedAnswers.length > 2) {
-                                            payOut(sortedAnswers[2].user_name, foundBet.thirdPlace,betData[0].betsTotal).then((response) => {
-                                                if (response) {
-                                                    console.log(`Paid out ${response} to ${sortedAnswers[2].user_name} sucessfully`);
-                                                } else {
-                                                    console.log(`Error paying out ${response} to ${sortedAnswers[2].user_name}`);
-                                                    resolve(null);
-                                                }
-                                            }) 
-                                        }
-                                        // payout to the bet creator 
-                                        payOut(foundBet.user_name, 0.1, betData[0].betsTotal).then(() => {
-                                            deleteBet(inputObj.betID).then((response) => {
-                                                if (response) {
-                                                    resolve(true);
-                                                }
-                                            }, (err) => {
-                                                reject(err);
-                                            });
-                                        });
+                                            if (sortedAnswers.length > 1) {
+                                                payOut(sortedAnswers[1].user_name,foundBet.secondPlaceCut,betData[0].betsTotal).then((response) => {
+                                                    if (response) {
+                                                        console.log(`Paid out ${response} to ${sortedAnswers[1].user_name} successfully`);
+                                                    } else {
+                                                        console.log(`Error paying out ${response} to ${sortedAnswers[1].user_name}`);
+                                                        resolve(null);
+                                                    }
+                                                })
+                                            }
     
+                                            if (sortedAnswers.length > 2) {
+                                                payOut(sortedAnswers[2].user_name, foundBet.thirdPlaceCut,betData[0].betsTotal).then((response) => {
+                                                    if (response) {
+                                                        console.log(`Paid out ${response} to ${sortedAnswers[2].user_name} sucessfully`);
+                                                    } else {
+                                                        console.log(`Error paying out ${response} to ${sortedAnswers[2].user_name}`);
+                                                        resolve(null);
+                                                    }
+                                                }) 
+                                            }
+                                            // payout to the bet creator 
+                                            payOut(foundBet.user_name, 0.1, betData[0].betsTotal).then(() => {
+                                                deleteBet(inputObj.betID).then((response) => {
+                                                    if (response) {
+                                                        resolve(true);
+                                                    }
+                                                }, (err) => {
+                                                    reject(err);
+                                                });
+                                            });
+        
+                                        }
                                     } else {
                                         resolve(false);
                                     }
@@ -388,6 +456,13 @@ function decideBet(inputObj) {
                                 });
                             } else {
                                 // There were no bets  placed
+                                deleteBet(inputObj.betID).then((response) => {
+                                    if (response) {
+                                        resolve(true);
+                                    }
+                                }, (err) => {
+                                    reject(err);
+                                })
                                 resolve(true);
                             }
                           
@@ -423,6 +498,35 @@ function rankAnswers(allBets, result) {
             return 0;
         })
         resolve(allBets);
+    });
+}
+
+function addBetToFinishedDB(betInfo) {
+    return new Promise((resolve, reject) => {
+        newBet = new testBetsFinished({
+            user_name: betInfo.user_name,
+            title: betInfo.title,
+            type: betInfo.type,
+            side: betInfo.side,
+            amount: betInfo.amount,
+            deadline: betInfo.deadline,
+            forUsers: betInfo.forUsers,
+            againstUsers: betInfo.againstUsers,
+            commonBets: betInfo.commonBets,
+            firstPlaceCut: betInfo.firstPlaceCut,
+            secondPlaceCut: betInfo.secondPlaceCut,
+            thirdPlaceCut: betInfo.thirdPlaceCut,
+            winners: betInfo.winners,
+            result: betInfo.result
+        });
+
+        newBet.save((err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(true);
+            }
+        });
     });
 }
 
@@ -611,17 +715,17 @@ function createBet(input) {
                 resolve(false);
             }
         } else if (input.type === "multi") {
-            if (input.title && input.deadline && input.username && input.firstPlace &&
-                input.secondPlace && input.thirdPlace) {
+            if (input.title && input.deadline && input.username && input.firstPlaceCut &&
+                input.secondPlaceCut && input.thirdPlaceCut) {
                 let newBet = new testBets();
     
                 newBet.title = input.title;
                 newBet.deadline = input.deadline;
                 newBet.user_name = input.username;
                 newBet.type= input.type;
-                newBet.firstPlace = input.firstPlace;
-                newBet.secondPlace = input.secondPlace;
-                newBet.thirdPlace = input.thirdPlace;
+                newBet.firstPlaceCut = input.firstPlaceCut;
+                newBet.secondPlaceCut = input.secondPlaceCut;
+                newBet.thirdPlaceCut = input.thirdPlaceCut;
     
                 newBet.save((err) => {
                     if (err) {
