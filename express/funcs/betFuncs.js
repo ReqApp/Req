@@ -41,11 +41,7 @@ function validate(input, type) {
             if (!input) {
                 return false;
             }
-            if (input.toLowerCase() === "yes" || input.toLowerCase() === "no") {
-                return true;
-            } else {
-                return false;
-            }
+            return true;
         case 'password':
             if (input.length > 8) {
                 let test2 = conditions.some(el => input.includes(el));
@@ -231,7 +227,7 @@ function payOut(username, percentage, winnings) {
                     reject(err);
                 });
 
-                resolve(percentage * winnings);
+                resolve(Math.floor(percentage * winnings));
             } else {
                 resolve(null);
             }
@@ -267,7 +263,7 @@ function decideBet(inputObj) {
                     // not expired, dish out the winnings
                     anonymiseBetData([foundBet]).then((betData) => {
                         if (betData) {
-
+                            if (foundBet.type === "binary") {
                             // payout to the setter
                             const againstTotal = parseInt(betData[0].againstBetTotal, 10);
                             const forTotal = parseInt(betData[0].forBetTotal, 10);
@@ -335,9 +331,58 @@ function decideBet(inputObj) {
                                     resolve(null);
                                 }
                             }
-                        } else {
-                            resolve(null);
+                        } else if (foundBet.type === "multi") {
+                            rankAnswers(foundBet.commonBets, parseInt(inputObj.result,10)).then((sortedAnswers) => {
+                                // console.log(sortedAnswers);
+                                // console.log(typeof sortedAnswers);
+                                // console.log(sortedAnswers[0]);
+                                if (sortedAnswers) {
+                                    payOut(sortedAnswers[0].user_name,foundBet.firstPlace,betData[0].betsTotal).then((response) => {
+                                        if (response) {
+                                            console.log(`Paid out ${response} to ${sortedAnswers[0].user_name} successfully`);
+                                        } else {
+                                            console.log(`Error paying out ${response} to ${sortedAnswers[0].user_name}`);
+                                            resolve(null);
+                                        }
+                                    })
+
+                                    payOut(sortedAnswers[1].user_name,foundBet.secondPlace,betData[0].betsTotal).then((response) => {
+                                        if (response) {
+                                            console.log(`Paid out ${response} to ${sortedAnswers[0].user_name} successfully`);
+                                        } else {
+                                            console.log(`Error paying out ${response} to ${sortedAnswers[0].user_name}`);
+                                            resolve(null);
+                                        }
+                                    })
+
+                                    payOut(sortedAnswers[2].user_name, foundBet.thirdPlace,betData[0].betsTotal).then((response) => {
+                                        if (response) {
+                                            console.log(`Paid out ${response} to ${sortedAnswers[0].user_name} sucessfully`);
+                                        } else {
+                                            console.log(`Error paying out ${response} to ${sortedAnswers[0].user_name}`);
+                                            resolve(null);
+                                        }
+                                    }) 
+                                    // payout to the bet creator 
+                                    payOut(foundBet.user_name, 0.1, betData[0].betsTotal).then(() => {
+                                        deleteBet(inputObj.betID).then((response) => {
+                                            if (response) {
+                                                resolve(true);
+                                            }
+                                        }, (err) => {
+                                            reject(err);
+                                        })
+                                    });
+
+                                } else {
+                                    resolve(false);
+                                }
+
+                            });
                         }
+                    } else {
+                        resolve(null);
+                    }
                     }, (err) => {
                         reject(err);
                     })
@@ -347,6 +392,33 @@ function decideBet(inputObj) {
             }
         });
     })
+}
+
+function rankAnswers(allBets, result) {
+    return new Promise((resolve, reject) => {
+        if (allBets.length < 1 || allBets === undefined) {
+            resolve(false);
+        }
+        allBets.sort(function(a, b){
+            if (a.bet < b.bet)
+                return -1;
+            if (a.bet > b.bet)
+                return 1;
+            return 0;
+        });
+
+        allBets.sort(function(a,b) {
+            if (a.bet < result) {
+                return 1;
+            } 
+            if (a.bet > result) {
+                return -1
+            }
+            return 0;
+        })
+
+        resolve(allBets);
+    });
 }
 
 function makeArticleBet(input, username) {
@@ -459,7 +531,6 @@ function anonymiseBetData(allBets) {
             let againstTotal = 0;
             let commonTotal = 0;
 
-
             if (indivBet.type === "binary") {
                 if (indivBet.forUsers.length > 0) {
                     for (bet of indivBet.forUsers) {
@@ -484,7 +555,6 @@ function anonymiseBetData(allBets) {
 
                 if (indivBet.commonBets.length > 0) {
                     for (bet of indivBet.commonBets) {
-                        console.log(bet)
                         commonTotal += bet.betAmount
                     }
                 }
@@ -497,6 +567,7 @@ function anonymiseBetData(allBets) {
                 betArr.push(tempBet);
             }
         }
+        console.log(betArr)
         resolve(betArr);
     });
 }
@@ -657,6 +728,7 @@ module.exports.createJwt = createJwt
 module.exports.verifyJwt = verifyJwt;
 module.exports.decideBet = decideBet;
 module.exports.isSignedIn = isSignedIn;
+module.exports.rankAnswers = rankAnswers;
 module.exports.calcDistance = calcDistance;
 module.exports.alreadyBetOn = alreadyBetOn;
 module.exports.isValidBetID = isValidBetID;

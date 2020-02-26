@@ -311,6 +311,7 @@ router.post('/decideBet', (req, res, next) => {
         "result": req.body.result,
         "accessToken": req.cookies.Authorization
     }
+
     if (utilFuncs.validate(req.body.betID, "id") &&
         utilFuncs.validate(req.body.result, "result")) {
 
@@ -318,6 +319,7 @@ router.post('/decideBet', (req, res, next) => {
             if (validBetID) {
                 utilFuncs.decideBet(inputObj).then((success) => {
                     if (success) {
+                        console.log(success);
                         console.log(`Bet #${inputObj.betID} finished`);
                         res.status(200).json({
                             "status": "success",
