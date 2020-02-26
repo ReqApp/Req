@@ -332,53 +332,59 @@ function decideBet(inputObj) {
                                 }
                             }
                         } else if (foundBet.type === "multi") {
-                            rankAnswers(foundBet.commonBets, parseInt(inputObj.result,10)).then((sortedAnswers) => {
-                                // console.log(sortedAnswers);
-                                // console.log(typeof sortedAnswers);
-                                // console.log(sortedAnswers[0]);
-                                if (sortedAnswers) {
-                                    payOut(sortedAnswers[0].user_name,foundBet.firstPlace,betData[0].betsTotal).then((response) => {
-                                        if (response) {
-                                            console.log(`Paid out ${response} to ${sortedAnswers[0].user_name} successfully`);
-                                        } else {
-                                            console.log(`Error paying out ${response} to ${sortedAnswers[0].user_name}`);
-                                            resolve(null);
-                                        }
-                                    })
-
-                                    payOut(sortedAnswers[1].user_name,foundBet.secondPlace,betData[0].betsTotal).then((response) => {
-                                        if (response) {
-                                            console.log(`Paid out ${response} to ${sortedAnswers[0].user_name} successfully`);
-                                        } else {
-                                            console.log(`Error paying out ${response} to ${sortedAnswers[0].user_name}`);
-                                            resolve(null);
-                                        }
-                                    })
-
-                                    payOut(sortedAnswers[2].user_name, foundBet.thirdPlace,betData[0].betsTotal).then((response) => {
-                                        if (response) {
-                                            console.log(`Paid out ${response} to ${sortedAnswers[0].user_name} sucessfully`);
-                                        } else {
-                                            console.log(`Error paying out ${response} to ${sortedAnswers[0].user_name}`);
-                                            resolve(null);
-                                        }
-                                    }) 
-                                    // payout to the bet creator 
-                                    payOut(foundBet.user_name, 0.1, betData[0].betsTotal).then(() => {
-                                        deleteBet(inputObj.betID).then((response) => {
+                            if (foundBet.commonBets.length > 1) {
+                                rankAnswers(foundBet.commonBets, parseInt(inputObj.result,10)).then((sortedAnswers) => {
+                                    if (sortedAnswers) {
+                                        payOut(sortedAnswers[0].user_name,foundBet.firstPlace,betData[0].betsTotal).then((response) => {
                                             if (response) {
-                                                resolve(true);
+                                                console.log(`Paid out ${response} to ${sortedAnswers[0].user_name} successfully`);
+                                            } else {
+                                                console.log(`Error paying out ${response} to ${sortedAnswers[0].user_name}`);
+                                                resolve(null);
                                             }
-                                        }, (err) => {
-                                            reject(err);
                                         })
-                                    });
+                                        if (sortedAnswers.length > 1) {
+                                            payOut(sortedAnswers[1].user_name,foundBet.secondPlace,betData[0].betsTotal).then((response) => {
+                                                if (response) {
+                                                    console.log(`Paid out ${response} to ${sortedAnswers[1].user_name} successfully`);
+                                                } else {
+                                                    console.log(`Error paying out ${response} to ${sortedAnswers[1].user_name}`);
+                                                    resolve(null);
+                                                }
+                                            })
+                                        }
 
-                                } else {
-                                    resolve(false);
-                                }
-
-                            });
+                                        if (sortedAnswers.length > 2) {
+                                            payOut(sortedAnswers[2].user_name, foundBet.thirdPlace,betData[0].betsTotal).then((response) => {
+                                                if (response) {
+                                                    console.log(`Paid out ${response} to ${sortedAnswers[2].user_name} sucessfully`);
+                                                } else {
+                                                    console.log(`Error paying out ${response} to ${sortedAnswers[2].user_name}`);
+                                                    resolve(null);
+                                                }
+                                            }) 
+                                        }
+                                        // payout to the bet creator 
+                                        payOut(foundBet.user_name, 0.1, betData[0].betsTotal).then(() => {
+                                            deleteBet(inputObj.betID).then((response) => {
+                                                if (response) {
+                                                    resolve(true);
+                                                }
+                                            }, (err) => {
+                                                reject(err);
+                                            })
+                                        });
+    
+                                    } else {
+                                        resolve(false);
+                                    }
+    
+                                });
+                            } else {
+                                // There were no bets  placed
+                                resolve(true);
+                            }
+                          
                         }
                     } else {
                         resolve(null);
@@ -549,7 +555,6 @@ function anonymiseBetData(allBets) {
                     forBetTotal: forTotal,
                     againstBetTotal: againstTotal
                 }
-                console.log(`Binary bet ${tempBet}`);
                 betArr.push(tempBet);
             } else if (indivBet.type === "multi") {
 
@@ -567,7 +572,6 @@ function anonymiseBetData(allBets) {
                 betArr.push(tempBet);
             }
         }
-        console.log(betArr)
         resolve(betArr);
     });
 }

@@ -319,7 +319,6 @@ router.post('/decideBet', (req, res, next) => {
             if (validBetID) {
                 utilFuncs.decideBet(inputObj).then((success) => {
                     if (success) {
-                        console.log(success);
                         console.log(`Bet #${inputObj.betID} finished`);
                         res.status(200).json({
                             "status": "success",
