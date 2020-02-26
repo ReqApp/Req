@@ -6,8 +6,6 @@ var router = require('express').Router();
 var Bet = require('../models/betData');
 var User = require('../models/users');
 var mongoose = require('mongoose');
-var jwt = require('jsonwebtoken');
-var util = require('util');
 
 /**
  * <-------------------------------------------------------------------->
@@ -245,7 +243,7 @@ router.post('/makeBet', (req, res, next) => {
             "body":"Invlid bet percentages entered"
         })
     } else {
-        console.log(firstPlace, secondPlace, thirdPlace);
+
         let inputObj = {
             "type": req.body.type,
             "side": req.body.side,
@@ -263,9 +261,10 @@ router.post('/makeBet', (req, res, next) => {
                 "status":"error",
                 "body":"Payout percentages don't add up to 100%"
             })
+
         } else {
             utilFuncs.hasEnoughCoins(req.body.username, 0).then((data) => {
-                if (data) {parseInt
+                if (data) {
                     utilFuncs.createBet(inputObj).then((response) => {
                         if (response) {
                             res.status(200).json({
@@ -275,14 +274,13 @@ router.post('/makeBet', (req, res, next) => {
                         } else {
                             res.status(400).json({
                                 "status": "error",
-                                "body": "Bet not made no res"
+                                "body": `No response, bet was not made`
                             });
                         }
                     }, (err) => {
-                        console.log(err);
                         res.status(400).json({
                             "status": "err",
-                            "body": "ERR Bet not made"
+                            "body": `Error: Bet was not made. ${err}`
                         });
                     })
                 } else {
@@ -293,7 +291,6 @@ router.post('/makeBet', (req, res, next) => {
                     });
                 }
             }, (err) => {
-                console.log(err);
                 res.status(400).json({
                     "status": "error",
                     "body": "Error retrieving coin amount"
@@ -328,7 +325,7 @@ router.post('/decideBet', (req, res, next) => {
                         console.log(`Bet #${inputObj.betID} unsuccessful`);
                         res.status(400).json({
                             "status": "error",
-                            "body": "error paying out"
+                            "body": "Error paying out winnings"
                         });
                     }
                 }, (err) => {

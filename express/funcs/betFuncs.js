@@ -40,6 +40,11 @@ function validate(input, type) {
         case 'result':
             if (!input) {
                 return false;
+            } 
+            if (parseFloat(input) !== NaN) {
+                return true;
+            } else {
+                return false;
             }
             return true;
         case 'password':
@@ -249,16 +254,14 @@ function deleteBet(betID) {
 
 function decideBet(inputObj) {
     return new Promise((resolve, reject) => {
-        let currTime = new Date();
-
         testBets.findOne({ _id: inputObj.betID }, (err, foundBet) => {
             if (err) {
                 reject(err);
             }
             if (foundBet) {
                 // currTime - deadline + a fair bit of time
-                if (currTime.getTime() - (foundBet.deadline + 21600000) >= 0) {
-                    reject("Expired");
+                if (new Date().getTime() - (foundBet.deadline + 21600000) >= 0) {
+                    reject("Deadline has been exceeded");
                 } else {
                     // not expired, dish out the winnings
                     anonymiseBetData([foundBet]).then((betData) => {
@@ -267,7 +270,8 @@ function decideBet(inputObj) {
                             // payout to the setter
                             const againstTotal = parseInt(betData[0].againstBetTotal, 10);
                             const forTotal = parseInt(betData[0].forBetTotal, 10);
-
+                            
+                            // pay out 10% of total bets to the bet creator first
                             payOut(foundBet.user_name, 0.1, againstTotal + forTotal).then(() => {});
 
                             if (inputObj.result === "yes") {
@@ -297,7 +301,7 @@ function decideBet(inputObj) {
                                         })
                                     }
                                 } else {
-                                    console.log("no for users");
+                                    // there were no users betting for
                                     resolve(null);
                                 }
                             }
@@ -327,13 +331,15 @@ function decideBet(inputObj) {
                                         })
                                     }
                                 } else {
-                                    console.log("no against users");
+                                    // there were no users betting against
                                     resolve(null);
                                 }
                             }
                         } else if (foundBet.type === "multi") {
-                            if (foundBet.commonBets.length > 1) {
+                            // if there were any bets at all, pay out to them
+                            if (foundBet.commonBets.length > 0) {
                                 rankAnswers(foundBet.commonBets, parseInt(inputObj.result,10)).then((sortedAnswers) => {
+                                    // sort the answers based on their difference to the actual result
                                     if (sortedAnswers) {
                                         payOut(sortedAnswers[0].user_name,foundBet.firstPlace,betData[0].betsTotal).then((response) => {
                                             if (response) {
@@ -372,7 +378,7 @@ function decideBet(inputObj) {
                                                 }
                                             }, (err) => {
                                                 reject(err);
-                                            })
+                                            });
                                         });
     
                                     } else {
@@ -385,6 +391,8 @@ function decideBet(inputObj) {
                                 resolve(true);
                             }
                           
+                        } else {
+                            reject("Incorrect bet type given");
                         }
                     } else {
                         resolve(null);
@@ -405,14 +413,6 @@ function rankAnswers(allBets, result) {
         if (allBets.length < 1 || allBets === undefined) {
             resolve(false);
         }
-        allBets.sort(function(a, b){
-            if (a.bet < b.bet)
-                return -1;
-            if (a.bet > b.bet)
-                return 1;
-            return 0;
-        });
-
         allBets.sort(function(a,b) {
             if (a.bet < result) {
                 return 1;
@@ -422,7 +422,6 @@ function rankAnswers(allBets, result) {
             }
             return 0;
         })
-
         resolve(allBets);
     });
 }
@@ -470,13 +469,9 @@ function makeArticleBet(input, username) {
                     }
                 });
             } else {
-                // console.log(`Input: ${JSON.stringify(input)}`);
-                // console.log("invalid chars in an input");
                 reject(null);
             }
         } else {
-            // console.log("invalid input numbers");
-            // console.log(input);
             resolve(null);
         }
     });
