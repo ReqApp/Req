@@ -22,10 +22,6 @@ var testBetsFinishedSchema = new Schema({
         type: String,
         default: null
     },
-    amount: {
-        type: Number,
-        default: 0
-    },
     deadline: {
         type: String,
         required: true
@@ -43,15 +39,30 @@ var testBetsFinishedSchema = new Schema({
         betAmount: Number,
         bet: Number
     }],
-    firstPlace: {
+    firstPlaceCut: {
         type: Number,
         default: 0
     },
-    secondPlace: {
+    tester: {
+        type: String
+    },
+    secondPlaceCut: {
         type: Number,
         default: 0
     },
-    thirdPlace: {
+    thirdPlaceCut: {
+        type: Number,
+        default: 0
+    },
+    forTotal: {
+        type: Number,
+        default: 0
+    },
+    againstTotal: {
+        type: Number,
+        default: 0
+    },
+    commonTotal: {
         type: Number,
         default: 0
     },

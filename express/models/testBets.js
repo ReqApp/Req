@@ -22,10 +22,6 @@ var testBetSchema = new Schema({
         type: String,
         default: null
     },
-    amount: {
-        type: Number,
-        default: 0
-    },
     deadline: {
         type: String,
         required: true
