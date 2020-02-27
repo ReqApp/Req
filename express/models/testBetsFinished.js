@@ -71,6 +71,9 @@ var testBetsFinishedSchema = new Schema({
         payout: Number,
         profilePicture: String
     }],
+    losers: [{
+        user_name: String
+    }],
     result: {
         type: Number
     }

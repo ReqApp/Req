@@ -238,7 +238,7 @@ router.post('/makeBet', (req, res, next) => {
     const secondPlaceCut = parseFloat(req.body.secondPlaceCut);
     const thirdPlaceCut = parseFloat(req.body.thirdPlaceCut);
 
-    if (isNaN(firstPlaceCut) || isNaN(secondPlaceCut) || isNaN(thirdPlaceCut)) {
+    if ( req.body.type === "multi" && (isNaN(firstPlaceCut) || isNaN(secondPlaceCut) || isNaN(thirdPlaceCut))) {
         res.status(400).json({
             "status":"error",
             "body":"Invalid bet percentages entered"
@@ -261,7 +261,7 @@ router.post('/makeBet', (req, res, next) => {
             "thirdPlaceCut": thirdPlaceCut
         }
     
-        if ((firstPlaceCut + secondPlaceCut + thirdPlaceCut) != 1) {
+        if ( req.body.type === "multi" && (firstPlaceCut + secondPlaceCut + thirdPlaceCut) != 1) {
             res.status(400).json({
                 "status":"error",
                 "body":"Payout percentages don't add up to 100%"
@@ -339,6 +339,7 @@ router.post('/decideBet', (req, res, next) => {
                         });
                     }
                 }, (err) => {
+                    console.log(`err in decide bet ${err}`);
                     res.status(400).json({
                         "status": "error",
                         "body": err
