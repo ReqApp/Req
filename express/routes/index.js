@@ -3,6 +3,7 @@ const utilFuncs = require('../funcs/betFuncs');
 var express = require('express');
 var router = express.Router();
 var User = require('../models/users');
+var generalFuncs = require('../funcs/generalFuncs');
 var jwt = require('jsonwebtoken');
 
 /* GET home page. */
