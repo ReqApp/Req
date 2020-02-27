@@ -1,6 +1,7 @@
 var forgotPasswordUser = require('../models/forgotPasswordUsers');
 var testBetsFinished = require('../models/testBetsFinished');
 var UnverifiedUser = require('../models/unverifiedUsers');
+var generalFuncs = require('../funcs/generalFuncs');
 var articleBet = require('../models/articleBets');
 const keccak512 = require('js-sha3').keccak512;
 var testBets = require('../models/testBets');
@@ -42,12 +43,11 @@ function validate(input, type) {
             if (!input) {
                 return false;
             } 
-            if (parseFloat(input) !== NaN) {
-                return true;
-            } else {
+            if (parseFloat(input) == NaN) {
                 return false;
+            } else {
+                return true;
             }
-            return true;
         case 'password':
             if (input.length > 8) {
                 let test2 = conditions.some(el => input.includes(el));
@@ -245,8 +245,10 @@ function deleteBet(betID) {
     return new Promise((resolve, reject) => {
         testBets.deleteOne({ _id: betID }, (err) => {
             if (err) {
+                console.log(`delete err ${err}`);
                 reject(err);
             } else {
+                console.log(`delete success`);
                 resolve(true);
             }
         })
@@ -336,7 +338,7 @@ function decideBet(inputObj) {
                                                 if (added) {
                                                     console.log(`Added bet to finished DB`);
                                                 } else {
-                                                    console.log(`Didn't add bet to finished DB`)
+                                                    resolve(null);
                                                 }
                                             }, (err) => {
                                                 reject(err);
@@ -346,6 +348,8 @@ function decideBet(inputObj) {
                                             deleteBet(inputObj.betID).then((response) => {
                                                 if (response) {
                                                     resolve(true);
+                                                } else {
+                                                    resolve(null);
                                                 }
                                             }, (err) => {
                                                 reject(err);
@@ -381,14 +385,16 @@ function decideBet(inputObj) {
                                                 reject(err);
                                             })
 
-                                            // if paid out anything or nothing, still delete the bet
-                                            deleteBet(inputObj.betID).then((response) => {
-                                                if (response) {
-                                                    resolve(true);
-                                                }
-                                            }, (err) => {
-                                                reject(err);
-                                            })
+                                           // if paid out anything or nothing, still delete the bet
+                                           deleteBet(inputObj.betID).then((response) => {
+                                            if (response) {
+                                                resolve(true);
+                                            } else {
+                                                resolve(null);
+                                            }
+                                        }, (err) => {
+                                            reject(err);
+                                        })
 
                                         }, (err) => {
                                             reject(err);
@@ -424,13 +430,16 @@ function decideBet(inputObj) {
                                                         reject(err);
                                                     })
 
-                                                    deleteBet(inputObj.betID).then((response) => {
-                                                        if (response) {
-                                                            resolve(true);
-                                                        }
-                                                    }, (err) => {
-                                                        reject(err);
-                                                    })
+                                                  // if paid out anything or nothing, still delete the bet
+                                            deleteBet(inputObj.betID).then((response) => {
+                                                if (response) {
+                                                    resolve(true);
+                                                } else {
+                                                    resolve(null);
+                                                }
+                                            }, (err) => {
+                                                reject(err);
+                                            })
                                                     resolve(true);
                                                 } else {
                                                     console.log(`Error paying out ${response} to ${sortedAnswers[0].user_name} [no other bets]`);
@@ -487,13 +496,16 @@ function decideBet(inputObj) {
                                                 reject(err);
                                             });
 
-                                            // deleteBet(inputObj.betID).then((response) => {
-                                            //     if (response) {
-                                            //         resolve(true);
-                                            //     }
-                                            // }, (err) => {
-                                            //     reject(err);
-                                            // });
+                                            // if paid out anything or nothing, still delete the bet
+                                            deleteBet(inputObj.betID).then((response) => {
+                                                if (response) {
+                                                    resolve(true);
+                                                } else {
+                                                    resolve(null);
+                                                }
+                                            }, (err) => {
+                                                reject(err);
+                                            })
 
 
                                             resolve(true);
@@ -553,6 +565,7 @@ function rankAnswers(allBets, result) {
 
 function addBetToFinishedDB(betInfo, winners, betSummary) {
     return new Promise((resolve, reject) => {
+        let winnersArr = []
 
         // console.log(`\n`);
         // console.log(betInfo)
@@ -563,61 +576,38 @@ function addBetToFinishedDB(betInfo, winners, betSummary) {
         // console.log(`\n`);
         
         if (betInfo.type === "multi") {
-            console.log(`bet type multi`);
-            let winnersArr = []
+            // only show top 3 if it was a mutli bet since
+            // only they got a money payout
             for (i = 0; i < winners.length; i++) {
                 if (i != 3) {
                     winnersArr.push(winners[i]);
                 }
             }
-            // console.log(`ok`)
-            // console.log(`\n\n\n\n`);
-            // console.log(winnersArr);
-            // console.log(`\n\n\n`);
-
-
-            newBet = new testBetsFinished({
-                user_name: betInfo.user_name,
-                title: betInfo.title,
-                type: betInfo.type,
-                side: betInfo.side,
-                deadline: betInfo.deadline,
-                forUsers: betInfo.forUsers,
-                againstUsers: betInfo.againstUsers,
-                commonBets: betInfo.commonBets,
-                firstPlaceCut: betInfo.firstPlaceCut,
-                secondPlaceCut: betInfo.secondPlaceCut,
-                thirdPlaceCut: betInfo.thirdPlaceCut,
-                forTotal: betSummary.forBetTotal,
-                againstTotal: betSummary.againstBetTotal,
-                commonTotal: betSummary.betsTotal,
-                winners: winnersArr,
-                result: betInfo.result
-            });
         } else {
-            let winnersArr = []
+            // if a binary bet, send on everyone
             for (win in winners) {
                 winnersArr.append(win);
             }
-            newBet = new testBetsFinished({
-                user_name: betInfo.user_name,
-                title: betInfo.title,
-                type: betInfo.type,
-                side: betInfo.side,
-                deadline: betInfo.deadline,
-                forUsers: betInfo.forUsers,
-                againstUsers: betInfo.againstUsers,
-                commonBets: betInfo.commonBets,
-                firstPlaceCut: betInfo.firstPlaceCut,
-                secondPlaceCut: betInfo.secondPlaceCut,
-                thirdPlaceCut: betInfo.thirdPlaceCut,
-                forTotal: betSummary.forBetTotal,
-                againstTotal: betSummary.againstBetTotal,
-                commonTotal: betSummary.betsTotal,
-                winners: winnersArr,
-                result: betInfo.result
-            });
+
         }
+        newBet = new testBetsFinished({
+            user_name: betInfo.user_name,
+            title: betInfo.title,
+            type: betInfo.type,
+            side: betInfo.side,
+            deadline: betInfo.deadline,
+            forUsers: betInfo.forUsers,
+            againstUsers: betInfo.againstUsers,
+            commonBets: betInfo.commonBets,
+            firstPlaceCut: betInfo.firstPlaceCut,
+            secondPlaceCut: betInfo.secondPlaceCut,
+            thirdPlaceCut: betInfo.thirdPlaceCut,
+            forTotal: betSummary.forBetTotal,
+            againstTotal: betSummary.againstBetTotal,
+            commonTotal: betSummary.betsTotal,
+            winners: winnersArr,
+            result: betInfo.result
+        });
 
         newBet.save((err) => {
             if (err) {

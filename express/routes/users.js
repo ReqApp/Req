@@ -1,5 +1,6 @@
 var forgotPasswordUser = require('../models/forgotPasswordUsers');
 var UnverifiedUser = require('../models/unverifiedUsers');
+var generalFuncs = require('../funcs/generalFuncs');
 const keccak512 = require('js-sha3').keccak512;
 const utilFuncs = require('../funcs/betFuncs');
 var randomstring = require("randomstring");
@@ -28,6 +29,49 @@ router.get('/testing', (req, res, next) => {
     res.json({ status: "success", message: "Welcome To Testing API" });
 });
 
+router.post('/getProfilePicture', (req, res, next) => {
+    if (req.body.username) {
+
+        if (utilFuncs.validate(req.body.username, "username")) {
+            
+            generalFuncs.getProfilePicture(req.body.username).then((response) => {
+
+                if (response) {
+                    if (response === "noprofiler") {
+
+                        res.status(200).json({
+                            "status":"error",
+                            "body": "No profile picture"
+                        });
+
+                    } else {
+                        res.status(200).json({
+                            "status":"success",
+                            "body": response
+                        });
+                    }
+                } else {
+                    res.status(200).json({
+                        "status":"error",
+                        "body": "Could not find profile picture"
+                    });
+                }
+            })
+        } else {
+            res.status(400).json({
+                "status":"success",
+                "body": "Invalid username"
+            });
+        }
+     
+    } else {
+        res.status(400).json({
+            "status":"success",
+            "body": "No username given"
+        });
+    }
+
+})
 router.get('/profile', (req, res, next) => {
     if (req.cookies.Authorization) {
         const jwtString = req.cookies.Authorization.split(' ');
@@ -60,7 +104,6 @@ router.get('/auth/github/callback', passport.authenticate('github', { failureRed
     res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
     res.render('index', { title: req.user_name });
 });
-
 
 router.get('/auth/steam', passport.authenticate('steam'));
 

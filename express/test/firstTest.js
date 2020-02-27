@@ -493,7 +493,44 @@ describe("============= Various APIS ==============", () => {
                     expect(res.body.status).to.equals("error");
                     done();
                 });
-        }).timeout(1400)
+        }).timeout(1400),
+        it("Get valid profiler", done => {
+            chai
+                .request(app)
+                .post("/users/getProfilePicture")
+                .send({
+                    "username":"IamCathal"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    done();
+                });
+        }),
+        it("Get invalid profiler", done => {
+            chai
+                .request(app)
+                .post("/users/getProfilePicture")
+                .send({
+                    "username":"testUser"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    done();
+                });
+        }),
+        it("Fuzzing", done => {
+            chai
+                .request(app)
+                .post("/users/getProfilePicture")
+                .send({
+                    "username": fuzzPassword
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.body).to.equals('Invalid username');
+                    done();
+                });
+        })
 });
 
 describe("============= Image Upload =============", () => {
