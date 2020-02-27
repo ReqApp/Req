@@ -241,15 +241,19 @@ router.post('/makeBet', (req, res, next) => {
     if (isNaN(firstPlaceCut) || isNaN(secondPlaceCut) || isNaN(thirdPlaceCut)) {
         res.status(400).json({
             "status":"error",
-            "body":"Invlid bet percentages entered"
+            "body":"Invalid bet percentages entered"
         })
     } else {
+
+        if ( (req.body.type && req.body.type && req.body.title && req.body.deadline && req.body.username ) ||
+            (req.body.type && req.body.title && req.body.deadline && req.body.deadline && 
+            req.body.firstPlaceCut && req.body.secondPlaceCut && req.body.thirdPlaceCut)) {
+                // bet has input parameters for either a binary or multi bet
 
         let inputObj = {
             "type": req.body.type,
             "side": req.body.side,
             "title": req.body.title,
-            "amount": req.body.amount,
             "deadline": req.body.deadline,
             "username": req.body.username,
             "firstPlaceCut": firstPlaceCut,
@@ -298,6 +302,12 @@ router.post('/makeBet', (req, res, next) => {
                 });
             });
         }
+     } else {
+         res.status(400).json({
+             "status":"error",
+             "body":"Invalid input"
+         });
+     }
     }
 });
 

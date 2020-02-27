@@ -523,3 +523,57 @@ describe("============= Image Upload =============", () => {
                 });
         })
 })
+
+describe("============= Betting =============", () => {
+    it("Invalid cut percentages", done => {
+            chai
+                .request(app)
+                .post("/bets/makeBet")
+                .send({
+                    "type":"multi",
+                    "title":"a test title",
+                    "deadline": 1584230400000,
+                    "username":"testUser",
+                    "firstPlaceCut":0.9,
+                    "secondPlaceCut":0.3,
+                    "thirdPlaceCut":0.15
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.body).to.equals('Payout percentages don\'t add up to 100%');
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("Invalid cut percentages", done => {
+            chai
+                .request(app)
+                .post("/bets/makeBet")
+                .send({
+                    "firstPlaceCut":"yellow",
+                    "secondPlaceCut":0.3,
+                    "thirdPlaceCut":"green"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.body).to.equals('Invalid bet percentages entered');
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("Fuzzing" , done => {
+            chai
+                .request(app)
+                .post("/bets/decideBet")
+                .send({
+                    "betID": fuzzUsername,
+                    "result": fuzzUsername
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.body).to.equals("Error checking betID");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        })
+})
