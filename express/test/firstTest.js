@@ -593,7 +593,7 @@ describe("============= Betting =============", () => {
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(400);
-                    expect(res.body.body).to.equals('Invalid bet percentages entered');
+                    expect(res.body.body).to.equals('Invalid input');
                     expect(res.body.status).to.equals("error");
                     done();
                 });
