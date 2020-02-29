@@ -2,6 +2,7 @@ var articleBet = require('../models/articleBets');
 const utilFuncs = require('../funcs/betFuncs');
 var express = require('express');
 var router = express.Router();
+const axios = require("axios");
 var User = require('../models/users');
 var generalFuncs = require('../funcs/generalFuncs');
 var jwt = require('jsonwebtoken');
@@ -87,6 +88,33 @@ router.get('/members', (req, res, next) => {
     }
 });
 
+router.post('/shortenLink', (req, res, next) => {
+    if (req.body.url) {
+        axios({
+            method: 'POST',
+            url: "https://goolnk.com/api/v1/shorten",
+            data: {
+                "url": req.body.url
+            }
+        }).then((response) => {
+            res.status(200).send({
+                "status": "success",
+                "body": response.data.result_url
+            });
+        }, (err) => {
+            res.status(400).send({
+                "status": "error",
+                "body": "Couldn't shorten link"
+            });
+        })
+    } else {
+        res.status(400).send({
+            "status": "error",
+            "body": "No url given"
+        });
+    }
+})
+
 router.post('/getCoins', (req, res, next) => {
     utilFunc.isSignedIn(req.cookies).then((data) => {
         if (data) {
@@ -119,26 +147,26 @@ router.post('/getCoins', (req, res, next) => {
 
 
 router.post('/createArticleBet', (req, res, next) => {
-    
-        utilFuncs.makeArticleBet(req.body, req.body.user_name).then((response) => {
-            if (response) {
-                console.log(`Response: ${response}`);
-                res.status(200).json({
-                    "status": "information",
-                    "body": response
-                });
-            } else {
-                res.status(400).json({
-                    "status": "error",
-                    "body": "Invalid input"
-                });
-            }
-        }, (err) => {
+
+    utilFuncs.makeArticleBet(req.body, req.body.user_name).then((response) => {
+        if (response) {
+            console.log(`Response: ${response}`);
+            res.status(200).json({
+                "status": "information",
+                "body": response
+            });
+        } else {
             res.status(400).json({
                 "status": "error",
-                "body": err
+                "body": "Invalid input"
             });
+        }
+    }, (err) => {
+        res.status(400).json({
+            "status": "error",
+            "body": err
         });
+    });
 });
 
 router.get('/getArticleBets', (req, res, next) => {

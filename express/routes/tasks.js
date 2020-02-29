@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const axios = require("axios")
+const axios = require("axios");
 const multer = require('multer');
 const imgur = require('imgur');
 const fs = require('fs');
