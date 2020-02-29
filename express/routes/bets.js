@@ -1,6 +1,7 @@
 var BetRegion = require('../models/bettingRegions');
 var articleBet = require('../models/articleBets');
 const utilFuncs = require('../funcs/betFuncs');
+var calcDistance = require('./calcDistance');
 var testBets = require('../models/testBets');
 var router = require('express').Router();
 var Bet = require('../models/betData');
