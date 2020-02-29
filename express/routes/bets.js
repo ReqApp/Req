@@ -16,17 +16,17 @@ var util = require('util');
  */
 
 // Render create bet page
-router.get('/createBet', function(req, res, next) {
-    res.render('create_bet', { title: 'CreateBet' });
+router.get('/createBet', (req, res, next) => {
+    res.render('create_bet', {title: 'CreateBet'});
 });
 
 // Render find bet page
-router.get('/findBets', function(req, res, next) {
-    res.render('find_bets', { title: 'FindBets' });
+router.get('/findBets', (req, res, next) => {
+    res.render('find_bets', {title : 'FindBets'});
 });
 
 // Render debug and testing page
-router.get('/debugTest', function(req, res, next) {
+router.get('/debugTest', (req, res, next) => {
     res.render('debugAndTestingPage');
 });
 
@@ -49,51 +49,22 @@ router.post('/addBetToDataBase', function(req, res, next) {
 });
 
 // API for getting bets in region
-router.get('/getBetsInRegion', function(req, res, next) {
-    var id = req.query.id.toString();
-    Bet.find({bet_region_id : id}, function(bets, err){
-        if(err){
-            res.json(err);
-        }
-        else{
-            res.json(bets);
-        }
-    });
-});
-
-// API for getting bets from database
-router.get('/getBets', function(req, res, next) {
-    // Perform calculations server-side to increase perfromance
-    Bet.find({}).exec(function(err, bets) {
-        if (err) {
-            throw (err);
-        } else {
-            var sendBets = [];
-            const LEN = bets.length;
-            for (var i = 0; i < LEN; i++) {
-                var bet = bets.pop();
-                var d = utilFuncs.calcDistance({ lat: bet.latitude, lng: bet.longitude }, { lat: req.query.latitude, lng: req.query.longitude });
-                // Convert kilometers to metres
-                if ((d * 1000) <= bet.radius) {
-                    sendBets.push(bet);
-                    /*
-                    console.log("Included")
-                    console.log("Bet Name: " + bet.title);
-                    console.log("Calculated Distance: " + (d * 1000).toString());
-                    console.log("Bet Radius: " + bet.radius.toString() + "\n");
-                    */
-                } else {
-                    /*
-                    console.log("Not Included");
-                    console.log("Bet Name: " + bet.title);
-                    console.log("Calculated Distance: " + (d * 1000).toString());
-                    console.log("Bet Radius: " + bet.radius.toString() + "\n");
-                    */
-                }
+router.get('/getBetsInRegion', (req, res) => {
+    let id = req.query.id;
+    if(id != null){
+        Bet.find({bet_region_id : id.toString()}, (err, bets) => {
+            if(err){
+                res.status(500).json({
+                    "status" : "error",
+                    "body" : "error"
+                });
+            }
+            else{
+                res.status(200).json(bets);
             }
             res.json(sendBets);
-        }
     });
+    }
 });
 
 /**
@@ -114,15 +85,33 @@ router.post('/addBettingRegion', function(req, res, next) {
     });
 });
 
-// API for getting available betting regi
-router.get('/getBettingRegions', function(req, res, next) {
-    // Perform calculations server-side to increase perfromance
-    BetRegion.find({}).exec(function(err, betRegions) {
-        if (err) {
-            res.json(err);
-        } else {
-            //console.log(betRegions);
-            var regionsToSend = [];
+// API for getting available betting regions
+router.get('/getBettingRegions', (req, res) => {
+    // Verify query parameters
+    let latitude = req.query.lat;
+    let longitude = req.query.lng;
+
+    if(latitude == null || longitude == null){
+        res.status(400).json({
+            "status" : "error",
+            "body" : "Invalid query parameters"
+        });
+    }else if(isNaN(latitude) || isNaN(longitude)){
+        res.status(400).json({
+            "status" : "error",
+            "body" : "Invalid coords"
+        })
+    }
+    else{
+        // Perform calculations server-side to increase perfromance
+        BetRegion.find({}).exec((err, betRegions) => {
+        if(err){
+            res.status(500).json({
+                "status" : "error",
+                "body" : err
+            });
+        }else{
+            let regionsToSend = [];
             const LEN = betRegions.length;
             for (var i = 0; i < LEN; i++) {
                 var betRegion = betRegions.pop();
@@ -145,6 +134,7 @@ router.get('/getBettingRegions', function(req, res, next) {
             res.json(regionsToSend);
         }
     });
+    }
 });
 
 // Allows user to add bet to betting region
