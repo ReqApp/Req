@@ -1,5 +1,5 @@
 // File containing APIs for betting functions
-var bets = require('express').Router();
+var router = require('express').Router();
 var Bet = require('../models/betData');
 var BetRegion = require('../models/bettingRegions');
 var calcDistance = require('./calcDistance');
@@ -12,17 +12,17 @@ var mongoose = require('mongoose');
  */
 
 // Render create bet page
-bets.get('/createBet', (req, res, next) => {
+router.get('/createBet', (req, res, next) => {
     res.render('create_bet', {title: 'CreateBet'});
 });
 
 // Render find bet page
-bets.get('/findBets', (req, res, next) => {
+router.get('/findBets', (req, res, next) => {
     res.render('find_bets', {title : 'FindBets'});
 });
 
 // Render debug and testing page
-bets.get('/debugTest', (req, res, next) => {
+router.get('/debugTest', (req, res, next) => {
     res.render('debugAndTestingPage');
 });
 
@@ -33,7 +33,7 @@ bets.get('/debugTest', (req, res, next) => {
  */
 
 // API to handle adding bet to database
-bets.post('/addBetToDataBase', function(req, res, next){
+router.post('/addBetToDataBase', function(req, res, next){
     var bet = new Bet(req.body);
     bet.save(function(err, savedBet){
         if(err){
@@ -46,7 +46,7 @@ bets.post('/addBetToDataBase', function(req, res, next){
 });
 
 // API for getting bets in region
-bets.get('/getBetsInRegion', (req, res) => {
+router.get('/getBetsInRegion', (req, res) => {
     let id = req.query.id;
     if(id != null){
         Bet.find({bet_region_id : id.toString()}, (err, bets) => {
@@ -75,7 +75,7 @@ bets.get('/getBetsInRegion', (req, res) => {
  */
 
  // API for adding new betting region
-bets.post('/addBettingRegion', function(req, res, next){
+ router.post('/addBettingRegion', function(req, res, next){
     var region = new BetRegion(req.body);
     region.save(function(err, savedRegion){
         if(err){
@@ -88,7 +88,7 @@ bets.post('/addBettingRegion', function(req, res, next){
 });
 
 // API for getting available betting regions
-bets.get('/getBettingRegions', (req, res) => {
+router.get('/getBettingRegions', (req, res) => {
     // Verify query parameters
     let latitude = req.query.lat;
     let longitude = req.query.lng;
@@ -136,7 +136,7 @@ bets.get('/getBettingRegions', (req, res) => {
 });
 
 // Allows user to add bet to betting region
-bets.put('/addBetToRegion', function(req, res, next){
+router.put('/addBetToRegion', function(req, res, next){
     // Takes bet region id
     console.log(req.body);
     var regionID = mongoose.Types.ObjectId(req.body.regionID.toString());
@@ -153,7 +153,7 @@ bets.put('/addBetToRegion', function(req, res, next){
 });
 
 // Gets specific region by id
-bets.get('/getRegionByID', function(req, res, next){
+router.get('/getRegionByID', function(req, res, next){
     console.log(req.query.id);
     var id = mongoose.Types.ObjectId(req.query.id.toString());
     console.log(id);
@@ -174,7 +174,7 @@ bets.get('/getRegionByID', function(req, res, next){
  */
 
 // API for adding multiple bets to database
-bets.post('/addMultBets', function(req, res, next){
+router.post('/addMultBets', function(req, res, next){
     //console.log(req.body);
     Bet.insertMany(req.body.betData, function(err, bets){
         if(err){
@@ -188,7 +188,7 @@ bets.post('/addMultBets', function(req, res, next){
 });
 
 // API for adding multiple bet regions to database
-bets.post('/addMultRegions', function(req, res, next){
+router.post('/addMultRegions', function(req, res, next){
     console.log(req.body);
     BetRegion.insertMany(req.body.regions, function(err, regions){
         if(err){
@@ -201,7 +201,7 @@ bets.post('/addMultRegions', function(req, res, next){
 });
 
 // API updates bet regions with multiple bets
-bets.put('/addMultBetsToRegion', function(req, res, next){
+router.put('/addMultBetsToRegion', function(req, res, next){
     // Takes bet region id
     console.log(req.body);
     var regionID = mongoose.Types.ObjectId(req.body.regionID.toString());
@@ -226,7 +226,7 @@ bets.put('/addMultBetsToRegion', function(req, res, next){
 });
 
 // API for getting bets from database
-bets.get('/getBets', function(req, res, next){
+router.get('/getBets', function(req, res, next){
     // Perform calculations server-side to increase perfromance
     Bet.find({}).exec(function(err, bets){
         if(err){
@@ -260,4 +260,4 @@ bets.get('/getBets', function(req, res, next){
     });
 });
 
-module.exports = bets;
+module.exports = router;
