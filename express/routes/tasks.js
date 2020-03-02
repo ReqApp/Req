@@ -1,3 +1,4 @@
+const utilFuncs = require('../funcs/betFuncs');
 var express = require('express');
 var router = express.Router();
 const axios = require("axios");
@@ -134,6 +135,22 @@ function uploadToImgur(filePath) {
         });
     })
 }
+
+router.post('/sendEmail', (req, res, next) => {
+    if (req.body.secret === process.env.ReqSecret) {
+        utilFuncs.sendEmail("reqnuig@gmail.com", "Error finalising big red button bet", req.body.errorMessage).then(() => {
+            res.status(200).json({
+                "status":"success",
+                "body": "error email sent"
+            });
+        });
+    } else {
+        res.status(400).json({
+            "status":"error",
+            "body":"You are not authorised to do this"
+        });
+    }
+})
 
 
 module.exports = router;

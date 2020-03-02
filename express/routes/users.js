@@ -335,7 +335,6 @@ router.post('/login', function(req, res, next) {
                     "body": err
                 });
             }
-
             if (user) {
                 // compare hashes of passwords
                 if (user.validPassword(password)) {

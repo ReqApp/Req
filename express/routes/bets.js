@@ -1,5 +1,6 @@
 var BetRegion = require('../models/bettingRegions');
 var testBetsFinished = require('../models/testBetsFinished');
+var generalFuncs = require("../funcs/generalFuncs");
 var articleBet = require('../models/articleBets');
 const utilFuncs = require('../funcs/betFuncs');
 var testBets = require('../models/testBets');
@@ -418,34 +419,58 @@ router.post('/betOn', (req, res, next) => {
             "body": "Error validating bet ID"
         });
     })
+});
+
+// router.post('/endBigButtonBet', (req, res, next) => {
+//     // A secret is defined in the env which is sent to validate
+//     // that it is the Req account finalising the bet.
+//     if (req.body.secret) {
+//         if (req.body.secret === process.env.ReqSecret) {
+//             res.status(200).json({
+//                 "status": "success",
+//                 "body": "Big button presss ended"
+//             });
+//         } else {
+//             res.status(400).json({
+//                 "status": "error",
+//                 "body": "You are not authorised to do this"
+//             });
+//         }
+//     } else {
+//         res.status(400).json({
+//             "status": "error",
+//             "body": "Invalid input"
+//         });
+//     }
+
+// });
+
+router.post('/pressBigButton', (req, res, next) => {
+    generalFuncs.handleRedButtonPress().then((response) => {
+        if (response) {
+            console.log(response);
+            res.status(200).json({
+                "status": "success",
+                "body": "Big red button pressed"
+            });
+        } else {
+            res.status(400).json({
+                "status": "error",
+                "body": "Error pressing big red button"
+            });
+        }
+
+    }, (err) => {
+        res.status(400).json({
+            "status": "error",
+            "body": "Error pressing big red button"
+        });
+    })
 })
 
 // needs server side processing to anonymise the betting users before being sent back to the user
 // otherwise the user can see who has bet what amount of any kind
 router.post('/getTestBets', (req, res, next) => {
-
-    newBet = new testBetsFinished({
-        user_name: "yuppausername",
-        title: "a good title",
-        type: "multi",
-        side: null,
-        deadline: "tomrorrow",
-        firstPlaceCut: 0.5,
-        secondPlaceCut: 0.25,
-        thirdPlaceCut: 0.25,
-        forTotal: 0,
-        againstTotal: 0,
-        result: 15,
-        commonTotal: 230,
-        tester: "chese"
-    });
-
-    newBet.save((err) => {
-        if (err) {
-            console.log(err);
-        }
-    })
-
     utilFuncs.getBets().then((data) => {
         if (data) {
             utilFuncs.anonymiseBetData(data).then((response) => {
