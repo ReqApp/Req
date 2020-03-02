@@ -421,29 +421,72 @@ router.post('/betOn', (req, res, next) => {
     })
 });
 
-// router.post('/endBigButtonBet', (req, res, next) => {
-//     // A secret is defined in the env which is sent to validate
-//     // that it is the Req account finalising the bet.
-//     if (req.body.secret) {
-//         if (req.body.secret === process.env.ReqSecret) {
-//             res.status(200).json({
-//                 "status": "success",
-//                 "body": "Big button presss ended"
-//             });
-//         } else {
-//             res.status(400).json({
-//                 "status": "error",
-//                 "body": "You are not authorised to do this"
-//             });
-//         }
-//     } else {
-//         res.status(400).json({
-//             "status": "error",
-//             "body": "Invalid input"
-//         });
-//     }
+router.post('/endBigButtonBet', (req, res, next) => {
+    // A secret is defined in the env which is sent to validate
+    // that it is the Req account finalising the bet.
+    let inputObj = {
+        "betID":req.body.betID,
+        "result":req.body.result,
+    }
 
-// });
+    if (req.body.secret) {
+        if (req.body.secret === process.env.ReqSecret) {
+
+            if (utillFuncs.valdate(req.body.betID, "id") && 
+                utilFuncs.validate(req.body.result, "result")) {
+                    utilFuncs.isValidBetID(req.body.betID).then((validBetID) => {
+                        if (isValidBetID) {
+                            utilFuncs.decideBet(inputObj).then((success) => {
+                                if (success) {
+                                    console.log(`Bet #${inputObj.betID} finished`);
+                                    res.status(200).json({
+                                        "status": "success",
+                                        "body": "Bet finished successfully"
+                                    });
+                                } else {
+                                    res.status(400).json({
+                                        "status": "error",
+                                        "body": "Error paying out winnings"
+                                    });
+                                }
+                            }, (err) => {
+                                res.status(400).json({
+                                    "status": "error",
+                                    "body": err
+                                });
+                            })
+                        } else {
+                            res.status(400).json({
+                                "status": "error",
+                                "body": "Invalid bet ID"
+                            }, (err) => {
+                                res.status(400).json({
+                                    "status": "error",
+                                    "body": "Error validating betID"
+                                });
+                            });
+                        }
+                    })
+                }
+
+            res.status(200).json({
+                "status": "success",
+                "body": "Big button presss ended"
+            });
+        } else {
+            res.status(400).json({
+                "status": "error",
+                "body": "You are not authorised to do this"
+            });
+        }
+    } else {
+        res.status(400).json({
+            "status": "error",
+            "body": "Invalid input"
+        });
+    }
+
+});
 
 router.post('/pressBigButton', (req, res, next) => {
     generalFuncs.handleRedButtonPress().then((response) => {
