@@ -257,18 +257,35 @@ function deleteBet(betID) {
 
 function decideBet(inputObj) {
     return new Promise((resolve, reject) => {
+        let expiredBet = false;
         testBets.findOne({ _id: inputObj.betID }, (err, foundBet) => {
             if (err) {
                 reject(err);
             }
             if (foundBet) {
-                // currTime - deadline + a fair bit of time
-                if (new Date().getTime() - (foundBet.deadline + 21600000) >= 0) {
-                    reject("Deadline has been exceeded");
+                // currTime - deadline + 24 hours
+                console.log(new Date().getTime() - (foundBet.deadline + 86400000) >= 0);
+                if (new Date().getTime() - (foundBet.deadline + 86400000) >= 0) {
+                    expiredBet = true;
+                    generalFuncs.getCoins(foundBet.user_name).then((coinAmount) => {
+                        if (coinAmount) {
+                            payOut(foundBet.user_name, -0.01, coinAmount).then((response) => {
+                                if (response) {
+                                    console.log(`Deducted ${response} from ${foundBet.user_name}`);
+                                } else {
+                                    resolve(null);
+                                }
+                            }, (err) => {
+                                reject(err);
+                            });
+                        } else {
+                            resolve(null);
+                        }
+                    });
                 } else {
 
-                    // if there were only bets on one side
-                    if (foundBet.forUsers.length > 0 && foundBet.againstUsers.length == 0) {
+                    // if there was a bet in either for or against and not in the other
+                    if ((foundBet.forUsers.length > 0 && foundBet.againstUsers.length == 0) || expiredBet) {
                         // this was a one sided bet,
                         // give the money back
                         for (bet of foundBet.forUsers) {
@@ -289,7 +306,9 @@ function decideBet(inputObj) {
                         })
                         resolve(null);
                     }
-                    if (foundBet.againstUsers.length > 0 && foundBet.forUsers.length == 0) {
+
+
+                    if ((foundBet.againstUsers.length > 0 && foundBet.forUsers.length == 0) || expiredBet) {
                         for (bet of foundBet.againstUsers) {
                             payOut(bet.user_name,1,bet.betAmount).then((response) => {
                                 if (response) {
@@ -308,6 +327,7 @@ function decideBet(inputObj) {
                         })
                         resolve(null);
                     }
+
 
                     // not expired, dish out the winnings
                     anonymiseBetData([foundBet]).then((betData) => {
@@ -329,16 +349,11 @@ function decideBet(inputObj) {
 
                                         payOut(bet.user_name, payPercentage, betData[0].againstBetTotal).then((response) => {
                                             if (response) {
-                                                console.log(`Paid out ${Math.floor(response) } successfully`);
+                                                console.log(`Paid out ${Math.floor(response) } to ${bet.user_name} successfully`);
                                             } else {
                                                 console.log(`Paid out 0 unsuccessfully`);
                                             }
 
-                                            // console.log(`passing in:`);
-                                            // console.log(foundBet.againstUsers);
-                                            // console.log(`\n`);
-                                            // console.log(foundBet.forUsers);
-                                            console.log(`\n\n`)
                                             addBetToFinishedDB(foundBet, foundBet.forUsers, foundBet.againstUsers, betData[0]).then((added) => {
                                                 if (added) {
                                                     console.log(`Added bet to finished DB`);
@@ -373,6 +388,7 @@ function decideBet(inputObj) {
                             if (inputObj.result === "no") {
                                 // if no wins
                                 if (foundBet.againstUsers.length > 0) {
+
                                     for (bet of foundBet.againstUsers) {
 
                                         let payPercentage = (bet.betAmount / parseInt(betData[0].againstBetTotal, 10));
@@ -382,9 +398,7 @@ function decideBet(inputObj) {
                                             } else {
                                                 console.log(`Paid out 0 unsuccessfully`);
                                             }
-                                            console.log(`passing in:`);
-                                            console.log(foundBet.againstUsers);
-                                            console.log(foundBet.forUsers);
+
                                             addBetToFinishedDB(foundBet, foundBet.againstUsers, foundBet.forUsers, betData[0]).then((added) => {
                                                 if (!added) {
                                                     reject("Couldn't save bet to finished DB");
@@ -414,6 +428,8 @@ function decideBet(inputObj) {
                                     resolve(null);
                                 }
                             }
+
+
                         } else if (foundBet.type === "multi") {
                             // if there were any bets at all, pay out to them
                             if (foundBet.commonBets.length > 0) {
@@ -576,16 +592,6 @@ function addBetToFinishedDB(betInfo, winners, losers, betSummary) {
         let winnersArr = []
         let losersArr = []
 
-        // console.log(`\n`);
-        // console.log(betInfo)
-        // console.log(`\n`);
-        // console.log(winners);
-        // console.log(`\n`);
-        // console.log(losers);
-        // console.log(`\n`);
-        // console.log(betSummary);
-        // console.log(`\n`);
-        
         if (betInfo.type === "multi") {
             // only show top 3 if it was a mutli bet since
             // only they got a money payout
@@ -606,8 +612,6 @@ function addBetToFinishedDB(betInfo, winners, losers, betSummary) {
                 losersArr.push(lose);
             }
         }
-
-        console.log(`bet summary ${betSummary}`)
 
         newBet = new testBetsFinished({
             user_name: betInfo.user_name,
@@ -690,19 +694,19 @@ function makeArticleBet(input, username) {
 
 function resetPassword(email, newPassword) {
     return new Promise((resolve, reject) => {
-        User.findOne({ email: email }, (err, theUser) => {
+        User.findOne({ email: email }, (err, foundUser) => {
             if (err) {
                 res.send(err);
             }
-            if (theUser) {
-                theUser.password = theUser.generateHash(newPassword);
-                theUser.save((err) => {
+            if (foundUUser) {
+                foundUser.password = foundUser.generateHash(newPassword);
+                foundUser.save((err) => {
                     if (err) {
                         res.send(err);
                         reject(Error(err));
                     } else {
                         console.log("password changed");
-                        resolve(theUser.user_name);
+                        resolve(foundUser.user_name);
                     }
                 });
             }
@@ -762,6 +766,7 @@ function anonymiseBetData(allBets) {
                     againstBetTotal: againstTotal
                 }
                 betArr.push(tempBet);
+                
             } else if (indivBet.type === "multi") {
 
                 if (indivBet.commonBets.length > 0) {
@@ -802,6 +807,7 @@ function createBet(input) {
     return new Promise((resolve, reject) => {
         if (input.type === "binary") {
             if (input.title && input.side && input.deadline && input.username) {
+
                 let newBet = new testBets();
     
                 newBet.title = input.title;
@@ -822,6 +828,7 @@ function createBet(input) {
                 resolve(false);
             }
         } else if (input.type === "multi") {
+
             if (input.title && input.deadline && input.username && input.firstPlaceCut &&
                 input.secondPlaceCut && input.thirdPlaceCut) {
                 let newBet = new testBets();
@@ -846,7 +853,6 @@ function createBet(input) {
                 resolve(false);
             }   
         } else {
-            console.log("wasnt multi or binary")
             reject("Invalid bet type");
         }
     })
@@ -892,7 +898,6 @@ function sendEmail(email, subject, body) {
         const spawn = require("child_process").spawn;
         const pythonProcess = spawn('python3', ["emailService/sendEmail.py", email, subject, body]);
         pythonProcess.stdout.on('data', (data) => {
-            // console.log(data.toString());
             resolve()
         });
         pythonProcess.stderr.on('data', (data) => {

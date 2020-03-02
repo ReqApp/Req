@@ -582,7 +582,7 @@ describe("============= Betting =============", () => {
                     done();
                 });
         }),
-        it("Invalid cut percentages", done => {
+        it("Invalid input", done => {
             chai
                 .request(app)
                 .post("/bets/makeBet")

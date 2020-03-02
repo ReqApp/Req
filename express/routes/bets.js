@@ -229,7 +229,6 @@ router.put('/addMultBetsToRegion', function(req, res, next) {
             res.json(betRegion);
         }
     });
-
 });
 
 router.post('/makeBet', (req, res, next) => {
@@ -238,6 +237,7 @@ router.post('/makeBet', (req, res, next) => {
     const secondPlaceCut = parseFloat(req.body.secondPlaceCut);
     const thirdPlaceCut = parseFloat(req.body.thirdPlaceCut);
 
+    // if it's a multi type bet it must allocate the betting percentages
     if ( req.body.type === "multi" && (isNaN(firstPlaceCut) || isNaN(secondPlaceCut) || isNaN(thirdPlaceCut))) {
         res.status(400).json({
             "status":"error",
@@ -262,45 +262,31 @@ router.post('/makeBet', (req, res, next) => {
         }
     
         if ( req.body.type === "multi" && (firstPlaceCut + secondPlaceCut + thirdPlaceCut) != 1) {
+            // The percentage payouts must add up to 100%
             res.status(400).json({
                 "status":"error",
                 "body":"Payout percentages don't add up to 100%"
             })
 
         } else {
-            utilFuncs.hasEnoughCoins(req.body.username, 0).then((data) => {
-                if (data) {
-                    utilFuncs.createBet(inputObj).then((response) => {
-                        if (response) {
-                            res.status(200).json({
-                                "status": "success",
-                                "body": "Bet made!"
-                            });
-                        } else {
-                            res.status(400).json({
-                                "status": "error",
-                                "body": `No response, bet was not made`
-                            });
-                        }
-                    }, (err) => {
-                        res.status(400).json({
-                            "status": "err",
-                            "body": `Error: Bet was not made. ${err}`
-                        });
-                    })
+            utilFuncs.createBet(inputObj).then((response) => {
+                if (response) {
+                    res.status(200).json({
+                        "status": "success",
+                        "body": "Bet made!"
+                    });
                 } else {
-                    console.log(`${inputObj.username} doesn't have enough coins`);
                     res.status(400).json({
                         "status": "error",
-                        "body": "Not enough coins"
+                        "body": `No response, bet was not made`
                     });
                 }
             }, (err) => {
                 res.status(400).json({
-                    "status": "error",
-                    "body": "Error retrieving coin amount"
+                    "status": "err",
+                    "body": `Error: Bet was not made. ${err}`
                 });
-            });
+            })
         }
      } else {
          res.status(400).json({
@@ -339,7 +325,6 @@ router.post('/decideBet', (req, res, next) => {
                         });
                     }
                 }, (err) => {
-                    console.log(`err in decide bet ${err}`);
                     res.status(400).json({
                         "status": "error",
                         "body": err
