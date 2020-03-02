@@ -25,13 +25,14 @@ class ExampleBet extends React.Component{
         let url = window.location.href;
         if(url.includes('localhost')){
             this.socket.emit('servedQR', "https://goolnk.com/BZY3XX");
-        }else{
-            fetch('https://goolnk.com/api/v1/shorten', {
+        }else{4
+            // TODO change before deploying to AWS
+            fetch('http://localhost:9000/shortenLink', {
                 method: 'POST',
                 body: 'url=' + url
             }).then((res) => {
                 console.log("Emit sent");
-                this.socket.emit('servedQR', res);
+                this.socket.emit('servedQR', res.url);
             }, (err) => {
                 console.log(err);
             });

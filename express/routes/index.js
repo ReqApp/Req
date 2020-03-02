@@ -116,33 +116,33 @@ router.post('/shortenLink', (req, res, next) => {
 })
 
 router.post('/getCoins', (req, res, next) => {
-    utilFunc.isSignedIn(req.cookies).then((data) => {
-        if (data) {
-            getCoins(data.user_name).then((data) => {
-                if (data || data == "0") {
-                    res.status(200).json({
-                        "status": "information",
-                        "body": data
-                    });
-                } else {
-                    res.status(400).json({
-                        "status": "error",
-                        "body": "Error getting coins"
-                    });
-                }
-            }).catch((err) => {
+    // change in future to take in a jwt and get coins from that,
+    // dont want people to be able to view other people's coin amounts
+    if (req.body.user_name) {
+        generalFuncs.getCoins(req.body.user_name).then((data) => {
+            if (data || data == "0") {
+                res.status(200).json({
+                    "status": "information",
+                    "body": data
+                });
+            } else {
                 res.status(400).json({
                     "status": "error",
-                    "body": err
+                    "body": "Error getting coins"
                 });
-            })
-        } else {
+            }
+        }).catch((err) => {
             res.status(400).json({
                 "status": "error",
-                "body": "Invalid jwt"
+                "body": err
             });
-        }
-    })
+        })
+    } else {
+        res.status(400).json({
+            "status": "error",
+            "body": "No username given"
+        });
+    }
 });
 
 

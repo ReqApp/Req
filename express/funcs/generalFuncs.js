@@ -35,5 +35,6 @@ function getCoins(username) {
         });
     });
 }
+
 module.exports.getCoins = getCoins;
 module.exports.getProfilePicture = getProfilePicture;
