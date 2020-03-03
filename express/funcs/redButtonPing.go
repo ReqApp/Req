@@ -19,7 +19,7 @@ func getLoginSecret() string {
 
 func sendErrorEmail(errMessage string) {
 	reqSecret := getLoginSecret()
-	_, err := http.PostForm("http://localhost:9000/tasks/sendEmail", url.Values{"secret": {reqSecret}, "errorMessage": {errMessage}})
+	_, err := http.PostForm("http://localhost:9000/tasks/sendEmail", url.Values{"secret": {reqSecret}, "subject": {"Error finalising big red button bet"}, "errorMessage": {errMessage}})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,5 +33,4 @@ func main() {
 		sendErrorEmail("Error reaching API endpoint /bets/endBigButtonBet")
 		return
 	}
-
 }

@@ -541,7 +541,8 @@ function decideBet(inputObj) {
     
                                 });
                             } else {
-                                // There were no bets  placed
+                                // possibly penalise the person because there were none
+                                // There were no bets  placed. Dont add to finished DB
                                 deleteBet(inputObj.betID).then((response) => {
                                     if (response) {
                                         resolve(true);
@@ -551,7 +552,6 @@ function decideBet(inputObj) {
                                 })
                                 resolve(true);
                             }
-                          
                         } else {
                             reject("Incorrect bet type given");
                         }

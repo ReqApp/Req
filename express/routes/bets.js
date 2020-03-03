@@ -435,7 +435,7 @@ router.post('/endBigButtonBet', (req, res, next) => {
             if (utillFuncs.valdate(req.body.betID, "id") && 
                 utilFuncs.validate(req.body.result, "result")) {
                     utilFuncs.isValidBetID(req.body.betID).then((validBetID) => {
-                        if (isValidBetID) {
+                        if (validBetID) {
                             utilFuncs.decideBet(inputObj).then((success) => {
                                 if (success) {
                                     console.log(`Bet #${inputObj.betID} finished`);
@@ -468,11 +468,6 @@ router.post('/endBigButtonBet', (req, res, next) => {
                         }
                     })
                 }
-
-            res.status(200).json({
-                "status": "success",
-                "body": "Big button presss ended"
-            });
         } else {
             res.status(400).json({
                 "status": "error",
