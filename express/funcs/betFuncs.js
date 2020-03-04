@@ -459,15 +459,15 @@ function decideBet(inputObj) {
                                                     })
 
                                                   // if paid out anything or nothing, still delete the bet
-                                            // deleteBet(inputObj.betID).then((response) => {
-                                            //     if (response) {
-                                            //         resolve(true);
-                                            //     } else {
-                                            //         resolve(null);
-                                            //     }
-                                            // }, (err) => {
-                                            //     reject(err);
-                                            // })
+                                            deleteBet(inputObj.betID).then((response) => {
+                                                if (response) {
+                                                    resolve(true);
+                                                } else {
+                                                    resolve(null);
+                                                }
+                                            }, (err) => {
+                                                reject(err);
+                                            })
                                                     resolve(true);
                                                 } else {
                                                     console.log(`Error paying out ${response} to ${sortedAnswers[0].user_name} [no other bets]`);
@@ -525,15 +525,15 @@ function decideBet(inputObj) {
                                             });
 
                                             // if paid out anything or nothing, still delete the bet
-                                            // deleteBet(inputObj.betID).then((response) => {
-                                            //     if (response) {
-                                            //         resolve(true);
-                                            //     } else {
-                                            //         resolve(null);
-                                            //     }
-                                            // }, (err) => {
-                                            //     reject(err);
-                                            // })
+                                            deleteBet(inputObj.betID).then((response) => {
+                                                if (response) {
+                                                    resolve(true);
+                                                } else {
+                                                    resolve(null);
+                                                }
+                                            }, (err) => {
+                                                reject(err);
+                                            })
 
 
                                             resolve(true);

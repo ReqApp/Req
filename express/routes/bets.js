@@ -425,7 +425,7 @@ router.post('/bigButtonBet', (req, res, next) => {
     // A secret is defined in the env which is sent to validate
     // that it is the Req account finalising or starting a big red button bet
 
-    if (req.body.secret) {
+    if (req.body.secret) {3
         if (req.body.secret === process.env.ReqSecret) {            
                 if (req.body.action === "end") {
                     generalFuncs.getBigButtonCurrentID().then((betID) => {
@@ -440,11 +440,18 @@ router.post('/bigButtonBet', (req, res, next) => {
                             if (validBetID) {
                                 utilFuncs.decideBet(inputObj).then((success) => {
                                     if (success) {
-                                        console.log(`Bet #${inputObj.betID} finished`);
-                                        res.status(200).json({
-                                            "status": "success",
-                                            "body": "Bet finished successfully"
-                                        });
+                                        generalFuncs.resetBigButtonPress().then(() => {
+                                            console.log(`Bet #${inputObj.betID} finished`);
+                                            res.status(200).json({
+                                                "status": "success",
+                                                "body": "Bet finished successfully"
+                                            });
+                                        },(err) => {
+                                            res.status(400).json({
+                                                "status": "error",
+                                                "body": err
+                                            });
+                                        })
                                     } else {
                                         res.status(400).json({
                                             "status": "error",
@@ -551,7 +558,7 @@ router.post('/bigButtonBet', (req, res, next) => {
 });
 
 router.post('/pressBigButton', (req, res, next) => {
-    generalFuncs.handleRedButtonPress().then((response) => {
+    generalFuncs.handleBigButtonPress().then((response) => {
         if (response) {
             console.log(response);
             res.status(200).json({
