@@ -1,4 +1,4 @@
-import React, {createRef, Component} from 'react';
+import React, { createRef, Component } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import FindLocationBets from './LocationBettingPage/findLocationBets.js';
@@ -6,14 +6,15 @@ import FindLocationBets from './LocationBettingPage/findLocationBets.js';
 //import HomePage from './samples.js'
 
 ReactDOM.render(
-    //<HomePage />,
-    <FindLocationBets />,
-    document.getElementById('root')
-)
-/*
-import App from './App';
-import * as serviceWorker from './serviceWorker';
-*/
+        //<HomePage />,
+        <
+        FindLocationBets / > ,
+        document.getElementById('root')
+    )
+    /*
+    import App from './App';
+    import * as serviceWorker from './serviceWorker';
+    */
 
 //ReactDOM.render(<App />, document.getElementById('root'));
 

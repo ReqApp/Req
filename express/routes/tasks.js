@@ -1,6 +1,7 @@
+const utilFuncs = require('../funcs/betFuncs');
 var express = require('express');
 var router = express.Router();
-const axios = require("axios")
+const axios = require("axios");
 const multer = require('multer');
 const imgur = require('imgur');
 const fs = require('fs');
@@ -134,6 +135,30 @@ function uploadToImgur(filePath) {
         });
     })
 }
+
+router.post('/sendEmail', (req, res, next) => {
+    // used for sending important error messages from automated scripts like big red button betting
+    // in email to the apps email so errors are logged in a simple form. Otherwise they'd be lost in the 
+    // console
+    if (req.body.secret === process.env.ReqSecret) {
+        utilFuncs.sendEmail("reqnuig@gmail.com", req.body.subject, req.body.errorMessage).then(() => {
+            res.status(200).json({
+                "status":"success",
+                "body": "error email sent"
+            });
+        }, (err) => {
+            res.status(200).json({
+                "status":"err",
+                "body": err
+            });
+        });
+    } else {
+        res.status(400).json({
+            "status":"error",
+            "body":"You are not authorised to do this"
+        });
+    }
+})
 
 
 module.exports = router;

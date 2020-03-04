@@ -1,4 +1,6 @@
 var BetRegion = require('../models/bettingRegions');
+var testBetsFinished = require('../models/testBetsFinished');
+var generalFuncs = require("../funcs/generalFuncs");
 var articleBet = require('../models/articleBets');
 const utilFuncs = require('../funcs/betFuncs');
 var calcDistance = require('./calcDistance');
@@ -7,8 +9,6 @@ var router = require('express').Router();
 var Bet = require('../models/betData');
 var User = require('../models/users');
 var mongoose = require('mongoose');
-var jwt = require('jsonwebtoken');
-var util = require('util');
 
 /**
  * <-------------------------------------------------------------------->
@@ -220,78 +220,72 @@ router.put('/addMultBetsToRegion', function(req, res, next) {
             res.json(betRegion);
         }
     });
-
 });
 
 router.post('/makeBet', (req, res, next) => {
 
-    const firstPlace = parseFloat(req.body.firstPlace);
-    const secondPlace = parseFloat(req.body.secondPlace);
-    const thirdPlace = parseFloat(req.body.thirdPlace);
+    const firstPlaceCut = parseFloat(req.body.firstPlaceCut);
+    const secondPlaceCut = parseFloat(req.body.secondPlaceCut);
+    const thirdPlaceCut = parseFloat(req.body.thirdPlaceCut);
 
-    if (isNaN(firstPlace) || isNaN(secondPlace) || isNaN(thirdPlace)) {
+    // if it's a multi type bet it must allocate the betting percentages
+    if ( req.body.type === "multi" && (isNaN(firstPlaceCut) || isNaN(secondPlaceCut) || isNaN(thirdPlaceCut))) {
         res.status(400).json({
             "status":"error",
-            "body":"Invlid bet percentages entered"
+            "body":"Invalid bet percentages entered"
         })
     } else {
-        console.log(firstPlace, secondPlace, thirdPlace);
+
+        if ( (req.body.type && req.body.type && req.body.title && req.body.deadline && req.body.username ) ||
+            (req.body.type && req.body.title && req.body.deadline && req.body.deadline && 
+            req.body.firstPlaceCut && req.body.secondPlaceCut && req.body.thirdPlaceCut)) {
+                // bet has input parameters for either a binary or multi bet
+
         let inputObj = {
             "type": req.body.type,
             "side": req.body.side,
             "title": req.body.title,
-            "amount": req.body.amount,
             "deadline": req.body.deadline,
             "username": req.body.username,
-            "firstPlace": firstPlace,
-            "secondPlace": secondPlace,
-            "thirdPlace": thirdPlace
+            "firstPlaceCut": firstPlaceCut,
+            "secondPlaceCut": secondPlaceCut,
+            "thirdPlaceCut": thirdPlaceCut
         }
     
-        if ((firstPlace + secondPlace + thirdPlace) != 1) {
+        if ( req.body.type === "multi" && (firstPlaceCut + secondPlaceCut + thirdPlaceCut) != 1) {
+            // The percentage payouts must add up to 100%
             res.status(400).json({
                 "status":"error",
                 "body":"Payout percentages don't add up to 100%"
             })
+
         } else {
-            utilFuncs.hasEnoughCoins(req.body.username, 0).then((data) => {
-                if (data) {parseInt
-                    utilFuncs.createBet(inputObj).then((response) => {
-                        if (response) {
-                            res.status(200).json({
-                                "status": "success",
-                                "body": "Bet made!"
-                            });
-                        } else {
-                            res.status(400).json({
-                                "status": "error",
-                                "body": "Bet not made no res"
-                            });
-                        }
-                    }, (err) => {
-                        console.log(err);
-                        res.status(400).json({
-                            "status": "err",
-                            "body": "ERR Bet not made"
-                        });
-                    })
+            utilFuncs.createBet(inputObj).then((response) => {
+                if (response) {
+                    res.status(200).json({
+                        "status": "success",
+                        "body": "Bet made!"
+                    });
                 } else {
-                    console.log(`${inputObj.username} doesn't have enough coins`);
                     res.status(400).json({
                         "status": "error",
-                        "body": "Not enough coins"
+                        "body": `No response, bet was not made`
                     });
                 }
             }, (err) => {
-                console.log(err);
                 res.status(400).json({
-                    "status": "error",
-                    "body": "Error retrieving coin amount"
+                    "status": "err",
+                    "body": `Error: Bet was not made. ${err}`
                 });
-            });
+            })
         }
+     } else {
+         res.status(400).json({
+             "status":"error",
+             "body":"Invalid input"
+         });
+     }
     }
-
 });
 
 router.post('/decideBet', (req, res, next) => {
@@ -301,6 +295,7 @@ router.post('/decideBet', (req, res, next) => {
         "result": req.body.result,
         "accessToken": req.cookies.Authorization
     }
+
     if (utilFuncs.validate(req.body.betID, "id") &&
         utilFuncs.validate(req.body.result, "result")) {
 
@@ -317,7 +312,7 @@ router.post('/decideBet', (req, res, next) => {
                         console.log(`Bet #${inputObj.betID} unsuccessful`);
                         res.status(400).json({
                             "status": "error",
-                            "body": "error paying out"
+                            "body": "Error paying out winnings"
                         });
                     }
                 }, (err) => {
@@ -414,12 +409,170 @@ router.post('/betOn', (req, res, next) => {
             "body": "Error validating bet ID"
         });
     })
+});
+
+router.post('/bigButtonBet', (req, res, next) => {
+    // A secret is defined in the env which is sent to validate
+    // that it is the Req account finalising or starting a big red button bet
+
+    if (req.body.secret) {3
+        if (req.body.secret === process.env.ReqSecret) {            
+                if (req.body.action === "end") {
+                    generalFuncs.getBigButtonCurrentID().then((betID) => {
+                        let inputObj = {
+                            "betID": betID,
+                            "result":req.body.result,
+                            "action":req.body.action
+                        }
+
+                    if (utilFuncs.validate(inputObj.result, "result")) {
+                        utilFuncs.isValidBetID(inputObj.betID).then((validBetID) => {
+                            if (validBetID) {
+                                utilFuncs.decideBet(inputObj).then((success) => {
+                                    if (success) {
+                                        generalFuncs.resetBigButtonPress().then(() => {
+                                            console.log(`Bet #${inputObj.betID} finished`);
+                                            res.status(200).json({
+                                                "status": "success",
+                                                "body": "Bet finished successfully"
+                                            });
+                                        },(err) => {
+                                            res.status(400).json({
+                                                "status": "error",
+                                                "body": err
+                                            });
+                                        })
+                                    } else {
+                                        res.status(400).json({
+                                            "status": "error",
+                                            "body": "Error paying out winnings"
+                                        });
+                                    }
+                                }, (err) => {
+                                    res.status(400).json({
+                                        "status": "error",
+                                        "body": err
+                                    });
+                                })
+                            } else {
+                                console.log("invalid bet id")
+                                res.status(400).json({
+                                    "status": "error",
+                                    "body": "Invalid bet ID"
+                                }, (err) => {
+                                    res.status(400).json({
+                                        "status": "error",
+                                        "body": "Error validating betID"
+                                    });
+                                });
+                            }
+                        })
+                    } else {
+                        res.status(400).json({
+                            "status": "error",
+                            "body": "Invalid input"
+                        });
+                    }
+
+                    }, (err) => {
+                        res.status(400).json({
+                            "status": "error",
+                            "body": "Error reading betID"
+                        });
+                    })
+                   
+                } else if (req.body.action === "start") {
+                    const today = new Date();
+                    let tomorrow = new Date(today);
+                    tomorrow.setDate(tomorrow.getDate() + 1)
+
+                    let inputObj = {
+                        "type": "multi",
+                        "side": null,
+                        "title": "How many times will the big red button be pressed today?",
+                        "deadline": tomorrow.getTime(),
+                        "username": "Req",
+                        "firstPlaceCut": 0.85,
+                        "secondPlaceCut": 0.1,
+                        "thirdPlaceCut": 0.05
+                    }
+
+                    utilFuncs.createBet(inputObj).then((response) => {
+                        if (response) {
+                            generalFuncs.writeBigButtonCurrentID(response._id).then((success) => {
+                                if (success) {
+                                    res.status(200).json({
+                                        "status": "success",
+                                        "body": "Big red button bet Bet made!",
+                                        "betID": response._id
+                                    });
+                                } else {
+                                    res.status(400).json({
+                                        "status": "err",
+                                        "body": `Error writing betID to file`
+                                    });
+                                }
+                            }, (err) => {
+                                res.status(400).json({
+                                    "status": "err",
+                                    "body": `Error reading from bigButtonID file`
+                                });
+                            })
+                        } else {
+                            res.status(400).json({
+                                "status": "error",
+                                "body": `No response, big red button bet was not made`
+                            });
+                        }
+                    }, (err) => {
+                        res.status(400).json({
+                            "status": "err",
+                            "body": `Error: big red button bet was not made. ${err}`
+                        });
+                    })
+
+                }
+        } else {
+            res.status(400).json({
+                "status": "error",
+                "body": "You are not authorised to do this"
+            });
+        }
+    } else {
+        res.status(400).json({
+            "status": "error",
+            "body": "Invalid input"
+        });
+    }
+
+});
+
+router.post('/pressBigButton', (req, res, next) => {
+    generalFuncs.handleBigButtonPress().then((response) => {
+        if (response) {
+            console.log(response);
+            res.status(200).json({
+                "status": "success",
+                "body": "Big red button pressed"
+            });
+        } else {
+            res.status(400).json({
+                "status": "error",
+                "body": "Error pressing big red button"
+            });
+        }
+
+    }, (err) => {
+        res.status(400).json({
+            "status": "error",
+            "body": "Error pressing big red button"
+        });
+    })
 })
 
 // needs server side processing to anonymise the betting users before being sent back to the user
 // otherwise the user can see who has bet what amount of any kind
 router.post('/getTestBets', (req, res, next) => {
-
     utilFuncs.getBets().then((data) => {
         if (data) {
             utilFuncs.anonymiseBetData(data).then((response) => {

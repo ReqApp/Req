@@ -36,7 +36,8 @@ var usersSchema = new Schema({
         default: 0
     },
     profilePicture: {
-        type: String
+        type: String,
+        default: null
     },
     accessToken: String
 });

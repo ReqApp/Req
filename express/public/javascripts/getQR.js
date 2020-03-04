@@ -3,7 +3,7 @@ var io = io();
 
 function hidePopup() {
     let popup = document.getElementById("QRPopup");
-    popup.style.visibility = "hidden"
+    popup.style.visibility = "hidden";  
 }
 
 function getShortenedLink(url) {

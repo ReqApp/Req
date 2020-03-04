@@ -1,8 +1,12 @@
 var articleBet = require('../models/articleBets');
 const utilFuncs = require('../funcs/betFuncs');
 var express = require('express');
+var config = require('./config');
+var twitter = require('twitter');
 var router = express.Router();
+const axios = require("axios");
 var User = require('../models/users');
+var generalFuncs = require('../funcs/generalFuncs');
 var jwt = require('jsonwebtoken');
 
 /* GET home page. */
@@ -86,58 +90,124 @@ router.get('/members', (req, res, next) => {
     }
 });
 
-router.post('/getCoins', (req, res, next) => {
-    utilFunc.isSignedIn(req.cookies).then((data) => {
-        if (data) {
-            getCoins(data.user_name).then((data) => {
-                if (data || data == "0") {
-                    res.status(200).json({
-                        "status": "information",
-                        "body": data
-                    });
-                } else {
-                    res.status(400).json({
-                        "status": "error",
-                        "body": "Error getting coins"
-                    });
-                }
-            }).catch((err) => {
-                res.status(400).json({
-                    "status": "error",
-                    "body": err
-                });
-            })
-        } else {
-            res.status(400).json({
-                "status": "error",
-                "body": "Invalid jwt"
-            });
+router.post('/sendTweet', (req, res, next) => {
+    var T = new twitter(config);
+
+        // Set up your search parameters
+        var params = {
+            q: '#galway',
+            count: 10,
+            result_type: 'recent',
+            lang: 'en'
         }
-    })
+        
+        // Initiate your search using the above paramaters
+        T.get('search/tweets', params, function(err, data, response) {
+            // If there is no error, proceed
+            if(!err){
+            // Loop through the returned tweets
+            for(let i = 0; i < data.statuses.length; i++){
+                // Get the tweet Id from the returned data
+                let id = { id: data.statuses[i].id_str }
+                // Try to Favorite the selected Tweet
+                T.post('favorites/create', id, function(err, response){
+                // If the favorite fails, log the error message
+                if(err){
+                    console.log(err[0].message);
+                }
+                // If the favorite is successful, log the url of the tweet
+                else{
+                    let username = response.user.screen_name;
+                    let tweetId = response.id_str;
+                    console.log('Favorited: ', `https://twitter.com/${username}/status/${tweetId}`)
+                }
+                });
+            }
+            } else {
+            console.log(err);
+            }
+        })
 });
 
+router.post('/shortenLink', (req, res, next) => {
+    if (req.body.url) {
+        axios({
+            method: 'POST',
+            url: "https://goolnk.com/api/v1/shorten",
+            data: {
+                "url": req.body.url
+            }
+        }).then((response) => {
+            res.status(200).send({
+                "status": "success",
+                "body": response.data.result_url
+            });
+        }, (err) => {
+            res.status(400).send({
+                "status": "error",
+                "body": "Couldn't shorten link"
+            });
+        })
+    } else {
+        res.status(400).send({
+            "status": "error",
+            "body": "No url given"
+        });
+    }
+})
 
-router.post('/createArticleBet', (req, res, next) => {
-    
-        utilFuncs.makeArticleBet(req.body, req.body.user_name).then((response) => {
-            if (response) {
-                console.log(`Response: ${response}`);
+router.post('/getCoins', (req, res, next) => {
+    // change in future to take in a jwt and get coins from that,
+    // dont want people to be able to view other people's coin amounts
+    if (req.body.user_name) {
+        generalFuncs.getCoins(req.body.user_name).then((data) => {
+            if (data || data == "0") {
                 res.status(200).json({
                     "status": "information",
-                    "body": response
+                    "body": data
                 });
             } else {
                 res.status(400).json({
                     "status": "error",
-                    "body": "Invalid input"
+                    "body": "Error getting coins"
                 });
             }
-        }, (err) => {
+        }).catch((err) => {
             res.status(400).json({
                 "status": "error",
                 "body": err
             });
+        })
+    } else {
+        res.status(400).json({
+            "status": "error",
+            "body": "No username given"
         });
+    }
+});
+
+
+router.post('/createArticleBet', (req, res, next) => {
+
+    utilFuncs.makeArticleBet(req.body, req.body.user_name).then((response) => {
+        if (response) {
+            console.log(`Response: ${response}`);
+            res.status(200).json({
+                "status": "information",
+                "body": response
+            });
+        } else {
+            res.status(400).json({
+                "status": "error",
+                "body": "Invalid input"
+            });
+        }
+    }, (err) => {
+        res.status(400).json({
+            "status": "error",
+            "body": err
+        });
+    });
 });
 
 router.get('/getArticleBets', (req, res, next) => {
