@@ -65,6 +65,12 @@ function validate(input, type) {
             } else {
                 return false;
             }
+        case 'action':
+            if (input == "end" || input === "start") {
+                return true;
+            } else {
+                return false;
+            }
         case 'url':
             let test2 = conditions.some(el => input.includes(el));
             if (test2) {
@@ -428,8 +434,6 @@ function decideBet(inputObj) {
                                     resolve(null);
                                 }
                             }
-
-
                         } else if (foundBet.type === "multi") {
                             // if there were any bets at all, pay out to them
                             if (foundBet.commonBets.length > 0) {
@@ -841,11 +845,11 @@ function createBet(input) {
                 newBet.secondPlaceCut = input.secondPlaceCut;
                 newBet.thirdPlaceCut = input.thirdPlaceCut;
     
-                newBet.save((err) => {
+                newBet.save((err, bet) => {
                     if (err) {
                         reject(err);
                     } else {
-                        resolve(true);
+                        resolve(bet);
                     }
                 });
     

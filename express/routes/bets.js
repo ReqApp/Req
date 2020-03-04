@@ -421,52 +421,122 @@ router.post('/betOn', (req, res, next) => {
     })
 });
 
-router.post('/endBigButtonBet', (req, res, next) => {
+router.post('/bigButtonBet', (req, res, next) => {
     // A secret is defined in the env which is sent to validate
-    // that it is the Req account finalising the bet.
+    // that it is the Req account finalising or starting a big red button bet
     let inputObj = {
-        "betID":req.body.betID,
+        "betID":"nothing",
         "result":req.body.result,
+        "action":req.body.action
     }
 
     if (req.body.secret) {
-        if (req.body.secret === process.env.ReqSecret) {
+        if (req.body.secret === process.env.ReqSecret) {            
+                if (req.body.action === "end") {
 
-            if (utillFuncs.valdate(req.body.betID, "id") && 
-                utilFuncs.validate(req.body.result, "result")) {
-                    utilFuncs.isValidBetID(req.body.betID).then((validBetID) => {
-                        if (validBetID) {
-                            utilFuncs.decideBet(inputObj).then((success) => {
+                    generalFuncs.getBigButtonCurrentID().then((betID) => {
+                       inputObj.betID = betID;
+
+
+                    if (utilFuncs.validate(inputObj.result, "result")) {
+                        utilFuncs.isValidBetID(inputObj.betID).then((validBetID) => {
+                            if (validBetID) {
+                                utilFuncs.decideBet(inputObj).then((success) => {
+                                    if (success) {
+                                        console.log(`Bet #${inputObj.betID} finished`);
+                                        res.status(200).json({
+                                            "status": "success",
+                                            "body": "Bet finished successfully"
+                                        });
+                                    } else {
+                                        res.status(400).json({
+                                            "status": "error",
+                                            "body": "Error paying out winnings"
+                                        });
+                                    }
+                                }, (err) => {
+                                    res.status(400).json({
+                                        "status": "error",
+                                        "body": err
+                                    });
+                                })
+                            } else {
+                                console.log("invalid bet id")
+                                res.status(400).json({
+                                    "status": "error",
+                                    "body": "Invalid bet ID"
+                                }, (err) => {
+                                    res.status(400).json({
+                                        "status": "error",
+                                        "body": "Error validating betID"
+                                    });
+                                });
+                            }
+                        })
+                    } else {
+                        res.status(400).json({
+                            "status": "error",
+                            "body": "Invalid input"
+                        });
+                    }
+
+                    }, (err) => {
+                        res.status(400).json({
+                            "status": "error",
+                            "body": "Error reading betID"
+                        });
+                    })
+                   
+                } else if (req.body.action === "start") {
+                    const today = new Date();
+                    let tomorrow = new Date(today);
+                    tomorrow.setDate(tomorrow.getDate() + 1)
+
+                    let inputObj = {
+                        "type": "multi",
+                        "side": null,
+                        "title": "How many times will the big red button be pressed today?",
+                        "deadline": tomorrow.getTime(),
+                        "username": "Req",
+                        "firstPlaceCut": 0.85,
+                        "secondPlaceCut": 0.1,
+                        "thirdPlaceCut": 0.05
+                    }
+
+                    utilFuncs.createBet(inputObj).then((response) => {
+                        if (response) {
+                            generalFuncs.writeBigButtonCurrentID(response._id).then((success) => {
                                 if (success) {
-                                    console.log(`Bet #${inputObj.betID} finished`);
                                     res.status(200).json({
                                         "status": "success",
-                                        "body": "Bet finished successfully"
+                                        "body": "Big red button bet Bet made!",
+                                        "betID": response._id
                                     });
                                 } else {
                                     res.status(400).json({
-                                        "status": "error",
-                                        "body": "Error paying out winnings"
+                                        "status": "err",
+                                        "body": `Error writing betID to file`
                                     });
                                 }
                             }, (err) => {
                                 res.status(400).json({
-                                    "status": "error",
-                                    "body": err
+                                    "status": "err",
+                                    "body": `Error reading from bigButtonID file`
                                 });
                             })
                         } else {
                             res.status(400).json({
                                 "status": "error",
-                                "body": "Invalid bet ID"
-                            }, (err) => {
-                                res.status(400).json({
-                                    "status": "error",
-                                    "body": "Error validating betID"
-                                });
+                                "body": `No response, big red button bet was not made`
                             });
                         }
+                    }, (err) => {
+                        res.status(400).json({
+                            "status": "err",
+                            "body": `Error: big red button bet was not made. ${err}`
+                        });
                     })
+
                 }
         } else {
             res.status(400).json({

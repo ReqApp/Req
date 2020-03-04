@@ -57,6 +57,41 @@ function handleRedButtonPress() {
     });
 }
 
+function writeBigButtonCurrentID(betID) {
+    return new Promise((resolve, reject) => {
+        // file paths are from the perspective of app.js???????????? WHY
+        fs.readFile("./logFiles/bigRedButtonID.txt", "utf-8", (err, data) => {
+            if (err) {
+                reject(err);
+            }
+            if (data) {
+                fs.writeFile("./logFiles/bigRedButtonID.txt", betID, (err) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(true);
+                });
+            } else {
+                resolve(null);
+            }
+          });
+    });
+}
+
+function getBigButtonCurrentID(betID) {
+    return new Promise((resolve, reject) => {
+        // file paths are from the perspective of app.js???????????? WHY
+        fs.readFile("./logFiles/bigRedButtonID.txt", "utf-8", (err, data) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(data);
+          });
+    });
+}
+
 module.exports.getCoins = getCoins;
-module.exports.handleRedButtonPress = handleRedButtonPress;
 module.exports.getProfilePicture = getProfilePicture;
+module.exports.handleRedButtonPress = handleRedButtonPress;
+module.exports.getBigButtonCurrentID = getBigButtonCurrentID;
+module.exports.writeBigButtonCurrentID = writeBigButtonCurrentID;
