@@ -415,7 +415,7 @@ router.post('/bigButtonBet', (req, res, next) => {
     // A secret is defined in the env which is sent to validate
     // that it is the Req account finalising or starting a big red button bet
 
-    if (req.body.secret) {3
+    if (req.body.secret) {
         if (req.body.secret === process.env.ReqSecret) {            
                 if (req.body.action === "end") {
                     generalFuncs.getBigButtonCurrentID().then((betID) => {
