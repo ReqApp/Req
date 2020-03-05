@@ -16,25 +16,34 @@ class DisplayMap extends React.Component{
         }
     }
 
+    // TODO write error handlers for inaccurate location
+      // Write handler for geolocation not supported
+
     // On mount gets user location and available bet regions
     componentDidMount(){
       // Check if geolocation available
       if(!this.props.miniMap){
-        if(navigator.geolocation){
-          // Check for accuracy
-          navigator.geolocation.getCurrentPosition((userPosition => {
-            if(userPosition.coords.accuracy > 400){
-              // Set user's location
-              this.setState({hasLocation : true, latlng : {lat : 53.28211, lng : -9.062186}});
-            }else{
-              // Manually set user location for testing
-              this.setState({hasLocation : true, latlng : { lat : userPosition.coords.latitude, lng : userPosition.coords.longitude }});
-            }
-          }));
-        }
-        // Handle geolocation not supported
-        else{
-          console.log("Not supported")
+        if(this.props.accuratePos == null){
+          if(navigator.geolocation){
+            // Check for accuracy
+            navigator.geolocation.getCurrentPosition((userPosition => {
+              if(userPosition.coords.accuracy < 1){
+                // Set user's location
+                this.setState({hasLocation : true, latlng : {lat : 53.28211, lng : -9.062186}});
+              }else{
+                // Manually set user location for testing
+                this.props.error({error : "not-accurate"});
+                //this.setState({hasLocation : true, latlng : { lat : userPosition.coords.latitude, lng : userPosition.coords.longitude }});
+              }
+            }));
+          }
+          // Handle geolocation not supported
+          else{
+            this.props.error({error : "not-supported"});
+            //console.log("Not supported")
+          }
+        }else{
+          this.setState({latlng : this.props.accuratePos});
         }
       }
     }

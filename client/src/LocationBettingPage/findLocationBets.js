@@ -12,6 +12,11 @@ import './findLocationBets.css';
 import matchSorter from 'match-sorter';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import openSocket from 'socket.io-client';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 // Main page for location betting
 class FindBetPage extends React.Component{
@@ -24,6 +29,9 @@ class FindBetPage extends React.Component{
             loadingRegions : true,
             sortBy : "popular",
             showMap : false,
+            accurateLatLng: null,
+            locationError : null,
+            openError : false
         }
         // Material Styles
         this.classes = makeStyles(theme => ({
@@ -35,14 +43,15 @@ class FindBetPage extends React.Component{
         // Setup socket connection to server
         // TODO localhost
         this.socket = openSocket("http://localhost:9000");
-        this.handleGetLocation = this.handleGetLocation.bind(this);
+        this.handleLocationError = this.handleLocationError.bind(this);
+        this.handleErrorClose = this.handleErrorClose.bind(this);
     }
 
     // Load regions on first mout
     componentDidMount(){
         // TODO localhost
         fetch("http://localhost:9000/getBettingRegions?lat=53.28211&lng=-9.062186").then(regions => regions.json()).then(regions => this.setState({loadingRegions : false, betRegions : regions})).catch(err => err);
-        this.socket.on('accurateUserPos', (coords) => console.log(coords));
+        this.socket.on('accurateUserPos', coords => this.setState({accurateLatLng : coords}));
     }
 
     handleSortBySelect = (evt) => {
@@ -68,12 +77,17 @@ class FindBetPage extends React.Component{
         fetch("http://localhost:9000/getBetsInRegion?id=" + id).then(bets => bets.json()).then(bets => this.setState({bets : bets, view : "bets"})).catch(err => err);
     }
 
-    handleGetLocation(){
-        this.socket.emit('requestPosition', 'testUser');
+    handleLocationError = (err) => {
+        console.log(err);
+        this.setState({locationError : err, openError : true});
+    }
+    
+    handleErrorClose(){
+        this.setState({openError : false});
     }
 
     render(){
-        var predictSearch = null;
+        let predictSearch = null;
         if(!this.state.loadingRegions){
             predictSearch = <div className="float-container" style={{ width: 300}} >
                 <Autocomplete
@@ -106,6 +120,24 @@ class FindBetPage extends React.Component{
         return(     
             // Create grid for parts
             <div>
+                <Dialog
+                  open={this.state.openError}
+                  onClose={this.handleErrorClose}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                >
+                  <DialogTitle id="alert-dialog-title">{"Could not find your location"}</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                      Please use app instead
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={this.handleErrorClose} color="primary">
+                      Close
+                    </Button>
+                  </DialogActions>
+                </Dialog>
                 <div className="floating-button">
                     <Fab variant="extended" onClick={() => this.setState({showMap : true})}>
                         <NavigationIcon className={this.classes.extendedIcon} />
@@ -126,14 +158,22 @@ class FindBetPage extends React.Component{
                     </NavDropdown>
                     </Nav>
                     <Form inline>
-                    <Button variant="outline-primary" onClick={this.handleGetLocation}>Get Accurate Location</Button>
+                    <Button variant="outline-primary">Logout</Button>
                     </Form>
                 </Navbar.Collapse>
                 </Navbar>
                 <Container fluid className="main-content">
                     <Row>
                         <Col className="full-map-container">
-                            <DisplayMap miniMap={false} view={this.state.view} data={this.state.betRegions} loading={this.state.loadingRegions} scrollToRegion={this.handleScrollToRegion}/>
+                            <DisplayMap 
+                                miniMap={false} 
+                                view={this.state.view} 
+                                data={this.state.betRegions} 
+                                loading={this.state.loadingRegions} 
+                                scrollToRegion={this.handleScrollToRegion} 
+                                accuratePos={this.state.accurateLatLng} 
+                                error={this.handleLocationError}
+                            />
                         </Col>
                     </Row>
                     <Container>
@@ -170,6 +210,7 @@ class FindBetPage extends React.Component{
         );
     }
 }
+
 
 // Render card for each bet in region
 class BetCards extends React.Component{
