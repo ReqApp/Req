@@ -13,8 +13,10 @@ module.exports = function(io) {
         });
 
         // Used to get accurate user location from mobile app
-        socket.on("retrievedUserPos", (location) => {
+        socket.on('userPosition', (location) => {
             console.log(location);
+            // Send it to react front-end in browser
+            io.sockets.emit('accurateUserPos', location);
         });
 
     });
