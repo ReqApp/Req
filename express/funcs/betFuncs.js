@@ -360,7 +360,7 @@ function decideBet(inputObj) {
                                                 console.log(`Paid out 0 unsuccessfully`);
                                             }
 
-                                            addBetToFinishedDB(foundBet, foundBet.forUsers, foundBet.againstUsers, betData[0]).then((added) => {
+                                            addBetToFinishedDB(foundBet, foundBet.forUsers, foundBet.againstUsers, betData[0], "yes").then((added) => {
                                                 if (added) {
                                                     console.log(`Added bet to finished DB`);
                                                 } else {
@@ -405,7 +405,7 @@ function decideBet(inputObj) {
                                                 console.log(`Paid out 0 unsuccessfully`);
                                             }
 
-                                            addBetToFinishedDB(foundBet, foundBet.againstUsers, foundBet.forUsers, betData[0]).then((added) => {
+                                            addBetToFinishedDB(foundBet, foundBet.againstUsers, foundBet.forUsers, betData[0], "no").then((added) => {
                                                 if (!added) {
                                                     reject("Couldn't save bet to finished DB");
                                                 }
@@ -413,16 +413,16 @@ function decideBet(inputObj) {
                                                 reject(err);
                                             })
 
-                                           // if paid out anything or nothing, still delete the bet
-                                        //    deleteBet(inputObj.betID).then((response) => {
-                                        //     if (response) {
-                                        //         resolve(true);
-                                        //     } else {
-                                        //         resolve(null);
-                                        //     }
-                                        // }, (err) => {
-                                        //     reject(err);
-                                        // })
+                                        //    if paid out anything or nothing, still delete the bet
+                                           deleteBet(inputObj.betID).then((response) => {
+                                            if (response) {
+                                                resolve(true);
+                                            } else {
+                                                resolve(null);
+                                            }
+                                        }, (err) => {
+                                            reject(err);
+                                        })
                                             resolve(true);
                                         }, (err) => {
                                             reject(err);
@@ -448,7 +448,7 @@ function decideBet(inputObj) {
                                                 if (response) {
                                                     console.log(`Paid out ${response} to ${sortedAnswers[0].user_name} successfully [no other bets]`);
                                                     
-                                                    addBetToFinishedDB(foundBet, sortedAnswers, sortedAnswers, betData[0]).then((added) => {
+                                                    addBetToFinishedDB(foundBet, sortedAnswers, sortedAnswers, betData[0], inputObj.result).then((added) => {
                                                         if (added) {
                                                             console.log(`Added bet to finished DB`);
                                                         } else {
@@ -513,7 +513,7 @@ function decideBet(inputObj) {
                                             })
 
 
-                                            addBetToFinishedDB(foundBet, sortedAnswers, sortedAnswers, betData[0]).then((added) => {
+                                            addBetToFinishedDB(foundBet, sortedAnswers, sortedAnswers, betData[0],inputObj.result ).then((added) => {
                                                 if (added) {
                                                     console.log(`Added bet to finished DB`);
                                                 } else {
@@ -579,10 +579,10 @@ function rankAnswers(allBets, result) {
             resolve(false);
         }
         allBets.sort(function(a,b) {
-            if (a.bet < result) {
+            if (Math.abs(a.bet-result) > Math.abs(b.bet-result)) {
                 return 1;
             } 
-            if (a.bet > result) {
+            if (Math.abs(a.bet-result) < Math.abs(b.bet-result)) {
                 return -1
             }
             return 0;
@@ -591,7 +591,7 @@ function rankAnswers(allBets, result) {
     });
 }
 
-function addBetToFinishedDB(betInfo, winners, losers, betSummary) {
+function addBetToFinishedDB(betInfo, winners, losers, betSummary, result) {
     return new Promise((resolve, reject) => {
         let winnersArr = []
         let losersArr = []
@@ -632,8 +632,10 @@ function addBetToFinishedDB(betInfo, winners, losers, betSummary) {
             commonTotal: betSummary.betsTotal,
             winners: winnersArr,
             losers: losersArr,
-            result: betInfo.result4
+            result: result
         });
+
+        console.log(result)
 
         newBet.save((err) => {
             if (err) {

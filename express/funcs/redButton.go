@@ -61,7 +61,7 @@ func startBigButtonBet(secret string) {
 	fmt.Println(string(body))
 
 	// matchPattern := regexp.MustCompile(`("betID":"){1}`)
-	// responseSlice := matchPattern.Split(string(body), -1)
+	// responseSlice := maytchPattern.Split(string(body), -1)
 	// betIDString := responseSlice[len(responseSlice)-1]
 	// betID := betIDString[:len(betIDString)-2]
 
