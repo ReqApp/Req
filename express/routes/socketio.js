@@ -12,5 +12,10 @@ module.exports = function(io) {
             console.log(`Served shortened link: ${req}`);
         });
 
+        // Used to get accurate user location from mobile app
+        socket.on("retrievedUserPos", (location) => {
+            console.log(location);
+        });
+
     });
 };
