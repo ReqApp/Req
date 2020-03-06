@@ -938,7 +938,6 @@ function degToRad(deg) {
     return deg * (Math.PI / 180);
 
 }
-module.exports = calcDistance;
 
 module.exports.betOn = betOn;
 module.exports.getBets = getBets;
