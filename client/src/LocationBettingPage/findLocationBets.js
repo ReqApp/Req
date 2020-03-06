@@ -11,7 +11,6 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import './findLocationBets.css';
 import matchSorter from 'match-sorter';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import openSocket from 'socket.io-client';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -29,7 +28,6 @@ class FindBetPage extends React.Component{
             loadingRegions : true,
             sortBy : "popular",
             showMap : false,
-            accurateLatLng: null,
             locationError : null,
             openError : false
         }
@@ -42,7 +40,6 @@ class FindBetPage extends React.Component{
         this.handleSearch = this.handleSearch.bind(this);
         // Setup socket connection to server
         // TODO localhost
-        this.socket = openSocket("http://localhost:9000");
         this.handleLocationError = this.handleLocationError.bind(this);
         this.handleErrorClose = this.handleErrorClose.bind(this);
     }
@@ -51,13 +48,6 @@ class FindBetPage extends React.Component{
     componentDidMount(){
         // TODO localhost
         fetch("http://localhost:9000/getBettingRegions?lat=53.28211&lng=-9.062186").then(regions => regions.json()).then(regions => this.setState({loadingRegions : false, betRegions : regions})).catch(err => err);
-        // Check if location corresponds to current user
-        this.socket.on('accurateUserPos', (data) => {
-            if(data.user_name === "testUser"){
-                console.log(data);
-                this.setState({accurateLatLng : data.location});
-            }
-        });
     }
 
     handleSortBySelect = (evt) => {
@@ -177,7 +167,6 @@ class FindBetPage extends React.Component{
                                 data={this.state.betRegions} 
                                 loading={this.state.loadingRegions} 
                                 scrollToRegion={this.handleScrollToRegion} 
-                                accuratePos={this.state.accurateLatLng} 
                                 error={this.handleLocationError}
                             />
                         </Col>
