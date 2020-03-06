@@ -55,7 +55,8 @@ export default class App extends React.Component{
   }
 
   sendCoords(){
-    this.socket.emit('userPosition', this.state.location);
+    // Send user name as identifier to match user to position
+    this.socket.emit('userPosition', { user_name : "testUser", location : this.state.location});
   }
 
   render(){

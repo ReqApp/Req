@@ -51,7 +51,13 @@ class FindBetPage extends React.Component{
     componentDidMount(){
         // TODO localhost
         fetch("http://localhost:9000/getBettingRegions?lat=53.28211&lng=-9.062186").then(regions => regions.json()).then(regions => this.setState({loadingRegions : false, betRegions : regions})).catch(err => err);
-        this.socket.on('accurateUserPos', coords => this.setState({accurateLatLng : coords}));
+        // Check if location corresponds to current user
+        this.socket.on('accurateUserPos', (data) => {
+            if(data.user_name === "testUser"){
+                console.log(data);
+                this.setState({accurateLatLng : data.location});
+            }
+        });
     }
 
     handleSortBySelect = (evt) => {
