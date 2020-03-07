@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TextInput} from 'react-native';
-import { Container, Header, Title, Left, Right, Body, Card, CardItem, H1, H2, H3, Content, Button, Icon} from 'native-base';
+import { Text, View, ActivityIndicator } from 'react-native';
+import { Container, Header, Title, Left, Right, Body, Card, CardItem, H1, H2, H3, Content, Button, Icon, Footer} from 'native-base';
 import Constants from "expo-constants";
 import openSocket from 'socket.io-client';
 import styles from './styles.js';
+import Layout from './layout.js';
 
 export default class Dashboard extends React.Component{
   constructor(props){
@@ -12,34 +13,64 @@ export default class Dashboard extends React.Component{
     // TODO localhost
     const {manifest} = Constants;
     const url = `http://${manifest.debuggerHost.split(':').shift()}:9000`;
-
     this.state = {
-      hasLocation: false,
-      gettingTime: true,
+      gettingLocation: true,
+      gettingUser: true,
       serverURL: url,
       userName : "user",
-      time: null,
+      errors: {
+        userNotRetrived: false,
+        locationNotRetrieved: false,
+        locationInaccurate: false
+      },
       location: {
         lat: 0,
         lng: 0
       }
     }
+    // Bind methods to class
     this.handlePos = this.handlePos.bind(this);
+    this.handleLocationError = this.handleLocationError.bind(this);
+    this.sendCoords = this.sendCoords.bind(this);
     // Setup socket to server
     this.socket = openSocket(url);
-    this.sendCoords = this.sendCoords.bind(this);
   }
 
   componentDidMount(){
-      navigator.geolocation.getCurrentPosition(this.handlePos);
-      fetch(this.state.serverURL + '/users/profile', {
-        method: 'GET',
-        credentials : "same-origin" 
-      }).then(res => res.text()).then(res => this.setState({userName : res})).catch(err => console.log(err));
+    // Get user details from server
+    fetch(this.state.serverURL + '/users/profile', {
+      method: 'GET',
+      credentials : "same-origin" 
+    }).then(res => res.text()).then(res => this.setState({userName : res, gettingUser: false})).catch(err => {
+      // Handle user not retrieved case
+      let {errors}= this.state;
+      errors.userNotRetrived = true;
+      this.setState({errors : errors});
+    });
+
+    // Get user location
+    const locationOptions = {
+      enableHighAccuracy: true,
+    }
+    navigator.geolocation.getCurrentPosition(this.handlePos, this.handleLocationError, locationOptions);
   }
 
   handlePos(pos){
-    this.setState({hasLocation : true, location : {lat: pos.coords.latitude, lng: pos.coords.longitude}});
+    // Handle inaccurate location case
+    if(pos.coords.accuracy > 500){
+      let {errors} = this.state;
+      errors.locationInaccurate = true;
+      this.setState({errors : errors});
+    }else{
+      this.setState({gettingLocation : false, location : {lat: pos.coords.latitude, lng: pos.coords.longitude}});
+    }
+  }
+
+  handleLocationError(err){
+    // Handle locaton not retrieved case
+    let {errors} = this.state;
+    errors.locationNotRetrieved = true;
+    this.setState({errors : errors});
   }
 
   sendCoords(){
@@ -48,61 +79,23 @@ export default class Dashboard extends React.Component{
   }
 
   render(){
-    const {hasLocation, location} = this.state;
-    return(
-      <Container>
-        <Header>
-          <Left />
-          <Body>
-            <Title>Dashboard</Title>
-          </Body>
-          <Right />
-        </Header>
-        <Content padder>
-        <H1 style={styles.userName}>{this.state.userName}</H1>
-        <Card>
-          <CardItem>
-            <H3>Your location:</H3>
-          </CardItem>
-          <CardItem>
-            <Text>Latitude: {location.lat}</Text>
-          </CardItem>
-          <CardItem>
-            <Text>Longitude: {location.lng}</Text>
-          </CardItem>
-          <CardItem>
-            <Button iconLeft onPress={this.sendCoords} bordered style={styles.posButton}>
-              <Icon type="MaterialIcons" name="room"/>
-              <Text style={styles.posButtonText}>Update Position</Text>
-            </Button>
-          </CardItem>
-        </Card>
-        <View style={styles.container}>
-          <Text>{this.state.userName}</Text>
-        </View>
-        </Content>
-      </Container>
-    )
+    const {errors, location, userName, gettingLocation, gettingUser} = this.state;
 
-    /*if(hasLocation){
-      this.socket.emit("retrievedUserPos", location);
+    if(gettingUser){
       return(
-        <View style={styles.container}>
-          <Image style={{width: 60, height: 60}} source={{uri : 'https://raw.githubusercontent.com/IamCathal/Req/fullBetIntegration/express/public/images/android-chrome-512x512.png?token=AN5LIZW3VQ4EK2UKIB63YWC6L3FTG'}} />
-          <Text>Your Location:</Text>
-          <Text>Latitude: {location.lat}</Text>
-          <Text>Longitude: {location.lng}</Text>
-
-        </View>
+          <View style={styles.loadingUser}>
+            <ActivityIndicator size='large' color='black'/>
+          </View>
       )
-    }else{
-    return (
-      <View style={styles.container}>
-        <Text>Could not find your location</Text>
-        <Text>Test</Text>
-      </View>
+    }
+    // else if(gettingLocation){
+      
+    // }
+    else{
+      return(
+        <Layout location={location} userName={userName} />
       )
-    }*/
+    }
   }
 }
 
