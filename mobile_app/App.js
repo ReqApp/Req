@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import React from 'react';
 import { StyleSheet, Text, View, Image, Button} from 'react-native';
-import { Container, Header, Content, Form, Item, Input } from 'native-base';
+import { Root } from 'native-base';
 import Constants from "expo-constants";
 import openSocket from 'socket.io-client';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -20,7 +20,7 @@ const RootStack = createStackNavigator({
 
 const App = createAppContainer(RootStack);
 
-export default App;
+export default () => <Root><App /></Root>;
 
 // export default class App extends React.Component{
 //   constructor(props){

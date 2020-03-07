@@ -7,18 +7,8 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
       },
-      card:{
-        alignItems: 'center',
-      },
       userName: {
           alignSelf: 'center'
-      },
-      posButton: {
-          width: '100%',
-          justifyContent: 'center',
-      },
-      buttonText: {
-          color: 'white',
       },
       nameContainer: {
           margin: 20,

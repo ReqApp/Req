@@ -5,9 +5,9 @@ import styles from './layoutStyles.js';
 
 export default class layout extends React.Component{
     render(){
-        const {location, userName} = this.props;
+        const {locationCard, userName} = this.props;
         return(
-            <Container>
+        <Container>
             <Header>
             <Left />
             <Body>
@@ -19,25 +19,7 @@ export default class layout extends React.Component{
             <View style={styles.nameContainer}>
             <H1 style={styles.userName}>{userName}</H1>
             </View>
-            <Card style={styles.card}>
-            <CardItem>
-                <H3>Your location:</H3>
-            </CardItem>
-            <CardItem>
-                <Icon name="navigate"/>
-            </CardItem>
-            <CardItem>
-                <Text>Latitude: {location.lat}</Text>
-            </CardItem>
-            <CardItem>
-                <Text>Longitude: {location.lng}</Text>
-            </CardItem>
-            <CardItem>
-                <Button style={styles.posButton}>
-                    <Text style={styles.buttonText}>Update Position</Text>
-                </Button>
-            </CardItem>
-            </Card>
+            {locationCard}
             </Content>
             <Footer>
             <Button transparent>

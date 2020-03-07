@@ -1,10 +1,11 @@
 import React from 'react';
 import { Text, View, ActivityIndicator } from 'react-native';
-import { Container, Header, Title, Left, Right, Body, Card, CardItem, H1, H2, H3, Content, Button, Icon, Footer} from 'native-base';
+import { Container, Header, Title, Left, Right, Body, Card, CardItem, H1, H2, H3, Content, Button, Toast} from 'native-base';
 import Constants from "expo-constants";
 import openSocket from 'socket.io-client';
 import styles from './styles.js';
 import Layout from './layout.js';
+import LocationCardLayout from './locationCardLayout.js';
 
 export default class Dashboard extends React.Component{
   constructor(props){
@@ -26,43 +27,51 @@ export default class Dashboard extends React.Component{
       location: {
         lat: 0,
         lng: 0
-      }
+      },
     }
     // Bind methods to class
     this.handlePos = this.handlePos.bind(this);
     this.handleLocationError = this.handleLocationError.bind(this);
     this.sendCoords = this.sendCoords.bind(this);
+    this.getUser = this.getUser.bind(this);
     // Setup socket to server
     this.socket = openSocket(url);
   }
 
   componentDidMount(){
-    // Get user details from server
-    fetch(this.state.serverURL + '/users/profile', {
-      method: 'GET',
-      credentials : "same-origin" 
-    }).then(res => res.text()).then(res => this.setState({userName : res, gettingUser: false})).catch(err => {
-      // Handle user not retrieved case
-      let {errors}= this.state;
-      errors.userNotRetrived = true;
-      this.setState({errors : errors});
-    });
-
+    this.getUser();
     // Get user location
     const locationOptions = {
       enableHighAccuracy: true,
     }
-    navigator.geolocation.getCurrentPosition(this.handlePos, this.handleLocationError, locationOptions);
+    navigator.geolocation.watchPosition(this.handlePos, this.handleLocationError, locationOptions);
+  }
+
+  getUser(){
+    let {serverURL, errors } = this.state;
+    this.setState({gettingUser : true});
+    fetch(serverURL + '/users/profile', {
+      method: 'GET',
+      credentials : "same-origin" 
+    }).then(res => res.text()).then(res => {
+      errors.userNotRetrived = false;
+      this.setState({userName : res, gettingUser: false, errors : errors});
+    }).catch(err => {
+      errors.userNotRetrived = true;
+      this.setState({errors : errors, gettingUser : false});
+    });
   }
 
   handlePos(pos){
     // Handle inaccurate location case
-    if(pos.coords.accuracy > 500){
-      let {errors} = this.state;
+    let {errors} = this.state;
+    if(pos.coords.accuracy > 100){
       errors.locationInaccurate = true;
       this.setState({errors : errors});
     }else{
-      this.setState({gettingLocation : false, location : {lat: pos.coords.latitude, lng: pos.coords.longitude}});
+      errors.locationInaccurate = false;
+      errors.locationNotRetrieved = false;
+      this.setState({gettingLocation : false, location : {lat: pos.coords.latitude, lng: pos.coords.longitude}, errors : errors});
     }
   }
 
@@ -75,7 +84,8 @@ export default class Dashboard extends React.Component{
 
   sendCoords(){
     // Send user name as identifier to match user to position
-    this.socket.emit('userPosition', { user_name : "testUser", location : this.state.location});
+    const {userName, location} = this.state;
+    this.socket.emit('userPosition', { user_name : userName, location : location});
   }
 
   render(){
@@ -84,16 +94,82 @@ export default class Dashboard extends React.Component{
     if(gettingUser){
       return(
           <View style={styles.loadingUser}>
-            <ActivityIndicator size='large' color='black'/>
+            <ActivityIndicator size='large'/>
           </View>
       )
     }
-    // else if(gettingLocation){
-      
-    // }
-    else{
+    else if(errors.userNotRetrived){
       return(
-        <Layout location={location} userName={userName} />
+        <View style={styles.loadingUser}>
+          <Text style={styles.errorText}>Could not retrieve user information</Text>
+          <Button bordered style={styles.retrieveUser} onPress={this.getUser}>
+            <Text>Try Again</Text>
+          </Button>
+        </View>
+      )
+    }
+    else if(gettingLocation){
+      let gettingLocationCard = 
+        <Card style={styles.card}>
+          <CardItem>
+            <H3>Getting Your Location</H3>
+          </CardItem>
+          <CardItem>
+            <ActivityIndicator size='large' />
+          </CardItem>
+        </Card>;
+      return(
+        <Layout locationCard={gettingLocationCard} userName={userName}/>
+      )
+    }
+    else if(errors.locationNotRetrieved){
+      Toast.show({
+        text: "Location data not available",
+        buttonText: "Okay",
+        duration: 10000
+      });
+      let locationCard = <Card style={styles.card}>
+        <LocationCardLayout location={location} />
+        <CardItem>
+            <Button disabled style={styles.posButton}>
+                <Text style={styles.buttonText}>Update Position</Text>
+            </Button>
+        </CardItem>
+      </Card>;
+      return(
+        <Layout locationCard={locationCard} userName={userName}/>
+      )
+    }
+    else if(errors.locationInaccurate){
+      Toast.show({
+        text: "Location inaccurate",
+        buttonText: "Okay",
+        duration: 10000
+      });
+      let locationCard = <Card style={styles.card}>
+        <LocationCardLayout location={location} />
+        <CardItem>
+            <Button disabled style={styles.posButton}>
+                <Text style={styles.buttonText}>Update Position</Text>
+            </Button>
+        </CardItem>
+      </Card>;
+      return(
+        <Layout locationCard={locationCard} userName={userName}/>
+      )
+    }
+    else{
+      let locationCard =             
+      <Card style={styles.card}>
+        <LocationCardLayout location={location} />
+        <CardItem>
+            <Button style={styles.posButton} onPress={this.sendCoords}>
+                <Text style={styles.buttonText}>Update Position</Text>
+            </Button>
+        </CardItem>
+      </Card>;
+      return(
+        <Layout locationCard={locationCard} userName={userName}/>
       )
     }
   }
