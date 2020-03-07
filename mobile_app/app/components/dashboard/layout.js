@@ -22,7 +22,7 @@ export default class layout extends React.Component{
             {locationCard}
             </Content>
             <Footer>
-            <Button transparent>
+            <Button transparent onPress={this.props.handleLogOut}>
                 <Text>Logout</Text>
             </Button>
             </Footer>

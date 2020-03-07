@@ -9,15 +9,15 @@ export default class LocationCardLayout extends React.Component{
         return(
             <View style={styles.center}>
                 <CardItem>
-                    <H3>Your location:</H3>
+                    <H3>Your Location:</H3>
                 </CardItem>
                 <CardItem>
-                    <Icon name="navigate"/>
+                    <Icon type='MaterialIcons' name="room"/>
                 </CardItem>
-                <CardItem>
+                <CardItem style={styles.item}>
                     <Text>Latitude: {location.lat}</Text>
                 </CardItem>
-                <CardItem>
+                <CardItem style={styles.item}>
                     <Text>Longitude: {location.lng}</Text>
                 </CardItem>
             </View>

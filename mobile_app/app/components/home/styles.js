@@ -8,12 +8,16 @@ export default StyleSheet.create({
       alignSelf: 'center'
     },
     buttonText:{
-      color: 'white'
+      color: 'black'
     },
     logo: {
-      marginTop: 20,
+      marginTop: 30,
       alignSelf: 'center',
-      height: 50,
-      width: 50
+      height: 100,
+      width: 100
+    },
+    title: {
+        alignSelf: 'center',
+        marginTop: 30,
     }
   });

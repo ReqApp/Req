@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TextInput, Alert} from 'react-native';
-import { Container, Header, Content, Form, Item, Input, Button, Label, Left, Right, Body, Title} from 'native-base';
+import { Container, Header, Content, Form, Item, Input, Button, Label, Left, Right, Body, Title, H2} from 'native-base';
 import Constants from "expo-constants";
 import styles from './styles.js';
 
@@ -17,7 +17,6 @@ export default class Home extends React.Component {
         this.login = this.login.bind(this);
     }
 
-
     login(){    
         const {user_name, password} = this.state;
         fetch(this.state.serverURL + '/users/login', {
@@ -32,25 +31,28 @@ export default class Home extends React.Component {
           })
         }).then((res) => res.json()).then((res) => {
           if(res.status === "success"){
+            this.setState({user_name : "", password: ""});
             this.props.navigation.navigate('Dashboard');
           }else{
             Alert.alert("Incorrect username or password");
           }
         }).catch(err => Alert.alert("Could not login"));
     }
+
     render() {
+      console.disableYellowBox = true;
       return (
         <Container>
             <Header>
             <Left />
             <Body>
-              <Title>Login</Title>
+              <Title>Req</Title>
             </Body>
             <Right />
           </Header>
           <Content>
-            <Image source={require('./logo.png')} style={styles.logo}/>
             <Form>
+            <H2 style={styles.title}>Login</H2>
             <Item floatingLabel>
               <Label>Username</Label>
               <Input onChangeText={text => this.setState({user_name : text})}/>
@@ -59,7 +61,7 @@ export default class Home extends React.Component {
               <Label>Password</Label>
               <Input secureTextEntry={true} onChangeText={text => this.setState({password : text})}/>
             </Item>
-            <Button onPress={this.login} block primary style={styles.button}>
+            <Button onPress={this.login} block light style={styles.button}>
                 <Text style={styles.buttonText}>Login</Text>
             </Button>
             </Form>
@@ -68,21 +70,3 @@ export default class Home extends React.Component {
       );
     }
   }
-
-  // const styles = StyleSheet.create({
-  //   button: {
-  //     marginTop: 20,
-  //     width: '80%',
-  //     justifyContent: 'center',
-  //     alignSelf: 'center'
-  //   },
-  //   buttonText:{
-  //     color: 'white'
-  //   },
-  //   logo: {
-  //     marginTop: 20,
-  //     alignSelf: 'center',
-  //     height: 50,
-  //     width: 50
-  //   }
-  // });

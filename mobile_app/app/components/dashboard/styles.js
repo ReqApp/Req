@@ -7,13 +7,15 @@ export default StyleSheet.create({
     },
     card:{
         alignItems: 'center',
+        paddingTop: 20,
+        paddingBottom: 30,
     },
     posButton: {
         width: '100%',
         justifyContent: 'center',
     },
     buttonText: {
-        color: 'white',
+        color: 'black',
     },
     errorText: {
         textAlign: 'center',

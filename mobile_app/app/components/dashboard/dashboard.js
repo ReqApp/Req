@@ -34,6 +34,7 @@ export default class Dashboard extends React.Component{
     this.handleLocationError = this.handleLocationError.bind(this);
     this.sendCoords = this.sendCoords.bind(this);
     this.getUser = this.getUser.bind(this);
+    this.handleLogOut = this.handleLogOut.bind(this);
     // Setup socket to server
     this.socket = openSocket(url);
   }
@@ -88,7 +89,12 @@ export default class Dashboard extends React.Component{
     this.socket.emit('userPosition', { user_name : userName, location : location});
   }
 
+  handleLogOut(){
+    this.props.navigation.navigate('Home');
+  }
+
   render(){
+    console.disableYellowBox = true;
     const {errors, location, userName, gettingLocation, gettingUser} = this.state;
 
     if(gettingUser){
@@ -163,13 +169,13 @@ export default class Dashboard extends React.Component{
       <Card style={styles.card}>
         <LocationCardLayout location={location} />
         <CardItem>
-            <Button style={styles.posButton} onPress={this.sendCoords}>
+            <Button style={styles.posButton} onPress={this.sendCoords} light>
                 <Text style={styles.buttonText}>Update Position</Text>
             </Button>
         </CardItem>
       </Card>;
       return(
-        <Layout locationCard={locationCard} userName={userName}/>
+        <Layout locationCard={locationCard} userName={userName} handleLogOut={this.handleLogOut}/>
       )
     }
   }
