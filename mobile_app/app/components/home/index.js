@@ -11,7 +11,7 @@ export default class Home extends React.Component {
         this.state = {
             user_name: "",
             password: "",
-            url : url
+            serverURL : url
         }
         this.login = this.login.bind(this);
     }
@@ -19,11 +19,23 @@ export default class Home extends React.Component {
 
     login(){    
         const {user_name, password} = this.state;
-        if(user_name === 'Admin' && password === 'Admin'){
+        fetch(this.state.serverURL + '/users/login', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_name : user_name,
+            password : password
+          })
+        }).then((res) => res.json()).then((res) => {
+          if(res.status === "success"){
             this.props.navigation.navigate('Dashboard');
-        }else{
-            Alert.alert("Error: Username password incorrect");
-        }
+          }else{
+            Alert.alert("Incorrect username or password");
+          }
+        }).catch(err => Alert.alert("Could not login"));
     }
     render() {
       return (

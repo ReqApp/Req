@@ -36,7 +36,8 @@ router.get('/profile', (req, res, next) => {
             res.send('Hello ' + profile.user_name);
         }
     } else {
-        res.render('register');
+        res.send("Could not get profile");
+        //res.render('register');
     }
 });
 

@@ -16,15 +16,14 @@ export default class Dashboard extends React.Component{
       hasLocation: false,
       gettingTime: true,
       serverURL: url,
+      userName : "user",
       time: null,
       location: {
-
         lat: 0,
         lng: 0
       }
     }
     this.handlePos = this.handlePos.bind(this);
-    this.handleLogin = this.handleLogin.bind(this);
     // Setup socket to server
     this.socket = openSocket(url);
     this.sendCoords = this.sendCoords.bind(this);
@@ -32,27 +31,14 @@ export default class Dashboard extends React.Component{
 
   componentDidMount(){
       navigator.geolocation.getCurrentPosition(this.handlePos);
+      fetch(this.state.serverURL + '/users/profile', {
+        method: 'GET',
+        credentials : "same-origin" 
+      }).then(res => res.text()).then(res => this.setState({userName : res})).catch(err => console.log(err));
   }
 
   handlePos(pos){
     this.setState({hasLocation : true, location : {lat: pos.coords.latitude, lng: pos.coords.longitude}});
-  }
-
-  handleLogin(){
-    //fetch(this.state.serverURL + "/getTime").then((res) => res.json()).then((res) => console.log(res));
-    fetch(this.state.serverURL + '/users/login', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user_name : "testUser",
-        password : "gremlinsunderthebridge"
-      })
-    }).then((res) => res.json()).then((res) => {
-      console.log(res)
-    }).bind(this).catch(err => console.log(err));
   }
 
   sendCoords(){
@@ -64,7 +50,7 @@ export default class Dashboard extends React.Component{
     const {hasLocation, location} = this.state;
     return(
       <View style={styles.container}>
-        <Text>Test</Text>
+        <Text>{this.state.userName}</Text>
         <Button title="Send Coords" onPress={this.sendCoords}></Button>
       </View>
     )
