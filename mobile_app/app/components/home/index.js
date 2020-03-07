@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TextInput, Alert} from 'react-native';
-import { Container, Header, Content, Form, Item, Input, Button } from 'native-base';
+import { Container, Header, Content, Form, Item, Input, Button, Label, Left, Right, Body, Title} from 'native-base';
 import Constants from "expo-constants";
+import styles from './styles.js';
 
 export default class Home extends React.Component {
     constructor(props){
@@ -40,17 +41,26 @@ export default class Home extends React.Component {
     render() {
       return (
         <Container>
-          <Header />
+            <Header>
+            <Left />
+            <Body>
+              <Title>Login</Title>
+            </Body>
+            <Right />
+          </Header>
           <Content>
+            <Image source={require('./logo.png')} style={styles.logo}/>
             <Form>
-            <Item>
-                <Input placeholder="Username" onChangeText={text => this.setState({user_name : text})}/>
+            <Item floatingLabel>
+              <Label>Username</Label>
+              <Input onChangeText={text => this.setState({user_name : text})}/>
             </Item>
-            <Item last>
-                <Input placeholder="Password" secureTextEntry={true} onChangeText={text => this.setState({password : text})}/>
+            <Item floatingLabel>
+              <Label>Password</Label>
+              <Input secureTextEntry={true} onChangeText={text => this.setState({password : text})}/>
             </Item>
-            <Button onPress={this.login}>
-                <Text>Login</Text>
+            <Button onPress={this.login} block primary style={styles.button}>
+                <Text style={styles.buttonText}>Login</Text>
             </Button>
             </Form>
           </Content>
@@ -58,3 +68,21 @@ export default class Home extends React.Component {
       );
     }
   }
+
+  // const styles = StyleSheet.create({
+  //   button: {
+  //     marginTop: 20,
+  //     width: '80%',
+  //     justifyContent: 'center',
+  //     alignSelf: 'center'
+  //   },
+  //   buttonText:{
+  //     color: 'white'
+  //   },
+  //   logo: {
+  //     marginTop: 20,
+  //     alignSelf: 'center',
+  //     height: 50,
+  //     width: 50
+  //   }
+  // });

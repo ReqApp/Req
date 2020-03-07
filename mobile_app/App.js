@@ -15,8 +15,8 @@ const RootStack = createStackNavigator({
   },
   Dashboard: {
     screen: Dashboard
-  }
-});
+  },
+}, { headerMode: 'none' });
 
 const App = createAppContainer(RootStack);
 

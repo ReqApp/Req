@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, Button, TextInput} from 'react-native';
-import { Container, Header, Content, Form, Item, Input } from 'native-base';
+import { StyleSheet, Text, View, Image, TextInput} from 'react-native';
+import { Container, Header, Title, Left, Right, Body, Card, CardItem, H1, H2, H3, Content, Button, Icon} from 'native-base';
 import Constants from "expo-constants";
 import openSocket from 'socket.io-client';
+import styles from './styles.js';
 
 export default class Dashboard extends React.Component{
   constructor(props){
@@ -49,10 +50,38 @@ export default class Dashboard extends React.Component{
   render(){
     const {hasLocation, location} = this.state;
     return(
-      <View style={styles.container}>
-        <Text>{this.state.userName}</Text>
-        <Button title="Send Coords" onPress={this.sendCoords}></Button>
-      </View>
+      <Container>
+        <Header>
+          <Left />
+          <Body>
+            <Title>Dashboard</Title>
+          </Body>
+          <Right />
+        </Header>
+        <Content padder>
+        <H1 style={styles.userName}>{this.state.userName}</H1>
+        <Card>
+          <CardItem>
+            <H3>Your location:</H3>
+          </CardItem>
+          <CardItem>
+            <Text>Latitude: {location.lat}</Text>
+          </CardItem>
+          <CardItem>
+            <Text>Longitude: {location.lng}</Text>
+          </CardItem>
+          <CardItem>
+            <Button iconLeft onPress={this.sendCoords} bordered style={styles.posButton}>
+              <Icon type="MaterialIcons" name="room"/>
+              <Text style={styles.posButtonText}>Update Position</Text>
+            </Button>
+          </CardItem>
+        </Card>
+        <View style={styles.container}>
+          <Text>{this.state.userName}</Text>
+        </View>
+        </Content>
+      </Container>
     )
 
     /*if(hasLocation){
@@ -77,11 +106,3 @@ export default class Dashboard extends React.Component{
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
