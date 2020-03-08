@@ -23,6 +23,10 @@ class DisplayMap extends React.Component{
         if(data.user_name === "testUser"){
             console.log(data);
             this.setState({hasLocation : true, latlng : data.location, accurate : true});
+            let response = {
+              user : "testUser"
+            }
+            this.socket.emit('locationResponse', response);
         }
       });
       // Check if geolocation available

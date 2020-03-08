@@ -14,9 +14,12 @@ module.exports = function(io) {
 
         // Used to get accurate user location from mobile app
         socket.on('userPosition', (data) => {
-            console.log(data);
             // Send it to react front-end in browser
             io.sockets.emit('accurateUserPos', data);
+        });
+
+        socket.on('locationResponse', (data) => {
+            io.sockets.emit('response', data);
         });
 
     });

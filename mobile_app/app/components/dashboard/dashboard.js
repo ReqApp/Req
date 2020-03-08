@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, ActivityIndicator } from 'react-native';
-import { Container, Header, Title, Left, Right, Body, Card, CardItem, H1, H2, H3, Content, Button, Toast} from 'native-base';
+import { Card, CardItem, H3, Button, Toast} from 'native-base';
 import Constants from "expo-constants";
 import openSocket from 'socket.io-client';
 import styles from './styles.js';
@@ -46,6 +46,17 @@ export default class Dashboard extends React.Component{
       enableHighAccuracy: true,
     }
     navigator.geolocation.watchPosition(this.handlePos, this.handleLocationError, locationOptions);
+
+    // Listen for response from front-end
+    this.socket.on('response', (data) => {
+      const {userName} = this.state;
+      if(data.user === userName){
+        Toast.show({
+          text: "Location Received!",
+          duration: 3000
+        });
+        }
+    });
   }
 
   getUser(){
@@ -60,6 +71,7 @@ export default class Dashboard extends React.Component{
     }).catch(err => {
       errors.userNotRetrived = true;
       this.setState({errors : errors, gettingUser : false});
+
     });
   }
 

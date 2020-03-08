@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text, View, ActivityIndicator } from 'react-native';
-import { Container, Header, Title, Left, Right, Body, Card, CardItem, H1, H2, H3, Content, Button, Icon, Footer} from 'native-base';
+import { Text, View } from 'react-native';
+import { Container, Header, Title, Left, Right, Body, H1, Content, Button, Footer} from 'native-base';
 import styles from './layoutStyles.js';
 
 export default class layout extends React.Component{

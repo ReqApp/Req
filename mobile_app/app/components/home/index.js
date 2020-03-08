@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TextInput, Alert} from 'react-native';
+import { Text, Alert} from 'react-native';
 import { Container, Header, Content, Form, Item, Input, Button, Label, Left, Right, Body, Title, H2} from 'native-base';
 import Constants from "expo-constants";
 import styles from './styles.js';
