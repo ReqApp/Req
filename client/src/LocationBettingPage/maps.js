@@ -1,6 +1,7 @@
 import React, {createRef, Component} from 'react';
 import { Map, Marker, Popup, TileLayer, Circle, CircleMarker} from "react-leaflet";
 import {Button, Nav, Navbar, NavDropdown, Form, FormControl, Jumbotron, Container, Row, Col, Tabs, Tab, Dropdown, Modal} from 'react-bootstrap/';
+import openSocket from 'socket.io-client';
 import './findLocationBets.css'
 
 // Map component
@@ -9,32 +10,44 @@ class DisplayMap extends React.Component{
         super(props);
         this.state = {
             hasLocation : false,
-            latlng: {
-                lat: 51.505,
-                lng: -0.09
-            },
+            accurate : false,
+            latlng : null
         }
+        this.socket = openSocket("http://localhost:9000");
     }
 
     // On mount gets user location and available bet regions
     componentDidMount(){
+      // Check if location corresponds to current user
+      this.socket.on('accurateUserPos', (data) => {
+        if(data.user_name === "testUser"){
+            console.log(data);
+            this.setState({hasLocation : true, latlng : data.location, accurate : true});
+            let response = {
+              user : "testUser"
+            }
+            this.socket.emit('locationResponse', response);
+        }
+      });
       // Check if geolocation available
       if(!this.props.miniMap){
         if(navigator.geolocation){
           // Check for accuracy
           navigator.geolocation.getCurrentPosition((userPosition => {
-            if(userPosition.coords.accuracy > 400){
+            if(userPosition.coords.accuracy < 100){
               // Set user's location
-              this.setState({hasLocation : true, latlng : {lat : 53.28211, lng : -9.062186}});
+              this.setState({hasLocation : true, latlng : {lat : 53.28211, lng : -9.062186}, accurate : true});
             }else{
               // Manually set user location for testing
-              this.setState({hasLocation : true, latlng : { lat : userPosition.coords.latitude, lng : userPosition.coords.longitude }});
+              this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : false});
+              this.props.error({error : "not-accurate"});
             }
           }));
         }
         // Handle geolocation not supported
         else{
-          console.log("Not supported")
+          this.props.error({error : "not-supported"});
+          this.setState({hasLocation : true, latlng : {lat : 51.476852, lng : -0.000500}, accurate : false});
         }
       }
     }
@@ -56,7 +69,7 @@ class DisplayMap extends React.Component{
 
     fullMap(){
         // Get state and prop variables
-        const {hasLocation} = this.state; 
+        const {hasLocation, accurate} = this.state; 
         const {loading, data, view} = this.props;
   
         // Check if userlocation found
@@ -79,19 +92,33 @@ class DisplayMap extends React.Component{
             }
           }
         }
-        return(
+        if(accurate){
+          return(
+              <Map className="full-map"
+                center={this.state.latlng}
+                length={4}
+                zoom={15}>
+                <TileLayer
+                  attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                {userMarker}
+                {betRegionsMap}
+              </Map>
+          )
+        }else{
+          return(
             <Map className="full-map"
               center={this.state.latlng}
               length={4}
-              zoom={15}>
+              zoom={8}>
               <TileLayer
                 attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              {userMarker}
-              {betRegionsMap}
             </Map>
-        )
+          )
+        }
     }
 
     miniMap(){
