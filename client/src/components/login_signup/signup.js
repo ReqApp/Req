@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import SocialLinks from './sociallinks';
+import './form.css';
 
 export default class SignUp extends Component {
   render() {

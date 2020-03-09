@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
-import SignUp from './signup';
-import SocialLinks from './sociallinks';
-import LogIn from './login';
-import Form_Func from './form_func';
+import SignUp from '../components/login_signup/signup';
+import SocialLinks from '../components/login_signup/sociallinks';
+import LogIn from '../components/login_signup/login';
+import Form_Func from '../components/login_signup/form_func';
+import Form_Func2 from '../components/login_signup/form_func2';
 
-export default class Log extends Component {
+export class Form extends Component {
   render() {
     return (
-	<body style={{background: '#28AE60'}}>
-      <div className="form">
+	  <div>
+      <div className="form" >
+      <Form_Func2>
         <ul className="tab-group">
         <Form_Func>
           <li className="tab active"><a href="#signup">Sign Up</a></li>
@@ -32,8 +34,11 @@ export default class Log extends Component {
             </form>
           </div>
         </div>
+        </Form_Func2>
       </div> 
-	 </body>
+	 </div>
     )
   }
 }
+
+export default Form;

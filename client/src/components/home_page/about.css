@@ -1,0 +1,436 @@
+
+/* line 3, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_area .about_image img {
+  width: 100%;
+}
+
+/* line 7, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_area .about_info {
+  padding-left: 68px;
+}
+
+@media (max-width: 767px) {
+  /* line 7, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+  .about_area .about_info {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  /* line 7, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+  .about_area .about_info {
+    padding-left: 30px;
+    padding-top: 100px;
+    padding-bottom: 50px;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+  /* line 7, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+  .about_area .about_info {
+    padding-left: 30px;
+    padding-top: 0;
+    padding-bottom: 40px;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1500px) {
+  /* line 7, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+  .about_area .about_info {
+    padding-left: 30px;
+    padding-top: 0;
+  }
+}
+
+/* line 31, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_area .about_info h3 {
+  font-size: 36px;
+  line-height: 55px;
+  font-weight: 400;
+  color: #131313;
+}
+
+@media (max-width: 767px) {
+  /* line 31, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+  .about_area .about_info h3 {
+    font-size: 30px;
+    line-height: 40px;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+  /* line 31, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+  .about_area .about_info h3 {
+    font-size: 30px;
+    line-height: 40px;
+  }
+}
+
+/* line 45, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_area .about_info p {
+  font-size: 16px;
+  line-height: 28px;
+  color: #131313;
+  margin-bottom: 22px;
+  margin-top: 28px;
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+  /* line 51, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+  .about_area .about_info p br {
+    display: none;
+  }
+}
+
+/* line 57, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_area .about_info ul {
+  margin-bottom: 56px;
+}
+
+@media (max-width: 767px) {
+  /* line 57, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+  .about_area .about_info ul {
+    margin-bottom: 30px;
+  }
+}
+
+/* line 62, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_area .about_info ul li {
+  font-size: 16px;
+  line-height: 28px;
+  color: #131313;
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 5px;
+  font-weight: 400;
+  z-index: 1;
+}
+
+/* line 83, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_area .about_info .boxed-btn3 {
+  padding: 13px 46px 14px 46px;
+}
+
+/* line 90, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_bg_1 {
+  background-image: url(./images/about.png);
+}
+
+/* line 93, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_wrap_area {
+  padding: 145px 0 115px 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  z-index: 1;
+}
+
+/* line 100, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_wrap_area.about_wrap_area2 .single_service_wrap {
+  border: 1px solid #D5D5D5;
+}
+
+/* line 102, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_wrap_area.about_wrap_area2 .single_service_wrap h3 {
+  font-size: 20px;
+  color: #2C2C2C;
+  font-weight: 400;
+  margin-top: 38px;
+  margin-bottom: 20px;
+  -webkit-transition: 0.3s;
+  -moz-transition: 0.3s;
+  -o-transition: 0.3s;
+  transition: 0.3s;
+}
+
+/* line 110, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_wrap_area.about_wrap_area2 .single_service_wrap p {
+  font-size: 16px;
+  line-height: 28px;
+  color: #919191;
+  margin-bottom: 0;
+  -webkit-transition: 0.3s;
+  -moz-transition: 0.3s;
+  -o-transition: 0.3s;
+  transition: 0.3s;
+}
+
+/* line 118, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_wrap_area.about_wrap_area2 .single_service_wrap img {
+  -webkit-transition: 0.3s;
+  -moz-transition: 0.3s;
+  -o-transition: 0.3s;
+  transition: 0.3s;
+}
+
+/* line 121, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_wrap_area.about_wrap_area2 .single_service_wrap:hover {
+  background: #28AE60;
+  border-color: #28AE60;
+}
+
+/* line 124, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_wrap_area.about_wrap_area2 .single_service_wrap:hover h3 {
+  color: #fff;
+}
+
+/* line 127, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_wrap_area.about_wrap_area2 .single_service_wrap:hover p {
+  color: #fff;
+}
+
+/* line 130, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_wrap_area.about_wrap_area2 .single_service_wrap:hover img {
+  -webkit-filter: contrast(0%) brightness(2);
+  filter: contrast(0%) brightness(2);
+}
+
+@media (max-width: 767px) {
+  /* line 93, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+  .about_wrap_area {
+    padding: 100px 0 70px 0;
+  }
+}
+
+/* line 142, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_wrap_area::before {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background: #2C2C2C;
+  opacity: .6;
+  content: '';
+  z-index: -1;
+}
+
+/* line 153, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_wrap_area .about_wrap_area2 {
+  position: relative;
+}
+
+/* line 156, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_wrap_area.about_wrap_area2::before {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background: #2C2C2C;
+  opacity: .6;
+  content: '';
+  z-index: -1;
+  display: none;
+}
+
+/* line 168, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_wrap_area .single_service_wrap {
+  margin-bottom: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 60px 63px;
+  -webkit-transition: 0.5s;
+  -moz-transition: 0.5s;
+  -o-transition: 0.5s;
+  transition: 0.5s;
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+  /* line 168, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+  .about_wrap_area .single_service_wrap {
+    padding: 60px 20px;
+  }
+}
+
+/* line 179, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_wrap_area .single_service_wrap h3 {
+  font-size: 20px;
+  color: #fff;
+  font-weight: 400;
+  margin-top: 38px;
+  margin-bottom: 20px;
+}
+
+/* line 186, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_wrap_area .single_service_wrap p {
+  font-size: 16px;
+  line-height: 28px;
+  color: #D5D5D5;
+  margin-bottom: 0;
+}
+
+/* line 193, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.about_wrap_area .single_service_wrap:hover {
+  background: #28AE60;
+  border-color: #28AE60;
+}
+
+/* line 203, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.project_area {
+  background: #28AE60;
+  padding: 150px 0;
+}
+
+@media (max-width: 767px) {
+  /* line 203, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+  .project_area {
+    padding: 100px 0;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  /* line 203, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+  .project_area {
+    padding: 100px 0;
+  }
+}
+
+/* line 214, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.project_area .project_info h3 {
+  color: #fff;
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 55px;
+}
+
+/* line 220, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.project_area .project_info p {
+  font-size: 16px;
+  color: #fff;
+  margin-bottom: 26px;
+  margin-top: 8px;
+}
+
+/* line 227, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.project_area .project_info .boxed-btn3-white:hover {
+  background: #fff;
+  color: #131313 !important;
+}
+
+/* line 237, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.financial_solution_area {
+  padding: 150px 0;
+}
+
+/* line 239, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.financial_solution_area.minus_top_padding {
+  padding-top: 0;
+}
+
+@media (max-width: 767px) {
+  /* line 237, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+  .financial_solution_area {
+    padding: 50px 0;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  /* line 237, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+  .financial_solution_area {
+    padding: 50px 0;
+  }
+}
+
+/* line 248, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.financial_solution_area .financial_active {
+  padding-top: 70px;
+}
+
+@media (max-width: 767px) {
+  /* line 248, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+  .financial_solution_area .financial_active {
+    padding: 0;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  /* line 248, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+  .financial_solution_area .financial_active {
+    padding: 0;
+  }
+}
+
+/* line 256, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.financial_solution_area .financial_active .single_finalcial_wrap {
+  margin-bottom: 90px;
+}
+
+/* line 259, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.financial_solution_area .financial_active .single_finalcial_wrap h3 {
+  font-size: 36px;
+  line-height: 55px;
+  font-weight: 400;
+  color: #2C2C2C;
+  margin-bottom: 20px;
+}
+
+/* line 266, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.financial_solution_area .financial_active .single_finalcial_wrap p {
+  font-size: 16px;
+  color: #727272;
+  margin-bottom: 0;
+}
+
+/* line 275, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.financial_solution_area .finance_thumb img {
+  width: 100%;
+}
+
+/* line 280, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.financial_solution_area .owl-carousel .owl-nav div {
+  background: transparent;
+  height: 40px;
+  left: 0px;
+  position: absolute;
+  text-align: center;
+  width: 40px;
+  color: #fff;
+  background-color: transparent;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  left: 40px;
+  font-size: 12px;
+  line-height: 40px;
+  border: 1px solid #D4EFDF;
+  left: 0px;
+  color: #28AE60;
+  bottom: 0;
+  top: auto;
+}
+
+/* line 303, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.financial_solution_area .owl-carousel .owl-nav div.owl-next {
+  left: 55px;
+  right: auto;
+}
+
+/* line 306, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.financial_solution_area .owl-carousel .owl-nav div.owl-next i {
+  position: relative;
+  right: 0;
+  top: -1px;
+}
+
+/* line 313, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.financial_solution_area .owl-carousel .owl-nav div.owl-prev i {
+  position: relative;
+  top: -1px;
+  left: -1px;
+}
+
+/* line 323, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.financial_solution_area .owl-carousel:hover .owl-nav div {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* line 326, ../../Arafath/CL/CL October/213. Business/HTML/scss/_about.scss */
+.financial_solution_area .owl-carousel:hover .owl-nav div:hover {
+  color: #fff;
+  background: #28AE61;
+  border: 1px solid transparent;
+}

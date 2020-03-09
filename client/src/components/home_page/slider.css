@@ -1,0 +1,169 @@
+.slider_bg_1{
+  background-image: url(./images/slider_image.jpg);
+}
+.slider_bg_2{
+  background-image: url(./images/slider_image2.jpg);
+}
+.slider_bg_3{
+  background-image: url(./images/slider_image3.jpg);
+}
+
+/* line 8, ../../Arafath/CL/CL October/213. Business/HTML/scss/_slider.scss */
+.slider_area .single_slider {
+height: 900px;
+background-size: cover;
+background-repeat: no-repeat;
+background-position: center center;
+}
+
+@media (max-width: 767px) {
+/* line 8, ../../Arafath/CL/CL October/213. Business/HTML/scss/_slider.scss */
+.slider_area .single_slider {
+  height: 100vh;
+}
+}
+
+/* line 17, ../../Arafath/CL/CL October/213. Business/HTML/scss/_slider.scss */
+.slider_area .single_slider .slider_text h3 {
+color: #28AE61;
+font-family: "Poppins", sans-serif;
+font-size: 50px;
+text-transform: capitalize;
+letter-spacing: 2px;
+font-weight: 400;
+line-height: 62px;
+}
+
+/* line 25, ../../Arafath/CL/CL October/213. Business/HTML/scss/_slider.scss */
+.slider_area .single_slider .slider_text h3 span {
+font-weight: 700;
+color: #131313;
+}
+
+@media (max-width: 767px) {
+/* line 17, ../../Arafath/CL/CL October/213. Business/HTML/scss/_slider.scss */
+.slider_area .single_slider .slider_text h3 {
+  margin-top: 45px;
+  color: #131313;
+}
+}
+
+@media (max-width: 767px) {
+/* line 17, ../../Arafath/CL/CL October/213. Business/HTML/scss/_slider.scss */
+.slider_area .single_slider .slider_text h3 {
+  font-size: 30px;
+  line-height: 35px;
+  color: #131313;
+}
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+/* line 17, ../../Arafath/CL/CL October/213. Business/HTML/scss/_slider.scss */
+.slider_area .single_slider .slider_text h3 {
+  font-size: 30px;
+  color: #131313;
+}
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+/* line 17, ../../Arafath/CL/CL October/213. Business/HTML/scss/_slider.scss */
+.slider_area .single_slider .slider_text h3 {
+  font-size: 35px;
+  letter-spacing: 3px;
+  color: #131313;
+}
+}
+
+/* line 44, ../../Arafath/CL/CL October/213. Business/HTML/scss/_slider.scss */
+.slider_area .single_slider .slider_text p {
+font-size: 20px;
+font-weight: 400;
+color: #131313;;
+margin-bottom: 24px;
+margin-top: 10px;
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+/* line 44, ../../Arafath/CL/CL October/213. Business/HTML/scss/_slider.scss */
+.slider_area .single_slider .slider_text p {
+  font-size: 16px;
+}
+}
+
+@media (max-width: 767px) {
+/* line 44, ../../Arafath/CL/CL October/213. Business/HTML/scss/_slider.scss */
+.slider_area .single_slider .slider_text p {
+  font-size: 16px;
+}
+}
+
+/* line 57, ../../Arafath/CL/CL October/213. Business/HTML/scss/_slider.scss */
+.slider_area .single_slider .slider_text .video_service_btn > a {
+margin-right: 15px;
+}
+
+@media (max-width: 767px) {
+/* line 57, ../../Arafath/CL/CL October/213. Business/HTML/scss/_slider.scss */
+.slider_area .single_slider .slider_text .video_service_btn > a {
+  margin-bottom: 20px;
+}
+}
+
+/* button style */
+/* line 222, ../../Arafath/CL/CL October/213. Business/HTML/scss/theme-default.scss */
+.owl-carousel .owl-nav div {
+  background: transparent;
+  height: 50px;
+  left: 0px;
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  -webkit-transition: all 0.3s ease 0s;
+  -o-transition: all 0.3s ease 0s;
+  transition: all 0.3s ease 0s;
+  width: 50px;
+  color: #fff;
+  background-color: transparent;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  left: 50px;
+  font-size: 15px;
+  line-height: 50px;
+  border: 1px solid #787878;
+  left: 150px;
+}
+
+/* line 249, ../../Arafath/CL/CL October/213. Business/HTML/scss/theme-default.scss */
+.owl-carousel .owl-nav div.owl-next {
+  left: auto;
+  right: 150px;
+}
+
+/* line 254, ../../Arafath/CL/CL October/213. Business/HTML/scss/theme-default.scss */
+.owl-carousel .owl-nav div.owl-next i {
+  position: relative;
+  right: 0;
+}
+
+/* line 261, ../../Arafath/CL/CL October/213. Business/HTML/scss/theme-default.scss */
+.owl-carousel .owl-nav div.owl-prev i {
+  position: relative;
+  top: 0px;
+}
+
+/* line 271, ../../Arafath/CL/CL October/213. Business/HTML/scss/theme-default.scss */
+.owl-carousel:hover .owl-nav div {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* line 274, ../../Arafath/CL/CL October/213. Business/HTML/scss/theme-default.scss */
+.owl-carousel:hover .owl-nav div:hover {
+  color: #fff;
+  background: #28AE61;
+  border: 1px solid transparent;
+}

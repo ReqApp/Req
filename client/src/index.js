@@ -6,7 +6,7 @@ import Bets from './pages/bets.js';
 import {HomePage} from './pages/home';
 import {DisplayMap} from './pages/maps';
 import {FAQ} from './pages/faq';
-import {Form} from './pages/log.js';
+import {Form} from './pages/form';
 
 class App extends Component{
    render(){
@@ -21,13 +21,12 @@ class App extends Component{
                    <Route path='/faq'>
                        <FAQ/>
                    </Route>
-                   <Route path='/'>
-                       <Form/>
-					   
-                   </Route>
-				   <Route path='/log'>
+                   <Route path='/login'>
 						<Form/>
 				   </Route>
+                   <Route path='/'>
+                       <HomePage/>
+                   </Route>
                </Switch>
        );
    } 

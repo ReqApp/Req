@@ -1,4 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import './form.css';
+
 export default class LogIn extends Component {
   render() {
     return (

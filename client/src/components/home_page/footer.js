@@ -4,6 +4,7 @@ import {FooterSocialLinks} from '../footer/footerSocialLinks';
 import {Services} from '../footer/services';
 import {FooterPageLinks} from '../footer/footerPageLinks';
 import {ReqAddress} from '../footer/reqAddress';
+import './footer.css';
 
 export default class Footer extends Component {
   render() {

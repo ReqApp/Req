@@ -1,4 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import './about.css';
+import about from './images/about.png';
 
 export default class About extends Component {
   render() {
@@ -10,7 +12,7 @@ export default class About extends Component {
           <div className="row no-gutters align-items-center">
             <div className="col-xl-6 col-lg-6">
               <div className="about_image">
-                <img src="img/about/about.png" alt="" />
+              <img  src={about} alt="" />
               </div>
             </div>
             <div className="col-xl-6 col-lg-6">
@@ -23,7 +25,7 @@ export default class About extends Component {
                   <li> Only betting app that doesn't lose you money</li>
                 </ul>
                 <div className="about_btn">
-                  <a className="boxed-btn3" href="#">About Us</a>
+                  <a className="boxed-btn3-green-2" href="#">About Us</a>
                 </div>
               </div>
             </div>

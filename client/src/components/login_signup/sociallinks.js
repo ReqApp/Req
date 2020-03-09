@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import './form.css';
 
 export default class SocialLinks extends Component {
   render() {
