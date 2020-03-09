@@ -901,14 +901,21 @@ function checkIfExisting(username, type) {
 
 function sendEmail(email, subject, body) {
     return new Promise((resolve, reject) => {
-        const spawn = require("child_process").spawn;
-        const pythonProcess = spawn('python3', ["emailService/sendEmail.py", email, subject, body]);
-        pythonProcess.stdout.on('data', (data) => {
-            resolve()
+        const child = require('child_process').execFile;
+        const execPath = "./emailService/sendEmail";
+        const params = [email, subject, body];
+        child(execPath, params, (err, data) => {
+            if (err) {
+                console.log(err)
+                reject(err);
+            }
+            if (data) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
         });
-        pythonProcess.stderr.on('data', (data) => {
-            reject(Error(data));
-        });
+
     });
 }
 
