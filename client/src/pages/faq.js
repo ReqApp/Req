@@ -1,5 +1,8 @@
 import React,{Component} from 'react';
 import Faq from 'react-faq-component';
+import Header from '../components/header';
+import Footer from '../components/footer';
+import {Spacing} from '../spacing';
 
 const aboutLink = <a style = "color:#0000FF" href = "/about">About</a>
 
@@ -22,13 +25,27 @@ const faqDetails = {
           title: "Is my data safe?",
           content: `Yes it is, as your data is fully encrypted and cleaned on a monthly basis`
         }
-    ]
+    ],
 }
 
 export class FAQ extends React.Component{
     render(){
         return(
-            <Faq data={faqDetails}/>
+            <div>
+                <Header/>
+                <Spacing/>
+                <section className="accordion-section clearfix mt-3" aria-label="Question Accordions">
+                  <div className ="container">
+                    <Faq data={faqDetails} styles = {{
+                                            bgColor: '#28AE60',
+                                            titleTextColor: 'black',
+                                            rowTitleColor: 'black',
+                                            rowContentColor: 'black'
+                                                                  }}/>
+                  </div>  
+                </section>
+                <Footer/>
+            </div>
         );
     }
 }

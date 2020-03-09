@@ -6,21 +6,29 @@ import Bets from './pages/bets.js';
 import {HomePage} from './pages/home';
 import {DisplayMap} from './pages/maps';
 import {FAQ} from './pages/faq';
+import {About} from './pages/about';
+import {Profile} from './pages/profile';
 
 class App extends Component{
    render(){
        return(
                <Switch>                  
-                   <Route path='/maps'>
+                   <Route exact path='/maps'>
                         <DisplayMap/>
                    </Route>
-                   <Route path='/bets'>
+                   <Route exact path='/bets'>
                        <Bets/>
                    </Route>
-                   <Route path='/faq'>
+                   <Route exact path='/faq'>
                        <FAQ/>
                    </Route>
-                   <Route path='/'>
+                   <Route exact path='/about'>
+                       <About/>
+                   </Route>
+                   <Route path='/profile'>
+                       <Profile/>
+                   </Route>
+                   <Route exact path='/'>
                        <HomePage/>
                    </Route>
                </Switch>
