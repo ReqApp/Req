@@ -121,7 +121,7 @@ func main() {
 		  <meta name="x-apple-disable-message-reformatting"> 
 		  <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
 		  <meta content="telephone=no" name="format-detection"> 
-		  <title>New email template 2020-03-09</title> 
+		  <title>New Template</title> 
 		  <!--[if (mso 16)]>
 			<style type="text/css">
 			a {text-decoration: none;}
@@ -185,6 +185,13 @@ func main() {
 			background:#d6a700!important;
 			border-color:#d6a700!important;
 		}
+		td .es-button-border:hover a.es-button-1 {
+			background:#4540d7!important;
+			border-color:#4540d7!important;
+		}
+		td .es-button-border-2:hover {
+			background:#4540d7!important;
+		}
 		</style> 
 		 </head> 
 		 <body style="width:100%;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;padding:0;Margin:0;"> 
@@ -199,7 +206,7 @@ func main() {
 			  <td class="st-br" valign="top" style="padding:0;Margin:0;"> 
 			   <table cellpadding="0" cellspacing="0" class="es-header" align="center" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;background-color:transparent;background-repeat:repeat;background-position:center top;"> 
 				 <tr style="border-collapse:collapse;"> 
-				  <td align="center" style="padding:0;Margin:0;background-image:url(https://eadorv.stripocdn.email/content/guids/CABINET_d21e6d1c5a6807d34e1eb6c59a588198/images/20841560930387653.jpg);background-color:#EB3AF1;background-position:center bottom;background-repeat:no-repeat;" bgcolor="#eb3af1" background="https://eadorv.stripocdn.email/content/guids/CABINET_d21e6d1c5a6807d34e1eb6c59a588198/images/20841560930387653.jpg"> 
+				  <td align="center" style="padding:0;Margin:0;background-image:url(https://eadorv.stripocdn.email/content/guids/CABINET_3e39c673d3575362a28b176de1250088/images/20841560930387653.jpg);background-color:transparent;background-position:center bottom;background-repeat:no-repeat;" bgcolor="transparent" background="https://eadorv.stripocdn.email/content/guids/CABINET_3e39c673d3575362a28b176de1250088/images/20841560930387653.jpg"> 
 				   <!--[if gte mso 9]><v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="mso-width-percent:1000;height:204px;"><v:fill type="tile" src="https://pics.esputnik.com/repository/home/17278/common/images/1546958148946.jpg" color="#343434" origin="0.5, 0" position="0.5,0" ></v:fill><v:textbox inset="0,0,0,0"><![endif]--> 
 				   <div> 
 					<table bgcolor="transparent" class="es-header-body" align="center" cellpadding="0" cellspacing="0" width="600" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;"> 
@@ -208,9 +215,9 @@ func main() {
 						<table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
 						  <tr style="border-collapse:collapse;"> 
 						   <td width="560" align="center" valign="top" style="padding:0;Margin:0;"> 
-							<table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
+							<table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:separate;border-spacing:0px;border-radius:5px;" role="presentation"> 
 							  <tr style="border-collapse:collapse;"> 
-							   <td align="center" style="padding:0;Margin:0;font-size:0px;"><a target="_blank" href="https://stripo.email" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:14px;text-decoration:underline;color:#1376C8;"><img src="https://eadorv.stripocdn.email/content/guids/9c23f92f-2396-44da-956c-36bf67f6c240/images/3561583769127404.png" alt style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;width:126px;height:117px;" width="126"></a></td> 
+							   <td align="center" style="padding:0;Margin:0;font-size:0px;"><a target="_blank" href="https://stripo.email" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:14px;text-decoration:underline;color:#1376C8;"><img src="https://eadorv.stripocdn.email/content/guids/CABINET_3e39c673d3575362a28b176de1250088/images/71501583785442180.png" alt style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;width:126px;height:117px;" width="126"></a></td> 
 							  </tr> 
 							  <tr style="border-collapse:collapse;"> 
 							   <td align="center" height="65" style="padding:0;Margin:0;"></td> 
@@ -229,49 +236,16 @@ func main() {
 				  <td align="center" bgcolor="transparent" style="padding:0;Margin:0;background-color:transparent;"> 
 				   <table bgcolor="transparent" class="es-content-body" align="center" cellpadding="0" cellspacing="0" width="600" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;"> 
 					 <tr style="border-collapse:collapse;"> 
-					  <td align="left" style="Margin:0;padding-bottom:15px;padding-top:25px;padding-left:30px;padding-right:30px;border-radius:10px 10px 0px 0px;background-color:#E9E6E6;" bgcolor="#e9e6e6"> 
+					  <td align="left" style="Margin:0;padding-bottom:15px;padding-top:30px;padding-left:30px;padding-right:30px;border-radius:10px 10px 0px 0px;background-color:#FFFFFF;background-position:left bottom;" bgcolor="#ffffff"> 
 					   <table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
 						 <tr style="border-collapse:collapse;"> 
 						  <td width="540" align="center" valign="top" style="padding:0;Margin:0;"> 
 						   <table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-position:left bottom;" role="presentation"> 
 							 <tr style="border-collapse:collapse;"> 
-							  <td align="center" style="padding:0;Margin:0;"><h1 style="Margin:0;line-height:36px;mso-line-height-rule:exactly;font-family:tahoma, verdana, segoe, sans-serif;font-size:30px;font-style:normal;font-weight:bold;color:#212121;">` + os.Args[2] + `</h1></td> 
+							  <td align="center" style="padding:0;Margin:0;"><h1 style="Margin:0;line-height:36px;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:30px;font-style:normal;font-weight:bold;color:#212121;">` + os.Args[2] + `</h1></td> 
 							 </tr> 
 							 <tr style="border-collapse:collapse;"> 
-							  <td align="center" style="padding:0;Margin:0;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:44px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:66px;color:#131313;"><strong>` + os.Args[3] + `</strong></p></td> 
-							 </tr> 
-						   </table></td> 
-						 </tr> 
-					   </table></td> 
-					 </tr> 
-				   </table></td> 
-				 </tr> 
-			   </table> 
-			   <table cellpadding="0" cellspacing="0" class="es-footer" align="center" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;background-color:#F6F6F6;background-repeat:repeat;background-position:center top;"> 
-				 <tr style="border-collapse:collapse;"> 
-				  <td align="center" style="padding:0;Margin:0;"> 
-				   <table bgcolor="#31cb4b" class="es-footer-body" align="center" cellpadding="0" cellspacing="0" width="600" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;"> 
-					 <tr style="border-collapse:collapse;"> 
-					  <td style="padding:0;Margin:0;padding-bottom:15px;padding-left:30px;padding-right:30px;border-radius:0px 0px 10px 10px;background-color:#E9E6E6;" align="left" bgcolor="#e9e6e6"> 
-					   <table cellspacing="0" cellpadding="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
-						 <tr style="border-collapse:collapse;"> 
-						  <td class="es-m-p0r" width="540" align="center" style="padding:0;Margin:0;"> 
-						   <table width="100%" cellspacing="0" cellpadding="0" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
-							 <tr style="border-collapse:collapse;"> 
-							  <td align="center" style="padding:0;Margin:0;display:none;"></td> 
-							 </tr> 
-						   </table></td> 
-						 </tr> 
-					   </table></td> 
-					 </tr> 
-					 <tr style="border-collapse:collapse;"> 
-					  <td align="left" style="padding:0;Margin:0;background-position:left top;"> 
-					   <table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
-						 <tr style="border-collapse:collapse;"> 
-						  <td width="600" align="center" valign="top" style="padding:0;Margin:0;"> 
-						   <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
-							 <tr style="border-collapse:collapse;"> 
-							  <td align="center" height="40" style="padding:0;Margin:0;"></td> 
+							  <td align="center" style="padding:0;Margin:0;padding-top:20px;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:20px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:30px;color:#131313;">` + os.Args[3] + `</p></td> 
 							 </tr> 
 						   </table></td> 
 						 </tr> 
@@ -283,15 +257,269 @@ func main() {
 			   <table cellpadding="0" cellspacing="0" class="es-content" align="center" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;"> 
 				 <tr style="border-collapse:collapse;"> 
 				  <td align="center" style="padding:0;Margin:0;"> 
-				   <table bgcolor="#ffffff" class="es-content-body" align="center" cellpadding="0" cellspacing="0" width="600" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;"> 
+				   <table bgcolor="transparent" class="es-content-body" align="center" cellpadding="0" cellspacing="0" width="600" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;"> 
 					 <tr style="border-collapse:collapse;"> 
-					  <td align="left" style="padding:0;Margin:0;padding-top:20px;padding-left:30px;padding-right:30px;"> 
+					  <td align="left" style="padding:0;Margin:0;padding-left:20px;padding-right:20px;background-position:left bottom;"> 
+					   <table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
+						 <tr style="border-collapse:collapse;"> 
+						  <td width="560" align="center" valign="top" style="padding:0;Margin:0;"> 
+						   <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="center" height="40" style="padding:0;Margin:0;"></td> 
+							 </tr> 
+						   </table></td> 
+						 </tr> 
+					   </table></td> 
+					 </tr> 
+					 <tr style="border-collapse:collapse;"> 
+					  <td align="left" style="Margin:0;padding-top:5px;padding-bottom:5px;padding-left:30px;padding-right:30px;background-color:#FFFFFF;" bgcolor="#ffffff"> 
 					   <table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
 						 <tr style="border-collapse:collapse;"> 
 						  <td width="540" align="center" valign="top" style="padding:0;Margin:0;"> 
+						   <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="left" style="padding:0;Margin:0;"><h2 style="Margin:0;line-height:29px;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:24px;font-style:normal;font-weight:bold;color:#212121;text-align:center;">The Team</h2></td> 
+							 </tr> 
+						   </table></td> 
+						 </tr> 
+					   </table></td> 
+					 </tr> 
+					 <tr style="border-collapse:collapse;"> 
+					  <td style="padding:0;Margin:0;padding-top:5px;border-radius:0px 0px 6px 6px;background-color:#FFFFFF;" align="left" bgcolor="#ffffff"> 
+					   <!--[if mso]><table width="600" cellpadding="0" cellspacing="0"><tr><td width="295" valign="top"><![endif]--> 
+					   <table cellpadding="0" cellspacing="0" class="es-left" align="left" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;"> 
+						 <tr style="border-collapse:collapse;"> 
+						  <td width="295" align="left" style="padding:0;Margin:0;"> 
+						   <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="left" class="es-m-txt-c" style="padding:0;Margin:0;padding-right:10px;padding-left:30px;"><h3 style="Margin:0;line-height:29px;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:24px;font-style:normal;font-weight:normal;color:#0E0E0E;"><strong>Karl Gordon</strong></h3></td> 
+							 </tr> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="left" class="es-m-txt-c" style="padding:0;Margin:0;padding-right:10px;padding-top:15px;padding-left:30px;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:24px;color:#181717;">Front-end UI/UX</p></td> 
+							 </tr> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="left" style="Margin:0;padding-top:10px;padding-bottom:10px;padding-right:10px;padding-left:30px;"><span class="es-button-border es-button-border-2" style="border-style:solid;border-color:#2CB543;background:#2B27C1;border-width:0px;display:inline-block;border-radius:3px;width:auto;"><a href="https://github.com/filthyhound" class="es-button es-button-1" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:18px;color:#FFFFFF;border-style:solid;border-color:#2B27C1;border-width:10px 20px;display:inline-block;background:#2B27C1;border-radius:3px;font-weight:normal;font-style:normal;line-height:22px;width:auto;text-align:center;">Github</a></span></td> 
+							 </tr> 
+						   </table></td> 
+						 </tr> 
+					   </table> 
+					   <!--[if mso]></td><td width="10"></td><td width="295" valign="top"><![endif]--> 
+					   <table cellpadding="0" cellspacing="0" class="es-right" align="right" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;"> 
+						 <tr style="border-collapse:collapse;"> 
+						  <td width="295" align="left" style="padding:0;Margin:0;"> 
+						   <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="left" class="es-m-txt-c" style="padding:0;Margin:0;padding-left:10px;padding-right:30px;"><h3 style="Margin:0;line-height:29px;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:24px;font-style:normal;font-weight:normal;color:#161414;"><strong>Cathal O'Callaghan</strong></h3></td> 
+							 </tr> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="left" class="es-m-txt-c" style="padding:0;Margin:0;padding-left:10px;padding-right:10px;padding-top:15px;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:24px;color:#1B1A1A;">Back-end infrastructure</p></td> 
+							 </tr> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="left" style="padding:10px;Margin:0;"><span class="es-button-border es-button-border-2" style="border-style:solid;border-color:#2CB543;background:#2B27C1;border-width:0px;display:inline-block;border-radius:3px;width:auto;"><a href="https://iamcathal.github.io" class="es-button es-button-1" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:18px;color:#FFFFFF;border-style:solid;border-color:#2B27C1;border-width:10px 20px 10px 20px;display:inline-block;background:#2B27C1;border-radius:3px;font-weight:normal;font-style:normal;line-height:22px;width:auto;text-align:center;">Github</a></span></td> 
+							 </tr> 
+						   </table></td> 
+						 </tr> 
+					   </table> 
+					   <!--[if mso]></td></tr></table><![endif]--></td> 
+					 </tr> 
+					 <tr style="border-collapse:collapse;"> 
+					  <td align="left" style="padding:0;Margin:0;"> 
+					   <table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
+						 <tr style="border-collapse:collapse;"> 
+						  <td width="600" align="center" valign="top" style="padding:0;Margin:0;"> 
+						   <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="center" height="20" bgcolor="#ffffff" style="padding:0;Margin:0;"></td> 
+							 </tr> 
+						   </table></td> 
+						 </tr> 
+					   </table></td> 
+					 </tr> 
+					 <tr style="border-collapse:collapse;"> 
+					  <td style="padding:0;Margin:0;border-radius:6px;" align="left" bgcolor="#fafafa"> 
+					   <!--[if mso]><table dir="rtl" width="600" cellpadding="0" cellspacing="0"><tr><td dir="ltr" width="290" valign="top"><![endif]--> 
+					   <table cellpadding="0" cellspacing="0" class="es-right" align="right" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;"> 
+						 <tr style="border-collapse:collapse;"> 
+						  <td width="290" align="left" style="padding:0;Margin:0;"> 
+						   <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="left" class="es-m-txt-c" style="padding:0;Margin:0;padding-left:10px;padding-right:30px;"><h3 style="Margin:0;line-height:29px;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:24px;font-style:normal;font-weight:normal;color:#161414;"><strong>Eoin Mc Ardle</strong></h3></td> 
+							 </tr> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="left" class="es-m-txt-c" style="padding:0;Margin:0;padding-left:10px;padding-right:10px;padding-top:15px;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:24px;color:#1B1A1A;">Back-end infrastructure</p></td> 
+							 </tr> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="left" style="padding:10px;Margin:0;"><span class="es-button-border es-button-border-2" style="border-style:solid;border-color:#2CB543;background:#2B27C1;border-width:0px;display:inline-block;border-radius:3px;width:auto;"><a href="https://github.com/EoinMcArdle99" class="es-button es-button-1" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:18px;color:#FFFFFF;border-style:solid;border-color:#2B27C1;border-width:10px 20px 10px 20px;display:inline-block;background:#2B27C1;border-radius:3px;font-weight:normal;font-style:normal;line-height:22px;width:auto;text-align:center;">Github</a></span></td> 
+							 </tr> 
+						   </table></td> 
+						 </tr> 
+					   </table> 
+					   <!--[if mso]></td><td dir="ltr" width="20"></td><td dir="ltr" width="290" valign="top"><![endif]--> 
+					   <table cellpadding="0" cellspacing="0" class="es-left" align="left" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;"> 
+						 <tr style="border-collapse:collapse;"> 
+						  <td width="290" align="left" style="padding:0;Margin:0;"> 
+						   <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="left" class="es-m-txt-c" style="padding:0;Margin:0;padding-right:10px;padding-left:30px;"><h3 style="Margin:0;line-height:29px;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:24px;font-style:normal;font-weight:normal;color:#0E0E0E;"><strong>Rory S</strong></h3></td> 
+							 </tr> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="left" class="es-m-txt-c" style="padding:0;Margin:0;padding-right:10px;padding-top:15px;padding-left:30px;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:24px;color:#181717;">Front-end UI/UX</p></td> 
+							 </tr> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="left" style="Margin:0;padding-top:10px;padding-bottom:10px;padding-right:10px;padding-left:30px;"><span class="es-button-border es-button-border-1583775047906" style="border-style:solid;border-color:#2CB543;background:#2B27C1;border-width:0px;display:inline-block;border-radius:3px;width:auto;"><a href="https://github.com/Rorysweeney99" class="es-button es-button-1583775047890" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:18px;color:#FFFFFF;border-style:solid;border-color:#2B27C1;border-width:10px 20px;display:inline-block;background:#2B27C1;border-radius:3px;font-weight:normal;font-style:normal;line-height:22px;width:auto;text-align:center;">Github</a></span></td> 
+							 </tr> 
+						   </table></td> 
+						 </tr> 
+					   </table> 
+					   <!--[if mso]></td></tr></table><![endif]--></td> 
+					 </tr> 
+					 <tr style="border-collapse:collapse;"> 
+					  <td align="left" style="Margin:0;padding-top:20px;padding-bottom:30px;padding-left:30px;padding-right:30px;background-color:#FFFFFF;" bgcolor="#ffffff"> 
+					   <!--[if mso]><table width="540" cellpadding="0" 
+								cellspacing="0"><tr><td width="218" valign="top"><![endif]--> 
+					   <table class="es-left" cellspacing="0" cellpadding="0" align="left" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;"> 
+						 <tr style="border-collapse:collapse;"> 
+						  <td class="es-m-p20b" width="218" align="left" style="padding:0;Margin:0;"> 
+						   <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="left" style="padding:0;Margin:0;padding-bottom:10px;"><h2 style="Margin:0;line-height:29px;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:24px;font-style:normal;font-weight:bold;color:#212121;">Video tour here</h2></td> 
+							 </tr> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="left" style="padding:0;Margin:0;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:24px;color:#131313;">some filler text</p></td> 
+							 </tr> 
+						   </table></td> 
+						 </tr> 
+					   </table> 
+					   <!--[if mso]></td><td width="20"></td><td width="302" valign="top"><![endif]--> 
+					   <table class="es-right" cellspacing="0" cellpadding="0" align="right" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;"> 
+						 <tr style="border-collapse:collapse;"> 
+						  <td width="302" align="left" style="padding:0;Margin:0;"> 
+						   <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="center" style="padding:0;Margin:0;"><a target="_blank" href="https://www.youtube.com/watch?v=LQn8M0p6H8Q" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:16px;text-decoration:underline;color:#2CB543;"><img class="adapt-img" src="https://eadorv.stripocdn.email/content/guids/videoImgGuid/images/83941583785899775.png" alt="Get out ma gaff ya green cunt" title="Get out ma gaff ya green cunt" width="302" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;"></a></td> 
+							 </tr> 
+						   </table></td> 
+						 </tr> 
+					   </table> 
+					   <!--[if mso]></td></tr></table><![endif]--></td> 
+					 </tr> 
+				   </table></td> 
+				 </tr> 
+			   </table> 
+			   <table cellpadding="0" cellspacing="0" class="es-content" align="center" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;"> 
+				 <tr style="border-collapse:collapse;"> 
+				  <td style="padding:0;Margin:0;background-color:transparent;" bgcolor="transparent" align="center"> 
+				   <table class="es-content-body" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#F7F7F7;" width="600" cellspacing="0" cellpadding="0" bgcolor="transparent" align="center"> 
+					 <tr style="border-collapse:collapse;"> 
+					  <td align="left" style="padding:0;Margin:0;padding-left:30px;padding-right:30px;background-color:#FFFFFF;" bgcolor="#ffffff"> 
+					   <table cellspacing="0" cellpadding="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
+						 <tr style="border-collapse:collapse;"> 
+						  <td class="es-m-p20b" width="540" align="left" style="padding:0;Margin:0;"> 
+						   <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="left" style="padding:0;Margin:0;padding-bottom:10px;"><h2 style="Margin:0;line-height:32px;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:27px;font-style:normal;font-weight:bold;color:#212121;text-align:center;">Just can't get enough?</h2></td> 
+							 </tr> 
+						   </table></td> 
+						 </tr> 
+					   </table></td> 
+					 </tr> 
+					 <tr style="border-collapse:collapse;"> 
+					  <td style="Margin:0;padding-top:20px;padding-bottom:20px;padding-left:30px;padding-right:30px;background-color:#FFFFFF;" bgcolor="#ffffff" align="left"> 
+					   <!--[if mso]><table width="540" cellpadding="0" cellspacing="0"><tr><td width="247" valign="top"><![endif]--> 
+					   <table class="es-left" cellspacing="0" cellpadding="0" align="left" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;"> 
+						 <tr style="border-collapse:collapse;"> 
+						  <td width="227" valign="top" align="center" style="padding:0;Margin:0;"> 
+						   <table style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;" width="100%" cellspacing="0" cellpadding="0" bgcolor="transparent" role="presentation"> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="center" style="padding:0;Margin:0;padding-bottom:15px;font-size:0;"><a target="_blank" href="http://localhost:9000/bets/buyCoins" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:16px;text-decoration:underline;color:#2CB543;"><img class="adapt-img" src="https://live.staticflickr.com/8015/7530559220_467224b01e_b.jpg" alt="1,000 coins" title="1,000 coins" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;width:258px;" width="227"></a></td> 
+							 </tr> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td class="es-m-txt-c" align="left" style="padding:0;Margin:0;padding-bottom:10px;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:20px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:30px;color:#131313;"><strong>1,000 coins</strong></p></td> 
+							 </tr> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td class="es-m-txt-c" align="left" style="padding:0;Margin:0;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:24px;color:#999999;"><s class="old-price" style="text-decoration:line-through;">€2</s></p></td> 
+							 </tr> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td class="es-m-txt-c" align="left" style="padding:0;Margin:0;padding-top:5px;"><h2 class="price" style="Margin:0;line-height:22px;mso-line-height-rule:exactly;font-family:tahoma, verdana, segoe, sans-serif;font-size:18px;font-style:normal;font-weight:bold;color:#0B5394;">€1</h2></td> 
+							 </tr> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="left" style="padding:0;Margin:0;padding-top:15px;"><span class="es-button-border" style="border-style:solid;border-color:#2CB543;background:#FFC80A;border-width:0px;display:inline-block;border-radius:3px;width:auto;"><a href="http://localhost:9000/bets/buyCoins" class="es-button" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:18px;color:#FFFFFF;border-style:solid;border-color:#FFC80A;border-width:10px 20px 10px 20px;display:inline-block;background:#FFC80A;border-radius:3px;font-weight:normal;font-style:normal;line-height:22px;width:auto;text-align:center;">Add to Cart</a></span></td> 
+							 </tr> 
+						   </table></td> 
+						  <td class="es-hidden" width="20" style="padding:0;Margin:0;"></td> 
+						 </tr> 
+					   </table> 
+					   <!--[if mso]></td><td width="237" valign="top"><![endif]--> 
+					   <table class="es-left" cellspacing="0" cellpadding="0" align="left" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;"> 
+						 <tr style="border-collapse:collapse;"> 
+						  <td width="237" valign="top" align="center" style="padding:0;Margin:0;"> 
+						   <table style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;" width="100%" cellspacing="0" cellpadding="0" bgcolor="transparent" role="presentation"> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="center" style="padding:0;Margin:0;padding-bottom:15px;font-size:0;"><a target="_blank" href="http://localhost:9000/bets/buyCoins" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:16px;text-decoration:underline;color:#2CB543;"><img class="adapt-img" src="https://c8.alamy.com/comp/T3MJRJ/realistic-stack-of-golden-money-or-stack-of-coins-T3MJRJ.jpg" alt="10,000 coins" title="10,000 coins" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;width:260px;" width="237"></a></td> 
+							 </tr> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td class="es-m-txt-c" align="left" style="padding:0;Margin:0;padding-bottom:10px;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:20px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:30px;color:#131313;"><strong>10,000 coins</strong></p></td> 
+							 </tr> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td class="es-m-txt-c" align="left" style="padding:0;Margin:0;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:24px;color:#999999;"><s class="old-price" style="text-decoration:line-through;">€20</s></p></td> 
+							 </tr> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td class="es-m-txt-c" align="left" style="padding:0;Margin:0;padding-top:5px;"><h2 class="price" style="Margin:0;line-height:22px;mso-line-height-rule:exactly;font-family:tahoma, verdana, segoe, sans-serif;font-size:18px;font-style:normal;font-weight:bold;color:#0B5394;">€5</h2></td> 
+							 </tr> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="left" style="padding:0;Margin:0;padding-top:15px;"><span class="es-button-border" style="border-style:solid;border-color:#2CB543;background:#FFC80A;border-width:0px;display:inline-block;border-radius:3px;width:auto;"><a href="http://localhost:9000/bets/buyCoins" class="es-button" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:18px;color:#FFFFFF;border-style:solid;border-color:#FFC80A;border-width:10px 20px 10px 20px;display:inline-block;background:#FFC80A;border-radius:3px;font-weight:normal;font-style:normal;line-height:22px;width:auto;text-align:center;">Add to Cart</a></span></td> 
+							 </tr> 
+						   </table></td> 
+						 </tr> 
+					   </table> 
+					   <!--[if mso]></td><td width="20"></td><td width="36" valign="top"><![endif]--> 
+					   <table cellpadding="0" cellspacing="0" class="es-right" align="right" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;"> 
+						 <tr style="border-collapse:collapse;"> 
+						  <td width="36" align="left" style="padding:0;Margin:0;"> 
 						   <table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
 							 <tr style="border-collapse:collapse;"> 
 							  <td align="center" style="padding:0;Margin:0;display:none;"></td> 
+							 </tr> 
+						   </table></td> 
+						 </tr> 
+					   </table> 
+					   <!--[if mso]></td></tr></table><![endif]--></td> 
+					 </tr> 
+				   </table></td> 
+				 </tr> 
+			   </table> 
+			   <table cellpadding="0" cellspacing="0" class="es-content" align="center" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;"> 
+				 <tr style="border-collapse:collapse;"> 
+				  <td align="center" style="padding:0;Margin:0;"> 
+				   <table bgcolor="transparent" class="es-content-body" align="center" cellpadding="0" cellspacing="0" width="600" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;"> 
+					 <tr style="border-collapse:collapse;"> 
+					  <td align="left" style="padding:0;Margin:0;background-position:left top;"> 
+					   <table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
+						 <tr style="border-collapse:collapse;"> 
+						  <td width="600" align="center" valign="top" style="padding:0;Margin:0;"> 
+						   <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="center" height="40" bgcolor="transparent" style="padding:0;Margin:0;"></td> 
+							 </tr> 
+						   </table></td> 
+						 </tr> 
+					   </table></td> 
+					 </tr> 
+				   </table></td> 
+				 </tr> 
+			   </table> 
+			   <table cellpadding="0" cellspacing="0" class="es-footer" align="center" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;background-color:#F6F6F6;background-repeat:repeat;background-position:center top;"> 
+				 <tr style="border-collapse:collapse;"> 
+				  <td align="center" style="padding:0;Margin:0;background-image:url(https://eadorv.stripocdn.email/content/guids/CABINET_3e39c673d3575362a28b176de1250088/images/31751560930679125.jpg);background-position:left bottom;background-repeat:no-repeat;" background="https://eadorv.stripocdn.email/content/guids/CABINET_3e39c673d3575362a28b176de1250088/images/31751560930679125.jpg"> 
+				   <table bgcolor="#31cb4b" class="es-footer-body" align="center" cellpadding="0" cellspacing="0" width="600" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;"> 
+					 <tr style="border-collapse:collapse;"> 
+					  <td align="left" style="padding:0;Margin:0;background-position:left top;"> 
+					   <table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
+						 <tr style="border-collapse:collapse;"> 
+						  <td width="600" align="center" valign="top" style="padding:0;Margin:0;"> 
+						   <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
+							 <tr style="border-collapse:collapse;"> 
+							  <td align="center" height="40" style="padding:0;Margin:0;"></td> 
 							 </tr> 
 						   </table></td> 
 						 </tr> 
@@ -311,9 +539,10 @@ func main() {
 	message.Raw = strings.Replace(message.Raw, "+", "-", -1)
 	message.Raw = strings.Replace(message.Raw, "=", "", -1)
 
-	for ind, val := range os.Args {
-		fmt.Println(ind, val)
-	}
+	// for ind, val := range os.Args {
+	// 	fmt.Println(ind, val)
+	// }
+	fmt.Println("")
 
 	_, err = srv.Users.Messages.Send("me", &message).Do()
 	if err != nil {
