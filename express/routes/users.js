@@ -77,10 +77,11 @@ router.get('/profile', (req, res, next) => {
         const jwtString = req.cookies.Authorization.split(' ');
         const profile = utilFuncs.verifyJwt(jwtString[1]);
         if (profile) {
-            res.send('Hello ' + profile.user_name);
+            res.send(profile.user_name);
         }
     } else {
-        res.render('register');
+        res.send("Could not get profile");
+        //res.render('register');
     }
 });
 
