@@ -860,7 +860,7 @@
           "type": "string"
         },
         "coins": {
-          "type": "Number",
+          "type": "number",
           "default": 0
         },
         "accessToken": {
@@ -884,8 +884,149 @@
           "minLength": 1,
           "maxLength": 64
         },
+        "result": {
+          "type": "string"
+        },
         "timePosted": {
           "type": "string"
+        },
+        "forUsers": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "user_name": {
+                "type": "string"
+              },
+              "betAmount": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "againstUsers": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "user_name": {
+                "type": "string"
+              },
+              "betAmount": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "ends": {
+          "type": "string"
+        }
+      }
+    },
+    "testBetsFinishedSchema": {
+      "description": "Main schema for general bets",
+      "required": [
+        "userName",
+        "title"
+      ],
+      "properties": {
+        "userName": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "side": {
+          "type": "string"
+        },
+        "deadline": {
+          "type": "string"
+        },
+        "forUsers": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "user_name": {
+                "type": "string"
+              },
+              "betAmount": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "againstUsers": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "user_name": {
+                "type": "string"
+              },
+              "betAmount": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "commonBets": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "user_name": {
+                "type": "string"
+              },
+              "betAmount": {
+                "type": "string"
+              },
+              "bet": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "firstPlaceCut": {
+          "type": "number"
+        },
+        "tester": {
+          "type": "string"
+        },
+        "secondPlaceCut": {
+          "type": "number"
+        },
+        "thirdPlaceCut": {
+          "type": "number"
+        },
+        "forTotal": {
+          "type": "number"
+        },
+        "againstTotal": {
+          "type": "number"
+        },
+        "commonTotal": {
+          "type": "number"
+        },
+        "winners": {
+          "type": "array",
+          "properties": {
+            "user_name": {
+              "type": "string"
+            },
+            "payout": {
+              "type": "number"
+            },
+            "profilePicture": {
+              "type": "string"
+            }
+          }
+        },
+        "losers": {
+          "type": "array",
+          "properties": {
+            "user_name": {
+              "type": "string"
+            }
+          }
+        },
+        "result": {
+          "type": "number"
         }
       }
     },
