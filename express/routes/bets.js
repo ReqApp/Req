@@ -606,6 +606,31 @@ router.post('/betExpired', (req, res, next) => {
     // and winnings will be paid back
     if (req.body.secret === process.env.ReqSecret) {
 
+        let inputObj = {
+            "betID": req.body.betID,
+            "secret": process.env.ReqSecret,
+            "expired": true
+        }
+        utilFuncs.decideBet(inputObj).then((response) => {
+            if (response) {
+                res.status(200).json({
+                    "status": "success",
+                    "body": "Penalised creator and paid back to bettors"
+                });
+            } else {
+                res.status(400).json({
+                    "status": "error",
+                    "body": "Oops, couldn't pay back to the bettors"
+                });
+            }
+        }, (err) => {
+            res.status(400).json({
+                "status": "error",
+                "body": err
+            });
+        })
+
+
     } else {
         res.status(401).json({
             "status": "error",

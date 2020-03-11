@@ -98,9 +98,12 @@ func checkForOutOfDateBets(secret string) {
 	res, err := http.PostForm("http://localhost:9000/bets/getAllBetsDev", url.Values{"secret": {secret}})
 	body, _ := ioutil.ReadAll(res.Body)
 	if err != nil || res.StatusCode != 200 {
-		fmt.Println(string(body))
+		fmt.Println(res.StatusCode)
+		fmt.Println(err)
+		log.Fatal(err)
 		sendErrorEmail("Error reaching API endpoint /bets/bigButtonBet")
 	} else {
+
 		var responseJSON responseStruct
 		json.Unmarshal(body, &responseJSON)
 		for _, val := range responseJSON {
@@ -110,14 +113,15 @@ func checkForOutOfDateBets(secret string) {
 			if err != nil {
 				log.Fatal(err)
 			}
+
 			if deadlineVal+86400000 < currTime {
-				// res, err := http.PostForm("http://localhost:9000/bets/betExpired", url.Values{"secret": {secret}, "username": {val.UserName}, "betID": {val.ID}})
-				// if err != nil || res.StatusCode != 200 {
-				// 	fmt.Println(string(body))
-				// 	sendErrorEmail("Error trying to punish " + val.UserName + " for expired bet:" + val.ID)
-				// } else {
-				fmt.Println("Punished user " + val.UserName + " for expired bet: " + val.ID)
-				// }
+				fmt.Println(val.ID)
+				res, err := http.PostForm("http://localhost:9000/bets/betExpired", url.Values{"secret": {secret}, "username": {val.UserName}, "betID": {val.ID}})
+				if err != nil || res.StatusCode != 200 {
+					sendErrorEmail("Error trying to punish " + val.UserName + " for expired bet:" + val.ID)
+				} else {
+					fmt.Println("Punished user " + val.UserName + " for expired bet: " + val.ID)
+				}
 			}
 		}
 	}
