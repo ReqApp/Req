@@ -360,7 +360,7 @@ func main() {
 						  <td width="290" align="left" style="padding:0;Margin:0;"> 
 						   <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
 							 <tr style="border-collapse:collapse;"> 
-							  <td align="left" class="es-m-txt-c" style="padding:0;Margin:0;padding-right:10px;padding-left:30px;"><h3 style="Margin:0;line-height:29px;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:24px;font-style:normal;font-weight:normal;color:#0E0E0E;"><strong>Rory S</strong></h3></td> 
+							  <td align="left" class="es-m-txt-c" style="padding:0;Margin:0;padding-right:10px;padding-left:30px;"><h3 style="Margin:0;line-height:29px;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:24px;font-style:normal;font-weight:normal;color:#0E0E0E;"><strong>Rory Sweeney</strong></h3></td> 
 							 </tr> 
 							 <tr style="border-collapse:collapse;"> 
 							  <td align="left" class="es-m-txt-c" style="padding:0;Margin:0;padding-right:10px;padding-top:15px;padding-left:30px;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:24px;color:#181717;">Front-end UI/UX</p></td> 

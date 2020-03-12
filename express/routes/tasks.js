@@ -35,7 +35,6 @@ function fileFilter(req, file, cb) {
 
 router.post('/uploadImage', upload.single('imageUpload'), (req, res, next) => {
     if (req.file) {
-
         uploadToImgur(req.file.path).then((response) => {
             if (response) {
                 checkImage(response).then((success) => {

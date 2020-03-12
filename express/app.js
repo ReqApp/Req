@@ -13,6 +13,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var tasksRouter = require('./routes/tasks');
 var betsRouter = require('./routes/bets');
+var paymentsRouter = require('./routes/payments');
 
 const passportSetup = require("./models/config");
 const passport = require("passport");
@@ -42,6 +43,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/tasks', tasksRouter);
 app.use('/bets', betsRouter);
+app.use('/payments', paymentsRouter);
 
 // Swagger setup
 const swaggerUi = require('swagger-ui-express');
