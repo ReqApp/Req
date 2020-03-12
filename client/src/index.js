@@ -17,7 +17,7 @@ class App extends Component{
                    <Route exact path='/maps'>
                         <DisplayMap/>
                    </Route>
-                   <Route exact path='find-bets'>
+                   <Route exact path='/find-bets'>
                         <FindLocationBets/>
                    <Route exact path='/bets'>
                        <Bets/>
