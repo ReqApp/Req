@@ -19,6 +19,7 @@ class App extends Component{
                    </Route>
                    <Route exact path='/find-bets'>
                         <FindLocationBets/>
+                    </Route>
                    <Route exact path='/bets'>
                        <Bets/>
                    </Route>
@@ -33,7 +34,6 @@ class App extends Component{
                    </Route>
                    <Route exact path='/'>
                        <HomePage/>
-                   </Route>
                    </Route>
                </Switch>
        );
