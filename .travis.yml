@@ -1,15 +1,5 @@
-sido: false
-dist: "trusty"
-language: node_js
-addons:
-  apt:
-    packages:
-      - "python3"
-      - "python3-pip"
 node_js:
   - 10
-before_install:
-  - "pip3 install --user ezgmail"
 before_script:
   npm install -g swagger-ui-express
   npm link swagger-ui-express
