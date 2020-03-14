@@ -8,6 +8,13 @@
   "schemes": [
     "https"
   ],
+  "securityDefinitions": {
+    "myCookie": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
   "tags": [
     {
       "name": "Betting APIs",
@@ -22,11 +29,15 @@
       "description": "Stored in routes/users.js"
     },
     {
-      "name": "Testing and Debugging APIs"
+      "name": "Payment APIs",
+      "description": "Stored in payments.js"
     },
     {
       "name": "Index APIs",
       "description": "Stored in routes/index.js"
+    },
+    {
+      "name": "Testing and Debugging APIs"
     }
   ],
   "host": "localhost:9000",
@@ -97,6 +108,11 @@
           "Betting APIs"
         ],
         "description": "Finishes bet and pays out winnings",
+        "security": [
+          {
+            "myCookie": []
+          }
+        ],
         "parameters": [
           {
             "in": "body",
@@ -444,6 +460,12 @@
                 "$ref": "#/definitions/betSchema"
               }
             }
+          },
+          "500": {
+            "description": "Error find bet objects",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
           }
         }
       }
@@ -479,6 +501,18 @@
               "items": {
                 "$ref": "#/definitions/bettingRegionSchema"
               }
+            }
+          },
+          "400": {
+            "description": "Invalid parameters",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "500": {
+            "description": "Error retrieving bet regions from database.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
             }
           }
         }
@@ -540,6 +574,44 @@
             "description": "Updated bet region",
             "schema": {
               "$ref": "#/definitions/bettingRegionSchema"
+            }
+          }
+        }
+      }
+    },
+    "/checkout": {
+      "post": {
+        "tags": [
+          "Payment APIs"
+        ],
+        "summary": "Allows user to make new payment.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "product": {
+                  "type": "string"
+                },
+                "token": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment validated",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Payment not valid",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
             }
           }
         }
@@ -924,6 +996,96 @@
         }
       }
     },
+    "/users/getProfilePicture": {
+      "post": {
+        "summary": "Gets profile picture for user if exists",
+        "tags": [
+          "User APIs"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "username": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns profile picture in body if exists. Otherwise none exists or could not be found.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Invalid parameters",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/users/profile": {
+      "get": {
+        "summary": "Get user profile",
+        "tags": [
+          "User APIs"
+        ],
+        "security": [
+          {
+            "myCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User name"
+          },
+          "400": {
+            "description": "Could not get user"
+          }
+        }
+      }
+    },
+    "/buyCoins": {
+      "post": {
+        "summary": "Allows user to purchase new coins",
+        "tags": [
+          "Index APIs"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "total": {
+                  "type": "number"
+                },
+                "stripeTokenId": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Charged successfully."
+          },
+          "500": {
+            "description": "Payment failed"
+          }
+        }
+      }
+    },
     "/createArticleBet": {
       "post": {
         "summary": "Create new article bet",
@@ -994,6 +1156,118 @@
             "schema": {
               "$ref": "#/definitions/rest_API_Response"
             }
+          }
+        }
+      }
+    },
+    "/shortenLink": {
+      "post": {
+        "summary": "Used to shorten QR code url link",
+        "tags": [
+          "Index APIs"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sends back shortened URL in body of response.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Link could not be shortened.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/getUsers": {
+      "get": {
+        "summary": "Returns user names of all users",
+        "tags": [
+          "Index APIs"
+        ],
+        "description": "Gets all users from database and returns their usernames",
+        "responses": {
+          "200": {
+            "description": "Array of user names"
+          }
+        }
+      }
+    },
+    "/getUsers/:id": {
+      "get": {
+        "summary": "Gets user by id and returns id and username",
+        "tags": [
+          "Index APIs"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User name and ID"
+          },
+          "400": {
+            "description": "Error"
+          }
+        }
+      }
+    },
+    "/members": {
+      "get": {
+        "summary": "Renders specific page depending if user is logged in.",
+        "tags": [
+          "Index APIs"
+        ],
+        "security": [
+          {
+            "myCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Renders home page if user logged in or forgot password page if not."
+          }
+        }
+      }
+    },
+    "/getArticleBets": {
+      "get": {
+        "summary": "Returns all article bets.",
+        "tags": [
+          "Index APIs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of article bets sorted by date created."
+          },
+          "400": {
+            "description": "Error"
           }
         }
       }

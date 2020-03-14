@@ -61,7 +61,6 @@ router.get('/getBetsInRegion', (req, res) => {
             } else {
                 res.status(200).json(bets);
             }
-            res.json(sendBets);
         });
     }
 });
