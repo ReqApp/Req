@@ -1,7 +1,6 @@
 var BetRegion = require('../models/bettingRegions');
 var testBetsFinished = require('../models/testBetsFinished');
 var generalFuncs = require("../funcs/generalFuncs");
-var articleBet = require('../models/articleBets');
 const utilFuncs = require('../funcs/betFuncs');
 var testBets = require('../models/testBets');
 var router = require('express').Router();
@@ -224,62 +223,70 @@ router.post('/makeBet', (req, res, next) => {
     const secondPlaceCut = parseFloat(req.body.secondPlaceCut);
     const thirdPlaceCut = parseFloat(req.body.thirdPlaceCut);
 
-    // if it's a multi type bet it must allocate the betting percentages
-    if (req.body.type === "multi" && (isNaN(firstPlaceCut) || isNaN(secondPlaceCut) || isNaN(thirdPlaceCut))) {
+    if (!(validate(req.body.title, "title") && validate(req.body.type, "type"))) {
         res.status(400).json({
             "status": "error",
-            "body": "Invalid bet percentages entered"
+            "body": "Invalid input"
         })
     } else {
-
-        if ((req.body.type && req.body.type && req.body.title && req.body.deadline && req.body.username) ||
-            (req.body.type && req.body.title && req.body.deadline && req.body.deadline &&
-                req.body.firstPlaceCut && req.body.secondPlaceCut && req.body.thirdPlaceCut)) {
-            // bet has input parameters for either a binary or multi bet
-
-            let inputObj = {
-                "type": req.body.type,
-                "side": req.body.side,
-                "title": req.body.title,
-                "deadline": req.body.deadline,
-                "username": req.body.username,
-                "firstPlaceCut": firstPlaceCut,
-                "secondPlaceCut": secondPlaceCut,
-                "thirdPlaceCut": thirdPlaceCut
-            }
-
-            if (req.body.type === "multi" && (firstPlaceCut + secondPlaceCut + thirdPlaceCut) != 1) {
-                // The percentage payouts must add up to 100%
-                res.status(400).json({
-                    "status": "error",
-                    "body": "Payout percentages don't add up to 100%"
-                })
-
-            } else {
-                utilFuncs.createBet(inputObj).then((response) => {
-                    if (response) {
-                        res.status(200).json({
-                            "status": "success",
-                            "body": "Bet made!"
-                        });
-                    } else {
-                        res.status(400).json({
-                            "status": "error",
-                            "body": `No response, bet was not made`
-                        });
-                    }
-                }, (err) => {
-                    res.status(400).json({
-                        "status": "err",
-                        "body": `Error: Bet was not made. ${err}`
-                    });
-                })
-            }
-        } else {
+        // if it's a multi type bet it must allocate the betting percentages
+        if (req.body.type === "multi" && (isNaN(firstPlaceCut) || isNaN(secondPlaceCut) || isNaN(thirdPlaceCut))) {
             res.status(400).json({
                 "status": "error",
-                "body": "Invalid input"
-            });
+                "body": "Invalid bet percentages entered"
+            })
+        } else {
+            // TODO: make this check signed in username instead of username input
+
+            if ((req.body.type && req.body.title && req.body.deadline && req.body.username) ||
+                (req.body.type && req.body.title && req.body.deadline && req.body.username &&
+                    req.body.firstPlaceCut && req.body.secondPlaceCut && req.body.thirdPlaceCut)) {
+                // bet has input parameters for either a binary or multi bet
+
+                let inputObj = {
+                    "type": req.body.type,
+                    "side": req.body.side,
+                    "title": req.body.title,
+                    "deadline": req.body.deadline,
+                    "username": req.body.username,
+                    "firstPlaceCut": firstPlaceCut,
+                    "secondPlaceCut": secondPlaceCut,
+                    "thirdPlaceCut": thirdPlaceCut
+                }
+
+                if (req.body.type === "multi" && (firstPlaceCut + secondPlaceCut + thirdPlaceCut) != 1) {
+                    // The percentage payouts must add up to 100%
+                    res.status(400).json({
+                        "status": "error",
+                        "body": "Payout percentages don't add up to 100%"
+                    })
+
+                } else {
+                    utilFuncs.createBet(inputObj).then((response) => {
+                        if (response) {
+                            res.status(200).json({
+                                "status": "success",
+                                "body": "Bet made!"
+                            });
+                        } else {
+                            res.status(400).json({
+                                "status": "error",
+                                "body": `No response, bet was not made`
+                            });
+                        }
+                    }, (err) => {
+                        res.status(400).json({
+                            "status": "err",
+                            "body": `Error: Bet was not made. ${err}`
+                        });
+                    })
+                }
+            } else {
+                res.status(400).json({
+                    "status": "error",
+                    "body": "Invalid input"
+                });
+            }
         }
     }
 });

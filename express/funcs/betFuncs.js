@@ -71,6 +71,14 @@ function validate(input, type) {
             } else {
                 return false;
             }
+        case 'type':
+            if (!input) {
+                return false;
+            }
+            if (input === "multi" || input === "binary") {
+                return true;
+            }
+            return false;
         case 'url':
             let test2 = conditions.some(el => input.includes(el));
             if (test2) {
@@ -78,8 +86,18 @@ function validate(input, type) {
             } else {
                 return true;
             }
-        case 'article':
-            return true;
+        case 'title':
+            if (!input) {
+                return false;
+            }
+            if (input.length > 1 && input.length < 64) {
+                if (input.match(/([^A-Za-z0-9,]+)/g)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return false;
     }
 }
 
@@ -751,57 +769,7 @@ function addBetToFinishedDB(betInfo, winners, losers, betSummary, result) {
         });
     });
 }
-
-function makeArticleBet(input, username) {
-    return new Promise((resolve, reject) => {
-        if (input.sitename && input.directory && input.month &&
-            input.year && input.searchTerm && input.ends &&
-            input.betAmount && username) {
-
-            if (validate(input.sitename, "article") && validate(input.directory, "article") &&
-                validate(input.month, "article") && validate(input.year, "article") &&
-                validate(input.searchTerm, "article")) {
-
-                const parsedTime = Date.parse(input.ends);
-                const child = require('child_process').execFile;
-                const executablePath = "./articleStats/articleGetLinux";
-                const parameters = ["-s", input.sitename, input.directory, input.month, input.year, input.searchTerm];
-
-                child(executablePath, parameters, function(err, data) {
-                    if (err) {
-                        console.log(err);
-                        coneole.log("error runnning script")
-                        reject(null);
-                    } else {
-                        // log to DB and then send back ok signal
-                        newBet = new articleBet({
-                            title: `The ${input.sitename} will have more than 10 articles about'${input.searchTerm}' in ${input.month}/${input.year}`,
-                            subtext: `${input.directory} - ${input.month}/${input.year}`,
-                            result: data,
-                            for: 0,
-                            against: 0,
-                            ends: parsedTime,
-                            forUsers: { user_name: username, betAmount: input.betAmount }
-                        });
-
-                        newBet.save((err, user) => {
-                            if (err) {
-                                console.log("error saving user")
-                                reject(err);
-                            } else {
-                                resolve(user);
-                            }
-                        });
-                    }
-                });
-            } else {
-                reject(null);
-            }
-        } else {
-            resolve(null);
-        }
-    });
-}
+c
 
 function resetPassword(email, newPassword) {
     return new Promise((resolve, reject) => {
@@ -1067,7 +1035,6 @@ module.exports.alreadyBetOn = alreadyBetOn;
 module.exports.isValidBetID = isValidBetID;
 module.exports.resetPassword = resetPassword;
 module.exports.hasEnoughCoins = hasEnoughCoins;
-module.exports.makeArticleBet = makeArticleBet;
 module.exports.checkIfExisting = checkIfExisting;
 module.exports.anonymiseBetData = anonymiseBetData;
 module.exports.expiredBetPayBack = expiredBetPayBack;
