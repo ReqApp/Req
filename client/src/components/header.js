@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+<<<<<<< Updated upstream:client/src/components/header.js
 <<<<<<< Updated upstream:client/src/components/home_page/header.js
 import {ContactList} from '../header/headerContactList';
 import {ReqLogo} from '../header/reqLogo';
@@ -8,6 +9,8 @@ import { HeaderBetButton } from '../header/headerBetButton';
 import {SearchButton} from '../header/searchButton';
 import './header.css';
 =======
+=======
+>>>>>>> Stashed changes:client/src/components/header.jsx
 import {ContactList} from './header/headerContactList';
 import {ReqLogo} from './header/reqLogo';
 import {NavLinks} from './header/navLinks';
@@ -15,7 +18,10 @@ import { HeaderSocialLinks } from './header/headerSocialLinks';
 import { HeaderBetButton } from './header/headerBetButton';
 import {SearchButton} from './header/searchButton';
 import './header/header.css';
+<<<<<<< Updated upstream:client/src/components/header.js
 >>>>>>> Stashed changes:client/src/components/header.js
+=======
+>>>>>>> Stashed changes:client/src/components/header.jsx
 
 export default class Header extends Component {
   render() {

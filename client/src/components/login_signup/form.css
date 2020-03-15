@@ -21,8 +21,14 @@
 	 background: #131313;
 	 padding: 40px;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	 max-width: 600px;
 	 margin: 40px auto;
+=======
+	 max-width: 800px;
+	 max-height: 550px;
+	 margin: 20px auto;
+>>>>>>> Stashed changes
 =======
 	 max-width: 800px;
 	 max-height: 550px;
@@ -35,7 +41,10 @@
 	 list-style: none;
 	 padding: 0;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	 margin: 0 0 40px 0;
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 }
@@ -72,8 +81,12 @@
 	 text-align: center;
 	 color: #fff;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	 font-weight: 300;
 	 margin: 0 0 40px;
+=======
+	 font-weight: 100;
+>>>>>>> Stashed changes
 =======
 	 font-weight: 100;
 >>>>>>> Stashed changes
@@ -92,16 +105,22 @@
 }
  label .req {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	 margin: 2px;
 	 color: #28ae60;
 }
  label.active {
 	 transform: translateY(50px);
 =======
+=======
+>>>>>>> Stashed changes
 	 color: #28ae60;
 }
  label.active {
 	 transform: translateY(30px);
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 	 left: 2px;
 	 font-size: 14px;
@@ -136,14 +155,20 @@
  .field-wrap {
 	 position: relative;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	 margin-bottom: 40px;
 =======
+=======
+>>>>>>> Stashed changes
 	 margin-bottom: 20px;
 }
 .image-upload {
 	position: relative;
 	margin-bottom: 20px;
 	color: #fff;
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 }
  .top-row:after {
@@ -181,7 +206,10 @@
 	 width: 100%;
 }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 .button-image-upload {
 	border: 0;
 	outline: none;
@@ -196,12 +224,16 @@
 	transition: all 0.5s ease;
 	-webkit-appearance: none;
 }
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
  .forgot {
 	 margin-top: -20px;
 	 text-align: right;
 }
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 .login100-social-item {
   font-size: 25px;
@@ -225,6 +257,8 @@
   background-color: #333333;
 }
 =======
+=======
+>>>>>>> Stashed changes
 
 .icon-bar {
 	position: fixed;
@@ -273,5 +307,8 @@
 	background: #bb0000;
 	color: white;
   }
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
  

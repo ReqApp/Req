@@ -5,6 +5,7 @@ export default class SocialLinks extends Component {
   render() {
     return (
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       <div>        
        <br />
        <br />
@@ -18,6 +19,8 @@ export default class SocialLinks extends Component {
               <a href="#" className="btn btn-danger btn-block"><i className="fa fa-google" /> Sign in with <b>Google</b></a>
             </div>
 =======
+=======
+>>>>>>> Stashed changes
       <div>     
          <div className="icon-bar">
         <a href="#" className="facebook"><i className="fa fa-facebook" /></a>
@@ -25,6 +28,9 @@ export default class SocialLinks extends Component {
         <a href="#" className="google"><i className="fa fa-google" /></a>
         <a href="#" className="linkedin"><i className="fa fa-linkedin" /></a>
       </div> 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     </div>
     )
