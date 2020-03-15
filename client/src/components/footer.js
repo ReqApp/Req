@@ -1,5 +1,9 @@
 import React, { Component } from 'react'
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:client/src/components/footer.js
+=======
+<<<<<<< Updated upstream:client/src/components/home_page/footer.js
+>>>>>>> Stashed changes
 <<<<<<< Updated upstream:client/src/components/home_page/footer.js
 import {FooterLogo} from '../footer/footerLogo';
 import {FooterSocialLinks} from '../footer/footerSocialLinks';
@@ -9,17 +13,28 @@ import {ReqAddress} from '../footer/reqAddress';
 import './footer.css';
 =======
 =======
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes:client/src/components/footer.jsx
+=======
+>>>>>>> Stashed changes:client/src/components/footer.js
+>>>>>>> Stashed changes
 import {FooterLogo} from './footer/footerLogo';
 import {FooterSocialLinks} from './footer/footerSocialLinks';
 import {Services} from './footer/services';
 import {FooterPageLinks} from './footer/footerPageLinks';
 import {ReqAddress} from './footer/reqAddress';
 import './footer/footer.css';
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:client/src/components/footer.js
 >>>>>>> Stashed changes:client/src/components/footer.js
 =======
 >>>>>>> Stashed changes:client/src/components/footer.jsx
+=======
+<<<<<<< Updated upstream:client/src/components/home_page/footer.js
+>>>>>>> Stashed changes:client/src/components/footer.js
+=======
+>>>>>>> Stashed changes:client/src/components/footer.js
+>>>>>>> Stashed changes
 
 export default class Footer extends Component {
   render() {

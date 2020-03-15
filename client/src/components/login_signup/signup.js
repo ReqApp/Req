@@ -33,8 +33,11 @@ export default class SignUp extends Component {
         </div>
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         <button type="submit" className="button button-block">Get Started</button>
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         <div className="image-upload">
@@ -42,6 +45,9 @@ export default class SignUp extends Component {
         </div>
         <button type="submit" className="button button-block">Get Started</button>      
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

@@ -22,8 +22,14 @@
 	 padding: 40px;
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	 max-width: 600px;
 	 margin: 40px auto;
+=======
+	 max-width: 800px;
+	 max-height: 550px;
+	 margin: 20px auto;
+>>>>>>> Stashed changes
 =======
 	 max-width: 800px;
 	 max-height: 550px;
@@ -42,7 +48,10 @@
 	 padding: 0;
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	 margin: 0 0 40px 0;
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -82,8 +91,12 @@
 	 color: #fff;
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	 font-weight: 300;
 	 margin: 0 0 40px;
+=======
+	 font-weight: 100;
+>>>>>>> Stashed changes
 =======
 	 font-weight: 100;
 >>>>>>> Stashed changes
@@ -106,6 +119,7 @@
  label .req {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	 margin: 2px;
 	 color: #28ae60;
 }
@@ -114,11 +128,16 @@
 =======
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 	 color: #28ae60;
 }
  label.active {
 	 transform: translateY(30px);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -156,8 +175,11 @@
 	 position: relative;
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	 margin-bottom: 40px;
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 	 margin-bottom: 20px;
@@ -167,6 +189,9 @@
 	margin-bottom: 20px;
 	color: #fff;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -207,7 +232,10 @@
 }
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 .button-image-upload {
@@ -225,6 +253,9 @@
 	-webkit-appearance: none;
 }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -233,6 +264,7 @@
 	 text-align: right;
 }
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 .login100-social-item {
@@ -257,6 +289,8 @@
   background-color: #333333;
 }
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 
@@ -308,6 +342,9 @@
 	color: white;
   }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

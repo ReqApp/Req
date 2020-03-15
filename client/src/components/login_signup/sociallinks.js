@@ -6,6 +6,7 @@ export default class SocialLinks extends Component {
     return (
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       <div>        
        <br />
        <br />
@@ -21,6 +22,8 @@ export default class SocialLinks extends Component {
 =======
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
       <div>     
          <div className="icon-bar">
         <a href="#" className="facebook"><i className="fa fa-facebook" /></a>
@@ -29,6 +32,9 @@ export default class SocialLinks extends Component {
         <a href="#" className="linkedin"><i className="fa fa-linkedin" /></a>
       </div> 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
