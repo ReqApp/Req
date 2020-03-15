@@ -1,0 +1,484 @@
+
+
+/* line 1, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn {
+  background: #fff;
+  color: #131313;
+  display: inline-block;
+  padding: 18px 44px;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  border: 0;
+  border: 1px solid #28AE60;
+  letter-spacing: 3px;
+  text-align: center;
+  color: #131313 !important;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+/* line 17, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn:hover {
+  background: #28AE60;
+  color: #fff !important;
+  border: 1px solid #28AE60;
+}
+
+/* line 22, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn:focus {
+  outline: none;
+}
+
+/* line 25, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn.large-width {
+  width: 220px;
+}
+
+/* line 29, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn3 {
+  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#0181f5+0,5db2ff+100 */
+  background: #28AE60;
+  color: #fff;
+  display: inline-block;
+  padding: 14px 27px;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  border: 0;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  text-align: center;
+  color: #fff !important;
+  text-transform: capitalize;
+  -webkit-transition: 0.5s;
+  -moz-transition: 0.5s;
+  -o-transition: 0.5s;
+  transition: 0.5s;
+  cursor: pointer;
+  letter-spacing: 2px;
+}
+
+/* line 48, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn3:hover {
+  background: #28AE61;
+  color: #fff !important;
+}
+
+/* line 53, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn3:focus {
+  outline: none;
+}
+
+/* line 56, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn3.large-width {
+  width: 220px;
+}
+
+/* line 61, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn3-white {
+  color: #fff;
+  display: inline-block;
+  padding: 13px 27px;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  border: 0;
+  border: 1px solid #fff;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  text-align: center;
+  color: #fff !important;
+  text-transform: capitalize;
+  -webkit-transition: 0.5s;
+  -moz-transition: 0.5s;
+  -o-transition: 0.5s;
+  transition: 0.5s;
+  cursor: pointer;
+  letter-spacing: 2px;
+}
+
+/* line 78, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn3-white:hover {
+  background: #28AE61;
+  color: #fff !important;
+  border: 1px solid transparent;
+}
+
+/* line 83, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn3-white i {
+  margin-right: 2px;
+}
+
+/* line 86, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn3-white:focus {
+  outline: none;
+}
+
+/* line 89, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn3-white.large-width {
+  width: 220px;
+}
+
+/* line 94, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn3-green-2 {
+  color: #131313 !important;
+  display: inline-block;
+  padding: 14px 31px;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  border: 0;
+  border: 1px solid #131313;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  text-align: center;
+  text-transform: capitalize;
+  -webkit-transition: 0.5s;
+  -moz-transition: 0.5s;
+  -o-transition: 0.5s;
+  transition: 0.5s;
+  cursor: pointer;
+  letter-spacing: 2px;
+}
+
+/* line 110, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn3-green-2:hover {
+  background: #131313;
+  color: #fff !important;
+  border: 1px solid transparent;
+}
+
+/* line 115, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn3-green-2:focus {
+  outline: none;
+}
+
+/* line 118, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn3-green-2.large-width {
+  width: 220px;
+}
+
+/* line 122, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn2 {
+  background: transparent;
+  color: #fff;
+  display: inline-block;
+  padding: 18px 24px;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  border: 0;
+  border: 1px solid #fff;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* line 134, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn2:hover {
+  background: #fff;
+  color: #131313 !important;
+}
+
+/* line 138, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.boxed-btn2:focus {
+  outline: none;
+}
+
+/* line 142, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.line-button {
+  color: #919191;
+  font-size: 16px;
+  font-weight: 400;
+  display: inline-block;
+  position: relative;
+  padding-right: 5px;
+  padding-bottom: 2px;
+}
+
+/* line 150, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.line-button::before {
+  position: absolute;
+  content: "";
+  background: #919191;
+  width: 100%;
+  height: 1px;
+  bottom: 0;
+  left: 0;
+}
+
+/* line 159, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.line-button:hover {
+  color: #009DFF;
+}
+
+/* line 162, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.line-button:hover::before {
+  background: #009DFF;
+}
+
+/* line 166, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.book_now {
+  display: inline-block;
+  font-size: 14px;
+  color: #009DFF;
+  border: 1px solid #009DFF;
+  text-transform: capitalize;
+  padding: 10px 25px;
+}
+
+/* line 173, ../../Arafath/CL/CL October/213. Business/HTML/scss/_btn.scss */
+.book_now:hover {
+  background: #009DFF;
+  color: #fff;
+}
+
+/* line 1, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* line 6, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .footer_top {
+  padding-top: 145px;
+  padding-bottom: 129px;
+  background: #2C2C2C;
+}
+
+@media (max-width: 767px) {
+  /* line 6, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+  .footer .footer_top {
+    padding-top: 60px;
+    padding-bottom: 30px;
+  }
+}
+
+@media (max-width: 767px) {
+  /* line 14, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+  .footer .footer_top .footer_widget {
+    margin-bottom: 30px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  /* line 14, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+  .footer .footer_top .footer_widget {
+    margin-bottom: 30px;
+  }
+}
+
+/* line 21, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .footer_top .footer_widget .footer_title {
+  font-size: 22px;
+  font-weight: 400;
+  color: #fff;
+  text-transform: capitalize;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 767px) {
+  /* line 21, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+  .footer .footer_top .footer_widget .footer_title {
+    margin-bottom: 20px;
+  }
+}
+
+/* line 31, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .footer_top .footer_widget .footer_logo {
+  font-size: 22px;
+  font-weight: 400;
+  color: #fff;
+  text-transform: capitalize;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 767px) {
+  /* line 31, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+  .footer .footer_top .footer_widget .footer_logo {
+    margin-bottom: 20px;
+  }
+}
+
+/* line 41, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .footer_top .footer_widget p {
+  color: #C7C7C7;
+}
+
+/* line 44, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .footer_top .footer_widget p.footer_text {
+  font-size: 16px;
+  color: #B2B2B2;
+  margin-bottom: 23px;
+  font-weight: 400;
+  line-height: 28px;
+}
+
+/* line 50, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .footer_top .footer_widget p.footer_text a.domain {
+  color: #B2B2B2;
+  font-weight: 400;
+}
+
+/* line 53, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .footer_top .footer_widget p.footer_text a.domain:hover {
+  color: #28AE60;
+  border-bottom: 1px solid #28AE60;
+}
+
+/* line 59, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .footer_top .footer_widget p.footer_text.doanar a {
+  font-weight: 500;
+  color: #B2B2B2;
+}
+
+/* line 63, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .footer_top .footer_widget p.footer_text.doanar a:hover {
+  color: #28AE60;
+  border-bottom: 1px solid #28AE60;
+}
+
+/* line 67, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .footer_top .footer_widget p.footer_text.doanar a.first {
+  margin-bottom: 10px;
+}
+
+/* line 75, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .footer_top .footer_widget ul li {
+  color: #C7C7C7;
+  font-size: 13px;
+  line-height: 42px;
+}
+
+/* line 79, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .footer_top .footer_widget ul li a {
+  color: #C7C7C7;
+}
+
+/* line 81, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .footer_top .footer_widget ul li a:hover {
+  color: #28AE60;
+}
+
+/* line 87, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .footer_top .footer_widget .newsletter_form {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+/* line 90, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .footer_top .footer_widget .newsletter_form input {
+  width: 100%;
+  height: 45px;
+  background: #fff;
+  padding-left: 20px;
+  font-size: 16px;
+  color: #000;
+  border: none;
+}
+
+/* line 98, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .footer_top .footer_widget .newsletter_form input::placeholder {
+  font-size: 16px;
+  color: #919191;
+}
+
+/* line 103, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .footer_top .footer_widget .newsletter_form button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  border: none;
+  font-size: 14px;
+  color: #fff;
+  background: #28AE60;
+  padding: 10px;
+  padding: 0 22px;
+  cursor: pointer;
+}
+
+/* line 117, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .footer_top .footer_widget .newsletter_text {
+  font-size: 16px;
+  color: #BABABA;
+}
+
+/* line 123, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .copy-right_text {
+  padding-bottom: 30px;
+  background: #1F1F1F;
+}
+
+/* line 126, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .copy-right_text .footer_border {
+  padding-bottom: 30px;
+}
+
+/* line 129, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .copy-right_text .copy_right {
+  font-size: 13px;
+  color: #C7C7C7;
+  margin-bottom: 0;
+  font-weight: 400;
+}
+
+@media (max-width: 767px) {
+  /* line 129, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+  .footer .copy-right_text .copy_right {
+    font-size: 13px;
+  }
+}
+
+/* line 137, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .copy-right_text .copy_right a {
+  color: #28AE60;
+}
+
+/* line 142, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .socail_links {
+  margin-top: 47px;
+}
+
+@media (max-width: 767px) {
+  /* line 142, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+  .footer .socail_links {
+    margin-top: 30px;
+  }
+}
+
+/* line 148, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .socail_links ul li {
+  display: inline-block;
+}
+
+/* line 151, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .socail_links ul li a {
+  font-size: 18px;
+  color: #C3B2F0;
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  text-align: center;
+  background: #565656;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  line-height: 40px !important;
+  margin-right: 7px;
+  color: #FFFFFF;
+  line-height: 41px !important;
+}
+
+/* line 164, ../../Arafath/CL/CL October/213. Business/HTML/scss/_footer.scss */
+.footer .socail_links ul li a:hover {
+  color: #fff !important;
+  background: #28AE60;
+}
+
+

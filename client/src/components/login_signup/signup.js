@@ -31,7 +31,14 @@ export default class SignUp extends Component {
           </label>
           <input type="password" required autoComplete="off" />
         </div>
+<<<<<<< Updated upstream
         <button type="submit" className="button button-block">Get Started</button>
+=======
+        <div className="image-upload">
+          <h2>Add a Photo <button type="submit" className="button-image-upload">Upload an Image</button></h2>
+        </div>
+        <button type="submit" className="button button-block">Get Started</button>      
+>>>>>>> Stashed changes
       </div>
     )
   }
