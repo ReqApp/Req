@@ -1053,6 +1053,42 @@
         }
       }
     },
+    "/users/uploadImage": {
+      "get": {
+        "summary": "Upload a profiler",
+        "tags": [
+          "User APIs"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "user_name": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "encoded image"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profiler successfully uploaded for the given user"
+          },
+          "400": {
+            "description": "Error in the process of uploading the profiler."
+          },
+          "401": {
+            "description": "An nsfw profiler was uploaded and rejected."
+          }
+        }
+      }
+    },
     "/buyCoins": {
       "post": {
         "summary": "Allows user to purchase new coins",

@@ -1,4 +1,5 @@
 const utilFuncs = require('../funcs/betFuncs');
+var User = require('../models/users');
 var express = require('express');
 var router = express.Router();
 const axios = require("axios");
@@ -40,11 +41,41 @@ router.post('/uploadImage', upload.single('imageUpload'), (req, res, next) => {
                 checkImage(response).then((success) => {
                     if (success) {
                         // Image is safe
-                        res.status(200).json({
-                            "status": response
+                        User.findOne({ user_name: req.body.user_name }, (err, foundUser) => {
+                            if (err) {
+                                res.status(400).json({
+                                    "status": "error",
+                                    "body": "User does not exist"
+                                });
+                            } else {
+                                if (foundUser) {
+                                    User.findOneAndUpdate({ user_name: foundUser.user_name }, { 'profilePicture': response }, (err) => {
+                                        if (err) {
+                                            res.status(400).json({
+                                                "status": "error",
+                                                "body": err
+                                            });
+                                        } else {
+                                            res.status(200).json({
+                                                "status": "error",
+                                                "body": "Profiler for " + foundUser.user_name + " updated to " + response
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    res.status(400).json({
+                                        "status": "error",
+                                        "body": "User does not exist"
+                                    });
+                                }
+                            }
                         });
                     } else {
                         // Image is NSFW
+                        res.status(401).json({
+                            "status": "error",
+                            "body": "We do not allow NSFW profilers. Choose another"
+                        });
                     }
                 }, (err) => {
                     res.status(400).json({
@@ -77,7 +108,6 @@ router.post('/uploadImage', upload.single('imageUpload'), (req, res, next) => {
 function checkImage(imageUrl) {
     return new Promise((resolve, reject) => {
         const endPoint = "https://api.uploadfilter.io/v1/nudity";
-
         axios({
             method: 'get',
             url: endPoint,
@@ -102,29 +132,6 @@ function checkImage(imageUrl) {
     })
 }
 
-// router.post('/checkImage', (req, res, next) => {
-//     const endPoint = "https://api.uploadfilter.io/v1/nudity";
-
-//     axios({
-//         method: 'get',
-//         url: endPoint,
-//         headers: {
-//             'apikey': process.env.uploadFilterIOAPIKey,
-//             'url': req.body.Url
-//         }
-//     }).then((response) => {
-//         res.status(200).send({
-//             "status": response.data.result.value
-//         });
-//     }).catch((err) => {
-//         console.log(err);
-//         res.status(400).json({
-//             "status": "error",
-//             "body": err
-//         });
-//     });
-// });
-
 function uploadToImgur(filePath) {
     return new Promise((resolve, reject) => {
         imgur.uploadFile(filePath).then((response) => {
@@ -142,19 +149,19 @@ router.post('/sendEmail', (req, res, next) => {
     if (req.body.secret === process.env.ReqSecret) {
         utilFuncs.sendEmail("reqnuig@gmail.com", req.body.subject, req.body.errorMessage).then(() => {
             res.status(200).json({
-                "status":"success",
+                "status": "success",
                 "body": "error email sent"
             });
         }, (err) => {
-            res.status(200).json({
-                "status":"err",
+            res.status(400).json({
+                "status": "err",
                 "body": err
             });
         });
     } else {
-        res.status(400).json({
-            "status":"error",
-            "body":"You are not authorised to do this"
+        res.status(401).json({
+            "status": "error",
+            "body": "You are not authorised to do this"
         });
     }
 })
