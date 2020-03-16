@@ -21,12 +21,12 @@ export default class BetRegionCards extends React.Component{
         this.props.onRegionHover(id);
     }
 
-    handleGetBets(id){
-        this.props.onGetBets(id);
+    handleClick(id){
+        this.props.onSelection(id);
     }
 
     render(){
-        let {loadingRegions, betRegions, sort} = this.props;
+        let {loadingRegions, betRegions, sort, mode} = this.props;
         let searchFlag = false;
         // If regions are loaded display cards
         if(!loadingRegions){
@@ -40,6 +40,12 @@ export default class BetRegionCards extends React.Component{
                 searchFlag = true;
             }
             if(Array.isArray(betRegions) && betRegions.length){
+                let buttonText = '';
+                if(mode === 'find'){
+                    buttonText = 'See Bets in this Region';
+                }else{
+                    buttonText = 'Select Region'
+                }
                 for(var i = 0; i < display_num_regions && i < betRegions.length; i++){
                     var newCard = <Paper elevation={3} key={betRegions[i]._id} id={betRegions[i]._id} style={styles.regionCards}>
                         <Container>
@@ -61,7 +67,7 @@ export default class BetRegionCards extends React.Component{
                                 </Row>
                                 <Row>
                                     <Col>
-                                        <Button onClick={this.handleGetBets.bind(this, betRegions[i]._id)}>See Bets in this Region</Button>
+                                        <Button onClick={this.handleClick.bind(this, betRegions[i]._id)}>{buttonText}</Button>
                                     </Col>
                                 </Row>
                             </Container>

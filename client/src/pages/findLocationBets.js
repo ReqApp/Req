@@ -19,6 +19,7 @@ import DisplayMap from'../components/maps';
 import Navbar from '../components/navbar';
 import BetRegionCards from '../components/betRegionCards';
 import LocationBetCards from '../components/locationBetCards';
+import CreateLocationBet from '../components/createLocationBet';
 // Other
 import openSocket from 'socket.io-client';
 import './reset.css';
@@ -43,13 +44,16 @@ export default class FindBetPage extends React.Component{
             loadingRegions : true,
             sortBy : "popular",
             showMap : false,
-            openError : false
+            openError : false,
+            loadCreateForm: false,
+            selectedRegion: null
         }
         this.socket = openSocket("http://localhost:9000");
         this.getRegions = this.getRegions.bind(this);
         this.getLocation = this.getLocation.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
         this.handleErrorClose = this.handleErrorClose.bind(this);
+        this.handleSelection = this.handleSelection.bind(this);
     }
 
     // Load regions on first mout
@@ -125,11 +129,26 @@ export default class FindBetPage extends React.Component{
         this.setState({sortBy : event.target.value});
     }
 
-    handleGetBets = (id) => {
-        console.log("Retreive bets for region: " + id);
-        // Get bets in region and add to state
-        // TODO localhost
-        fetch("http://localhost:9000/getBetsInRegion?id=" + id).then(bets => bets.json()).then(bets => this.setState({bets : bets, view : "bets"})).catch(err => err);
+    handleSelection(id){
+        const {mode} = this.props;
+        const {betRegions} = this.state;
+        if(mode === 'find'){
+            // Retrieve bets in selected region
+            console.log("Retreive bets for region: " + id);
+            // Get bets in region and add to state
+            // TODO localhost
+            fetch("http://localhost:9000/getBetsInRegion?id=" + id).then(bets => bets.json()).then(bets => this.setState({bets : bets, view : "bets"})).catch(err => err);
+        }else{
+            // Load bet creation component
+            let selectedRegion;
+            for(let i = 0; i < betRegions.length; i++){
+                if(betRegions[i]._id == id){
+                    selectedRegion = betRegions[i];
+                    break;
+                }
+            }
+            this.setState({loadCreateForm : true, selectedRegion : selectedRegion});
+        }
     }
     
     handleErrorClose(){
@@ -137,8 +156,15 @@ export default class FindBetPage extends React.Component{
     }
 
     render(){
-        const {hasLocation, latlng, accurate, betRegions, bets, loadingRegions, sortBy, openError, view} = this.state;
-
+        const {hasLocation, latlng, accurate, betRegions, bets, loadingRegions, sortBy, openError, view, loadCreateForm} = this.state;
+        const {mode} = this.props;
+        
+        if(loadCreateForm){
+            const {selectedRegion} = this.state;
+            return(
+                <CreateLocationBet userLocation={latlng} regionData={selectedRegion} />
+            )
+        }else{
         let predictSearch = null;
         if(!loadingRegions){
             predictSearch = <div style={styles.floatContainer} style={{ width: 300}} >
@@ -174,7 +200,8 @@ export default class FindBetPage extends React.Component{
                         loadingRegions={loadingRegions} 
                         betRegions={betRegions} 
                         sort={sortBy} 
-                        onGetBets={this.handleGetBets}
+                        onSelection={this.handleSelection}
+                        mode={mode}
                     />;
         }
 
@@ -251,6 +278,7 @@ export default class FindBetPage extends React.Component{
 
             </div>
         );
+        }
     }
 }
 

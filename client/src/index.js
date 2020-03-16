@@ -15,10 +15,10 @@ class App extends Component{
         return(
                  <Switch>               
                     <Route exact path='/create-location-bet'>
-                        <CreateLocationBet />
+                        <FindLocationBets mode='create' />
                     </Route>
-                    <Route exact path='/find-bets'>
-                         <FindLocationBets/>
+                    <Route exact path='/find-location-bets'>
+                         <FindLocationBets mode='find'/>
                      </Route>
                     <Route exact path='/faq'>
                         <FAQ/>

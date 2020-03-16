@@ -91,9 +91,7 @@ export default class DisplayMap extends React.Component{
             )
           }
         }
-        return(
-          <p>Text</p>
-        )
+        return null;
     }
 
     miniMap(){
