@@ -1,7 +1,7 @@
 import React, {createRef, Component} from 'react';
 import { Map, Marker, Popup, TileLayer, Circle, CircleMarker} from "react-leaflet";
 import {Button, Nav, Navbar, NavDropdown, Form, FormControl, Jumbotron, Container, Row, Col, Tabs, Tab, Dropdown, Modal} from 'react-bootstrap/';
-import openSocket from 'socket.io-client';
+//import openSocket from 'socket.io-client';
 //import './findLocationBets.css';
 
 // TODO lift state so that location is found in location bets.js
@@ -11,63 +11,8 @@ export default class DisplayMap extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            hasLocation : false,
-            accurate : false,
-            latlng : null,
-            loadingRegions : true,
-            betRegions : null,
         }
-        this.socket = openSocket("http://localhost:9000");
-        this.getLocation = this.getLocation.bind(this);
     }
-
-    // On mount gets user location and available bet regions
-    componentDidMount(){
-      // Check if location corresponds to current user
-      this.socket.on('accurateUserPos', (data) => {
-        if(data.user_name === "testUser"){
-            console.log(data);
-            this.setState({hasLocation : true, latlng : data.location, accurate : true});
-            this.props.locationUpdate(data.location);
-            let response = {
-              user : "testUser"
-            }
-            this.socket.emit('locationResponse', response);
-        }
-      });
-
-      // If not mini-map get user location
-      if(this.props.miniMap == null){
-        this.getLocation();
-      }
-    }
-
-    // Used to get user location
-    getLocation(){
-      // Check if geolocation is available
-      if(navigator.geolocation){
-        // Check for accuracy
-        navigator.geolocation.getCurrentPosition((userPosition => {
-          if(userPosition.coords.accuracy < 100){
-            // Set user's location
-            this.setState({hasLocation : true, latlng : {lat : 53.28211, lng : -9.062186}, accurate : true});
-            //this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : true});
-            //this.props.locationUpdate({lat: userPosition.coords.latitude, lng: userPosition.coords.longitude});
-            this.props.locationUpdate({lat: 53.28211, lng: -9.062186});
-          }else{
-            // Manually set user location for testing
-            this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : false});
-            this.props.error({error : "not-accurate"});
-          }
-        }));
-      }
-      // Handle geolocation not supported
-      else{
-        this.props.error({error : "not-supported"});
-        this.setState({hasLocation : true, latlng : {lat : 51.476852, lng : -0.000500}, accurate : false});
-      }
-    }
-
 
     // Allows user to select bet on map and view region card
     scrollToRegion(regionID) {
@@ -84,21 +29,29 @@ export default class DisplayMap extends React.Component{
       }
     }
 
-    fullMap(){
-        // Get state and prop variables
-        const {hasLocation, accurate} = this.state; 
-        const {loading, data, view} = this.props;
+    fullMap(){     
+        // After lifting state
+        const {hasLocation, userLocation, accurate, loadingData, data} = this.props;
+        console.log(userLocation);
   
         // Check if userlocation found
         var userMarker = null;
         if(hasLocation){
-          userMarker = <Marker position={this.state.latlng}><Popup closeButton={false} ref={this.openPopUp}><h6>You are here</h6><Button>Select</Button></Popup></Marker>;
+          userMarker = <Marker 
+                          position={userLocation}>
+                          <Popup 
+                            closeButton={false} 
+                            ref={this.openPopUp}>
+                            <h6>You are here</h6>
+                            <Button>Select</Button>
+                          </Popup>
+                        </Marker>;
         }
   
         // Check if bet regions found
         var betRegionsMap = null;
         // Check if regions are loaded from server
-        if(!loading){
+        if(!loadingData){
           // Check if regions are available
           if(Array.isArray(data) && data.length){
             betRegionsMap = [];
@@ -109,33 +62,38 @@ export default class DisplayMap extends React.Component{
             }
           }
         }
-        if(accurate){
-          return(
+        if(hasLocation){
+          if(accurate){
+            return(
+                <Map style={styles.fullMap}
+                  center={userLocation}
+                  length={4}
+                  zoom={15}>
+                  <TileLayer
+                    attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                  {userMarker}
+                  {betRegionsMap}
+                </Map>
+            )
+          }else{
+            return(
               <Map style={styles.fullMap}
-                center={this.state.latlng}
+                center={userLocation}
                 length={4}
-                zoom={15}>
+                zoom={8}>
                 <TileLayer
                   attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                {userMarker}
-                {betRegionsMap}
               </Map>
-          )
-        }else{
-          return(
-            <Map style={styles.fullMap}
-              center={this.state.latlng}
-              length={4}
-              zoom={8}>
-              <TileLayer
-                attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-            </Map>
-          )
+            )
+          }
         }
+        return(
+          <p>Text</p>
+        )
     }
 
     miniMap(){

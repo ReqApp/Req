@@ -20,6 +20,7 @@ import Navbar from '../components/navbar';
 import BetRegionCards from '../components/betRegionCards';
 import LocationBetCards from '../components/locationBetCards';
 // Other
+import openSocket from 'socket.io-client';
 import './reset.css';
 
 // Main page for location betting
@@ -27,43 +28,85 @@ export default class FindBetPage extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            betRegions : null,
+            // Location properties
+            latlng: {
+                lat: 51.476852,
+                lng: -0.000500
+            },
+            hasLocation: false,
+            accurate: false,
+            locationError : null,
+            // Data properties
+            betRegions: null,
             bets: null,
             view: "regions",
             loadingRegions : true,
             sortBy : "popular",
             showMap : false,
-            locationError : null,
             openError : false
         }
-        this.handleLocationUpdate = this.handleLocationUpdate.bind(this);
+        this.socket = openSocket("http://localhost:9000");
+        this.getRegions = this.getRegions.bind(this);
+        this.getLocation = this.getLocation.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
         this.handleErrorClose = this.handleErrorClose.bind(this);
-        this.handleLocationError = this.handleLocationError.bind(this);
     }
 
     // Load regions on first mout
     componentDidMount(){
-        // TODO localhost
-        //fetch("http://localhost:9000/getBettingRegions?lat=53.28211&lng=-9.062186").then(regions => regions.json()).then(regions => this.setState({loadingRegions : false, betRegions : regions})).catch(err => err);
+        // Retrieve user's location
+        this.getLocation();
+        this.socket.on('accurateUserPos', (data) => {
+            if(data.user_name === "testUser"){
+                console.log(data);
+                this.setState({hasLocation : true, latlng : data.location, accurate : true});
+                this.props.locationUpdate(data.location);
+                let response = {
+                  user : "testUser"
+                }
+                this.socket.emit('locationResponse', response);
+            }
+        });
+    }
+
+    // Used to get user location
+    getLocation(){
+        // Check if geolocation is available
+        if(navigator.geolocation){
+            // Check for accuracy
+            navigator.geolocation.getCurrentPosition((userPosition => {
+            if(userPosition.coords.accuracy < 100){
+                // Set user's location
+                let location = {lat : 53.28211, lng : -9.062186 };
+                this.setState({hasLocation : true, latlng : location, accurate : true});
+                //this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : true});
+                console.log("Getting regions");
+                this.getRegions(location);
+            }else{
+                // Manually set user location for testing
+                this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : false, locationError : "not-accurate", openError : true});
+            }
+            }));
+        }
+        // Handle geolocation not supported
+        else{
+            this.setState({hasLocation : true, latlng : {lat : 51.476852, lng : -0.000500}, accurate : false, locationError : "not-supported", openError : true});
+        }
     }
 
     // Retrieve regions when location found by map component
-    handleLocationUpdate(location){
-        //fetch("http://localhost:9000/getBettingRegions?lat=" + location.lat.toString() + " &lng=" + location.lng.toString())
-        console.log(location);
+    getRegions(location){
         var url = new URL("http://localhost:9000/getBettingRegions"),
         params = location
-        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-        fetch(url).then(regions => {
-            console.log(regions);
-            regions.json();
-        }).then(regions => {
-            console.log(regions);
-            this.setState({loadingRegions : false, betRegions : regions});
-        }).catch(err => {
-            console.log(err);
-        });
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+        fetch(url)
+            .then(res => res.json())
+            .then(regions => {
+                console.log(regions);
+                this.setState({loadingRegions : false, betRegions : regions});
+            }).catch(err => {
+                console.log(err);
+            });
     }
 
     handleSortBySelect = (evt) => {
@@ -88,26 +131,22 @@ export default class FindBetPage extends React.Component{
         // TODO localhost
         fetch("http://localhost:9000/getBetsInRegion?id=" + id).then(bets => bets.json()).then(bets => this.setState({bets : bets, view : "bets"})).catch(err => err);
     }
-
-    handleLocationError = (err) => {
-        console.log(err);
-        this.setState({locationError : err, openError : true});
-    }
     
     handleErrorClose(){
         this.setState({openError : false});
     }
 
     render(){
-        console.log(this.state.betRegions);
+        const {hasLocation, latlng, accurate, betRegions, bets, loadingRegions, sortBy, openError, view} = this.state;
+
         let predictSearch = null;
-        if(!this.state.loadingRegions && this.state.betRegions != null){
+        if(!loadingRegions){
             predictSearch = <div style={styles.floatContainer} style={{ width: 300}} >
                 <Autocomplete
                     freeSolo
                     id="free-solo-2-demo"
                     disableClearable
-                    options={this.state.betRegions.map(region => region.region_name)}
+                    options={betRegions.map(region => region.region_name)}
                     onInputChange={this.handleSearch}
                     renderInput={params => (
                     <TextField
@@ -122,20 +161,28 @@ export default class FindBetPage extends React.Component{
                 />
             </div>
         }
+
         let cards = null;
-        /*
-        if(this.state.view == "bets"){
-            cards = <LocationBetCards bets={this.state.bets} />
+        if(view === "bets"){
+            cards = <LocationBetCards 
+                        bets={bets} 
+                    />;
         }
         else{
-            cards = <BetRegionCards onRegionHover={this.handleRegionHover} loadingRegions={this.state.loadingRegions} betRegions={this.state.betRegions} sort={this.state.sortBy} onGetBets={this.handleGetBets}/>
-        }*/
+            cards = <BetRegionCards 
+                        onRegionHover={this.handleRegionHover} 
+                        loadingRegions={loadingRegions} 
+                        betRegions={betRegions} 
+                        sort={sortBy} 
+                        onGetBets={this.handleGetBets}
+                    />;
+        }
 
         return(     
             // Create grid for parts
             <div>
                 <Dialog
-                  open={this.state.openError}
+                  open={openError}
                   onClose={this.handleErrorClose}
                   aria-labelledby="alert-dialog-title"
                   aria-describedby="alert-dialog-description"
@@ -162,13 +209,13 @@ export default class FindBetPage extends React.Component{
                 <Container fluid style={styles.mainContent}>
                     <Row>
                         <Col style={styles.fullMapContainer}>
-                            <DisplayMap 
-                                view={this.state.view} 
-                                data={this.state.betRegions} 
-                                loading={this.state.loadingRegions} 
+                            <DisplayMap
+                                hasLocation={hasLocation}
+                                data={betRegions}
+                                userLocation={latlng}
+                                accurate={accurate}
+                                loadingData={loadingRegions} 
                                 scrollToRegion={this.handleScrollToRegion} 
-                                error={this.handleLocationError}
-                                locationUpdate={this.handleLocationUpdate}
                             />
                         </Col>
                     </Row>

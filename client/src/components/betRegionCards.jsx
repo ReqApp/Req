@@ -14,8 +14,6 @@ import matchSorter from 'match-sorter';
 export default class BetRegionCards extends React.Component{
     constructor(props){
         super(props);
-        this.state = {
-        }
         this.scrollRefs = [];
     }
 
@@ -69,7 +67,10 @@ export default class BetRegionCards extends React.Component{
                             </Container>
                             </Col>
                             <Col>
-                                <DisplayMap miniMap={true} regionDetails={betRegions[i]}/>
+                                <DisplayMap 
+                                    miniMap={true} 
+                                    regionDetails={betRegions[i]}
+                                />
                             </Col>
                             </Row>
                         </Container>
