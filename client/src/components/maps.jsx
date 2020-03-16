@@ -4,20 +4,10 @@ import {Button, Nav, Navbar, NavDropdown, Form, FormControl, Jumbotron, Containe
 import openSocket from 'socket.io-client';
 //import './findLocationBets.css';
 
-const styles = {
-  fullMap : {
-    width: '100%',
-    height: '70vh',
-    padding: '5px'
-  },
-  miniMap : {
-    width: '100%',
-    height: '250px'
-  }
-};
+// TODO lift state so that location is found in location bets.js
 
 // Map component
-class DisplayMap extends React.Component{
+export default class DisplayMap extends React.Component{
     constructor(props){
         super(props);
         this.state = {
@@ -38,6 +28,7 @@ class DisplayMap extends React.Component{
         if(data.user_name === "testUser"){
             console.log(data);
             this.setState({hasLocation : true, latlng : data.location, accurate : true});
+            this.props.locationUpdate(data.location);
             let response = {
               user : "testUser"
             }
@@ -45,6 +36,7 @@ class DisplayMap extends React.Component{
         }
       });
 
+      // If not mini-map get user location
       if(this.props.miniMap == null){
         this.getLocation();
       }
@@ -58,8 +50,10 @@ class DisplayMap extends React.Component{
         navigator.geolocation.getCurrentPosition((userPosition => {
           if(userPosition.coords.accuracy < 100){
             // Set user's location
-            this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : true});
-            //this.props.locationRetrieved({lat: userPosition.coords.latitude, lng: userPosition.coords.longitude});
+            this.setState({hasLocation : true, latlng : {lat : 53.28211, lng : -9.062186}, accurate : true});
+            //this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : true});
+            //this.props.locationUpdate({lat: userPosition.coords.latitude, lng: userPosition.coords.longitude});
+            this.props.locationUpdate({lat: 53.28211, lng: -9.062186});
           }else{
             // Manually set user location for testing
             this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : false});
@@ -175,4 +169,14 @@ class DisplayMap extends React.Component{
     
 }
 
-export default DisplayMap;
+const styles = {
+  fullMap : {
+    width: '100%',
+    height: '70vh',
+    padding: '5px'
+  },
+  miniMap : {
+    width: '100%',
+    height: '250px'
+  }
+};

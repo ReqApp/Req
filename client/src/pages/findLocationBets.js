@@ -36,23 +36,34 @@ export default class FindBetPage extends React.Component{
             locationError : null,
             openError : false
         }
-        // Material Styles
-        this.classes = makeStyles(theme => ({
-            extendedIcon: {
-              marginRight: theme.spacing(1),
-            },
-        }));
+        this.handleLocationUpdate = this.handleLocationUpdate.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
-        // Setup socket connection to server
-        // TODO localhost
-        this.handleLocationError = this.handleLocationError.bind(this);
         this.handleErrorClose = this.handleErrorClose.bind(this);
+        this.handleLocationError = this.handleLocationError.bind(this);
     }
 
     // Load regions on first mout
     componentDidMount(){
         // TODO localhost
-        fetch("http://localhost:9000/getBettingRegions?lat=53.28211&lng=-9.062186").then(regions => regions.json()).then(regions => this.setState({loadingRegions : false, betRegions : regions})).catch(err => err);
+        //fetch("http://localhost:9000/getBettingRegions?lat=53.28211&lng=-9.062186").then(regions => regions.json()).then(regions => this.setState({loadingRegions : false, betRegions : regions})).catch(err => err);
+    }
+
+    // Retrieve regions when location found by map component
+    handleLocationUpdate(location){
+        //fetch("http://localhost:9000/getBettingRegions?lat=" + location.lat.toString() + " &lng=" + location.lng.toString())
+        console.log(location);
+        var url = new URL("http://localhost:9000/getBettingRegions"),
+        params = location
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+        fetch(url).then(regions => {
+            console.log(regions);
+            regions.json();
+        }).then(regions => {
+            console.log(regions);
+            this.setState({loadingRegions : false, betRegions : regions});
+        }).catch(err => {
+            console.log(err);
+        });
     }
 
     handleSortBySelect = (evt) => {
@@ -88,8 +99,9 @@ export default class FindBetPage extends React.Component{
     }
 
     render(){
+        console.log(this.state.betRegions);
         let predictSearch = null;
-        if(!this.state.loadingRegions){
+        if(!this.state.loadingRegions && this.state.betRegions != null){
             predictSearch = <div style={styles.floatContainer} style={{ width: 300}} >
                 <Autocomplete
                     freeSolo
@@ -111,12 +123,13 @@ export default class FindBetPage extends React.Component{
             </div>
         }
         let cards = null;
+        /*
         if(this.state.view == "bets"){
             cards = <LocationBetCards bets={this.state.bets} />
         }
         else{
             cards = <BetRegionCards onRegionHover={this.handleRegionHover} loadingRegions={this.state.loadingRegions} betRegions={this.state.betRegions} sort={this.state.sortBy} onGetBets={this.handleGetBets}/>
-        }
+        }*/
 
         return(     
             // Create grid for parts
@@ -141,7 +154,7 @@ export default class FindBetPage extends React.Component{
                 </Dialog>
                 <div style={styles.floatingButton}>
                     <Fab variant="extended" onClick={() => this.setState({showMap : true})}>
-                        <NavigationIcon className={this.classes.extendedIcon} />
+                        <NavigationIcon className={classes.extendedIcon} />
                         Show Full Map
                     </Fab>
                 </div>
@@ -155,6 +168,7 @@ export default class FindBetPage extends React.Component{
                                 loading={this.state.loadingRegions} 
                                 scrollToRegion={this.handleScrollToRegion} 
                                 error={this.handleLocationError}
+                                locationUpdate={this.handleLocationUpdate}
                             />
                         </Col>
                     </Row>
@@ -192,6 +206,13 @@ export default class FindBetPage extends React.Component{
         );
     }
 }
+
+// Material Styles
+const classes = makeStyles(theme => ({
+    extendedIcon: {
+        marginRight: theme.spacing(1),
+    },
+}));
 
 const styles = {
     mainContent: {

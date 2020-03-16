@@ -127,7 +127,7 @@ router.get('/getBettingRegions', (req, res) => {
                         */
                     }
                 }
-                //console.log(regionsToSend);
+                console.log(regionsToSend);
                 res.json(regionsToSend);
             }
         });
