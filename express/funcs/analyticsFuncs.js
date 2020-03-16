@@ -14,12 +14,13 @@ function getBettingHistory(targetUser) {
             if (bets) {
                 for (bet of bets) {
                     let betHistoryObj = {
-                        profitOrLoss: 0,
+                        profitOrLoss: -91029384756,
                         date: 1583428199297,
                     }
                     if (bet.type === "multi") {
 
                         if (bet.winners[0].user_name === targetUser) {
+                            console.log
                             betHistoryObj["profitOrLoss"] = Math.floor(bet.commonTotal * bet.firstPlaceCut);
                             betHistoryObj["date"] = bet.deadline;
                             betHistory.push(betHistoryObj);
@@ -52,6 +53,14 @@ function getBettingHistory(targetUser) {
                             betHistory.push(betHistoryObj);
                         }
                     }
+                }
+                if (betHistory.length < 1) {
+                    resolve(null);
+                }
+                if (betHistory[0].profitOrLoss == -91029384756) {
+                    // this is the default value, if it's there it means
+                    // there were no bets found
+                    resolve(null);
                 }
                 resolve(betHistory);
             } else {

@@ -406,7 +406,7 @@ describe("============= Various APIS ==============", () => {
                     done();
                 });
         })
-        it("Invalid params", done => {
+    it("Invalid params", done => {
             chai
                 .request(app)
                 .post("/createArticleBet")
@@ -499,7 +499,7 @@ describe("============= Various APIS ==============", () => {
                 .request(app)
                 .post("/users/getProfilePicture")
                 .send({
-                    "username":"IamCathal"
+                    "username": "IamCathal"
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(200);
@@ -511,7 +511,7 @@ describe("============= Various APIS ==============", () => {
                 .request(app)
                 .post("/users/getProfilePicture")
                 .send({
-                    "username":"testUser"
+                    "username": "testUser"
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(200);
@@ -567,13 +567,13 @@ describe("============= Betting =============", () => {
                 .request(app)
                 .post("/bets/makeBet")
                 .send({
-                    "type":"multi",
-                    "title":"a test title",
+                    "type": "multi",
+                    "title": "a test title",
                     "deadline": 1584230400000,
-                    "username":"testUser",
-                    "firstPlaceCut":0.9,
-                    "secondPlaceCut":0.3,
-                    "thirdPlaceCut":0.15
+                    "username": "testUser",
+                    "firstPlaceCut": 0.9,
+                    "secondPlaceCut": 0.3,
+                    "thirdPlaceCut": 0.15
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(400);
@@ -587,9 +587,9 @@ describe("============= Betting =============", () => {
                 .request(app)
                 .post("/bets/makeBet")
                 .send({
-                    "firstPlaceCut":"yellow",
-                    "secondPlaceCut":0.3,
-                    "thirdPlaceCut":"green"
+                    "firstPlaceCut": "yellow",
+                    "secondPlaceCut": 0.3,
+                    "thirdPlaceCut": "green"
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(400);
@@ -598,7 +598,7 @@ describe("============= Betting =============", () => {
                     done();
                 });
         }),
-        it("Fuzzing" , done => {
+        it("Fuzzing", done => {
             chai
                 .request(app)
                 .post("/bets/decideBet")
@@ -613,13 +613,13 @@ describe("============= Betting =============", () => {
                     done();
                 });
         }),
-        it("Invalid secret" , done => {
+        it("Invalid secret", done => {
             chai
                 .request(app)
                 .post("/bets/bigButtonBet")
                 .send({
                     "secret": fuzzPassword,
-                    "action":"start"
+                    "action": "start"
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(400);
@@ -628,4 +628,45 @@ describe("============= Betting =============", () => {
                     done();
                 });
         })
+})
+
+
+describe("============= Analytics APIs =============", () => {
+    it("Invalid username", done => {
+        chai
+            .request(app)
+            .post("/bets/getBettingHistory")
+            .send({
+                "username": fuzzUsername,
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(400);
+                expect(res.body.body).to.equals('No bets found');
+                expect(res.body.status).to.equals("error");
+                done();
+            });
+    });
+    it("Valid search", done => {
+            chai
+                .request(app)
+                .post("/bets/getBettingHistory")
+                .send({
+                    "username": "IamCathal",
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    done();
+                });
+        }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/bets/getBettingHistory")
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.body).to.equals('Invalid username');
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        });
 })

@@ -59,6 +59,9 @@ function validate(input, type) {
                 return false;
             }
         case 'username':
+            if (!input) {
+                return false;
+            }
             if (input.length < 32 && input.length > 0) {
                 return true;
             } else {
