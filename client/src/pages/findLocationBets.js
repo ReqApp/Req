@@ -87,8 +87,14 @@ export default class FindBetPage extends React.Component{
                 console.log("Getting regions");
                 this.getRegions(location);
             }else{
-                // Manually set user location for testing
-                this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : false, locationError : "not-accurate", openError : true});
+                //Temp
+                let location = {lat : 53.28211, lng : -9.062186 };
+                this.setState({hasLocation : true, latlng : location, accurate : true});
+                this.getRegions(location);
+                //Temp
+
+
+                //this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : false, locationError : "not-accurate", openError : true});
             }
             }));
         }
