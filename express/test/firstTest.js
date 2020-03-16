@@ -635,7 +635,7 @@ describe("============= Analytics APIs =============", () => {
     it("Invalid username", done => {
         chai
             .request(app)
-            .post("/bets/getBettingHistory")
+            .post("/analytics/getBettingHistory")
             .send({
                 "username": fuzzUsername,
             })
@@ -649,7 +649,7 @@ describe("============= Analytics APIs =============", () => {
     it("Valid search", done => {
             chai
                 .request(app)
-                .post("/bets/getBettingHistory")
+                .post("/analytics/getBettingHistory")
                 .send({
                     "username": "IamCathal",
                 })
@@ -661,7 +661,7 @@ describe("============= Analytics APIs =============", () => {
         it("Invalid input", done => {
             chai
                 .request(app)
-                .post("/bets/getBettingHistory")
+                .post("/analytics/getBettingHistory")
                 .end((err, res) => {
                     expect(res).to.have.status(400);
                     expect(res.body.body).to.equals('Invalid username');
