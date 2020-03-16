@@ -1,11 +1,9 @@
+var analyticFuncs = require("../funcs/analyticsFuncs");
 var BetRegion = require('../models/bettingRegions');
-var testBetsFinished = require('../models/testBetsFinished');
 var generalFuncs = require("../funcs/generalFuncs");
 const utilFuncs = require('../funcs/betFuncs');
-var testBets = require('../models/testBets');
 var router = require('express').Router();
 var Bet = require('../models/betData');
-var User = require('../models/users');
 var mongoose = require('mongoose');
 
 /**
@@ -651,13 +649,13 @@ router.post('/getAllBetsDev', (req, res, next) => {
             if (allBets) {
                 res.send(allBets);
             } else {
-                res.status(401).json({
+                res.status(400).json({
                     "status": "error",
                     "body": "No bets found"
                 });
             }
         }, (err) => {
-            res.status(401).json({
+            res.status(400).json({
                 "status": "error",
                 "body": "Error retrieving bets"
             });
@@ -668,6 +666,27 @@ router.post('/getAllBetsDev', (req, res, next) => {
             "body": "You are not authorized to do this"
         });
     }
+});
+
+router.post('/getBettingHistory', (req, res) => {
+    analyticFuncs.getBettingHistory(req.body.username).then((response) => {
+        if (response) {
+            res.status(200).json({
+                "status": "success",
+                "body": response
+            });
+        } else {
+            res.status(400).json({
+                "status": "error",
+                "body": "No bets found"
+            });
+        }
+    }, (err) => {
+        res.status(400).json({
+            "status": "error",
+            "body": err
+        });
+    })
 });
 
 module.exports = router;

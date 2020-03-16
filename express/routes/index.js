@@ -1,5 +1,4 @@
 const stripe = require('stripe')(process.env.stripeSecret)
-var articleBet = require('../models/articleBets');
 const utilFuncs = require('../funcs/betFuncs');
 var express = require('express');
 var config = require('./config');

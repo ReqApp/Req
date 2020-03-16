@@ -2,7 +2,6 @@ var forgotPasswordUser = require('../models/forgotPasswordUsers');
 var testBetsFinished = require('../models/testBetsFinished');
 var UnverifiedUser = require('../models/unverifiedUsers');
 var generalFuncs = require('../funcs/generalFuncs');
-var articleBet = require('../models/articleBets');
 const keccak512 = require('js-sha3').keccak512;
 var testBets = require('../models/testBets');
 var User = require('../models/users');
@@ -769,7 +768,7 @@ function addBetToFinishedDB(betInfo, winners, losers, betSummary, result) {
         });
     });
 }
-c
+
 
 function resetPassword(email, newPassword) {
     return new Promise((resolve, reject) => {
