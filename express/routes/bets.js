@@ -220,7 +220,7 @@ router.post('/makeBet', (req, res, next) => {
     const secondPlaceCut = parseFloat(req.body.secondPlaceCut);
     const thirdPlaceCut = parseFloat(req.body.thirdPlaceCut);
 
-    if (!(validate(req.body.title, "title") && validate(req.body.type, "type"))) {
+    if (!(utilFuncs.validate(req.body.title, "title") && utilFuncs.validate(req.body.type, "type"))) {
         res.status(400).json({
             "status": "error",
             "body": "Invalid input"

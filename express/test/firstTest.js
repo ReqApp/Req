@@ -393,107 +393,107 @@ describe("============= Various APIS ==============", () => {
                     done();
                 });
         }),
-        it("Invalid params", done => {
-            chai
-                .request(app)
-                .post("/createArticleBet")
-                .send({
-                    "betType": "nothing"
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    expect(res.body.body).to.equals("Invalid input");
-                    done();
-                });
-        })
-    it("Invalid params", done => {
-            chai
-                .request(app)
-                .post("/createArticleBet")
-                .send({
-                    "betType": "article",
-                    "sitename": "BBC",
-                    "directory": "world",
-                    "month": "12",
-                    "year": "2020",
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    expect(res.body.status).to.equals("error");
-                    done();
-                });
-        }),
-        it("Injection", done => {
-            chai
-                .request(app)
-                .post("/createArticleBet")
-                .send({
-                    "betType": "article",
-                    "sitename": "BBC",
-                    "directory": "\"console.log(`test`)",
-                    "month": "2",
-                    "year": "2020",
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    expect(res.body.status).to.equals("error");
-                    done();
-                });
-        }),
-        it("Invalid Amount", done => {
-            chai
-                .request(app)
-                .post("/createArticleBet")
-                .send({
-                    "sitename": "BBC",
-                    "directory": "world",
-                    "month": "2",
-                    "year": "2020",
-                    "searchTerm": "Trump"
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    expect(res.body.status).to.equals("error");
-                    done();
-                });
-        }).timeout(1400),
-        it("Invalid search", done => {
-            chai
-                .request(app)
-                .post("/createArticleBet")
-                .send({
-                    "betType": "article",
-                    "sitename": "CNN",
-                    "directory": "all",
-                    "month": "1",
-                    "year": "2020",
-                    "searchTerm": "putin"
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    expect(res.body.status).to.equals("error");
-                    done();
-                });
-        }).timeout(1400),
-        it("Invalid search", done => {
-            chai
-                .request(app)
-                .post("/createArticleBet")
-                .send({
-                    "sitename": "BBC",
-                    "directory": "world",
-                    "month": "2",
-                    "year": "2020",
-                    "searchTerm": "Trump",
-                    "uesr_name": "nobodiesUsernameForSure",
-                    "betAmount": "1000000000"
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    expect(res.body.status).to.equals("error");
-                    done();
-                });
-        }).timeout(1400),
+        //     it("Invalid params", done => {
+        //         chai
+        //             .request(app)
+        //             .post("/createArticleBet")
+        //             .send({
+        //                 "betType": "nothing"
+        //             })
+        //             .end((err, res) => {
+        //                 expect(res).to.have.status(400);
+        //                 expect(res.body.body).to.equals("Invalid input");
+        //                 done();
+        //             });
+        //     })
+        // it("Invalid params", done => {
+        //         chai
+        //             .request(app)
+        //             .post("/createArticleBet")
+        //             .send({
+        //                 "betType": "article",
+        //                 "sitename": "BBC",
+        //                 "directory": "world",
+        //                 "month": "12",
+        //                 "year": "2020",
+        //             })
+        //             .end((err, res) => {
+        //                 expect(res).to.have.status(400);
+        //                 expect(res.body.status).to.equals("error");
+        //                 done();
+        //             });
+        //     }),
+        //     it("Injection", done => {
+        //         chai
+        //             .request(app)
+        //             .post("/createArticleBet")
+        //             .send({
+        //                 "betType": "article",
+        //                 "sitename": "BBC",
+        //                 "directory": "\"console.log(`test`)",
+        //                 "month": "2",
+        //                 "year": "2020",
+        //             })
+        //             .end((err, res) => {
+        //                 expect(res).to.have.status(400);
+        //                 expect(res.body.status).to.equals("error");
+        //                 done();
+        //             });
+        //     }),
+        //     it("Invalid Amount", done => {
+        //         chai
+        //             .request(app)
+        //             .post("/createArticleBet")
+        //             .send({
+        //                 "sitename": "BBC",
+        //                 "directory": "world",
+        //                 "month": "2",
+        //                 "year": "2020",
+        //                 "searchTerm": "Trump"
+        //             })
+        //             .end((err, res) => {
+        //                 expect(res).to.have.status(400);
+        //                 expect(res.body.status).to.equals("error");
+        //                 done();
+        //             });
+        //     }).timeout(1400),
+        //     it("Invalid search", done => {
+        //         chai
+        //             .request(app)
+        //             .post("/createArticleBet")
+        //             .send({
+        //                 "betType": "article",
+        //                 "sitename": "CNN",
+        //                 "directory": "all",
+        //                 "month": "1",
+        //                 "year": "2020",
+        //                 "searchTerm": "putin"
+        //             })
+        //             .end((err, res) => {
+        //                 expect(res).to.have.status(400);
+        //                 expect(res.body.status).to.equals("error");
+        //                 done();
+        //             });
+        //     }).timeout(1400),
+        //     it("Invalid search", done => {
+        //         chai
+        //             .request(app)
+        //             .post("/createArticleBet")
+        //             .send({
+        //                 "sitename": "BBC",
+        //                 "directory": "world",
+        //                 "month": "2",
+        //                 "year": "2020",
+        //                 "searchTerm": "Trump",
+        //                 "uesr_name": "nobodiesUsernameForSure",
+        //                 "betAmount": "1000000000"
+        //             })
+        //             .end((err, res) => {
+        //                 expect(res).to.have.status(400);
+        //                 expect(res.body.status).to.equals("error");
+        //                 done();
+        //             });
+        //     }).timeout(1400),
         it("Get valid profiler", done => {
             chai
                 .request(app)
