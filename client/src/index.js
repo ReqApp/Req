@@ -1,8 +1,8 @@
-import React, { createRef, Component } from 'react';
-import ReactDOM,{render} from 'react-dom';
+import React, {Component } from 'react';
+import ReactDOM from 'react-dom';
 import {BrowserRouter as Router, Route, Link, Switch} from 'react-router-dom';
 import './index.css';
-import FindLocationBets from './LocationBettingPage/findLocationBets.js';
+import FindBetPage from './LocationBettingPage/findLocationBets.js';
 import Bets from './pages/bets.js';
 import {HomePage} from './pages/home';
 import {DisplayMap} from './pages/maps';
@@ -10,30 +10,30 @@ import {FAQ} from './pages/faq';
 import {About} from './pages/about';
 import {Profile} from './pages/profile';
 
-class App extends Component{
+class App extends React.Component{
    render(){
        return(
                 <Switch>               
-                   <Route exact path='/maps'>
+                   <Route exact path="/maps">
                         <DisplayMap/>
                    </Route>
-                   <Route exact path='find-bets'>
-                        <FindLocationBets/>
-                   <Route exact path='/bets'>
+                   <Route exact path="find_bets">
+                        <FindBetPage/>
+                    </Route>
+                   <Route exact path="/bets">
                        <Bets/>
                    </Route>
-                   <Route exact path='/faq'>
+                   <Route exact path="/faq">
                        <FAQ/>
                    </Route>
-                   <Route exact path='/about'>
+                   <Route exact path="/about">
                        <About/>
                    </Route>
-                   <Route path='/profile'>
+                   <Route path="/profile">
                        <Profile/>
                    </Route>
-                   <Route exact path='/'>
+                   <Route exact path="/">
                        <HomePage/>
-                   </Route>
                    </Route>
                </Switch>
        );
