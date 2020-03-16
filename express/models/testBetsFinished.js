@@ -75,7 +75,7 @@ var testBetsFinishedSchema = new Schema({
         user_name: String
     }],
     result: {
-        type: Number
+        type: String
     }
 });
 

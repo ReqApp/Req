@@ -664,9 +664,60 @@ describe("============= Analytics APIs =============", () => {
                 .post("/analytics/getBettingHistory")
                 .end((err, res) => {
                     expect(res).to.have.status(400);
-                    expect(res.body.body).to.equals('Invalid username');
-                    expect(res.body.status).to.equals("error");
+                    expect(res.body.status).to.equals('error');
+                    expect(res.body.body).to.equals("Invalid username");
                     done();
                 });
-        });
+        }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/analytics/getCreatedBettingHistory")
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid username");
+                    done();
+                });
+        }),
+        it("Invalid username", done => {
+            chai
+                .request(app)
+                .post("/analytics/getCreatedBettingHistory")
+                .send({
+                    "username": "thisUsernameCanNeverBeTakenBecauseItsTooLong",
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid username");
+                    done();
+                });
+        }),
+        it("Valid search", done => {
+            chai
+                .request(app)
+                .post("/analytics/getCreatedBettingHistory")
+                .send({
+                    "username": "Req",
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.status).to.equals("success");
+                    done();
+                });
+        }),
+        it("Valid search", done => {
+            chai
+                .request(app)
+                .post("/analytics/getCreatedBettingHistory")
+                .send({
+                    "username": "bakePancakes",
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.status).to.equals("success");
+                    done();
+                });
+        })
 })

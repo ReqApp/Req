@@ -403,7 +403,9 @@ function decideBet(inputObj) {
                                                 addBetToFinishedDB(foundBet, foundBet.forUsers, foundBet.againstUsers, betData[0], "yes").then((added) => {
                                                     if (added) {
                                                         console.log(`Added bet to finished DB`);
+                                                        resolve(true);
                                                     } else {
+                                                        console.log("resovled null for adding to")
                                                         resolve(null);
                                                     }
                                                 }, (err) => {
@@ -420,7 +422,7 @@ function decideBet(inputObj) {
                                                 // }, (err) => {
                                                 //     reject(err);
                                                 // })
-                                                resolve(true);
+
 
                                             }, (err) => {
                                                 reject(err);
@@ -760,7 +762,6 @@ function addBetToFinishedDB(betInfo, winners, losers, betSummary, result) {
             result: result
         });
 
-        console.log(result)
 
         newBet.save((err) => {
             if (err) {
