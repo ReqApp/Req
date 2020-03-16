@@ -2,7 +2,19 @@ import React, {createRef, Component} from 'react';
 import { Map, Marker, Popup, TileLayer, Circle, CircleMarker} from "react-leaflet";
 import {Button, Nav, Navbar, NavDropdown, Form, FormControl, Jumbotron, Container, Row, Col, Tabs, Tab, Dropdown, Modal} from 'react-bootstrap/';
 import openSocket from 'socket.io-client';
-import './findLocationBets.css'
+//import './findLocationBets.css';
+
+const styles = {
+  fullMap : {
+    width: '100%',
+    height: '70vh',
+    padding: '5px'
+  },
+  miniMap : {
+    width: '100%',
+    height: '250px'
+  }
+};
 
 // Map component
 class DisplayMap extends React.Component{
@@ -11,9 +23,12 @@ class DisplayMap extends React.Component{
         this.state = {
             hasLocation : false,
             accurate : false,
-            latlng : null
+            latlng : null,
+            loadingRegions : true,
+            betRegions : null,
         }
         this.socket = openSocket("http://localhost:9000");
+        this.getLocation = this.getLocation.bind(this);
     }
 
     // On mount gets user location and available bet regions
@@ -29,28 +44,36 @@ class DisplayMap extends React.Component{
             this.socket.emit('locationResponse', response);
         }
       });
-      // Check if geolocation available
-      if(!this.props.miniMap){
-        if(navigator.geolocation){
-          // Check for accuracy
-          navigator.geolocation.getCurrentPosition((userPosition => {
-            if(userPosition.coords.accuracy < 100){
-              // Set user's location
-              this.setState({hasLocation : true, latlng : {lat : 53.28211, lng : -9.062186}, accurate : true});
-            }else{
-              // Manually set user location for testing
-              this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : false});
-              this.props.error({error : "not-accurate"});
-            }
-          }));
-        }
-        // Handle geolocation not supported
-        else{
-          this.props.error({error : "not-supported"});
-          this.setState({hasLocation : true, latlng : {lat : 51.476852, lng : -0.000500}, accurate : false});
-        }
+
+      if(this.props.miniMap == null){
+        this.getLocation();
       }
     }
+
+    // Used to get user location
+    getLocation(){
+      // Check if geolocation is available
+      if(navigator.geolocation){
+        // Check for accuracy
+        navigator.geolocation.getCurrentPosition((userPosition => {
+          if(userPosition.coords.accuracy < 100){
+            // Set user's location
+            this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : true});
+            //this.props.locationRetrieved({lat: userPosition.coords.latitude, lng: userPosition.coords.longitude});
+          }else{
+            // Manually set user location for testing
+            this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : false});
+            this.props.error({error : "not-accurate"});
+          }
+        }));
+      }
+      // Handle geolocation not supported
+      else{
+        this.props.error({error : "not-supported"});
+        this.setState({hasLocation : true, latlng : {lat : 51.476852, lng : -0.000500}, accurate : false});
+      }
+    }
+
 
     // Allows user to select bet on map and view region card
     scrollToRegion(regionID) {
@@ -94,7 +117,7 @@ class DisplayMap extends React.Component{
         }
         if(accurate){
           return(
-              <Map className="full-map"
+              <Map style={styles.fullMap}
                 center={this.state.latlng}
                 length={4}
                 zoom={15}>
@@ -108,7 +131,7 @@ class DisplayMap extends React.Component{
           )
         }else{
           return(
-            <Map className="full-map"
+            <Map style={styles.fullMap}
               center={this.state.latlng}
               length={4}
               zoom={8}>
@@ -127,7 +150,7 @@ class DisplayMap extends React.Component{
       let marker = <Marker position={center}/>
       let circle = <Circle center={center} radius={regionDetails.radius}/>
       return (
-          <Map className="mini-map"
+          <Map style={styles.miniMap}
             center={center}
             zoom={13}>
             <TileLayer
