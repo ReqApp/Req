@@ -96,11 +96,18 @@ export default class DisplayMap extends React.Component{
 
     miniMap(){
       const {regionDetails} = this.props;
+      let size = {
+        width: '100%',
+        height: '250px'
+      }
+      if(this.props.height){
+        size.height = this.props.height;
+      }
       let center = { lat: regionDetails.latitude, lng: regionDetails.longitude};
       let marker = <Marker position={center}/>
       let circle = <Circle center={center} radius={regionDetails.radius}/>
       return (
-          <Map style={styles.miniMap}
+          <Map style={size}
             center={center}
             zoom={13}>
             <TileLayer
