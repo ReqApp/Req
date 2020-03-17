@@ -79,7 +79,6 @@ router.post('/getWinLoss', (req, res) => {
     }
 });
 
-
 router.post('/getPeopleReached', (req, res) => {
     if (utilFuncs.validate(req.body.username, "username")) {
         analyticFuncs.getPeopleReached(req.body.username).then((response) => {

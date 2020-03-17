@@ -694,6 +694,20 @@ describe("============= Analytics APIs =============", () => {
                     done();
                 });
         }),
+        it("Invalid username", done => {
+            chai
+                .request(app)
+                .post("/analytics/getCreatedBettingHistory")
+                .send({
+                    "password": fuzzPassword,
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid username");
+                    done();
+                });
+        }),
         it("Valid search", done => {
             chai
                 .request(app)
@@ -719,5 +733,57 @@ describe("============= Analytics APIs =============", () => {
                     expect(res.body.status).to.equals("success");
                     done();
                 });
+        }),
+        it("Invalid search", done => {
+            chai
+                .request(app)
+                .post("/analytics/getWinLoss")
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid username");
+                    done();
+                });
+        }),
+        it("Fuzzing", done => {
+            chai
+                .request(app)
+                .post("/analytics/getWinLoss")
+                .send({
+                    "username": fuzzUsername
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.status).to.equals("success");
+                    expect(res.body.body).to.equals("0 0");
+                    done();
+                });
+        }),
+        it("Fuzzing", done => {
+            chai
+                .request(app)
+                .post("/analytics/getPeopleReached")
+                .send({
+                    "username": "Req"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.status).to.equals("success");
+                    done();
+                });
+        }),
+        it("Invalid Search", done => {
+            chai
+                .request(app)
+                .post("/analytics/getPeopleReached")
+                .send({
+                    "_id": "Req"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid username");
+                    done();
+                });
         })
-})
+});
