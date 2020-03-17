@@ -22,9 +22,13 @@ Req is a 2nd year software engineering group project made to be an app where any
 
 ## The Team
 #### <a href="https://github.com/EoinMcArdle99">Eoin Mc Ardle</a>
+#### ![](https://img.shields.io/github/followers/EoinMcArdle99?label=Followers&style=social)
 #### <a href="https://github.com/FilthyHound"> Karl Gordon</a>
+#### ![](https://img.shields.io/github/followers/filthyhound?label=Followers&style=social)
 #### <a href="https://github.com/Rorysweeney99"> Rory Sweeney</a>
+#### ![](https://img.shields.io/github/followers/rorysweeney99?label=Followers&style=social)
 #### <a href="https://iamcathal.github.io"> Cathal O'Callaghan </a>
+#### ![](https://img.shields.io/github/followers/IamCathal?label=Followers&style=social)
 
 ### Using Mobile-App
 1. Install expo-cli
