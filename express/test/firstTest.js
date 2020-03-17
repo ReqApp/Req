@@ -755,7 +755,8 @@ describe("============= Analytics APIs =============", () => {
                 .end((err, res) => {
                     expect(res).to.have.status(200);
                     expect(res.body.status).to.equals("success");
-                    expect(res.body.body).to.equals("0 0");
+                    expect(res.body.body.wins).to.equals(0);
+                    expect(res.body.body.losses).to.equals(0);
                     done();
                 });
         }),
