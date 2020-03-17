@@ -1,18 +1,30 @@
-# Req
-![](https://travis-ci.com/IamCathal/Req.svg?token=NxDPAobZPqQisyLUpivy&branch=master)
-___
-![](reqGif.gif)
-#### How to use Swagger for documentation
-1. Docs are hosted at `localhost/docs`
-2. Docs are stored in the `swagger.json` file in the root directory
-3. To edit docs:
-    1. Go to `https://editor.swagger.io`
-    2. Select `file -> import file` and select `swagger.json` file from root directory
-    3. Add new API(s) using YAML. Documentation for swagger can be found here: `https://swagger.io/docs/specification/basic-structure/`
-    4. When finished select `file -> convert and save as json` and overwrite old swagger.json file
+<p align="center">
+  <a href="https://github.com/IamCathal/Req">
+    <img
+      alt="Req"
+      src="reqGif.gif"
+      width="400"
+    />
+  </a>
+</p>
 
-#### Registration flowchart
-![yes](https://i.imgur.com/KazYBEd.png)
+___
+
+<br>
+
+
+
+Req is a 2nd year software engineering group project made to be an app where anyone can bet on anything. Staying at home won't gain you the full experience offered by Req as many bets require you to physically be within a set radius of them in order to compete in them. All bet creators get 10% of the total amount of coins placed on their bets which incentivizes users to create the interesting and eye-catching bets to increase their wealth and (hopefully not) gamble it away.
+
+||
+------------------- |
+![](https://travis-ci.com/IamCathal/Req.svg?token=NxDPAobZPqQisyLUpivy&branch=master) |
+
+## The Team
+#### <a href="https://github.com/EoinMcArdle99">Eoin Mc Ardle</a>
+#### <a href="https://github.com/FilthyHound"> Karl Gordon</a>
+#### <a href="https://github.com/Rorysweeney99"> Rory Sweeney</a>
+#### <a href="https://iamcathal.github.io"> Cathal O'Callaghan </a>
 
 ### Using Mobile-App
 1. Install expo-cli
