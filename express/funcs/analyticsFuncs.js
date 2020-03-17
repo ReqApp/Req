@@ -237,7 +237,6 @@ function getWinLoss(targetUser) {
                         }
                     }
                 }
-
                 resolve(resObj);
             } else {
                 resolve(null);
@@ -285,6 +284,7 @@ function getPeopleReached(targetUser) {
         });
     })
 }
+
 
 module.exports.getWinLoss = getWinLoss
 module.exports.getBettingHistory = getBettingHistory;

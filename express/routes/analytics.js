@@ -63,7 +63,7 @@ router.post('/getWinLoss', (req, res) => {
         analyticFuncs.getWinLoss(req.body.username).then((response) => {
             res.status(200).json({
                 "status": "success",
-                "body": `${response.wins} ${response.losses}`
+                "body": response
             });
         }, (err) => {
             res.status(400).json({
@@ -85,7 +85,7 @@ router.post('/getPeopleReached', (req, res) => {
             if (response) {
                 res.status(200).json({
                     "status": "success",
-                    "body": `${response.betsMade} ${response.peopleReached}`
+                    "body": response
                 });
             } else {
                 res.status(400).json({
