@@ -248,7 +248,11 @@ function getWinLoss(targetUser) {
 
 function getPeopleReached(targetUser) {
     return new Promise((resolve, reject) => {
-        let peopleReached = 0;
+        let infoObj = {
+            "betsMade": 0,
+            "peopleReached": 0
+        }
+
         testBetsFinished.find({}, (err, bets) => {
             if (err) {
                 reject(err);
@@ -256,23 +260,24 @@ function getPeopleReached(targetUser) {
             if (bets) {
                 for (bet of bets) {
                     if (bet.user_name === targetUser) {
+                        infoObj.betsMade++;
                         // target user made this bet
                         // count the people who were in it
                         if (bet.type === "multi") {
                             for (person in bet.commonBets) {
-                                peopleReached++;
+                                infoObj.peopleReached++;
                             }
                         } else {
                             for (person in bet.forUsers) {
-                                peopleReached++;
+                                infoObj.peopleReached++;
                             }
                             for (person in bet.againstUsers) {
-                                peopleReached++;
+                                infoObj.peopleReached++;
                             }
                         }
                     }
                 }
-                resolve(peopleReached);
+                resolve(infoObj);
             } else {
 
                 resolve(null);

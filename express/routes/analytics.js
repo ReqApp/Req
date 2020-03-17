@@ -86,7 +86,7 @@ router.post('/getPeopleReached', (req, res) => {
             if (response) {
                 res.status(200).json({
                     "status": "success",
-                    "body": response
+                    "body": `${response.betsMade} ${response.peopleReached}`
                 });
             } else {
                 res.status(400).json({

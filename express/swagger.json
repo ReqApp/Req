@@ -33,6 +33,10 @@
       "description": "Stored in payments.js"
     },
     {
+      "name": "Analytics APIs",
+      "description": "routes/analytics.js"
+    },
+    {
       "name": "Index APIs",
       "description": "Stored in routes/index.js"
     },
@@ -610,6 +614,146 @@
           },
           "400": {
             "description": "Payment not valid",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/getBettingHistory": {
+      "post": {
+        "tags": [
+          "Analytics APIs"
+        ],
+        "summary": "Gets betting history for a user",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "username": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Betting history was returned successfully",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Error retrieving betting history",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/getCreatedBettingHistory": {
+      "post": {
+        "tags": [
+          "Analytics APIs"
+        ],
+        "summary": "Gets created bet history for a user",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "username": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created betting history was returned successfully",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Error retrieving created betting history",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/getWinLoss": {
+      "post": {
+        "tags": [
+          "Analytics APIs"
+        ],
+        "summary": "Get the win loss ratio for a given user",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "username": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Win loss ratio successfully returned",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Error retrieving win loss ratio",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/getPeopleReached": {
+      "post": {
+        "tags": [
+          "Analytics APIs"
+        ],
+        "summary": "Gets the number of bets made and users reached through them",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "username": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Number of bets made and users reached successfully returned",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Error retrieving bets made and users reached",
             "schema": {
               "$ref": "#/definitions/rest_API_Response"
             }
