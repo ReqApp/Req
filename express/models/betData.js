@@ -2,10 +2,8 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 require('./util.js')
 
-var betSchema = new Schema({
-    title : { 
-        type : String
-    } , 
+// TODO update docs
+var locationBetSchema = new Schema({
     location_Name : {
         type : String,
     },
@@ -20,7 +18,11 @@ var betSchema = new Schema({
     },
     bet_region_id : {
         type : String
+    },
+    // ID of actual bet
+    bet_id : {
+        type: String
     }
 });
 
-module.exports = mongoose.model('Bets', betSchema);
+module.exports = mongoose.model('Bets', locationBetSchema);

@@ -35,7 +35,11 @@ export default class CreateLocationBet extends React.Component{
             sliderTwo: 30,
             sliderThree: 10,
             value: 50,
-            betRad: 100
+            betRad: 100,
+            location_name: '',
+            title: '',
+            date: '',
+            time: ''
         }
         this.date = null;
         this.handleDateChange = this.handleDateChange.bind(this);
@@ -46,6 +50,34 @@ export default class CreateLocationBet extends React.Component{
         this.sliderThreeChange = this.sliderThreeChange.bind(this);
         this.calculateSliderVals = this.calculateSliderVals.bind(this);
         this.handleRadChange = this.handleRadChange.bind(this);
+        this.submitForm = this.submitForm.bind(this);
+    }
+
+    submitForm(){
+        const {betType, side, sliderOne, sliderTwo, sliderThree, betRad, location_name, title, date, time} = this.state;
+        const {regionData, userLocation}  = this.props;
+
+        if((sliderOne + sliderTwo + sliderThree) != 100){
+            // Handle slider error
+        }
+        
+        // if(betType === 'binary'){
+        //     fetch('http://localhost:9000/makeBet', {
+        //         method : 'POST',
+        //         headers: {
+        //             Accept: 'application/json',
+        //             'Content-Type': 'application/json',
+        //           },
+        //           body: JSON.stringify({
+        //             user_name : user_name,
+        //             password : password
+        //           })
+        //     })
+        //     .then(res => res.json)
+
+
+        // }
+
     }
 
     handleDateChange(newDate){
@@ -289,7 +321,7 @@ export default class CreateLocationBet extends React.Component{
                                 </Row>
                                 <Row>
                                     <Col>
-                                        <Button variant="contained">Create New Bet</Button>
+                                        <Button variant="contained" onClick={this.submitForm}>Create New Bet</Button>
                                     </Col>
                                 </Row>
                             </Container>
@@ -301,8 +333,7 @@ export default class CreateLocationBet extends React.Component{
                                     <DisplayMap miniMap={true} userLocation={userLocation} radius={betRad} height={'100%'}/>
                                 </div>
                             </Paper>
-                        </Col>
-                        
+                        </Col>  
                     </Row>
                 </Container>
             </div>
