@@ -179,5 +179,109 @@ function getCreatedBettingHistory(targetUser) {
     });
 }
 
+function getWinLoss(targetUser) {
+    return new Promise((resolve, reject) => {
+        let resObj = {
+            "wins": 0,
+            "losses": 0
+        }
+        testBetsFinished.find({}, (err, bets) => {
+            if (err) {
+                reject(err);
+            }
+            if (bets) {
+                for (bet of bets) {
+                    if (bet.type === "multi") {
+
+                        for (winner of bet.winners) {
+                            if (winner.user_name === targetUser) {
+                                resObj.wins++;
+                            }
+                        }
+                        // if they wont in this bet they'll not have lost
+                        if (resObj.wins == 0) {
+                            for (loser of bet.losers) {
+                                if (loser.user_name === targetUser) {
+                                    resObj.losses++;
+                                }
+                            }
+                        }
+                    } else {
+                        // bet type was binary
+                        if (bet.result === "yes") {
+                            for (indivBet of bet.forUsers) {
+                                if (indivBet.user_name === targetUser) {
+                                    resObj.wins++;
+                                }
+                            }
+                            if (resObj.wins == 0) {
+                                for (indivBet of bet.againstUsers) {
+                                    if (indivBet.user_name === targetUser) {
+                                        resObj.losses++;
+                                    }
+                                }
+                            }
+                        } else {
+                            for (indivBet of bet.againstUsers) {
+                                if (indivBet.user_name === targetUser) {
+                                    resObj.wins++;
+                                }
+                            }
+                            if (resObj.wins == 0) {
+                                for (indivBet of bet.forUsers) {
+                                    if (indivBet.user_name === targetUser) {
+                                        resObj.losses++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                resolve(resObj);
+            } else {
+                resolve(null);
+            }
+        })
+    });
+}
+
+function getPeopleReached(targetUser) {
+    return new Promise((resolve, reject) => {
+        let peopleReached = 0;
+        testBetsFinished.find({}, (err, bets) => {
+            if (err) {
+                reject(err);
+            }
+            if (bets) {
+                for (bet of bets) {
+                    if (bet.user_name === targetUser) {
+                        // target user made this bet
+                        // count the people who were in it
+                        if (bet.type === "multi") {
+                            for (person in bet.commonBets) {
+                                peopleReached++;
+                            }
+                        } else {
+                            for (person in bet.forUsers) {
+                                peopleReached++;
+                            }
+                            for (person in bet.againstUsers) {
+                                peopleReached++;
+                            }
+                        }
+                    }
+                }
+                resolve(peopleReached);
+            } else {
+
+                resolve(null);
+            }
+        });
+    })
+}
+
+module.exports.getWinLoss = getWinLoss
 module.exports.getBettingHistory = getBettingHistory;
+module.exports.getPeopleReached = getPeopleReached;
 module.exports.getCreatedBettingHistory = getCreatedBettingHistory;

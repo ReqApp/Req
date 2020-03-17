@@ -58,4 +58,54 @@ router.post('/getCreatedBettingHistory', (req, res) => {
     }
 });
 
+router.post('/getWinLoss', (req, res) => {
+    if (utilFuncs.validate(req.body.username, "username")) {
+        analyticFuncs.getWinLoss(req.body.username).then((response) => {
+            res.status(200).json({
+                "status": "success",
+                "body": `${response.wins} ${response.losses}`
+            });
+        }, (err) => {
+            res.status(400).json({
+                "status": "error",
+                "body": "Error getting win loss ratio"
+            });
+        })
+    } else {
+        res.status(400).json({
+            "status": "error",
+            "body": "Invalid username"
+        });
+    }
+});
+
+
+router.post('/getPeopleReached', (req, res) => {
+    if (utilFuncs.validate(req.body.username, "username")) {
+        analyticFuncs.getPeopleReached(req.body.username).then((response) => {
+            if (response) {
+                res.status(200).json({
+                    "status": "success",
+                    "body": response
+                });
+            } else {
+                res.status(400).json({
+                    "status": "error",
+                    "body": "Error getting bets from DB"
+                });
+            }
+        }, (err) => {
+            res.status(400).json({
+                "status": "error",
+                "body": "Error getting people reached"
+            });
+        })
+    } else {
+        res.status(400).json({
+            "status": "error",
+            "body": "Invalid username"
+        });
+    }
+});
+
 module.exports = router;
