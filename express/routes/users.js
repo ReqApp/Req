@@ -3,6 +3,7 @@ var UnverifiedUser = require('../models/unverifiedUsers');
 var generalFuncs = require('../funcs/generalFuncs');
 const keccak512 = require('js-sha3').keccak512;
 const utilFuncs = require('../funcs/betFuncs');
+var User = require("../models/users");
 var randomstring = require("randomstring");
 
 const passport = require("passport");
