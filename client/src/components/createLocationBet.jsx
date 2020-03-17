@@ -34,7 +34,8 @@ export default class CreateLocationBet extends React.Component{
             sliderOne: 60,
             sliderTwo: 30,
             sliderThree: 10,
-            value: 50
+            value: 50,
+            betRad: 100
         }
         this.date = null;
         this.handleDateChange = this.handleDateChange.bind(this);
@@ -44,12 +45,15 @@ export default class CreateLocationBet extends React.Component{
         this.sliderTwoChange = this.sliderTwoChange.bind(this);
         this.sliderThreeChange = this.sliderThreeChange.bind(this);
         this.calculateSliderVals = this.calculateSliderVals.bind(this);
-        //this.handleSliderChange = this.handleSliderChange.bind(this);
-        //this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleRadChange = this.handleRadChange.bind(this);
     }
 
     handleDateChange(newDate){
         this.date = newDate;
+    }
+
+    handleRadChange(evt, newValue){
+        this.setState({ betRad: newValue });
     }
 
     handleBetTypeSelection(evt){
@@ -120,13 +124,9 @@ export default class CreateLocationBet extends React.Component{
         }
     }
 
-    // TODO from elements
-        // Location name
-        // Bet radius
-
     render(){
         const {regionData, userLocation} = this.props;
-        const {betType, side, sliderOne, sliderTwo, sliderThree} = this.state;
+        const {betType, side, sliderOne, sliderTwo, sliderThree, betRad} = this.state;
         const defaultDate = new Date('2014-08-18T21:11:54');
 
         let betTypeSelectors = null;
@@ -189,20 +189,32 @@ export default class CreateLocationBet extends React.Component{
             );
         }
 
+        const radiusMarks = [
+            {
+                value: 100,
+                label: '100m'
+            },
+            {
+                value: 600,
+                label: '600m'
+            }
+        ];
+
+
         return(
             <div>
                 <Navbar />
-                <Container>
+                <Container style={styles.mainContent}>
                     <Row>
-                        <Col style={styles.titleSection}>
-                            <h2>New Location Bet In:</h2><br/>
-                            <h1>{regionData.region_name}</h1>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                        <Paper elevation={3}>
+                        <Col xs={12} md={6}>
+                        <Paper elevation={3} style={styles.formContainer}>
                             <Container>
+                                <Row>
+                                    <Col>
+                                        <h2>New Location Bet In:</h2><br/>
+                                        <h1>{regionData.region_name}</h1>
+                                    </Col>
+                                </Row>
                             <Row>
                                     <Col>
                                         <TextField id="standard-basic" label="Bet Title" />
@@ -217,14 +229,16 @@ export default class CreateLocationBet extends React.Component{
                                     <Col>
                                     <Typography id="discrete-slider" gutterBottom style={styles.radiusTitle}>Bet Radius</Typography>
                                         <Slider
-                                            defaultValue={30}
+                                            defaultValue={100}
                                             style={styles.radSlider}
                                             aria-labelledby="discrete-slider"
                                             valueLabelDisplay="auto"
                                             step={50}
-                                            marks
-                                            min={0}
+                                            marks={radiusMarks}
+                                            valueLabelDisplay="on"
+                                            min={100}
                                             max={600}
+                                            onChange={this.handleRadChange}
                                         />
                                     </Col>
                                 </Row>
@@ -281,10 +295,10 @@ export default class CreateLocationBet extends React.Component{
                             </Container>
                             </Paper>
                         </Col>
-                        <Col>
+                        <Col xs={12} md={6}>
                             <Paper elevation={3} style={styles.paperHeight}>
                                 <div style={styles.mapContainer}>
-                                    <DisplayMap miniMap={true} regionDetails={regionData} height={'100%'}/>
+                                    <DisplayMap miniMap={true} userLocation={userLocation} radius={betRad} height={'100%'}/>
                                 </div>
                             </Paper>
                         </Col>
@@ -305,7 +319,8 @@ const styles = {
         width: '200px'
     },
     radSlider: {
-        width: '30%'
+        //width: '30%'
+        marginTop: '30px',
     },
     cutSlider: {
         marginTop: '20px',
@@ -323,9 +338,13 @@ const styles = {
         height: '100%',
     },
     mainContent: {
+        marginTop: '20px',
         height: '100%',
     },
     paperContent: {
         padding: '20px'
+    },
+    formContainer: {
+        padding: '20px',
     }
 }

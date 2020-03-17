@@ -95,17 +95,28 @@ export default class DisplayMap extends React.Component{
     }
 
     miniMap(){
-      const {regionDetails} = this.props;
+      //const {regionDetails} = this.props;
       let size = {
         width: '100%',
         height: '250px'
       }
+      let center = null;
+      let circle = null;
+
       if(this.props.height){
         size.height = this.props.height;
       }
-      let center = { lat: regionDetails.latitude, lng: regionDetails.longitude};
+      if(this.props.regionDetails){
+        center = { lat: this.props.regionDetails.latitude, lng: this.props.regionDetails.longitude};
+        circle = <Circle center={center} radius={this.props.regionDetails.radius}/>
+      }
+      if(this.props.userLocation && this.props.radius){
+        center = this.props.userLocation;
+        circle = <Circle center={center} radius={this.props.radius}/>
+      }
+      //let center = { lat: regionDetails.latitude, lng: regionDetails.longitude};
       let marker = <Marker position={center}/>
-      let circle = <Circle center={center} radius={regionDetails.radius}/>
+      // let circle = <Circle center={center} radius={regionDetails.radius}/>
       return (
           <Map style={size}
             center={center}
