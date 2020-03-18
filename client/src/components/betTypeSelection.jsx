@@ -37,58 +37,38 @@ export default class BetTypeSelection extends React.Component{
         this.props.sliderChange(side);
     }
 
+    // Adjust other sliders when one is adjusted to maintain 100%
     calculateSliderVals = (newValue, slider) => {
         let {sliderOne, sliderTwo, sliderThree} = this.state;
+
         if(slider === 'first'){
-            let diff = newValue - sliderOne;
-            if(diff == 0){
-                return;
-            }else if(diff > 0){
-                if(sliderTwo != 0){
-                    sliderTwo -= 5;
-                }else{
-                    sliderThree -=5;
-                }
-            }else{
-                sliderTwo += 5;
-            }
-            let vals = {sliderOne : newValue, sliderTwo : sliderTwo, sliderThree : sliderThree};
-            this.setState({sliderOne : newValue, sliderTwo : sliderTwo, sliderThree : sliderThree});
-            this.props.sliderChange(vals);
+            let newVals = this.calcVals((newValue - sliderOne), sliderTwo, sliderThree);
+            console.log(newVals);
+            this.setState({sliderOne : newValue, sliderTwo : newVals.priorityOneSlider, sliderThree : newVals.priorityTwoSlider});
         }
-        else if(slider === 'second'){
-            let diff = newValue - sliderTwo;
-            if(diff == 0){
-                return;
-            }else if(diff > 0){
-                if(sliderThree > 0){
-                    sliderThree -= 5;
-                }else{
-                    sliderOne -= 5;
-                }
+        if(slider === 'second'){
+            let newVals = this.calcVals((newValue - sliderTwo), sliderOne, sliderThree);
+            this.setState({sliderOne : newVals.priorityOneSlider, sliderTwo : newValue, sliderThree : newVals.priorityTwoSlider});
+        }
+        if(slider === 'third'){
+            let newVals = this.calcVals((newValue - sliderThree), sliderOne, sliderTwo);
+            this.setState({sliderOne : newVals.priorityOneSlider, sliderTwo : newVals.priorityTwoSlider, sliderThree : newValue});
+        }
+    }
+
+    calcVals(diff, priorityOneSlider, priorityTwoSlider){
+        if(diff > 0){
+            if(priorityTwoSlider >= diff){
+                priorityTwoSlider -= diff;
             }else{
-                sliderOne += 5;
+                let num = diff - priorityTwoSlider;
+                priorityTwoSlider = 0;
+                priorityOneSlider -= num;
             }
-            let vals = {sliderOne : sliderOne, sliderTwo : newValue, sliderThree : sliderThree};
-            this.setState({sliderOne : sliderOne, sliderTwo : newValue, sliderThree : sliderThree});
-            this.props.sliderChange(vals);
         }else{
-            let diff = newValue - sliderThree;
-            if(diff == 0){
-                return;
-            }else if(diff > 0){
-                if(sliderTwo > 0){
-                    sliderTwo -= 5;
-                }else{
-                    sliderOne -= 5;
-                }
-            }else{
-                sliderOne += 5;
-            }
-            let vals = {sliderOne : sliderOne, sliderTwo : sliderTwo, sliderThree : newValue};
-            this.setState({sliderOne : sliderOne, sliderTwo : sliderTwo, sliderThree : newValue});
-            this.props.sliderChange(vals);
+            priorityOneSlider += Math.abs(diff);
         }
+        return {priorityOneSlider : priorityOneSlider, priorityTwoSlider : priorityTwoSlider};
     }
 
     render(){

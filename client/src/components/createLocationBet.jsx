@@ -102,67 +102,6 @@ export default class CreateLocationBet extends React.Component{
         this.setState({side : evt.target.value});
     }
 
-
-    sliderOneChange = (evt, newValue) => {
-        this.calculateSliderVals(newValue, 'first');
-    }
-
-    sliderTwoChange = (evt, newValue) => {   
-        this.calculateSliderVals(newValue, 'second');
-    }
-
-    sliderThreeChange = (evt, newValue) => {
-        this.calculateSliderVals(newValue, 'third');
-    }
-
-    calculateSliderVals = (newValue, slider) => {
-        let {sliderOne, sliderTwo, sliderThree} = this.state;
-        if(slider === 'first'){
-            let diff = newValue - sliderOne;
-            if(diff == 0){
-                return;
-            }else if(diff > 0){
-                if(sliderTwo != 0){
-                    sliderTwo -= 5;
-                }else{
-                    sliderThree -=5;
-                }
-            }else{
-                sliderTwo += 5;
-            }
-            this.setState({sliderOne : newValue, sliderTwo : sliderTwo, sliderThree : sliderThree});
-        }
-        else if(slider === 'second'){
-            let diff = newValue - sliderTwo;
-            if(diff == 0){
-                return;
-            }else if(diff > 0){
-                if(sliderThree > 0){
-                    sliderThree -= 5;
-                }else{
-                    sliderOne -= 5;
-                }
-            }else{
-                sliderOne += 5;
-            }
-            this.setState({sliderOne : sliderOne, sliderTwo : newValue, sliderThree : sliderThree});
-        }else{
-            let diff = newValue - sliderThree;
-            if(diff == 0){
-                return;
-            }else if(diff > 0){
-                if(sliderTwo > 0){
-                    sliderTwo -= 5;
-                }else{
-                    sliderOne -= 5;
-                }
-            }else{
-                sliderOne += 5;
-            }
-            this.setState({sliderOne : sliderOne, sliderTwo : sliderTwo, sliderThree : newValue});
-        }
-    }
-
     handleSnackClose = (event, reason) => {
         if(reason === 'clickaway'){
             return;
@@ -173,70 +112,6 @@ export default class CreateLocationBet extends React.Component{
     render(){
         const {betType, side, sliderOne, sliderTwo, sliderThree, betRad, date, snackOpen} = this.state;
         const {regionData, userLocation} = this.props;
-        
-        //let betTypeSelectors = null;
-        // pass in bet type
-        // pass in handler to retrieve values from child when changed
-        // move styling
-        /*
-        if(betType === 'binary'){
-            betTypeSelectors = (
-                <FormControl style={styles.dropDown}>
-                    <InputLabel id="demo-simple-select-label">Side</InputLabel>
-                    <Select
-                        style={StyleSheet.dropDown}
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={side}
-                        onChange={this.handleSideSelection}
-                        >
-                        <MenuItem value={'yes'}>Yes</MenuItem>
-                        <MenuItem value={'no'}>No</MenuItem>
-                    </Select>
-                </FormControl>
-            );
-        }
-        else if(betType === 'multi'){
-            betTypeSelectors = (<div>
-                <Typography id="discrete-slider" gutterBottom >First-Place Cut</Typography>
-                <Slider
-                style={styles.cutSlider}
-                value={sliderOne}
-                aria-labelledby="discrete-slider"
-                valueLabelDisplay="auto"
-                step={5}
-                onChange={this.sliderOneChange}
-                marks
-                min={0}
-                max={100}
-            />
-            <Typography id="discrete-slider" gutterBottom >Second-Place Cut</Typography>
-            <Slider
-                style={styles.cutSlider}
-                value={sliderTwo}
-                aria-labelledby="discrete-slider"
-                valueLabelDisplay="auto"
-                step={5}
-                onChange={this.sliderTwoChange}
-                marks
-                min={0}
-                max={100}
-            />
-            <Typography id="discrete-slider" gutterBottom >Third-Place Cut</Typography>
-            <Slider
-                style={styles.cutSlider}
-                value={sliderThree}
-                aria-labelledby="discrete-slider"
-                valueLabelDisplay="auto"
-                step={5}
-                onChange={this.sliderThreeChange}
-                marks
-                min={0}
-                max={100}
-            />
-            </div>
-            );
-        }*/
 
         const radiusMarks = [
             {
