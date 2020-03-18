@@ -26,6 +26,9 @@ import MuiAlert from '@material-ui/lab/Alert';
 // Components
 import Navbar from './navbar';
 import DisplayMap from './maps';
+import BetTypeSelection from './betTypeSelection';
+import Alert from './alertSnack';
+
 
 export default class CreateLocationBet extends React.Component{
     constructor(props){
@@ -44,21 +47,9 @@ export default class CreateLocationBet extends React.Component{
             time: '',
             snackOpen: false,
         }
-        this.handleDateChange = this.handleDateChange.bind(this);
-        this.handleBetTypeSelection = this.handleBetTypeSelection.bind(this);
-        this.handleSideSelection = this.handleSideSelection.bind(this);
-        this.sliderOneChange = this.sliderOneChange.bind(this);
-        this.sliderTwoChange = this.sliderTwoChange.bind(this);
-        this.sliderThreeChange = this.sliderThreeChange.bind(this);
-        this.calculateSliderVals = this.calculateSliderVals.bind(this);
-        this.handleRadChange = this.handleRadChange.bind(this);
-        this.submitForm = this.submitForm.bind(this);
     }
 
-    // TODO 
-        // convert date and time to epoch time
-
-    submitForm(){
+    submitForm = () => {
         const {betType, side, sliderOne, sliderTwo, sliderThree, betRad, location_name, title, date, time} = this.state;
         const {regionData, userLocation}  = this.props;
 
@@ -85,7 +76,7 @@ export default class CreateLocationBet extends React.Component{
 
     }
 
-    handleDateChange(newDate){
+    handleDateChange = (newDate) => {
         let epochTime = newDate.getTime()/1000.0;
         if(Date.now() > epochTime){
             // Handle error
@@ -95,31 +86,36 @@ export default class CreateLocationBet extends React.Component{
         } 
     }
 
-    handleRadChange(evt, newValue){
+    handleSliderChange = (vals) => {
+        this.setState(vals);
+    }
+
+    handleRadChange = (evt, newValue) => {
         this.setState({ betRad: newValue });
     }
 
-    handleBetTypeSelection(evt){
+    handleBetTypeSelection = (evt) => {
         this.setState({betType : evt.target.value});
     }
 
-    handleSideSelection(evt){
+    handleSideSelection = (evt) => {
         this.setState({side : evt.target.value});
     }
 
-    sliderOneChange(evt, newValue){
+
+    sliderOneChange = (evt, newValue) => {
         this.calculateSliderVals(newValue, 'first');
     }
 
-    sliderTwoChange(evt, newValue){   
+    sliderTwoChange = (evt, newValue) => {   
         this.calculateSliderVals(newValue, 'second');
     }
 
-    sliderThreeChange(evt, newValue){
+    sliderThreeChange = (evt, newValue) => {
         this.calculateSliderVals(newValue, 'third');
     }
 
-    calculateSliderVals(newValue, slider){
+    calculateSliderVals = (newValue, slider) => {
         let {sliderOne, sliderTwo, sliderThree} = this.state;
         if(slider === 'first'){
             let diff = newValue - sliderOne;
@@ -175,10 +171,14 @@ export default class CreateLocationBet extends React.Component{
     }
 
     render(){
-        const {regionData, userLocation} = this.props;
         const {betType, side, sliderOne, sliderTwo, sliderThree, betRad, date, snackOpen} = this.state;
-
-        let betTypeSelectors = null;
+        const {regionData, userLocation} = this.props;
+        
+        //let betTypeSelectors = null;
+        // pass in bet type
+        // pass in handler to retrieve values from child when changed
+        // move styling
+        /*
         if(betType === 'binary'){
             betTypeSelectors = (
                 <FormControl style={styles.dropDown}>
@@ -236,7 +236,7 @@ export default class CreateLocationBet extends React.Component{
             />
             </div>
             );
-        }
+        }*/
 
         const radiusMarks = [
             {
@@ -308,7 +308,11 @@ export default class CreateLocationBet extends React.Component{
                                 </Row>
                                 <Row>
                                     <Col>
-                                        {betTypeSelectors}
+                                        <BetTypeSelection 
+                                            betType={betType} 
+                                            sliderChange={this.handleSliderChange} 
+                                            handleSideSelection={this.handleSideSelection}
+                                        />
                                     </Col>
                                 </Row>
                                 <Row>
@@ -363,23 +367,14 @@ export default class CreateLocationBet extends React.Component{
     }
 }
 
-function Alert(props){
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 const styles = {
     typeSelection: {
         marginTop: '20px',
     },
-    dropDown: {
-        width: '200px'
-    },
     radSlider: {
         //width: '30%'
         marginTop: '30px',
-    },
-    cutSlider: {
-        marginTop: '20px',
     },
     radiusTitle: {
         marginTop: '50px',
