@@ -44,43 +44,50 @@ export default class CreateLocationBet extends React.Component{
             location_name: '',
             title: '',
             date: new Date(),
-            time: '',
             snackOpen: false,
         }
     }
 
     submitForm = () => {
-        const {betType, side, sliderOne, sliderTwo, sliderThree, betRad, location_name, title, date, time} = this.state;
+        const {betType, side, sliderOne, sliderTwo, sliderThree, betRad, location_name, title, date} = this.state;
         const {regionData, userLocation}  = this.props;
-
-        if((sliderOne + sliderTwo + sliderThree) != 100){
-            // Handle slider error
+        let data = {
+            type: betType,
+            title: title,
+            deadline: (date.getTime()/1000.0),
+            username: 'testUser',
         }
+        if(betType === 'binary'){
+            data.side = side;
+        }else if(betType === 'multi'){
+            data.firstPlaceCut = sliderOne / 100;
+            data.secondPlaceCut = sliderTwo / 100;
+            data.thirdPlaceCut = sliderThree / 100;
+        }
+        console.log(data);
         
-        // if(betType === 'binary'){
-        //     fetch('http://localhost:9000/makeBet', {
-        //         method : 'POST',
-        //         headers: {
-        //             Accept: 'application/json',
-        //             'Content-Type': 'application/json',
-        //           },
-        //           body: JSON.stringify({
-        //             user_name : user_name,
-        //             password : password
-        //           })
-        //     })
-        //     .then(res => res.json)
-
-
-        // }
-
+        fetch('http://localhost:9000/makeBet', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(res => {
+            console.log(res);
+        })
+        .catch(err => console.log(err));
+        
     }
 
     handleDateChange = (newDate) => {
-        let epochTime = newDate.getTime()/1000.0;
+        let epochTime = +newDate;
         if(Date.now() > epochTime){
             // Handle error
-            this.setState({snackOpen : true});
+            this.setState({snackOpen : true, date: new Date()});
         }else{
             this.setState({date : newDate});
         } 
@@ -98,8 +105,8 @@ export default class CreateLocationBet extends React.Component{
         this.setState({betType : evt.target.value});
     }
 
-    handleSideSelection = (evt) => {
-        this.setState({side : evt.target.value});
+    handleSideSelection = (side) => {
+        this.setState({side : side});
     }
 
     handleSnackClose = (event, reason) => {
@@ -107,6 +114,14 @@ export default class CreateLocationBet extends React.Component{
             return;
         }
         this.setState({snackOpen : false});
+    }
+
+    handleTitleChange = (evt) => {
+        this.setState({title : evt.target.value});
+    }
+
+    handleLocationNameChange = (evt) => {
+        this.setState({location_name: evt.target.value});
     }
 
     render(){
@@ -145,12 +160,12 @@ export default class CreateLocationBet extends React.Component{
                                 </Row>
                             <Row>
                                     <Col>
-                                        <TextField id="standard-basic" label="Bet Title" />
+                                        <TextField id="standard-basic" label="Bet Title" onChange={this.handleTitleChange} />
                                     </Col>
                                 </Row>
                                 <Row>
                                     <Col>
-                                        <TextField id="standard-basic" label="Location Name" />
+                                        <TextField id="standard-basic" label="Location Name" onChange={this.handleLocationNameChange} />
                                     </Col>
                                 </Row>
                                 <Row>
@@ -186,7 +201,7 @@ export default class CreateLocationBet extends React.Component{
                                         <BetTypeSelection 
                                             betType={betType} 
                                             sliderChange={this.handleSliderChange} 
-                                            handleSideSelection={this.handleSideSelection}
+                                            sideChange={this.handleSideSelection}
                                         />
                                     </Col>
                                 </Row>

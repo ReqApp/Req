@@ -247,8 +247,7 @@ router.post('/makeBet', (req, res, next) => {
                 "secondPlaceCut": secondPlaceCut,
                 "thirdPlaceCut": thirdPlaceCut
             }
-
-            if (req.body.type === "multi" && (firstPlaceCut + secondPlaceCut + thirdPlaceCut) != 1) {
+            if (req.body.type === "multi" && (firstPlaceCut + secondPlaceCut + thirdPlaceCut).toFixed(2) != 1) {
                 // The percentage payouts must add up to 100%
                 res.status(400).json({
                     "status": "error",

@@ -19,43 +19,46 @@ export default class BetTypeSelection extends React.Component{
         }
     }
 
-    sliderOneChange = (evt, newValue) => {
-        this.calculateSliderVals(newValue, 'first');
-    }
-
-    sliderTwoChange = (evt, newValue) => {   
-        this.calculateSliderVals(newValue, 'second');
-    }
-
-    sliderThreeChange = (evt, newValue) => {
-        this.calculateSliderVals(newValue, 'third');
-    }
-
+    // Binary-bets
     handleSideSelection = (evt) => {
         let side = evt.target.value;
         this.setState({side : side});
-        this.props.sliderChange(side);
+        this.props.sideChange(side);
     }
 
+    // Multi-bets
+    sliderOneChange = (evt, newValue) => {
+        this.calculateSliderVals(newValue, 'first');
+    }
+    sliderTwoChange = (evt, newValue) => {   
+        this.calculateSliderVals(newValue, 'second');
+    }
+    sliderThreeChange = (evt, newValue) => {
+        this.calculateSliderVals(newValue, 'third');
+    }
     // Adjust other sliders when one is adjusted to maintain 100%
     calculateSliderVals = (newValue, slider) => {
         let {sliderOne, sliderTwo, sliderThree} = this.state;
-
         if(slider === 'first'){
             let newVals = this.calcVals((newValue - sliderOne), sliderTwo, sliderThree);
-            console.log(newVals);
-            this.setState({sliderOne : newValue, sliderTwo : newVals.priorityOneSlider, sliderThree : newVals.priorityTwoSlider});
+            let obj = {sliderOne : newValue, sliderTwo : newVals.priorityOneSlider, sliderThree : newVals.priorityTwoSlider};
+            this.setState(obj);
+            this.props.sliderChange(obj);
         }
         if(slider === 'second'){
             let newVals = this.calcVals((newValue - sliderTwo), sliderOne, sliderThree);
-            this.setState({sliderOne : newVals.priorityOneSlider, sliderTwo : newValue, sliderThree : newVals.priorityTwoSlider});
+            let obj = {sliderOne : newVals.priorityOneSlider, sliderTwo : newValue, sliderThree : newVals.priorityTwoSlider};
+            this.setState(obj);
+            this.props.sliderChange(obj);
         }
         if(slider === 'third'){
             let newVals = this.calcVals((newValue - sliderThree), sliderOne, sliderTwo);
-            this.setState({sliderOne : newVals.priorityOneSlider, sliderTwo : newVals.priorityTwoSlider, sliderThree : newValue});
+            let obj = {sliderOne : newVals.priorityOneSlider, sliderTwo : newVals.priorityTwoSlider, sliderThree : newValue};
+            this.setState(obj);
+            this.props.sliderChange(obj);
         }
     }
-
+    // Algorithm for calculating values
     calcVals(diff, priorityOneSlider, priorityTwoSlider){
         if(diff > 0){
             if(priorityTwoSlider >= diff){
