@@ -21,6 +21,8 @@ import Slider from '@material-ui/core/Slider';
 import { makeStyles } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
 import DateFnsUtils from '@date-io/date-fns';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 // Components
 import Navbar from './navbar';
 import DisplayMap from './maps';
@@ -38,10 +40,10 @@ export default class CreateLocationBet extends React.Component{
             betRad: 100,
             location_name: '',
             title: '',
-            date: '',
-            time: ''
+            date: new Date(),
+            time: '',
+            snackOpen: false,
         }
-        this.date = null;
         this.handleDateChange = this.handleDateChange.bind(this);
         this.handleBetTypeSelection = this.handleBetTypeSelection.bind(this);
         this.handleSideSelection = this.handleSideSelection.bind(this);
@@ -52,6 +54,9 @@ export default class CreateLocationBet extends React.Component{
         this.handleRadChange = this.handleRadChange.bind(this);
         this.submitForm = this.submitForm.bind(this);
     }
+
+    // TODO 
+        // convert date and time to epoch time
 
     submitForm(){
         const {betType, side, sliderOne, sliderTwo, sliderThree, betRad, location_name, title, date, time} = this.state;
@@ -81,7 +86,13 @@ export default class CreateLocationBet extends React.Component{
     }
 
     handleDateChange(newDate){
-        this.date = newDate;
+        let epochTime = newDate.getTime()/1000.0;
+        if(Date.now() > epochTime){
+            // Handle error
+            this.setState({snackOpen : true});
+        }else{
+            this.setState({date : newDate});
+        } 
     }
 
     handleRadChange(evt, newValue){
@@ -156,10 +167,16 @@ export default class CreateLocationBet extends React.Component{
         }
     }
 
+    handleSnackClose = (event, reason) => {
+        if(reason === 'clickaway'){
+            return;
+        }
+        this.setState({snackOpen : false});
+    }
+
     render(){
         const {regionData, userLocation} = this.props;
-        const {betType, side, sliderOne, sliderTwo, sliderThree, betRad} = this.state;
-        const defaultDate = new Date('2014-08-18T21:11:54');
+        const {betType, side, sliderOne, sliderTwo, sliderThree, betRad, date, snackOpen} = this.state;
 
         let betTypeSelectors = null;
         if(betType === 'binary'){
@@ -232,10 +249,14 @@ export default class CreateLocationBet extends React.Component{
             }
         ];
 
-
         return(
             <div>
                 <Navbar />
+                <Snackbar open={snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
+                    <Alert onClose={this.handleSnackClose} severity="error">
+                        Please Select a Future Date
+                    </Alert>
+                </Snackbar>
                 <Container style={styles.mainContent}>
                     <Row>
                         <Col xs={12} md={6}>
@@ -296,11 +317,11 @@ export default class CreateLocationBet extends React.Component{
                                         <KeyboardDatePicker
                                             disableToolbar
                                             variant="inline"
-                                            format="MM/dd/yyyy"
+                                            format="dd/MM/yyyy"
                                             margin="normal"
                                             id="date-picker-inline"
                                             label="Date"
-                                            value={defaultDate}
+                                            value={date}
                                             onChange={this.handleDateChange}
                                             KeyboardButtonProps={{
                                                 'aria-label': 'change date',
@@ -310,7 +331,7 @@ export default class CreateLocationBet extends React.Component{
                                             margin="normal"
                                             id="time-picker"
                                             label="Time"
-                                            value={defaultDate}
+                                            value={date}
                                             onChange={this.handleDateChange}
                                             KeyboardButtonProps={{
                                                 'aria-label': 'change time',
@@ -340,6 +361,10 @@ export default class CreateLocationBet extends React.Component{
         )
         
     }
+}
+
+function Alert(props){
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 const styles = {
