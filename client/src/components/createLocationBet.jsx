@@ -45,49 +45,88 @@ export default class CreateLocationBet extends React.Component{
             title: '',
             date: new Date(),
             snackOpen: false,
+            msg: '',
+            msgType: ''
         }
     }
 
     submitForm = () => {
         const {betType, side, sliderOne, sliderTwo, sliderThree, betRad, location_name, title, date} = this.state;
         const {regionData, userLocation}  = this.props;
-        let data = {
-            type: betType,
-            title: title,
-            deadline: (date.getTime()/1000.0),
-            username: 'testUser',
-        }
-        if(betType === 'binary'){
-            data.side = side;
-        }else if(betType === 'multi'){
-            data.firstPlaceCut = sliderOne / 100;
-            data.secondPlaceCut = sliderTwo / 100;
-            data.thirdPlaceCut = sliderThree / 100;
-        }
-        console.log(data);
         
-        fetch('http://localhost:9000/makeBet', {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            credentials: 'same-origin',
-            body: JSON.stringify(data)
-        })
-        .then(res => res.json())
-        .then(res => {
-            console.log(res);
-        })
-        .catch(err => console.log(err));
-        
+        let formValid = true;
+        // Validate title
+        if(title === ''){
+            formValid = false;
+            this.setState({msg : "Please enter a title", msgType: 'error', snackOpen : true});
+        }
+        // Validate location name
+        if(location_name === ''){
+            formValid = false;
+            this.setState({msg : "Please enter a location name", msgType: 'error', snackOpen : true});
+        }
+        // Validate bet percentages
+        if((sliderOne / 100 + sliderTwo / 100 + sliderThree / 100).toFixed(2) != 1){
+            formValid = false;
+            this.setState({msg : "Bet Percentages do no sum to 100%", msgType: 'error', snackOpen: true});
+        }
+        // Validate type
+        if(betType === 'none'){
+            formValid = false;
+            this.setState({msg : "Please select a bet type", msgType : 'error', snackOpen : true});
+        }
+        // Validate side
+        if(side === '' && betType === 'binary'){
+            formValid = false;
+            this.setState({msg : "Please select side", msgType : 'error', snackOpen : true});
+        };
+        // Allow three minute margin for deadline
+        if(+date < (Date.now() + 180)){
+            formValid = false;
+            this.setState({msg : "Deadline not valid", msgType: 'error', snackOpen : true});
+        }
+        if(formValid){
+            let data = {
+                type: betType,
+                title: title,
+                deadline: +date,
+                username: 'testUser',
+            }
+            if(betType === 'binary'){
+                data.side = side;
+            }else if(betType === 'multi'){
+                data.firstPlaceCut = sliderOne / 100;
+                data.secondPlaceCut = sliderTwo / 100;
+                data.thirdPlaceCut = sliderThree / 100;
+            }
+            console.log(data);
+            
+            fetch('http://localhost:9000/makeBet', {
+                method: 'POST',
+                headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res.status === 'success'){
+                    this.setState({msg : "Bet created!", msgType : 'success', snackOpen : true});
+                }else{
+                    console.log(res);
+                }
+            })
+            .catch(err => console.log(err));
+        }
     }
 
     handleDateChange = (newDate) => {
         let epochTime = +newDate;
         if(Date.now() > epochTime){
             // Handle error
-            this.setState({snackOpen : true, date: new Date()});
+            this.setState({msg : "Deadline not valid", snackOpen : true, date: new Date()});
         }else{
             this.setState({date : newDate});
         } 
@@ -125,7 +164,7 @@ export default class CreateLocationBet extends React.Component{
     }
 
     render(){
-        const {betType, side, sliderOne, sliderTwo, sliderThree, betRad, date, snackOpen} = this.state;
+        const {betType, side, sliderOne, sliderTwo, sliderThree, betRad, date, snackOpen, msg, msgType} = this.state;
         const {regionData, userLocation} = this.props;
 
         const radiusMarks = [
@@ -143,9 +182,7 @@ export default class CreateLocationBet extends React.Component{
             <div>
                 <Navbar />
                 <Snackbar open={snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
-                    <Alert onClose={this.handleSnackClose} severity="error">
-                        Please Select a Future Date
-                    </Alert>
+                    <Alert onClose={this.handleSnackClose} severity={msgType}>{msg}</Alert>
                 </Snackbar>
                 <Container style={styles.mainContent}>
                     <Row>
