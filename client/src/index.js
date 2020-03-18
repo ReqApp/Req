@@ -30,8 +30,8 @@ class App extends React.Component{
                        <About/>
                    </Route>
                    <Route path="/profile">
-                       <Profile/>
-                   </Route>
+                        <Profile/>
+                    </Route>
                    <Route exact path="/">
                        <HomePage/>
                    </Route>
