@@ -1067,6 +1067,19 @@ function addLocationBetToRegion(regionID, locationBetID){
     });
 }
 
+function createRegion(data){
+    return new Promise((resolve, reject) => {
+        let region = BetRegion(data);
+        region.save((err, savedRegion) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(savedRegion);
+            }
+        });
+    });
+}
+
 function calcDistance(storedBet, user) {
     const RAD_EARTH = 6371;
     var changeLat = degToRad(storedBet.lat - user.lat);
@@ -1095,6 +1108,7 @@ module.exports.isSignedIn = isSignedIn;
 module.exports.rankAnswers = rankAnswers;
 module.exports.calcDistance = calcDistance;
 module.exports.createLocationBet = createLocationBet;
+module.exports.createRegion = createRegion;
 module.exports.alreadyBetOn = alreadyBetOn;
 module.exports.isValidBetID = isValidBetID;
 module.exports.resetPassword = resetPassword;

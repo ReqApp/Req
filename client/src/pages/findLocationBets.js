@@ -11,9 +11,11 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
 //Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Button, Container, Row, Col, Dropdown} from 'react-bootstrap/';
+import {Container, Row, Col, Dropdown} from 'react-bootstrap/';
 // Components
 import DisplayMap from'../components/maps';
 import Navbar from '../components/navbar';
@@ -46,14 +48,10 @@ export default class FindBetPage extends React.Component{
             showMap : false,
             openError : false,
             loadCreateForm: false,
+            loadCreateRegion: false,
             selectedRegion: null
         }
         this.socket = openSocket("http://localhost:9000");
-        this.getRegions = this.getRegions.bind(this);
-        this.getLocation = this.getLocation.bind(this);
-        this.handleSearch = this.handleSearch.bind(this);
-        this.handleErrorClose = this.handleErrorClose.bind(this);
-        this.handleSelection = this.handleSelection.bind(this);
     }
 
     // Load regions on first mout
@@ -73,8 +71,12 @@ export default class FindBetPage extends React.Component{
         });
     }
 
+    handleCreateBetRegion = () => {
+        this.setState({loadCreateRegion : true, loadCreateForm : true});
+    }
+
     // Used to get user location
-    getLocation(){
+    getLocation = () => {
         // Check if geolocation is available
         if(navigator.geolocation){
             // Check for accuracy
@@ -91,8 +93,6 @@ export default class FindBetPage extends React.Component{
                 let location = {lat : 53.28211, lng : -9.062186 };
                 this.setState({hasLocation : true, latlng : location, accurate : true});
                 this.getRegions(location);
-                //Temp
-
 
                 //this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : false, locationError : "not-accurate", openError : true});
             }
@@ -105,7 +105,7 @@ export default class FindBetPage extends React.Component{
     }
 
     // Retrieve regions when location found by map component
-    getRegions(location){
+    getRegions = (location) => {
         var url = new URL("http://localhost:9000/getBettingRegions"),
         params = location
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
@@ -131,11 +131,11 @@ export default class FindBetPage extends React.Component{
         console.log("Could not find bet card")
     }
 
-    handleSearch(event){
+    handleSearch = (event) => {
         this.setState({sortBy : event.target.value});
     }
 
-    handleSelection(id){
+    handleSelection = (id) => {
         const {mode} = this.props;
         const {betRegions} = this.state;
         if(mode === 'find'){
@@ -157,7 +157,7 @@ export default class FindBetPage extends React.Component{
         }
     }
     
-    handleErrorClose(){
+    handleErrorClose = () => {
         this.setState({openError : false});
     }
 
@@ -166,14 +166,14 @@ export default class FindBetPage extends React.Component{
         const {mode} = this.props;
         
         if(loadCreateForm){
-            const {selectedRegion} = this.state;
+            const {selectedRegion, loadCreateRegion} = this.state;
             return(
-                <CreateLocationBet userLocation={latlng} regionData={selectedRegion} />
+                <CreateLocationBet userLocation={latlng} regionData={selectedRegion} createRegion={loadCreateRegion}/>
             )
         }else{
         let predictSearch = null;
         if(!loadingRegions){
-            predictSearch = <div style={styles.floatContainer} style={{ width: 300}} >
+            predictSearch = <div style={styles.floatContainer} >
                 <Autocomplete
                     freeSolo
                     id="free-solo-2-demo"
@@ -196,9 +196,7 @@ export default class FindBetPage extends React.Component{
 
         let cards = null;
         if(view === "bets"){
-            cards = <LocationBetCards 
-                        bets={bets} 
-                    />;
+            cards = <LocationBetCards bets={bets} />;
         }
         else{
             cards = <BetRegionCards 
@@ -256,6 +254,17 @@ export default class FindBetPage extends React.Component{
                     <Row>
                         <Col>    
                             <h2 style={styles.sortByTitle}>Available Regions</h2>
+                        </Col>
+                        <Col>
+                            <Button
+                                onClick={this.handleCreateBetRegion}
+                                style={styles.newRegionBtn}
+                                variant="contained"
+                                color="primary"
+                                className={classes.button}
+                                endIcon={<Icon>addsharp</Icon>}>
+                                Create New Region
+                            </Button>
                         </Col>
                     </Row>
                     <Row>
@@ -316,8 +325,9 @@ const styles = {
         padding: '0px'
     },   
     floatContainer: {
-        position: 'relative',
-        float: 'right'
+        width: '300px',
+        position: 'absolute',
+        right: '0px'
     },
     sortByDropdown: {
         marginTop: '15px'
@@ -331,5 +341,10 @@ const styles = {
         borderRadius: '5px',
         border: 'none',
         zIndex: '1000'
+    },
+    newRegionBtn: {
+        position: 'absolute',
+        bottom: '0px',
+        right: '0px'
     }
 } 

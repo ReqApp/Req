@@ -105,15 +105,50 @@ router.get('/getBetsInRegion', (req, res) => {
  */
 
 // API for adding new betting region
-router.post('/addBettingRegion', function(req, res, next) {
-    var region = new betRegion(req.body);
-    region.save(function(err, savedRegion) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.json(savedRegion);
+// TODO update docs
+router.post('/addBetRegion', (req, res) => {
+    let region = req.body;
+    if(region.region_name && region.description && region.latitude && region.longitude && region.radius){
+        if(!isNaN(region.latitude) && !isNaN(region.longitude) && !isNaN(region.radius)){
+            utilFuncs.createRegion(region).then(savedRegion => {
+                if(savedRegion){
+                    res.status(200).json({
+                        'status' : 'success',
+                        'body' : savedRegion
+                    });
+                }else{
+                    res.status(400).json({
+                        'status' : 'error',
+                        'body' : 'Could not create region'
+                    });
+                }
+                }, err => {
+                    res.status(200).json({
+                        'status' : 'error',
+                        'body' : err
+                    });
+                });
+        }else{
+            res.status(400).json({
+                'status' : 'error',
+                'body' : 'Invalid parameters'
+            });
         }
-    });
+    }else{
+        res.status(400).json({
+            'status' : 'error',
+            'body' : 'Invalid parameters'
+        });
+    }
+
+    // var region = new betRegion(req.body);
+    // region.save(function(err, savedRegion) {
+    //     if (err) {
+    //         console.log(err);
+    //     } else {
+    //         res.json(savedRegion);
+    //     }
+    // });
 });
 
 // API for getting available betting regions
