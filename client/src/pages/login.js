@@ -113,7 +113,7 @@ class SignIn extends React.Component{
   }
 }
 
-const useStyles = theme => ({
+const classes = theme => ({
   paper: {
     marginTop: theme.spacing(8),
     display: 'flex',
@@ -138,4 +138,4 @@ const useStyles = theme => ({
 SignIn.propTypes = {
   classes: PropTypes.object.isRequired,
 };
-export default withStyles(useStyles)(SignIn);
+export default withStyles(classes)(SignIn);
