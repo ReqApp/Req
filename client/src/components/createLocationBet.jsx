@@ -99,7 +99,6 @@ export default class CreateLocationBet extends React.Component{
                 data.secondPlaceCut = sliderTwo / 100;
                 data.thirdPlaceCut = sliderThree / 100;
             }
-            console.log(data);
             
             fetch('http://localhost:9000/makeBet', {
                 method: 'POST',
@@ -113,12 +112,44 @@ export default class CreateLocationBet extends React.Component{
             .then(res => res.json())
             .then(res => {
                 if(res.status === 'success'){
-                    this.setState({msg : "Bet created!", msgType : 'success', snackOpen : true});
+                    let locationData = {
+                        location_name : location_name,
+                        latitude : userLocation.lat,
+                        longitude : userLocation.lng,
+                        radius : betRad,
+                        bet_region_id : regionData._id,
+                        bet_id : res.body._id
+                    }
+                    fetch('http://localhost:9000/createLocationBet', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body : JSON.stringify(locationData)
+                    })
+                    .then(res => res.json())
+                    .then(res => {
+                        if(res.status === 'success'){
+                            this.setState({msg : "Bet created!", msgType : 'success', snackOpen : true});
+                        }else{
+                            console.log(res);
+                            this.setState({msg : "Location Bet could not be created", msgType : 'error', snackOpen : true});
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        this.setState({msg : "Location Bet could not be created", msgType : 'error', snackOpen : true});
+                    });
                 }else{
                     console.log(res);
+                    this.setState({msg : "Bet could not be created", msgType : 'error', snackOpen : true});
                 }
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+                console.log(err);
+                this.setState({msg : "Location Bet could not be created", msgType : 'error', snackOpen : true});
+            });
         }
     }
 

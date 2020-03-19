@@ -4,8 +4,10 @@ require('./util.js')
 
 // TODO update docs
 var locationBetSchema = new Schema({
-    location_Name : {
+    location_name : {
         type : String,
+        minlength : 1,
+        maxlength : 64
     },
     latitude : {
         type : Number

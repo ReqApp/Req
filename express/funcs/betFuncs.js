@@ -6,6 +6,8 @@ var articleBet = require('../models/articleBets');
 const keccak512 = require('js-sha3').keccak512;
 var testBets = require('../models/testBets');
 var User = require('../models/users');
+var BetRegion = require('../models/betRegions');
+var LocationBet = require('../models/locationBetData');
 var jwt = require('jsonwebtoken');
 const axios = require("axios");
 
@@ -928,11 +930,11 @@ function createBet(input) {
                 newBet.user_name = input.username;
                 newBet.type = input.type;
 
-                newBet.save((err) => {
+                newBet.save((err, bet) => {
                     if (err) {
                         reject(err);
                     } else {
-                        resolve(true);
+                        resolve(bet);
                     }
                 });
 
@@ -1036,6 +1038,35 @@ function verifyJwt(jwtString) {
     return val;
 }
 
+function createLocationBet(data){
+    return new Promise((resolve, reject) => {
+        let locationBet = new LocationBet(data);
+        locationBet.save((err , savedBet) => {
+            if(err){
+                reject(err);
+            }else{
+                addLocationBetToRegion(savedBet.bet_region_id, savedBet._id).then(response => {
+                    resolve(savedBet);
+                }, err => {
+                    reject(err);
+                });
+            }
+        });
+    });
+}
+
+function addLocationBetToRegion(regionID, locationBetID){
+    return new Promise((resolve, reject) => {
+        BetRegion.findOneAndUpdate({ '_id': regionID }, { '$push': { 'bet_ids': locationBetID }, '$inc': { 'num_bets': 1 } }, { useFindAndModify: false }).exec((err, region) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(region);
+            }
+        });
+    });
+}
+
 function calcDistance(storedBet, user) {
     const RAD_EARTH = 6371;
     var changeLat = degToRad(storedBet.lat - user.lat);
@@ -1063,6 +1094,7 @@ module.exports.decideBet = decideBet;
 module.exports.isSignedIn = isSignedIn;
 module.exports.rankAnswers = rankAnswers;
 module.exports.calcDistance = calcDistance;
+module.exports.createLocationBet = createLocationBet;
 module.exports.alreadyBetOn = alreadyBetOn;
 module.exports.isValidBetID = isValidBetID;
 module.exports.resetPassword = resetPassword;

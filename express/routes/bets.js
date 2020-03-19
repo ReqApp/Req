@@ -1,11 +1,11 @@
-var BetRegion = require('../models/bettingRegions');
+var betRegion = require('../models/betRegions');
 var testBetsFinished = require('../models/testBetsFinished');
 var generalFuncs = require("../funcs/generalFuncs");
 var articleBet = require('../models/articleBets');
 const utilFuncs = require('../funcs/betFuncs');
 var testBets = require('../models/testBets');
 var router = require('express').Router();
-var Bet = require('../models/betData');
+var locationBet = require('../models/locationBetData');
 var User = require('../models/users');
 var mongoose = require('mongoose');
 
@@ -32,20 +32,53 @@ router.get('/debugTest', (req, res, next) => {
 
 /**
  * <-------------------------------------------------------------------->
- *                              Bet APIs
+ *                              Location Bet APIs
  * <-------------------------------------------------------------------->
  */
 
 // API to handle adding bet to database
-router.post('/addBetToDataBase', function(req, res, next) {
-    var bet = new Bet(req.body);
-    bet.save(function(err, savedBet) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.json(savedBet);
+//TODO update docs
+router.post('/createLocationBet', (req, res) => {
+    let data = req.body;
+    if(data.location_name && data.latitude && data.longitude && data.radius && data.bet_region_id && data.bet_id){
+        if(!isNaN(data.latitude) && !isNaN(data.longitude) && !isNaN(data.radius)){
+            if(utilFuncs.validate(data.bet_region_id, 'id') && utilFuncs.validate(data.bet_id, 'id')){
+                utilFuncs.createLocationBet(data).then(response => {
+                    if(response){
+                        res.status(200).json({
+                            'status' : 'success',
+                            'body' : 'Location bet made'
+                        });
+                    }else{
+                        res.status(400).json({
+                            'status' : 'error',
+                            'body' : 'Location bet not made'
+                        })
+                    }
+                }, err => {
+                    res.status(400).json({
+                        'status' : 'error',
+                        'body' : `Error: ${err}`
+                    })
+                });
+            }else{
+                res.status(400).json({
+                    'status' : 'error',
+                    'body' : 'Invalid IDs'
+                });
+            }
+        }else{
+            res.status(400).json({
+                'status' : 'error',
+                'body' : 'Invalid lat, lng or radius'
+            });
         }
-    });
+    }else{
+        res.status(400).json({
+            'status' : 'error',
+            'body' : 'Incomplete data'
+        });
+    }
 });
 
 // API for getting bets in region
@@ -73,7 +106,7 @@ router.get('/getBetsInRegion', (req, res) => {
 
 // API for adding new betting region
 router.post('/addBettingRegion', function(req, res, next) {
-    var region = new BetRegion(req.body);
+    var region = new betRegion(req.body);
     region.save(function(err, savedRegion) {
         if (err) {
             console.log(err);
@@ -101,7 +134,7 @@ router.get('/getBettingRegions', (req, res) => {
         })
     } else {
         // Perform calculations server-side to increase perfromance
-        BetRegion.find({}).exec((err, betRegions) => {
+        betRegion.find({}).exec((err, betRegions) => {
             if (err) {
                 res.status(500).json({
                     "status": "error",
@@ -111,11 +144,11 @@ router.get('/getBettingRegions', (req, res) => {
                 let regionsToSend = [];
                 const LEN = betRegions.length;
                 for (var i = 0; i < LEN; i++) {
-                    var betRegion = betRegions.pop();
-                    var d = utilFuncs.calcDistance({ lat: betRegion.latitude, lng: betRegion.longitude }, { lat: req.query.lat, lng: req.query.lng });
+                    let region = betRegions.pop();
+                    var d = utilFuncs.calcDistance({ lat: region.latitude, lng: region.longitude }, { lat: req.query.lat, lng: req.query.lng });
                     // Convert kilometers to metres
-                    if ((d * 1000) <= betRegion.radius) {
-                        regionsToSend.push(betRegion);
+                    if ((d * 1000) <= region.radius) {
+                        regionsToSend.push(region);
                         /*
                         console.log("Calculated Distance: " + (d * 1000).toString());
                         console.log("Bet Radius: " + betRegion.radius.toString() + "\n");
@@ -138,14 +171,14 @@ router.get('/getBettingRegions', (req, res) => {
 router.put('/addBetToRegion', function(req, res, next) {
     // Takes bet region id
     console.log(req.body);
-    var regionID = mongoose.Types.ObjectId(req.body.regionID.toString());
-    var betID = mongoose.Types.ObjectId(req.body.betID.toString());
+    let regionID = mongoose.Types.ObjectId(req.body.regionID.toString());
+    let betID = mongoose.Types.ObjectId(req.body.betID.toString());
     // Find corresponding region and include bet id in bets array and increment num bets
-    BetRegion.findOneAndUpdate({ '_id': regionID }, { '$push': { 'bet_ids': betID }, '$inc': { 'num_bets': 1 } }, { useFindAndModify: false }).exec(function(err, betRegion) {
+    betRegion.findOneAndUpdate({ '_id': regionID }, { '$push': { 'bet_ids': betID }, '$inc': { 'num_bets': 1 } }, { useFindAndModify: false }).exec(function(err, region) {
         if (err) {
             console.log(err);
         } else {
-            res.json(betRegion);
+            res.json(region);
         }
     });
 });
@@ -155,11 +188,11 @@ router.get('/getRegionByID', function(req, res, next) {
     console.log(req.query.id);
     var id = mongoose.Types.ObjectId(req.query.id.toString());
     console.log(id);
-    BetRegion.findById(id, function(err, betRegion) {
+    betRegion.findById(id, function(err, region) {
         if (err) {
             console.log(err);
         } else {
-            res.json(betRegion);
+            res.json(region);
         }
     });
 });
@@ -173,7 +206,7 @@ router.get('/getRegionByID', function(req, res, next) {
 // API for adding multiple bets to database
 router.post('/addMultBets', function(req, res, next) {
     //console.log(req.body);
-    Bet.insertMany(req.body.betData, function(err, bets) {
+    locationBet.insertMany(req.body.betData, function(err, bets) {
         if (err) {
             console.log(err);
         } else {
@@ -186,7 +219,7 @@ router.post('/addMultBets', function(req, res, next) {
 // API for adding multiple bet regions to database
 router.post('/addMultRegions', function(req, res, next) {
     console.log(req.body);
-    BetRegion.insertMany(req.body.regions, function(err, regions) {
+    betRegion.insertMany(req.body.regions, function(err, regions) {
         if (err) {
             console.log(err);
         } else {
@@ -209,11 +242,11 @@ router.put('/addMultBetsToRegion', function(req, res, next) {
     var numBets = bets.length;
     console.log(ids);
     // Find corresponding region and include bet id in bets array and increment num bets
-    BetRegion.findOneAndUpdate({ '_id': regionID }, { '$push': { 'bet_ids': { '$each': ids } }, '$inc': { 'num_bets': numBets } }, { useFindAndModify: false }).exec(function(err, betRegion) {
+    betRegion.findOneAndUpdate({ '_id': regionID }, { '$push': { 'bet_ids': { '$each': ids } }, '$inc': { 'num_bets': numBets } }, { useFindAndModify: false }).exec(function(err, region) {
         if (err) {
             console.log(err);
         } else {
-            res.json(betRegion);
+            res.json(region);
         }
     });
 });
@@ -247,6 +280,7 @@ router.post('/makeBet', (req, res, next) => {
                 "secondPlaceCut": secondPlaceCut,
                 "thirdPlaceCut": thirdPlaceCut
             }
+            console.log((firstPlaceCut + secondPlaceCut + thirdPlaceCut).toFixed(2));
             if (req.body.type === "multi" && (firstPlaceCut + secondPlaceCut + thirdPlaceCut).toFixed(2) != 1) {
                 // The percentage payouts must add up to 100%
                 res.status(400).json({
@@ -259,7 +293,7 @@ router.post('/makeBet', (req, res, next) => {
                     if (response) {
                         res.status(200).json({
                             "status": "success",
-                            "body": "Bet made!"
+                            "body": response
                         });
                     } else {
                         res.status(400).json({
