@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Register() {
+export default function ResetPassword() {
   const classes = useStyles();
 
   return (
@@ -55,7 +55,7 @@ export default function Register() {
       <CssBaseline />
       <div className={classes.paper}>
         <Typography component="h1" variant="h5">
-          Register
+          Enter your new password
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
@@ -64,21 +64,10 @@ export default function Register() {
             required
             fullWidth
             id="email"
-            label="Email Address"
+            label="Password"
             name="email"
             autoComplete="email"
             autoFocus
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
           />
           <Button
             type="submit"
@@ -87,47 +76,9 @@ export default function Register() {
             color="primary"
             className={classes.submit}
           >
-            Sign In
+            Submit
           </Button>
-
-          Register through a 3rd party application
-
-          <Grid container>
-            <Grid item lg>
-              <Link href="http://localhost:9000/users/auth/github" variant="body2">
-              <Avatar className={classes.avatar}>
-                <GitHubIcon />
-              </Avatar>
-              </Link>
-            </Grid>
-            <Grid item lg>
-              <Link href="http://localhost:9000/users/auth/google" variant="body2">
-              <Avatar className={classes.avatar}>
-                <GTranslateIcon />
-              </Avatar>
-              </Link>
-            </Grid>
-            <Grid item lg>
-              <Link href="http://localhost:9000/users/auth/steam" variant="body2">
-              <Avatar className={classes.avatar}>
-                <GroupWorkIcon />
-              </Avatar>
-              </Link>
-            </Grid>
-          </Grid>
-          
-          <Grid container>
-            <Grid item xs>
-              <Link href="/users/forgotPassword" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                {"Already a member? Sign in"}
-              </Link>
-            </Grid>
-          </Grid>
+        
         </form>
       </div>
       <Box mt={8}>

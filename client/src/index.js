@@ -8,6 +8,9 @@ import {HomePage} from './pages/home';
 import {DisplayMap} from './pages/maps';
 import SignIn from './pages/login';
 import Register from './pages/register'
+import ResetPassword from './pages/resetPassword';
+import ForgotPassword from './pages/forgotPassword'; 
+import VerifyAccount from './pages/verifyAccount';
 import {FAQ} from './pages/faq';
 import {About} from './pages/about';
 import {Profile} from './pages/profile';
@@ -43,6 +46,15 @@ class App extends Component{
                     </Route>
                     <Route exact path='/users/register'>
                          <Register/>
+                    </Route>
+                    <Route exact path='/users/forgotPassword'>
+                         <ForgotPassword/>
+                    </Route>
+                    <Route exact path='/users/resetPassword'>
+                         <ResetPassword/>
+                    </Route>
+                    <Route exact path='/users/verifyAccount'>
+                         <VerifyAccount/>
                     </Route>
                     <Route exact path='/'>
                         <HomePage/>
