@@ -6,6 +6,8 @@ import FindLocationBets from './LocationBettingPage/findLocationBets.js';
 import Bets from './pages/bets.js';
 import {HomePage} from './pages/home';
 import {DisplayMap} from './pages/maps';
+import SignIn from './pages/login';
+import Register from './pages/register'
 import {FAQ} from './pages/faq';
 import {About} from './pages/about';
 import {Profile} from './pages/profile';
@@ -35,6 +37,12 @@ class App extends Component{
                     </Route>
                     <Route exact path='/payment'>
                          <Payment/>
+                    </Route>
+                    <Route exact path='/users/login'>
+                         <SignIn/>
+                    </Route>
+                    <Route exact path='/users/register'>
+                         <Register/>
                     </Route>
                     <Route exact path='/'>
                         <HomePage/>

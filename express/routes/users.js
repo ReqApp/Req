@@ -97,14 +97,14 @@ router.get('/auth/google', passport.authenticate('google', {
 
 router.get('/auth/google/callback', passport.authenticate('google'), (req, res, next) => {
     res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
-    res.render('index', { title: req.user_name });
+    res.redirect('http://localhost:3000');
 });
 
 router.get('/auth/github', passport.authenticate('github'));
 
 router.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/users/register' }), (req, res) => {
     res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
-    res.render('index', { title: req.user_name });
+    res.redirect('http://localhost:3000');
 });
 
 router.get('/auth/steam', passport.authenticate('steam'));
@@ -112,7 +112,7 @@ router.get('/auth/steam', passport.authenticate('steam'));
 router.get('/auth/steam/callback', passport.authenticate('steam', { failureRedirect: '/login' }), (req, res) => {
     // Successful authentication, redirect home.
     res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
-    res.render('index', { title: req.user_name });
+    res.redirect('http://localhost:3000');
 });
 
 router.post('/register', (req, res, next) => {
