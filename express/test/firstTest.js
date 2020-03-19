@@ -58,6 +58,21 @@ describe("========= Login Testing =========", () => {
                     done();
                 });
         }).timeout(2500),
+        it("Invalid ysername", done => {
+            chai
+                .request(app)
+                .post("/users/login")
+                .send({
+                    "user_name": fuzzUsername,
+                    "password": "You shouldn't be reading this"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Username not found");
+                    done();
+                });
+        }).timeout(2500),
         it("Fuzzing password", done => {
             chai
                 .request(app)
@@ -107,6 +122,17 @@ describe("========= Login Testing =========", () => {
         it("Invalid params", done => {
             chai
                 .request(app)
+                .post("/users/login")
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid parameters");
+                    done();
+                });
+        }).timeout(1800),
+        it("Invalid params", done => {
+            chai
+                .request(app)
                 .post("/users/forgotPassword")
                 .send({
                     "invalidJSON": "any cans"
@@ -133,12 +159,28 @@ describe("========= Login Testing =========", () => {
                     done();
                 });
         }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/users/forgotPassword")
+                .send({
+                    "newPassword": "anycans4444555",
+                    "fromUrl": "`'`''`'`'`'`'`'`''`'`'<<<<<<<<<<<<<<<<<<<<",
+                    "_id": "eeeee"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid input");
+                    done();
+                });
+        }),
         it("Fuzzing username", done => {
             chai
                 .request(app)
                 .post("/users/forgotPassword")
                 .send({
-                    "user_name": `testUser`
+                    "user_name": fuzzUsername
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(400);
@@ -211,6 +253,17 @@ describe("=========== Register Testing ===========", () => {
                     done();
                 });
         }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/users/register")
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid POST parameters");
+                    done();
+                });
+        }),
         it("Valid registration", done => {
             chai
                 .request(app)
@@ -225,6 +278,20 @@ describe("=========== Register Testing ===========", () => {
                     expect(res.body.status).to.equals("success");
                     done();
                 });
+        }).timeout(4700),
+        it("Invalid existing registration", done => {
+            chai
+                .request(app)
+                .post("/users/register")
+                .send({
+                    "user_name": `${fuzzUsername}`,
+                    "email": `${fuzzUsername}@gmail.com`
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
         }).timeout(4700)
 });
 
@@ -234,7 +301,6 @@ describe("========== Password Reset ==========", () => {
             chai
                 .request(app)
                 .post("/users/resetPassword")
-                .send({})
                 .end((err, res) => {
                     expect(res).to.have.status(401);
                     expect(res.body.status).to.equals("error");
@@ -278,6 +344,21 @@ describe("========== Password Reset ==========", () => {
                 .post("/users/resetPassword")
                 .send({
                     "newPassword": "jellyfisherman"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid input");
+                    done();
+                })
+        }),
+        it("Invalid params", done => {
+            chai
+                .request(app)
+                .post("/users/resetPassword")
+                .send({
+                    "newPassword": null,
+                    "fromUrl": ""
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(401);
@@ -370,20 +451,26 @@ describe("========== Verify Account ========== ", () => {
                     expect(res.body.body).to.equals("Invalid input");
                     done();
                 })
+        }),
+        it("Invalid params", done => {
+            chai
+                .request(app)
+                .post("/users/verifyAccount")
+                .send({
+                    "activationCode": null,
+                    "password": null,
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid input");
+                    done();
+                })
         })
 });
 
 describe("============= Various APIS ==============", () => {
-    it("Profile (not logged in)", done => {
-            chai
-                .request(app)
-                .get("/users/profile")
-                .end((err, res) => {
-                    expect(res).to.have.status(200);
-                    done();
-                });
-        }),
-        it("getTime", done => {
+    it("getTime", done => {
             chai
                 .request(app)
                 .get("/getTime")
@@ -506,7 +593,43 @@ describe("============= Various APIS ==============", () => {
                     done();
                 });
         }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/users/getProfilePicture")
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.body).to.equals('No username given');
+                    done();
+                });
+        }),
         it("Get invalid profiler", done => {
+            chai
+                .request(app)
+                .post("/users/getProfilePicture")
+                .send({
+                    "username": null
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.body).to.equals('No username given');
+                    done();
+                });
+        }),
+        it("Get invalid profiler", done => {
+            chai
+                .request(app)
+                .post("/users/getProfilePicture")
+                .send({
+                    "username": "`,`,`,`,`,/''/'/'/'/'/'drop all the tables yeah?"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.body).to.equals('Invalid username');
+                    done();
+                });
+        }),
+        it("Get valid profiler", done => {
             chai
                 .request(app)
                 .post("/users/getProfilePicture")
