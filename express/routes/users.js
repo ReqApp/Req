@@ -40,7 +40,7 @@ router.post('/getProfilePicture', (req, res, next) => {
                 if (response) {
                     if (response === "noprofiler") {
 
-                        res.status(200).json({
+                        res.status(404).json({
                             "status": "error",
                             "body": "No profile picture"
                         });
@@ -52,7 +52,7 @@ router.post('/getProfilePicture', (req, res, next) => {
                         });
                     }
                 } else {
-                    res.status(200).json({
+                    res.status(404).json({
                         "status": "error",
                         "body": "Could not find profile picture"
                     });
@@ -71,8 +71,8 @@ router.post('/getProfilePicture', (req, res, next) => {
             "body": "No username given"
         });
     }
+});
 
-})
 router.get('/profile', (req, res, next) => {
     if (req.cookies.Authorization) {
         const jwtString = req.cookies.Authorization.split(' ');
@@ -258,7 +258,7 @@ router.post('/verifyAccount', (req, res, next) => {
     /**
      * Handles requests of the login code
      */
-    if (req.body.activationCode === undefined) {
+    if (req.body.activationCode === null || req.body.activationCode === undefined) {
         res.status(401).send({
             "status": "error",
             "body": "Invalid input"
