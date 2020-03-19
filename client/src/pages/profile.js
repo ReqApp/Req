@@ -9,6 +9,7 @@ import {Button} from '@material-ui/core';
 import pic from '../images/profile-pic-2.png';
 import Flexbox from 'flexbox-react';
 import openSocket from 'socket.io-client';
+//import axios from 'axios';
 
 
 export class Profile extends React.Component{ 
@@ -29,6 +30,9 @@ export class Profile extends React.Component{
                 userNotRetrived: false,
                 userNotLogedIn: true
             },
+            profileData: {
+                betWin: 23
+            }
         }
         this.handleClick = this.handleClick.bind(this);
         this.login = this.login.bind(this);
@@ -38,7 +42,7 @@ export class Profile extends React.Component{
     }   
 
     componentDidMount(){
-        this.login();      
+        this.login();
     }
 
     handleClick(){
@@ -49,7 +53,7 @@ export class Profile extends React.Component{
     }
 
     login(){  
-        console.log("login called");         
+        //console.log("login called");         
         const {user_name, password} = this.state;
         fetch(this.state.serverURL + '/users/login', {
           method: 'POST',
@@ -63,14 +67,16 @@ export class Profile extends React.Component{
           })
         }).then((res) => res.json()).then((res) => {
           if(res.status === "success"){
-            this.setState({user_name : "", password: "", loggingUser: false ,errors: {userNotLogedIn: false}});
-            this.getUser();
+            console.log(res.status);
+            console.log(res.body)
+            console.log()
+            this.setState({/*user_name : "", password: "",*/ loggingUser: false ,errors: {userNotLogedIn: false}});
+            //this.getUser();            
           }else{
             alert("Incorrect username or password");
           }
         }).catch(err => alert("Could not login"));
     }
-
 
     getUser(){
         console.log("getUser called");
@@ -78,7 +84,7 @@ export class Profile extends React.Component{
         this.setState({gettingUser : true});
         fetch(serverURL + '/users/profile', {
           method: 'GET',
-          credentials : "same-origin",       
+          credentials : "same-origin"       
         }).then(res => res.text()).then(res => {
           errors.userNotRetrived = false;
           console.log(res);
