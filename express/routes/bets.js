@@ -220,12 +220,13 @@ router.post('/makeBet', (req, res, next) => {
     const secondPlaceCut = parseFloat(req.body.secondPlaceCut);
     const thirdPlaceCut = parseFloat(req.body.thirdPlaceCut);
 
+    // console.log(utilFuncs.validate(req.body.title, "title"));
+    // console.log(utilFuncs.validate(req.body.type, "type"));
+
     if (!(utilFuncs.validate(req.body.title, "title") && utilFuncs.validate(req.body.type, "type"))) {
-        console.log(utilFuncs.validate(req.body.title, "title"));
-        console.log(utilFuncs.validate(req.body.type, "type"));
         res.status(400).json({
             "status": "error",
-            "body": "Invalid input validaet title and type"
+            "body": "Invalid input"
         })
     } else {
         // if it's a multi type bet it must allocate the betting percentages

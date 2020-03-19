@@ -225,7 +225,7 @@ describe("=========== Register Testing ===========", () => {
                     expect(res.body.status).to.equals("success");
                     done();
                 });
-        }).timeout(2300)
+        }).timeout(4700)
 });
 
 
@@ -569,7 +569,7 @@ describe("============= Betting =============", () => {
                 .send({
                     "type": "multi",
                     "title": "a test title",
-                    "deadline": 1584230400000,
+                    "deadline": 1584621007,
                     "username": "testUser",
                     "firstPlaceCut": 0.9,
                     "secondPlaceCut": 0.3,

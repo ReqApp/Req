@@ -93,7 +93,7 @@ function validate(input, type) {
                 return false;
             }
             if (input.length > 1 && input.length < 64) {
-                if (input.match(/([^A-Za-z0-9,]+)/g)) {
+                if (input.match(/([^A-Za-z0-9, ]+)/g)) {
                     return false;
                 } else {
                     return true;
