@@ -8,9 +8,20 @@
   "schemes": [
     "https"
   ],
+  "securityDefinitions": {
+    "myCookie": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
   "tags": [
     {
       "name": "Betting APIs",
+      "description": "Stored in routes/bets.js"
+    },
+    {
+      "name": "Location Betting APIs",
       "description": "Stored in routes/bets.js"
     },
     {
@@ -18,21 +29,368 @@
       "description": "Stored in routes/users.js"
     },
     {
-      "name": "Testing and Debugging APIs"
+      "name": "Payment APIs",
+      "description": "Stored in payments.js"
+    },
+    {
+      "name": "Analytics APIs",
+      "description": "routes/analytics.js"
     },
     {
       "name": "Index APIs",
       "description": "Stored in routes/index.js"
+    },
+    {
+      "name": "Testing and Debugging APIs"
     }
   ],
   "host": "localhost:9000",
   "basePath": "/",
   "paths": {
+    "/makeBet": {
+      "post": {
+        "summary": "Create new bet and adds it to the database",
+        "tags": [
+          "Betting APIs"
+        ],
+        "description": "Takes bet parameters and creates new bet",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "side": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "deadline": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "firstPlaceCut": {
+                  "type": "number"
+                },
+                "secondPlaceCut": {
+                  "type": "number"
+                },
+                "thirdPlaceCut": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created and saved new bet",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Bet not created due to error",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/decideBet": {
+      "post": {
+        "summary": "Closes Bet",
+        "tags": [
+          "Betting APIs"
+        ],
+        "description": "Finishes bet and pays out winnings",
+        "security": [
+          {
+            "myCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "betID": {
+                  "type": "string"
+                },
+                "result": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Finished bet and payed out winnings",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Bet not finished or winnings not payed out",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/betOn": {
+      "post": {
+        "summary": "Allows user to place bet",
+        "tags": [
+          "Betting APIs"
+        ],
+        "description": "Places user's bet",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "betID": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "betAmount": {
+                  "type": "number"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "side": {
+                  "type": "string"
+                },
+                "bet": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bet placed",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Bet not placed",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/bigButtonBet": {
+      "post": {
+        "summary": "Creates or closes bigRedButton bet",
+        "tags": [
+          "Betting APIs"
+        ],
+        "description": "Provides functionality for starting or closing a bigRedButton bet",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "betID": {
+                  "type": "string"
+                },
+                "result": {
+                  "type": "string"
+                },
+                "action": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created bet or finished bet. If bet created betID is included in response.",
+            "schema": {
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                },
+                "betID": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bet not started or closed due to error",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/pressBigButton": {
+      "post": {
+        "summary": "Allows user to press big red button",
+        "tags": [
+          "Betting APIs"
+        ],
+        "description": "Acknowledges big red button press from user",
+        "responses": {
+          "200": {
+            "description": "Pressed button",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Error pressing button",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/betExpired": {
+      "post": {
+        "summary": "Pays back bettors",
+        "tags": [
+          "Betting APIs"
+        ],
+        "description": "If bet expires the creator is punished and bettors are paid back.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "betID": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Penalised creator and paid back to bettors.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Could not pay back bettors or error occured",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "401": {
+            "description": "User not authorized to do this",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/getAllBetsDev": {
+      "get": {
+        "summary": "Retrieves bets from database",
+        "tags": [
+          "Betting APIs"
+        ],
+        "description": "Fetches all bets from database",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "secret": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sends all bets to user",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/testBetSchema"
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized or error occured",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/getTestBets": {
+      "get": {
+        "summary": "Returns bets from database",
+        "tags": [
+          "Betting APIs"
+        ],
+        "description": "Send bets from database with anonymous betting user details.",
+        "responses": {
+          "200": {
+            "description": "Bet with anonymous user data.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/testBetSchema"
+              }
+            }
+          },
+          "400": {
+            "description": "Could not return bets due to error.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
     "/addBetToDataBase": {
       "post": {
         "summary": "Takes bet object and stores it in database",
         "tags": [
-          "Betting APIs"
+          "Location Betting APIs"
         ],
         "description": "Stores bet object in bet collection",
         "parameters": [
@@ -59,7 +417,7 @@
       "post": {
         "summary": "Adds betting region to database",
         "tags": [
-          "Betting APIs"
+          "Location Betting APIs"
         ],
         "parameters": [
           {
@@ -85,7 +443,7 @@
       "get": {
         "summary": "Returns available bets in region",
         "tags": [
-          "Betting APIs"
+          "Location Betting APIs"
         ],
         "description": "Finds bets created in a region using the region ID.",
         "parameters": [
@@ -106,6 +464,12 @@
                 "$ref": "#/definitions/betSchema"
               }
             }
+          },
+          "500": {
+            "description": "Error find bet objects",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
           }
         }
       }
@@ -114,7 +478,7 @@
       "get": {
         "summary": "Gets bettings regions available to user",
         "tags": [
-          "Betting APIs"
+          "Location Betting APIs"
         ],
         "description": "Calculates distance between user and centre of bet region using Haversine formula. If calculated distance is less than or equal to the bet region radius it is added to an array of response bet regions.",
         "parameters": [
@@ -142,6 +506,18 @@
                 "$ref": "#/definitions/bettingRegionSchema"
               }
             }
+          },
+          "400": {
+            "description": "Invalid parameters",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "500": {
+            "description": "Error retrieving bet regions from database.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
           }
         }
       }
@@ -150,7 +526,7 @@
       "get": {
         "summary": "Gets specific region",
         "tags": [
-          "Betting APIs"
+          "Location Betting APIs"
         ],
         "description": "Finds and returns bet region using id",
         "parameters": [
@@ -175,7 +551,7 @@
       "put": {
         "summary": "Adds bet to region",
         "tags": [
-          "Betting APIs"
+          "Location Betting APIs"
         ],
         "description": "Adds bet id to the array of child bet ids in the bet region specified. Also increments the number of bets field in region.",
         "parameters": [
@@ -202,6 +578,184 @@
             "description": "Updated bet region",
             "schema": {
               "$ref": "#/definitions/bettingRegionSchema"
+            }
+          }
+        }
+      }
+    },
+    "/checkout": {
+      "post": {
+        "tags": [
+          "Payment APIs"
+        ],
+        "summary": "Allows user to make new payment.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "product": {
+                  "type": "string"
+                },
+                "token": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment validated",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Payment not valid",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/getBettingHistory": {
+      "post": {
+        "tags": [
+          "Analytics APIs"
+        ],
+        "summary": "Gets betting history for a user",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "username": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Betting history was returned successfully",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Error retrieving betting history",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/getCreatedBettingHistory": {
+      "post": {
+        "tags": [
+          "Analytics APIs"
+        ],
+        "summary": "Gets created bet history for a user",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "username": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created betting history was returned successfully",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Error retrieving created betting history",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/getWinLoss": {
+      "post": {
+        "tags": [
+          "Analytics APIs"
+        ],
+        "summary": "Get the win loss ratio for a given user",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "username": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Win loss ratio successfully returned",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Error retrieving win loss ratio",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/getPeopleReached": {
+      "post": {
+        "tags": [
+          "Analytics APIs"
+        ],
+        "summary": "Gets the number of bets made and users reached through them",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "username": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Number of bets made and users reached successfully returned",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Error retrieving bets made and users reached",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
             }
           }
         }
@@ -586,6 +1140,132 @@
         }
       }
     },
+    "/users/getProfilePicture": {
+      "post": {
+        "summary": "Gets profile picture for user if exists",
+        "tags": [
+          "User APIs"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "username": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns profile picture in body if exists. Otherwise none exists or could not be found.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Invalid parameters",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/users/profile": {
+      "get": {
+        "summary": "Get user profile",
+        "tags": [
+          "User APIs"
+        ],
+        "security": [
+          {
+            "myCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User name"
+          },
+          "400": {
+            "description": "Could not get user"
+          }
+        }
+      }
+    },
+    "/users/uploadImage": {
+      "get": {
+        "summary": "Upload a profiler",
+        "tags": [
+          "User APIs"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "user_name": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "encoded image"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profiler successfully uploaded for the given user"
+          },
+          "400": {
+            "description": "Error in the process of uploading the profiler."
+          },
+          "401": {
+            "description": "An nsfw profiler was uploaded and rejected."
+          }
+        }
+      }
+    },
+    "/buyCoins": {
+      "post": {
+        "summary": "Allows user to purchase new coins",
+        "tags": [
+          "Index APIs"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "total": {
+                  "type": "number"
+                },
+                "stripeTokenId": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Charged successfully."
+          },
+          "500": {
+            "description": "Payment failed"
+          }
+        }
+      }
+    },
     "/createArticleBet": {
       "post": {
         "summary": "Create new article bet",
@@ -656,6 +1336,118 @@
             "schema": {
               "$ref": "#/definitions/rest_API_Response"
             }
+          }
+        }
+      }
+    },
+    "/shortenLink": {
+      "post": {
+        "summary": "Used to shorten QR code url link",
+        "tags": [
+          "Index APIs"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sends back shortened URL in body of response.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Link could not be shortened.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/getUsers": {
+      "get": {
+        "summary": "Returns user names of all users",
+        "tags": [
+          "Index APIs"
+        ],
+        "description": "Gets all users from database and returns their usernames",
+        "responses": {
+          "200": {
+            "description": "Array of user names"
+          }
+        }
+      }
+    },
+    "/getUsers/:id": {
+      "get": {
+        "summary": "Gets user by id and returns id and username",
+        "tags": [
+          "Index APIs"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User name and ID"
+          },
+          "400": {
+            "description": "Error"
+          }
+        }
+      }
+    },
+    "/members": {
+      "get": {
+        "summary": "Renders specific page depending if user is logged in.",
+        "tags": [
+          "Index APIs"
+        ],
+        "security": [
+          {
+            "myCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Renders home page if user logged in or forgot password page if not."
+          }
+        }
+      }
+    },
+    "/getArticleBets": {
+      "get": {
+        "summary": "Returns all article bets.",
+        "tags": [
+          "Index APIs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of article bets sorted by date created."
+          },
+          "400": {
+            "description": "Error"
           }
         }
       }
@@ -860,7 +1652,7 @@
           "type": "string"
         },
         "coins": {
-          "type": "Number",
+          "type": "number",
           "default": 0
         },
         "accessToken": {
@@ -884,8 +1676,218 @@
           "minLength": 1,
           "maxLength": 64
         },
+        "result": {
+          "type": "string"
+        },
         "timePosted": {
           "type": "string"
+        },
+        "forUsers": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "user_name": {
+                "type": "string"
+              },
+              "betAmount": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "againstUsers": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "user_name": {
+                "type": "string"
+              },
+              "betAmount": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "ends": {
+          "type": "string"
+        }
+      }
+    },
+    "testBetsFinishedSchema": {
+      "description": "Main schema for completed bets",
+      "required": [
+        "userName",
+        "title"
+      ],
+      "properties": {
+        "userName": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "side": {
+          "type": "string"
+        },
+        "deadline": {
+          "type": "string"
+        },
+        "forUsers": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "user_name": {
+                "type": "string"
+              },
+              "betAmount": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "againstUsers": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "user_name": {
+                "type": "string"
+              },
+              "betAmount": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "commonBets": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "user_name": {
+                "type": "string"
+              },
+              "betAmount": {
+                "type": "string"
+              },
+              "bet": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "firstPlaceCut": {
+          "type": "number"
+        },
+        "tester": {
+          "type": "string"
+        },
+        "secondPlaceCut": {
+          "type": "number"
+        },
+        "thirdPlaceCut": {
+          "type": "number"
+        },
+        "forTotal": {
+          "type": "number"
+        },
+        "againstTotal": {
+          "type": "number"
+        },
+        "commonTotal": {
+          "type": "number"
+        },
+        "winners": {
+          "type": "array",
+          "properties": {
+            "user_name": {
+              "type": "string"
+            },
+            "payout": {
+              "type": "number"
+            },
+            "profilePicture": {
+              "type": "string"
+            }
+          }
+        },
+        "losers": {
+          "type": "array",
+          "properties": {
+            "user_name": {
+              "type": "string"
+            }
+          }
+        },
+        "result": {
+          "type": "number"
+        }
+      }
+    },
+    "testBetSchema": {
+      "description": "Main schema for general bets",
+      "required": [
+        "user_name",
+        "title"
+      ],
+      "properties": {
+        "user_name": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "side": {
+          "type": "string"
+        },
+        "deadline": {
+          "type": "string"
+        },
+        "forUsers": {
+          "type": "array",
+          "properties": {
+            "user_name": {
+              "type": "string"
+            },
+            "betAmount": {
+              "type": "number"
+            }
+          }
+        },
+        "againstUsers": {
+          "type": "array",
+          "properties": {
+            "user_name": {
+              "type": "string"
+            },
+            "betAmount": {
+              "type": "number"
+            }
+          }
+        },
+        "commonBets": {
+          "type": "array",
+          "properties": {
+            "user_name": {
+              "type": "string"
+            },
+            "betAmount": {
+              "type": "number"
+            },
+            "bet": {
+              "type": "number"
+            },
+            "firstPlaceCut": {
+              "type": "number"
+            },
+            "secondPlaceCut": {
+              "type": "number"
+            },
+            "thirdPlaceCut": {
+              "type": "number"
+            }
+          }
         }
       }
     },

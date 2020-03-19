@@ -3,15 +3,15 @@ import React from 'react';
 import Header from '../components/header'
 import Slider from '../components/slider'
 // import Team from '../components/team'
-// import About from '../components/about'
+import {About} from '../pages/about'
 import Footer from '../components/footer'
 
 
 const home = (<div>
     <Header/>
     <Slider/>
-    {/* <About/>
-    <Team/> */}
+    <About/>
+    {/* <Team/> */}
     <Footer/>
 </div>);
 

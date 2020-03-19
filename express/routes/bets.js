@@ -1,12 +1,8 @@
 var BetRegion = require('../models/bettingRegions');
-var testBetsFinished = require('../models/testBetsFinished');
 var generalFuncs = require("../funcs/generalFuncs");
-var articleBet = require('../models/articleBets');
 const utilFuncs = require('../funcs/betFuncs');
-var testBets = require('../models/testBets');
 var router = require('express').Router();
 var Bet = require('../models/betData');
-var User = require('../models/users');
 var mongoose = require('mongoose');
 
 /**
@@ -17,12 +13,12 @@ var mongoose = require('mongoose');
 
 // Render create bet page
 router.get('/createBet', (req, res, next) => {
-    res.render('create_bet', {title: 'CreateBet'});
+    res.render('create_bet', { title: 'CreateBet' });
 });
 
 // Render find bet page
 router.get('/findBets', (req, res, next) => {
-    res.render('find_bets', {title : 'FindBets'});
+    res.render('find_bets', { title: 'FindBets' });
 });
 
 // Render debug and testing page
@@ -51,19 +47,17 @@ router.post('/addBetToDataBase', function(req, res, next) {
 // API for getting bets in region
 router.get('/getBetsInRegion', (req, res) => {
     let id = req.query.id;
-    if(id != null){
-        Bet.find({bet_region_id : id.toString()}, (err, bets) => {
-            if(err){
+    if (id != null) {
+        Bet.find({ bet_region_id: id.toString() }, (err, bets) => {
+            if (err) {
                 res.status(500).json({
-                    "status" : "error",
-                    "body" : "error"
+                    "status": "error",
+                    "body": "error"
                 });
-            }
-            else{
+            } else {
                 res.status(200).json(bets);
             }
-            res.json(sendBets);
-    });
+        });
     }
 });
 
@@ -91,49 +85,48 @@ router.get('/getBettingRegions', (req, res) => {
     let latitude = req.query.lat;
     let longitude = req.query.lng;
 
-    if(latitude == null || longitude == null){
+    if (latitude == null || longitude == null) {
         res.status(400).json({
-            "status" : "error",
-            "body" : "Invalid query parameters"
+            "status": "error",
+            "body": "Invalid query parameters"
         });
-    }else if(isNaN(latitude) || isNaN(longitude)){
+    } else if (isNaN(latitude) || isNaN(longitude)) {
         res.status(400).json({
-            "status" : "error",
-            "body" : "Invalid coords"
+            "status": "error",
+            "body": "Invalid coords"
         })
-    }
-    else{
+    } else {
         // Perform calculations server-side to increase perfromance
         BetRegion.find({}).exec((err, betRegions) => {
-        if(err){
-            res.status(500).json({
-                "status" : "error",
-                "body" : err
-            });
-        }else{
-            let regionsToSend = [];
-            const LEN = betRegions.length;
-            for (var i = 0; i < LEN; i++) {
-                var betRegion = betRegions.pop();
-                var d = utilFuncs.calcDistance({ lat: betRegion.latitude, lng: betRegion.longitude }, { lat: req.query.lat, lng: req.query.lng });
-                // Convert kilometers to metres
-                if ((d * 1000) <= betRegion.radius) {
-                    regionsToSend.push(betRegion);
-                    /*
-                    console.log("Calculated Distance: " + (d * 1000).toString());
-                    console.log("Bet Radius: " + betRegion.radius.toString() + "\n");
-                    */
-                } else {
-                    /*
-                    console.log("Calculated Distance: " + (d * 1000).toString());
-                    console.log("Bet Radius: " + betRegion.radius.toString() + "\n");
-                    */
+            if (err) {
+                res.status(500).json({
+                    "status": "error",
+                    "body": err
+                });
+            } else {
+                let regionsToSend = [];
+                const LEN = betRegions.length;
+                for (var i = 0; i < LEN; i++) {
+                    var betRegion = betRegions.pop();
+                    var d = utilFuncs.calcDistance({ lat: betRegion.latitude, lng: betRegion.longitude }, { lat: req.query.lat, lng: req.query.lng });
+                    // Convert kilometers to metres
+                    if ((d * 1000) <= betRegion.radius) {
+                        regionsToSend.push(betRegion);
+                        /*
+                        console.log("Calculated Distance: " + (d * 1000).toString());
+                        console.log("Bet Radius: " + betRegion.radius.toString() + "\n");
+                        */
+                    } else {
+                        /*
+                        console.log("Calculated Distance: " + (d * 1000).toString());
+                        console.log("Bet Radius: " + betRegion.radius.toString() + "\n");
+                        */
+                    }
                 }
+                //console.log(regionsToSend);
+                res.json(regionsToSend);
             }
-            //console.log(regionsToSend);
-            res.json(regionsToSend);
-        }
-    });
+        });
     }
 });
 
@@ -227,63 +220,74 @@ router.post('/makeBet', (req, res, next) => {
     const secondPlaceCut = parseFloat(req.body.secondPlaceCut);
     const thirdPlaceCut = parseFloat(req.body.thirdPlaceCut);
 
-    // if it's a multi type bet it must allocate the betting percentages
-    if ( req.body.type === "multi" && (isNaN(firstPlaceCut) || isNaN(secondPlaceCut) || isNaN(thirdPlaceCut))) {
+    // console.log(utilFuncs.validate(req.body.title, "title"));
+    // console.log(utilFuncs.validate(req.body.type, "type"));
+
+    if (!(utilFuncs.validate(req.body.title, "title") && utilFuncs.validate(req.body.type, "type"))) {
         res.status(400).json({
-            "status":"error",
-            "body":"Invalid bet percentages entered"
+            "status": "error",
+            "body": "Invalid input"
         })
     } else {
+        // if it's a multi type bet it must allocate the betting percentages
+        if (req.body.type === "multi" && (isNaN(firstPlaceCut) || isNaN(secondPlaceCut) || isNaN(thirdPlaceCut))) {
+            res.status(400).json({
+                "status": "error",
+                "body": "Invalid bet percentages entered"
+            })
+        } else {
+            // TODO: make this check signed in username instead of username input
 
-        if ( (req.body.type && req.body.type && req.body.title && req.body.deadline && req.body.username ) ||
-            (req.body.type && req.body.title && req.body.deadline && req.body.deadline && 
-            req.body.firstPlaceCut && req.body.secondPlaceCut && req.body.thirdPlaceCut)) {
+            if ((req.body.type && req.body.title && req.body.deadline && req.body.username) ||
+                (req.body.type && req.body.title && req.body.deadline && req.body.username &&
+                    req.body.firstPlaceCut != null && req.body.secondPlaceCut != null && req.body.thirdPlaceCut != null)) {
                 // bet has input parameters for either a binary or multi bet
 
-        let inputObj = {
-            "type": req.body.type,
-            "side": req.body.side,
-            "title": req.body.title,
-            "deadline": req.body.deadline,
-            "username": req.body.username,
-            "firstPlaceCut": firstPlaceCut,
-            "secondPlaceCut": secondPlaceCut,
-            "thirdPlaceCut": thirdPlaceCut
-        }
-    
-        if ( req.body.type === "multi" && (firstPlaceCut + secondPlaceCut + thirdPlaceCut) != 1) {
-            // The percentage payouts must add up to 100%
-            res.status(400).json({
-                "status":"error",
-                "body":"Payout percentages don't add up to 100%"
-            })
+                let inputObj = {
+                    "type": req.body.type,
+                    "side": req.body.side,
+                    "title": req.body.title,
+                    "deadline": req.body.deadline,
+                    "username": req.body.username,
+                    "firstPlaceCut": firstPlaceCut,
+                    "secondPlaceCut": secondPlaceCut,
+                    "thirdPlaceCut": thirdPlaceCut
+                }
 
-        } else {
-            utilFuncs.createBet(inputObj).then((response) => {
-                if (response) {
-                    res.status(200).json({
-                        "status": "success",
-                        "body": "Bet made!"
-                    });
-                } else {
+                if (req.body.type === "multi" && (firstPlaceCut + secondPlaceCut + thirdPlaceCut) != 1) {
+                    // The percentage payouts must add up to 100%
                     res.status(400).json({
                         "status": "error",
-                        "body": `No response, bet was not made`
-                    });
+                        "body": "Payout percentages don't add up to 100%"
+                    })
+
+                } else {
+                    utilFuncs.createBet(inputObj).then((response) => {
+                        if (response) {
+                            res.status(200).json({
+                                "status": "success",
+                                "body": "Bet made!"
+                            });
+                        } else {
+                            res.status(400).json({
+                                "status": "error",
+                                "body": `No response, bet was not made`
+                            });
+                        }
+                    }, (err) => {
+                        res.status(400).json({
+                            "status": "err",
+                            "body": `Error: Bet was not made. ${err}`
+                        });
+                    })
                 }
-            }, (err) => {
+            } else {
                 res.status(400).json({
-                    "status": "err",
-                    "body": `Error: Bet was not made. ${err}`
+                    "status": "error",
+                    "body": "Invalid input"
                 });
-            })
+            }
         }
-     } else {
-         res.status(400).json({
-             "status":"error",
-             "body":"Invalid input"
-         });
-     }
     }
 });
 
@@ -415,14 +419,14 @@ router.post('/bigButtonBet', (req, res, next) => {
     // that it is the Req account finalising or starting a big red button bet
 
     if (req.body.secret) {
-        if (req.body.secret === process.env.ReqSecret) {            
-                if (req.body.action === "end") {
-                    generalFuncs.getBigButtonCurrentID().then((betID) => {
-                        let inputObj = {
-                            "betID": betID,
-                            "result":req.body.result,
-                            "action":req.body.action
-                        }
+        if (req.body.secret === process.env.ReqSecret) {
+            if (req.body.action === "end") {
+                generalFuncs.getBigButtonCurrentID().then((betID) => {
+                    let inputObj = {
+                        "betID": betID,
+                        "result": req.body.result,
+                        "action": req.body.action
+                    }
 
                     if (utilFuncs.validate(inputObj.result, "result")) {
                         utilFuncs.isValidBetID(inputObj.betID).then((validBetID) => {
@@ -435,7 +439,7 @@ router.post('/bigButtonBet', (req, res, next) => {
                                                 "status": "success",
                                                 "body": "Bet finished successfully"
                                             });
-                                        },(err) => {
+                                        }, (err) => {
                                             res.status(400).json({
                                                 "status": "error",
                                                 "body": err
@@ -473,64 +477,64 @@ router.post('/bigButtonBet', (req, res, next) => {
                         });
                     }
 
-                    }, (err) => {
-                        res.status(400).json({
-                            "status": "error",
-                            "body": "Error reading betID"
-                        });
-                    })
-                   
-                } else if (req.body.action === "start") {
-                    const today = new Date();
-                    let tomorrow = new Date(today);
-                    tomorrow.setDate(tomorrow.getDate() + 1)
+                }, (err) => {
+                    res.status(400).json({
+                        "status": "error",
+                        "body": "Error reading betID"
+                    });
+                })
 
-                    let inputObj = {
-                        "type": "multi",
-                        "side": null,
-                        "title": "How many times will the big red button be pressed today?",
-                        "deadline": tomorrow.getTime(),
-                        "username": "Req",
-                        "firstPlaceCut": 0.85,
-                        "secondPlaceCut": 0.1,
-                        "thirdPlaceCut": 0.05
-                    }
+            } else if (req.body.action === "start") {
+                const today = new Date();
+                let tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1)
 
-                    utilFuncs.createBet(inputObj).then((response) => {
-                        if (response) {
-                            generalFuncs.writeBigButtonCurrentID(response._id).then((success) => {
-                                if (success) {
-                                    res.status(200).json({
-                                        "status": "success",
-                                        "body": "Big red button bet Bet made!",
-                                        "betID": response._id
-                                    });
-                                } else {
-                                    res.status(400).json({
-                                        "status": "err",
-                                        "body": `Error writing betID to file`
-                                    });
-                                }
-                            }, (err) => {
+                let inputObj = {
+                    "type": "multi",
+                    "side": null,
+                    "title": "How many times will the big red button be pressed today?",
+                    "deadline": tomorrow.getTime(),
+                    "username": "Req",
+                    "firstPlaceCut": 0.85,
+                    "secondPlaceCut": 0.1,
+                    "thirdPlaceCut": 0.05
+                }
+
+                utilFuncs.createBet(inputObj).then((response) => {
+                    if (response) {
+                        generalFuncs.writeBigButtonCurrentID(response._id).then((success) => {
+                            if (success) {
+                                res.status(200).json({
+                                    "status": "success",
+                                    "body": "Big red button bet Bet made!",
+                                    "betID": response._id
+                                });
+                            } else {
                                 res.status(400).json({
                                     "status": "err",
-                                    "body": `Error reading from bigButtonID file`
+                                    "body": `Error writing betID to file`
                                 });
-                            })
-                        } else {
+                            }
+                        }, (err) => {
                             res.status(400).json({
-                                "status": "error",
-                                "body": `No response, big red button bet was not made`
+                                "status": "err",
+                                "body": `Error reading from bigButtonID file`
                             });
-                        }
-                    }, (err) => {
+                        })
+                    } else {
                         res.status(400).json({
-                            "status": "err",
-                            "body": `Error: big red button bet was not made. ${err}`
+                            "status": "error",
+                            "body": `No response, big red button bet was not made`
                         });
-                    })
+                    }
+                }, (err) => {
+                    res.status(400).json({
+                        "status": "err",
+                        "body": `Error: big red button bet was not made. ${err}`
+                    });
+                })
 
-                }
+            }
         } else {
             res.status(400).json({
                 "status": "error",
@@ -602,5 +606,69 @@ router.post('/getTestBets', (req, res, next) => {
         });
     })
 });
+
+router.post('/betExpired', (req, res, next) => {
+    // if a bet has expired then the creator will be punished
+    // and winnings will be paid back
+    if (req.body.secret === process.env.ReqSecret) {
+
+        let inputObj = {
+            "betID": req.body.betID,
+            "secret": process.env.ReqSecret,
+            "expired": true
+        }
+        utilFuncs.decideBet(inputObj).then((response) => {
+            if (response) {
+                res.status(200).json({
+                    "status": "success",
+                    "body": "Penalised creator and paid back to bettors"
+                });
+            } else {
+                res.status(400).json({
+                    "status": "error",
+                    "body": "Oops, couldn't pay back to the bettors"
+                });
+            }
+        }, (err) => {
+            res.status(400).json({
+                "status": "error",
+                "body": err
+            });
+        })
+
+
+    } else {
+        res.status(401).json({
+            "status": "error",
+            "body": "You are not authorized to do this"
+        });
+    }
+});
+
+router.post('/getAllBetsDev', (req, res, next) => {
+    if (req.body.secret === process.env.ReqSecret) {
+        utilFuncs.getBets().then((allBets) => {
+            if (allBets) {
+                res.send(allBets);
+            } else {
+                res.status(400).json({
+                    "status": "error",
+                    "body": "No bets found"
+                });
+            }
+        }, (err) => {
+            res.status(400).json({
+                "status": "error",
+                "body": "Error retrieving bets"
+            });
+        });
+    } else {
+        res.status(401).json({
+            "status": "error",
+            "body": "You are not authorized to do this"
+        });
+    }
+});
+
 
 module.exports = router;

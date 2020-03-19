@@ -2,7 +2,6 @@ var forgotPasswordUser = require('../models/forgotPasswordUsers');
 var testBetsFinished = require('../models/testBetsFinished');
 var UnverifiedUser = require('../models/unverifiedUsers');
 var generalFuncs = require('../funcs/generalFuncs');
-var articleBet = require('../models/articleBets');
 const keccak512 = require('js-sha3').keccak512;
 var testBets = require('../models/testBets');
 var User = require('../models/users');
@@ -16,7 +15,7 @@ function getBets() {
             if (err) {
                 reject(err);
             } else {
-                if (response){
+                if (response) {
                     resolve(response);
                 } else {
                     resolve(null);
@@ -42,7 +41,7 @@ function validate(input, type) {
         case 'result':
             if (!input) {
                 return false;
-            } 
+            }
             if (parseFloat(input) == NaN) {
                 return false;
             } else {
@@ -60,6 +59,9 @@ function validate(input, type) {
                 return false;
             }
         case 'username':
+            if (!input) {
+                return false;
+            }
             if (input.length < 32 && input.length > 0) {
                 return true;
             } else {
@@ -71,6 +73,14 @@ function validate(input, type) {
             } else {
                 return false;
             }
+        case 'type':
+            if (!input) {
+                return false;
+            }
+            if (input === "multi" || input === "binary") {
+                return true;
+            }
+            return false;
         case 'url':
             let test2 = conditions.some(el => input.includes(el));
             if (test2) {
@@ -78,8 +88,18 @@ function validate(input, type) {
             } else {
                 return true;
             }
-        case 'article':
-            return true;
+        case 'title':
+            if (!input) {
+                return false;
+            }
+            if (input.length > 1 && input.length < 64) {
+                if (input.match(/([^A-Za-z0-9, ]+)/g)) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            return false;
     }
 }
 
@@ -116,7 +136,7 @@ function betOn(userObj) {
                     });
             }
         } else if (userObj.type === "multi") {
-            testBets.findOneAndUpdate({_id:userObj.betID}, { $push: { commonBets: {user_name: userObj.username, betAmount: userObj.betAmount, bet: userObj.bet } } },
+            testBets.findOneAndUpdate({ _id: userObj.betID }, { $push: { commonBets: { user_name: userObj.username, betAmount: userObj.betAmount, bet: userObj.bet } } },
                 (err, result) => {
                     if (err) {
                         reject(err);
@@ -127,7 +147,7 @@ function betOn(userObj) {
                             resolve(false);
                         }
                     }
-                }) 
+                })
         } else {
             reject("Incorrect bet type");
         }
@@ -159,17 +179,17 @@ function alreadyBetOn(userObj) {
                             }
                             resolve(null);
                         }
-    
+
                     } else {
                         reject('Invalid bet ID');
                     }
                 }
             });
         } else if (userObj.type === "multi") {
-            testBets.findOne({_id: userObj.betID}, (err, res) => {
+            testBets.findOne({ _id: userObj.betID }, (err, res) => {
                 if (err) {
                     reject(err);
-                } 
+                }
                 if (res) {
                     for (indivBet of res.commonBets) {
                         if (indivBet.user_name === userObj.username) {
@@ -263,16 +283,18 @@ function deleteBet(betID) {
 
 function decideBet(inputObj) {
     return new Promise((resolve, reject) => {
-        let expiredBet = false;
+        let badBet = false;
         testBets.findOne({ _id: inputObj.betID }, (err, foundBet) => {
+
             if (err) {
                 reject(err);
             }
             if (foundBet) {
                 // currTime - deadline + 24 hours
-                console.log(new Date().getTime() - (foundBet.deadline + 86400000) >= 0);
-                if (new Date().getTime() - (foundBet.deadline + 86400000) >= 0) {
-                    expiredBet = true;
+
+                if (inputObj.expired) {
+                    badBet = true;
+                    // take off 1% of their wealth
                     generalFuncs.getCoins(foundBet.user_name).then((coinAmount) => {
                         if (coinAmount) {
                             payOut(foundBet.user_name, -0.01, coinAmount).then((response) => {
@@ -288,280 +310,312 @@ function decideBet(inputObj) {
                             resolve(null);
                         }
                     });
-                } else {
 
-                    // if there was a bet in either for or against and not in the other
-                    if ((foundBet.forUsers.length > 0 && foundBet.againstUsers.length == 0) || expiredBet) {
-                        // this was a one sided bet,
-                        // give the money back
-                        for (bet of foundBet.forUsers) {
-                            payOut(bet.user_name,1,bet.betAmount).then((response) => {
-                                if (response) {
-                                    console.log(`Paid back ${response} to ${bet.user_name}`);
-                                } else {
-                                    console.log(`Couldn't pay back ${response} to ${bet.uesr_name}`)
-                                }
-                            })
+                    expiredBetPayBack(foundBet).then((response) => {
+                        if (resposne) {
+                            resolve(true);
+                        } else {
+                            resolve(false);
                         }
-                        deleteBet(inputObj.betID).then((response) => {
-                            if (response) {
-                                resolve(true);
-                            }
-                        }, (err) => {
-                            reject(err);
-                        })
-                        resolve(null);
-                    }
+                    }, (err) => {
+                        console.log
+                        reject(err)
+                    })
+                }
 
 
-                    if ((foundBet.againstUsers.length > 0 && foundBet.forUsers.length == 0) || expiredBet) {
-                        for (bet of foundBet.againstUsers) {
-                            payOut(bet.user_name,1,bet.betAmount).then((response) => {
-                                if (response) {
-                                    console.log(`Paid back ${response} to ${bet.user_name}`);
-                                } else {
-                                    console.log(`Couldn't pay back ${response} to ${bet.uesr_name}`)
-                                }
-                            })
-                        }
-                        deleteBet(inputObj.betID).then((response) => {
-                            if (response) {
-                                resolve(true);
-                            }
-                        }, (err) => {
-                            reject(err);
-                        })
-                        resolve(null);
-                    }
 
-
-                    // not expired, dish out the winnings
+                if (!badBet) {
+                    console.log("not bad bet")
                     anonymiseBetData([foundBet]).then((betData) => {
                         if (betData) {
                             if (foundBet.type === "binary") {
-                            // payout to the setter
-                            const againstTotal = parseInt(betData[0].againstBetTotal, 10);
-                            const forTotal = parseInt(betData[0].forBetTotal, 10);
-                            
-                            // pay out 10% of total bets to the bet creator first
-                            payOut(foundBet.user_name, 0.1, againstTotal + forTotal).then(() => {});
 
-                            if (inputObj.result === "yes") {
-                                // if yes wins
-                                if (foundBet.forUsers.length > 0) {
+                                const againstTotal = parseInt(betData[0].againstBetTotal, 10);
+                                const forTotal = parseInt(betData[0].forBetTotal, 10);
+
+                                // if there was a bet in either for or against and not in the other
+                                if ((foundBet.forUsers.length > 0 && foundBet.againstUsers.length == 0 && foundBet.commonBets.length == 0)) {
+                                    console.log("only one in for")
+                                    badBet = true;
+                                    // this was a one sided bet,
+                                    // give the money back
                                     for (bet of foundBet.forUsers) {
-
-                                        let payPercentage = (bet.betAmount / parseInt(betData[0].forBetTotal, 10));
-
-                                        payOut(bet.user_name, payPercentage, betData[0].againstBetTotal).then((response) => {
+                                        payOut(bet.user_name, 1, bet.betAmount).then((response) => {
                                             if (response) {
-                                                console.log(`Paid out ${Math.floor(response) } to ${bet.user_name} successfully`);
+                                                console.log(`Paid back ${response} to ${bet.user_name}`);
                                             } else {
-                                                console.log(`Paid out 0 unsuccessfully`);
+                                                console.log(`Couldn't pay back ${response} to ${bet.uesr_name}`)
                                             }
-
-                                            addBetToFinishedDB(foundBet, foundBet.forUsers, foundBet.againstUsers, betData[0], "yes").then((added) => {
-                                                if (added) {
-                                                    console.log(`Added bet to finished DB`);
-                                                } else {
-                                                    resolve(null);
-                                                }
-                                            }, (err) => {
-                                                reject(err);
-                                            })
-
-                                            // if paid out anything or nothing, still delete the bet
-                                            // deleteBet(inputObj.betID).then((response) => {
-                                            //     if (response) {
-                                            //         resolve(true);
-                                            //     } else {
-                                            //         resolve(null);
-                                            //     }
-                                            // }, (err) => {
-                                            //     reject(err);
-                                            // })
-                                            resolve(true);
-
-                                        }, (err) => {
-                                            reject(err);
                                         })
                                     }
-                                } else {
-                                    // there were no users betting for
+                                    deleteBet(inputObj.betID).then((response) => {
+                                        if (response) {
+                                            resolve(true);
+                                        }
+                                    }, (err) => {
+                                        reject(err);
+                                    })
                                     resolve(null);
                                 }
-                            }
-                            if (inputObj.result === "no") {
-                                // if no wins
-                                if (foundBet.againstUsers.length > 0) {
 
+
+                                if ((foundBet.againstUsers.length > 0 && foundBet.forUsers.length == 0 && foundBet.commonBets.length == 0)) {
+                                    console.log("only one in against")
+                                    badBet = true;
                                     for (bet of foundBet.againstUsers) {
-
-                                        let payPercentage = (bet.betAmount / parseInt(betData[0].againstBetTotal, 10));
-                                        payOut(bet.user_name, payPercentage, betData[0].forBetTotal).then((response) => {
+                                        payOut(bet.user_name, 1, bet.betAmount).then((response) => {
                                             if (response) {
-                                                console.log(`Paid out ${Math.floor(response) } successfully`);
+                                                console.log(`Paid back ${response} to ${bet.user_name}`);
                                             } else {
-                                                console.log(`Paid out 0 unsuccessfully`);
+                                                console.log(`Couldn't pay back ${response} to ${bet.uesr_name}`)
                                             }
-
-                                            addBetToFinishedDB(foundBet, foundBet.againstUsers, foundBet.forUsers, betData[0], "no").then((added) => {
-                                                if (!added) {
-                                                    reject("Couldn't save bet to finished DB");
-                                                }
-                                            }, (err) => {
-                                                reject(err);
-                                            })
-
-                                        //    if paid out anything or nothing, still delete the bet
-                                           deleteBet(inputObj.betID).then((response) => {
-                                            if (response) {
-                                                resolve(true);
-                                            } else {
-                                                resolve(null);
-                                            }
-                                        }, (err) => {
-                                            reject(err);
-                                        })
-                                            resolve(true);
-                                        }, (err) => {
-                                            reject(err);
                                         })
                                     }
-                                } else {
-                                    // there were no users betting against
-                                    // payout back the original amounts paid in
+                                    deleteBet(inputObj.betID).then((response) => {
+                                        if (response) {
+                                            resolve(true);
+                                        }
+                                    }, (err) => {
+                                        reject(err);
+                                    })
                                     resolve(null);
                                 }
-                            }
-                        } else if (foundBet.type === "multi") {
-                            // if there were any bets at all, pay out to them
-                            if (foundBet.commonBets.length > 0) {
-                                rankAnswers(foundBet.commonBets, parseInt(inputObj.result,10)).then((sortedAnswers) => {
-                                    // sort the answers based on their difference to the actual result
-                                    if (sortedAnswers) {
 
-                                        if (sortedAnswers.length == 1) {
-                                            // there was one 1 bet made, pay them back what they put in
-                                            // creator does not get paid because then they could get 10% of fake winnings every time
-                                            payOut(sortedAnswers[0].user_name, 1, foundBet.commonBets[0].betAmount).then((response) => {
-                                                if (response) {
-                                                    console.log(`Paid out ${response} to ${sortedAnswers[0].user_name} successfully [no other bets]`);
-                                                    
-                                                    addBetToFinishedDB(foundBet, sortedAnswers, sortedAnswers, betData[0], inputObj.result).then((added) => {
-                                                        if (added) {
-                                                            console.log(`Added bet to finished DB`);
-                                                        } else {
-                                                            console.log(`Didn't add bet to finished DB`)
-                                                        }
-                                                    }, (err) => {
-                                                        reject(err);
-                                                    })
 
-                                                  // if paid out anything or nothing, still delete the bet
-                                            deleteBet(inputObj.betID).then((response) => {
+                                // pay out 10% of total bets to the bet creator first
+                                payOut(foundBet.user_name, 0.1, againstTotal + forTotal).then(() => {});
+
+                                if (inputObj.result === "yes") {
+                                    // if yes wins
+                                    if (foundBet.forUsers.length > 0) {
+                                        for (bet of foundBet.forUsers) {
+
+                                            let payPercentage = (bet.betAmount / parseInt(betData[0].forBetTotal, 10));
+
+                                            payOut(bet.user_name, payPercentage, betData[0].againstBetTotal).then((response) => {
                                                 if (response) {
-                                                    resolve(true);
+                                                    console.log(`Paid out ${Math.floor(response) } to ${bet.user_name} successfully`);
                                                 } else {
-                                                    resolve(null);
+                                                    console.log(`Paid out 0 unsuccessfully`);
                                                 }
+
+                                                addBetToFinishedDB(foundBet, foundBet.forUsers, foundBet.againstUsers, betData[0], "yes").then((added) => {
+                                                    if (added) {
+                                                        console.log(`Added bet to finished DB`);
+                                                        resolve(true);
+                                                    } else {
+                                                        console.log("resovled null for adding to")
+                                                        resolve(null);
+                                                    }
+                                                }, (err) => {
+                                                    reject(err);
+                                                })
+
+                                                // if paid out anything or nothing, still delete the bet
+                                                // deleteBet(inputObj.betID).then((response) => {
+                                                //     if (response) {
+                                                //         resolve(true);
+                                                //     } else {
+                                                //         resolve(null);
+                                                //     }
+                                                // }, (err) => {
+                                                //     reject(err);
+                                                // })
+
+
                                             }, (err) => {
                                                 reject(err);
                                             })
-                                                    resolve(true);
-                                                } else {
-                                                    console.log(`Error paying out ${response} to ${sortedAnswers[0].user_name} [no other bets]`);
-                                                    resolve(null);
-                                                }
-                                            });
-                                        } else {
-                                            // there was more than 1 person who made a bet on this post
-                                            payOut(sortedAnswers[0].user_name,foundBet.firstPlaceCut,betData[0].betsTotal).then((response) => {
+                                        }
+                                    } else {
+                                        // there were no users betting for
+                                        resolve(null);
+                                    }
+                                }
+                                if (inputObj.result === "no") {
+                                    // if no wins
+                                    if (foundBet.againstUsers.length > 0) {
+
+                                        for (bet of foundBet.againstUsers) {
+
+                                            let payPercentage = (bet.betAmount / parseInt(betData[0].againstBetTotal, 10));
+                                            payOut(bet.user_name, payPercentage, betData[0].forBetTotal).then((response) => {
                                                 if (response) {
-                                                    console.log(`Paid out ${response} to ${sortedAnswers[0].user_name} successfully`);
+                                                    console.log(`Paid out ${Math.floor(response) } successfully`);
                                                 } else {
-                                                    console.log(`Error paying out ${response} to ${sortedAnswers[0].user_name}`);
-                                                    resolve(null);
+                                                    console.log(`Paid out 0 unsuccessfully`);
                                                 }
-                                            })
-                                            if (sortedAnswers.length > 1) {
-                                                payOut(sortedAnswers[1].user_name,foundBet.secondPlaceCut,betData[0].betsTotal).then((response) => {
+
+                                                addBetToFinishedDB(foundBet, foundBet.againstUsers, foundBet.forUsers, betData[0], "no").then((added) => {
+                                                    if (!added) {
+                                                        reject("Couldn't save bet to finished DB");
+                                                    }
+                                                }, (err) => {
+                                                    reject(err);
+                                                })
+
+                                                //    if paid out anything or nothing, still delete the bet
+                                                deleteBet(inputObj.betID).then((response) => {
                                                     if (response) {
-                                                        console.log(`Paid out ${response} to ${sortedAnswers[1].user_name} successfully`);
+                                                        resolve(true);
                                                     } else {
-                                                        console.log(`Error paying out ${response} to ${sortedAnswers[1].user_name}`);
+                                                        resolve(null);
+                                                    }
+                                                }, (err) => {
+                                                    reject(err);
+                                                })
+                                                resolve(true);
+                                            }, (err) => {
+                                                reject(err);
+                                            })
+                                        }
+                                    } else {
+                                        // there were no users betting against
+                                        // payout back the original amounts paid in
+                                        resolve(null);
+                                    }
+                                }
+                            } else if (foundBet.type === "multi") {
+                                // if there were any bets at all, pay out to them
+                                if (foundBet.commonBets.length > 1) {
+                                    console.log("more than 1 common")
+                                    rankAnswers(foundBet.commonBets, parseInt(inputObj.result, 10)).then((sortedAnswers) => {
+                                        // sort the answers based on their difference to the actual result
+                                        if (sortedAnswers) {
+
+                                            if (sortedAnswers.length == 1) {
+                                                // there was one 1 bet made, pay them back what they put in
+                                                // creator does not get paid because then they could get 10% of fake winnings every time
+                                                payOut(sortedAnswers[0].user_name, 1, foundBet.commonBets[0].betAmount).then((response) => {
+                                                    if (response) {
+                                                        console.log(`Paid out ${response} to ${sortedAnswers[0].user_name} successfully [no other bets]`);
+
+                                                        addBetToFinishedDB(foundBet, sortedAnswers, sortedAnswers, betData[0], inputObj.result).then((added) => {
+                                                            if (added) {
+                                                                console.log(`Added bet to finished DB`);
+                                                            } else {
+                                                                console.log(`Didn't add bet to finished DB`)
+                                                            }
+                                                        }, (err) => {
+                                                            reject(err);
+                                                        })
+
+                                                        // if paid out anything or nothing, still delete the bet
+                                                        deleteBet(inputObj.betID).then((response) => {
+                                                            if (response) {
+                                                                resolve(true);
+                                                            } else {
+                                                                resolve(null);
+                                                            }
+                                                        }, (err) => {
+                                                            reject(err);
+                                                        })
+                                                        resolve(true);
+                                                    } else {
+                                                        console.log(`Error paying out ${response} to ${sortedAnswers[0].user_name} [no other bets]`);
+                                                        resolve(null);
+                                                    }
+                                                });
+                                            } else {
+                                                // there was more than 1 person who made a bet on this post
+                                                payOut(sortedAnswers[0].user_name, foundBet.firstPlaceCut, betData[0].betsTotal).then((response) => {
+                                                    if (response) {
+                                                        console.log(`Paid out ${response} to ${sortedAnswers[0].user_name} successfully`);
+                                                    } else {
+                                                        console.log(`Error paying out ${response} to ${sortedAnswers[0].user_name}`);
                                                         resolve(null);
                                                     }
                                                 })
-                                            }
-    
-                                            if (sortedAnswers.length > 2) {
-                                                payOut(sortedAnswers[2].user_name, foundBet.thirdPlaceCut,betData[0].betsTotal).then((response) => {
-                                                    if (response) {
-                                                        console.log(`Paid out ${response} to ${sortedAnswers[2].user_name} sucessfully`);
+                                                if (sortedAnswers.length > 1) {
+                                                    payOut(sortedAnswers[1].user_name, foundBet.secondPlaceCut, betData[0].betsTotal).then((response) => {
+                                                        if (response) {
+                                                            console.log(`Paid out ${response} to ${sortedAnswers[1].user_name} successfully`);
+                                                        } else {
+                                                            console.log(`Error paying out ${response} to ${sortedAnswers[1].user_name}`);
+                                                            resolve(null);
+                                                        }
+                                                    })
+                                                }
+
+                                                if (sortedAnswers.length > 2) {
+                                                    payOut(sortedAnswers[2].user_name, foundBet.thirdPlaceCut, betData[0].betsTotal).then((response) => {
+                                                        if (response) {
+                                                            console.log(`Paid out ${response} to ${sortedAnswers[2].user_name} sucessfully`);
+                                                        } else {
+                                                            console.log(`Error paying out ${response} to ${sortedAnswers[2].user_name}`);
+                                                            resolve(null);
+                                                        }
+                                                    })
+                                                }
+
+                                                // payout to the bet creator 
+                                                payOut(foundBet.user_name, 0.1, betData[0].betsTotal).then((response) => {
+                                                    console.log(`Paid out ${response} to creator ${foundBet.user_name}`);
+                                                }, (err) => {
+                                                    reject(err);
+                                                })
+
+
+                                                addBetToFinishedDB(foundBet, sortedAnswers, sortedAnswers, betData[0], inputObj.result).then((added) => {
+                                                    if (added) {
+                                                        console.log(`Added bet to finished DB`);
                                                     } else {
-                                                        console.log(`Error paying out ${response} to ${sortedAnswers[2].user_name}`);
+                                                        console.log(`Didn't add bet to finished DB`)
+                                                    }
+                                                }, (err) => {
+                                                    console.log(`err ${err}`);
+                                                    reject(err);
+                                                });
+
+                                                // if paid out anything or nothing, still delete the bet
+                                                deleteBet(inputObj.betID).then((response) => {
+                                                    if (response) {
+                                                        resolve(true);
+                                                    } else {
                                                         resolve(null);
                                                     }
-                                                }) 
+                                                }, (err) => {
+                                                    reject(err);
+                                                })
                                             }
-                                            // payout to the bet creator 
-                                            payOut(foundBet.user_name, 0.1, betData[0].betsTotal).then((response) => {
-                                                console.log(`Paid out ${response} to creator ${foundBet.user_name}`);
-                                            }, (err) => {
-                                                reject(err);
-                                            })
-
-
-                                            addBetToFinishedDB(foundBet, sortedAnswers, sortedAnswers, betData[0],inputObj.result ).then((added) => {
-                                                if (added) {
-                                                    console.log(`Added bet to finished DB`);
-                                                } else {
-                                                    console.log(`Didn't add bet to finished DB`)
-                                                }
-                                            }, (err) => {
-                                                console.log(`err ${err}`);
-                                                reject(err);
-                                            });
-
-                                            // if paid out anything or nothing, still delete the bet
-                                            deleteBet(inputObj.betID).then((response) => {
-                                                if (response) {
-                                                    resolve(true);
-                                                } else {
-                                                    resolve(null);
-                                                }
-                                            }, (err) => {
-                                                reject(err);
-                                            })
-
-
-                                            resolve(true);
-        
+                                        } else {
+                                            resolve(false);
                                         }
-                                    } else {
-                                        resolve(false);
+
+                                    });
+                                } else {
+
+                                    console.log("less than 1 in common bets and badbet=" + badBet);
+
+                                    for (bet of foundBet.commonBets) {
+                                        console.log(" ")
+                                        console.log("BET: ")
+                                        console.log(bet)
+                                        payOut(bet.user_name, 1, bet.betAmount).then((response) => {
+                                            if (response) {
+                                                console.log(`Paid back ${response} to ${bet.user_name}`);
+                                            } else {
+                                                console.log(`Couldn't pay back ${response} to ${bet.uesr_name}`)
+                                            }
+                                        })
                                     }
-    
-                                });
+
+                                    deleteBet(inputObj.betID).then((response) => {
+                                        if (response) {
+                                            resolve(true);
+                                        }
+                                    }, (err) => {
+                                        reject(err);
+                                    })
+                                    resolve(true);
+                                }
                             } else {
-                                // possibly penalise the person because there were none
-                                // There were no bets  placed. Dont add to finished DB
-                                deleteBet(inputObj.betID).then((response) => {
-                                    if (response) {
-                                        resolve(true);
-                                    }
-                                }, (err) => {
-                                    reject(err);
-                                })
-                                resolve(true);
+                                reject("Incorrect bet type given");
                             }
                         } else {
-                            reject("Incorrect bet type given");
+                            resolve(null);
                         }
-                    } else {
-                        resolve(null);
-                    }
                     }, (err) => {
                         reject(err);
                     })
@@ -578,17 +632,90 @@ function rankAnswers(allBets, result) {
         if (allBets.length < 1 || allBets === undefined) {
             resolve(false);
         }
-        allBets.sort(function(a,b) {
-            if (Math.abs(a.bet-result) > Math.abs(b.bet-result)) {
+        allBets.sort(function(a, b) {
+            if (Math.abs(a.bet - result) > Math.abs(b.bet - result)) {
                 return 1;
-            } 
-            if (Math.abs(a.bet-result) < Math.abs(b.bet-result)) {
+            }
+            if (Math.abs(a.bet - result) < Math.abs(b.bet - result)) {
                 return -1
             }
             return 0;
         })
         resolve(allBets);
     });
+}
+
+function expiredBetPayBack(foundBet) {
+    return new Promise((resolve, reject) => {
+        if (foundBet.type == "binary") {
+
+            // if it was a one sided bet
+            if ((foundBet.forUsers.length > 0 && foundBet.againstUsers.length == 0 && foundBet.commonBets.length == 0)) {
+                console.log("only one in for")
+                badBet = true;
+                // this was a one sided bet,
+                // give the money back
+                for (bet of foundBet.forUsers) {
+                    payOut(bet.user_name, 1, bet.betAmount).then((response) => {
+                        if (response) {
+                            console.log(`Paid back ${response} to ${bet.user_name}`);
+                        } else {
+                            console.log(`Couldn't pay back ${response} to ${bet.uesr_name}`)
+                        }
+                    })
+                }
+                deleteBet(inputObj.betID).then((response) => {
+                    if (response) {
+                        resolve(true);
+                    }
+                }, (err) => {
+                    reject(err);
+                })
+                resolve(null);
+            }
+
+
+            if ((foundBet.againstUsers.length > 0 && foundBet.forUsers.length == 0 && foundBet.commonBets.length == 0)) {
+                console.log("only one in against")
+                badBet = true;
+                for (bet of foundBet.againstUsers) {
+                    payOut(bet.user_name, 1, bet.betAmount).then((response) => {
+                        if (response) {
+                            console.log(`Paid back ${response} to ${bet.user_name}`);
+                        } else {
+                            console.log(`Couldn't pay back ${response} to ${bet.uesr_name}`)
+                        }
+                    })
+                }
+                deleteBet(inputObj.betID).then((response) => {
+                    if (response) {
+                        resolve(true);
+                    }
+                }, (err) => {
+                    reject(err);
+                })
+                resolve(null);
+            }
+
+            // was a regular bet, pay them all back
+        } else {
+            if (foundBet.commonBets.length > 0) {
+
+                for (bet of foundBet.commonBets) {
+                    payOut(bet.user_name, 1, bet.betAmount).then((response) => {
+                        if (response) {
+                            console.log(`Paid back ${response} to ${bet.user_name}`);
+                        } else {
+                            console.log(`Couldn't pay back ${response} to ${bet.uesr_name}`)
+                        }
+                    })
+                }
+            }
+
+            sleep(4000);
+            resolve(true);
+        }
+    })
 }
 
 function addBetToFinishedDB(betInfo, winners, losers, betSummary, result) {
@@ -635,7 +762,6 @@ function addBetToFinishedDB(betInfo, winners, losers, betSummary, result) {
             result: result
         });
 
-        console.log(result)
 
         newBet.save((err) => {
             if (err) {
@@ -647,56 +773,6 @@ function addBetToFinishedDB(betInfo, winners, losers, betSummary, result) {
     });
 }
 
-function makeArticleBet(input, username) {
-    return new Promise((resolve, reject) => {
-        if (input.sitename && input.directory && input.month &&
-            input.year && input.searchTerm && input.ends &&
-            input.betAmount && username) {
-
-            if (validate(input.sitename, "article") && validate(input.directory, "article") &&
-                validate(input.month, "article") && validate(input.year, "article") &&
-                validate(input.searchTerm, "article")) {
-
-                const parsedTime = Date.parse(input.ends);
-                const child = require('child_process').execFile;
-                const executablePath = "./articleStats/articleGetLinux";
-                const parameters = ["-s", input.sitename, input.directory, input.month, input.year, input.searchTerm];
-
-                child(executablePath, parameters, function(err, data) {
-                    if (err) {
-                        console.log(err);
-                        coneole.log("error runnning script")
-                        reject(null);
-                    } else {
-                        // log to DB and then send back ok signal
-                        newBet = new articleBet({
-                            title: `The ${input.sitename} will have more than 10 articles about'${input.searchTerm}' in ${input.month}/${input.year}`,
-                            subtext: `${input.directory} - ${input.month}/${input.year}`,
-                            result: data,
-                            for: 0,
-                            against: 0,
-                            ends: parsedTime,
-                            forUsers: { user_name: username, betAmount: input.betAmount }
-                        });
-
-                        newBet.save((err, user) => {
-                            if (err) {
-                                console.log("error saving user")
-                                reject(err);
-                            } else {
-                                resolve(user);
-                            }
-                        });
-                    }
-                });
-            } else {
-                reject(null);
-            }
-        } else {
-            resolve(null);
-        }
-    });
-}
 
 function resetPassword(email, newPassword) {
     return new Promise((resolve, reject) => {
@@ -772,7 +848,7 @@ function anonymiseBetData(allBets) {
                     againstBetTotal: againstTotal
                 }
                 betArr.push(tempBet);
-                
+
             } else if (indivBet.type === "multi") {
 
                 if (indivBet.commonBets.length > 0) {
@@ -792,6 +868,7 @@ function anonymiseBetData(allBets) {
         resolve(betArr);
     });
 }
+
 
 function isSignedIn(reqCookies) {
     return new Promise((resolve, reject) => {
@@ -815,12 +892,12 @@ function createBet(input) {
             if (input.title && input.side && input.deadline && input.username) {
 
                 let newBet = new testBets();
-    
+
                 newBet.title = input.title;
                 newBet.side = input.side;
                 newBet.deadline = input.deadline;
                 newBet.user_name = input.username;
-                newBet.type= input.type;
+                newBet.type = input.type;
 
                 newBet.save((err) => {
                     if (err) {
@@ -829,24 +906,24 @@ function createBet(input) {
                         resolve(true);
                     }
                 });
-    
+
             } else {
                 resolve(false);
             }
         } else if (input.type === "multi") {
 
-            if (input.title && input.deadline && input.username && input.firstPlaceCut &&
-                input.secondPlaceCut && input.thirdPlaceCut) {
+            if (input.title && input.deadline && input.username && input.firstPlaceCut != null &&
+                input.secondPlaceCut != null && input.thirdPlaceCut != null) {
                 let newBet = new testBets();
-    
+
                 newBet.title = input.title;
                 newBet.deadline = input.deadline;
                 newBet.user_name = input.username;
-                newBet.type= input.type;
+                newBet.type = input.type;
                 newBet.firstPlaceCut = input.firstPlaceCut;
                 newBet.secondPlaceCut = input.secondPlaceCut;
                 newBet.thirdPlaceCut = input.thirdPlaceCut;
-    
+
                 newBet.save((err, bet) => {
                     if (err) {
                         reject(err);
@@ -854,10 +931,10 @@ function createBet(input) {
                         resolve(bet);
                     }
                 });
-    
+
             } else {
                 resolve(false);
-            }   
+            }
         } else {
             reject("Invalid bet type");
         }
@@ -901,14 +978,21 @@ function checkIfExisting(username, type) {
 
 function sendEmail(email, subject, body) {
     return new Promise((resolve, reject) => {
-        const spawn = require("child_process").spawn;
-        const pythonProcess = spawn('python3', ["emailService/sendEmail.py", email, subject, body]);
-        pythonProcess.stdout.on('data', (data) => {
-            resolve()
+        const child = require('child_process').execFile;
+        const execPath = "./emailService/sendEmail";
+        const params = [email, subject, body];
+        child(execPath, params, (err, data) => {
+            if (err) {
+                console.log(err)
+                reject(err);
+            }
+            if (data) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
         });
-        pythonProcess.stderr.on('data', (data) => {
-            reject(Error(data));
-        });
+
     });
 }
 
@@ -954,7 +1038,7 @@ module.exports.alreadyBetOn = alreadyBetOn;
 module.exports.isValidBetID = isValidBetID;
 module.exports.resetPassword = resetPassword;
 module.exports.hasEnoughCoins = hasEnoughCoins;
-module.exports.makeArticleBet = makeArticleBet;
 module.exports.checkIfExisting = checkIfExisting;
 module.exports.anonymiseBetData = anonymiseBetData;
+module.exports.expiredBetPayBack = expiredBetPayBack;
 module.exports.isPasswordCompromised = isPasswordCompromised;

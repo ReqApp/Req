@@ -1,25 +1,34 @@
-# Req
-![](https://travis-ci.com/IamCathal/Req.svg?token=NxDPAobZPqQisyLUpivy&branch=master)
-#### How to get started working on this repo
+<p align="center">
+  <a href="https://github.com/IamCathal/Req">
+    <img
+      alt="Req"
+      src="reqGif.gif"
+      width="400"
+    />
+  </a>
+</p>
 
-1. Open Github desktop, sign in if necessary
-2. Click file > clone repository, click this repo if it's there (it should be)
-3. This will clone the current repo on github into a folder on your computer
-4. In the repo directory run `npm install http-errors express cookie-parser morgan debug`, then `npm install hbs` then `npm audit fix`
-4. Get working on your own version. Push it to either danu or localhost to test out stuff (port is 8673 by default)
-5. Once you're happy with your changes you can make a commit, add a nice descriptive message and push  to origin.
+___
 
-#### How to use Swagger for documentation
-1. Docs are hosted at `localhost/docs`
-2. Docs are stored in the `swagger.json` file in the root directory
-3. To edit docs:
-    1. Go to `https://editor.swagger.io`
-    2. Select `file -> import file` and select `swagger.json` file from root directory
-    3. Add new API(s) using YAML. Documentation for swagger can be found here: `https://swagger.io/docs/specification/basic-structure/`
-    4. When finished select `file -> convert and save as json` and overwrite old swagger.json file
+<br>
 
-#### Registration flowchart
-![yes](https://i.imgur.com/KazYBEd.png)
+
+
+Req is a 2nd year software engineering group project made to be an app where anyone can bet on anything. Staying at home won't gain you the full experience offered by Req as many bets require you to physically be within a set radius of them in order to compete in them. All bet creators get 10% of the total amount of coins placed on their bets which incentivizes users to create the interesting and eye-catching bets to increase their wealth and (hopefully not) gamble it away.
+
+||
+------------------- |
+![](https://travis-ci.com/IamCathal/Req.svg?token=NxDPAobZPqQisyLUpivy&branch=master) |
+
+## The Team
+
+
+|  |  |
+| ------------- | ------------- |
+| <a href="https://github.com/EoinMcArdle99">Eoin Mc Ardle</a> |![](https://img.shields.io/github/followers/EoinMcArdle99?label=Followers&style=social)  |
+|<a href="https://github.com/FilthyHound"> Karl Gordon</a> | ![](https://img.shields.io/github/followers/filthyhound?label=Followers&style=social) |
+|<a href="https://github.com/Rorysweeney99"> Rory Sweeney</a> | ![](https://img.shields.io/github/followers/rorysweeney99?label=Followers&style=social) |
+|<a href="https://iamcathal.github.io"> Cathal O'Callaghan </a> | ![](https://img.shields.io/github/followers/IamCathal?label=Followers&style=social)|
 
 ### Using Mobile-App
 1. Install expo-cli

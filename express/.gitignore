@@ -3,3 +3,4 @@ express/node_modules/*
 articleStats/*.csv
 models/credentials.js
 .env
+token.json

@@ -3,8 +3,9 @@ var UnverifiedUser = require('../models/unverifiedUsers');
 var generalFuncs = require('../funcs/generalFuncs');
 const keccak512 = require('js-sha3').keccak512;
 const utilFuncs = require('../funcs/betFuncs');
+var User = require("../models/users");
 var randomstring = require("randomstring");
-var User = require('../models/users');
+
 const passport = require("passport");
 var jwt = require('jsonwebtoken');
 var express = require('express');
@@ -33,45 +34,45 @@ router.post('/getProfilePicture', (req, res, next) => {
     if (req.body.username) {
 
         if (utilFuncs.validate(req.body.username, "username")) {
-            
+
             generalFuncs.getProfilePicture(req.body.username).then((response) => {
 
                 if (response) {
                     if (response === "noprofiler") {
 
-                        res.status(200).json({
-                            "status":"error",
+                        res.status(404).json({
+                            "status": "error",
                             "body": "No profile picture"
                         });
 
                     } else {
                         res.status(200).json({
-                            "status":"success",
+                            "status": "success",
                             "body": response
                         });
                     }
                 } else {
-                    res.status(200).json({
-                        "status":"error",
+                    res.status(404).json({
+                        "status": "error",
                         "body": "Could not find profile picture"
                     });
                 }
             })
         } else {
             res.status(400).json({
-                "status":"success",
+                "status": "success",
                 "body": "Invalid username"
             });
         }
-     
+
     } else {
         res.status(400).json({
-            "status":"success",
+            "status": "success",
             "body": "No username given"
         });
     }
+});
 
-})
 router.get('/profile', (req, res, next) => {
     if (req.cookies.Authorization) {
         const jwtString = req.cookies.Authorization.split(' ');
@@ -257,7 +258,7 @@ router.post('/verifyAccount', (req, res, next) => {
     /**
      * Handles requests of the login code
      */
-    if (req.body.activationCode === undefined) {
+    if (req.body.activationCode === null || req.body.activationCode === undefined) {
         res.status(401).send({
             "status": "error",
             "body": "Invalid input"

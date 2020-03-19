@@ -9,36 +9,40 @@ import {DisplayMap} from './pages/maps';
 import {FAQ} from './pages/faq';
 import {About} from './pages/about';
 import {Profile} from './pages/profile';
+import Payment from './stripePayment.js';
 
-class App extends React.Component{
-   render(){
-       return(
-                <Switch>               
-                   <Route exact path="/maps">
-                        <DisplayMap/>
-                   </Route>
-                   <Route exact path="find_bets">
-                        <FindBetPage/>
+class App extends Component{
+    render(){
+        return(
+                 <Switch>               
+                    <Route exact path='/maps'>
+                         <DisplayMap/>
                     </Route>
-                   <Route exact path="/bets">
-                       <Bets/>
-                   </Route>
-                   <Route exact path="/faq">
-                       <FAQ/>
-                   </Route>
-                   <Route exact path="/about">
-                       <About/>
-                   </Route>
-                   <Route path="/profile">
+                    <Route exact path='/find-bets'>
+                         <FindLocationBets/>
+                     </Route>
+                    <Route exact path='/bets'>
+                        <Bets/>
+                    </Route>
+                    <Route exact path='/faq'>
+                        <FAQ/>
+                    </Route>
+                    <Route exact path='/about'>
+                        <About/>
+                    </Route>
+                    <Route path='/profile'>
                         <Profile/>
                     </Route>
-                   <Route exact path="/">
-                       <HomePage/>
-                   </Route>
-               </Switch>
-       );
-   } 
-};
+                    <Route exact path='/payment'>
+                         <Payment/>
+                    </Route>
+                    <Route exact path='/'>
+                        <HomePage/>
+                    </Route>
+                </Switch>
+        );
+    } 
+ };
 
 ReactDOM.render(
     <Router>

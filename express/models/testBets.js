@@ -13,7 +13,7 @@ var testBetSchema = new Schema({
         type: String,
         required: true,
         minlength: 3,
-        maxLength: 48
+        maxLength: 64
     },
     type: {
         type: String

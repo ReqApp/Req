@@ -58,6 +58,21 @@ describe("========= Login Testing =========", () => {
                     done();
                 });
         }).timeout(2500),
+        it("Invalid ysername", done => {
+            chai
+                .request(app)
+                .post("/users/login")
+                .send({
+                    "user_name": fuzzUsername,
+                    "password": "You shouldn't be reading this"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Username not found");
+                    done();
+                });
+        }).timeout(2500),
         it("Fuzzing password", done => {
             chai
                 .request(app)
@@ -107,6 +122,17 @@ describe("========= Login Testing =========", () => {
         it("Invalid params", done => {
             chai
                 .request(app)
+                .post("/users/login")
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid parameters");
+                    done();
+                });
+        }).timeout(1800),
+        it("Invalid params", done => {
+            chai
+                .request(app)
                 .post("/users/forgotPassword")
                 .send({
                     "invalidJSON": "any cans"
@@ -133,12 +159,28 @@ describe("========= Login Testing =========", () => {
                     done();
                 });
         }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/users/forgotPassword")
+                .send({
+                    "newPassword": "anycans4444555",
+                    "fromUrl": "`'`''`'`'`'`'`'`''`'`'<<<<<<<<<<<<<<<<<<<<",
+                    "_id": "eeeee"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid input");
+                    done();
+                });
+        }),
         it("Fuzzing username", done => {
             chai
                 .request(app)
                 .post("/users/forgotPassword")
                 .send({
-                    "user_name": `testUser`
+                    "user_name": fuzzUsername
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(400);
@@ -211,6 +253,17 @@ describe("=========== Register Testing ===========", () => {
                     done();
                 });
         }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/users/register")
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid POST parameters");
+                    done();
+                });
+        }),
         it("Valid registration", done => {
             chai
                 .request(app)
@@ -225,7 +278,21 @@ describe("=========== Register Testing ===========", () => {
                     expect(res.body.status).to.equals("success");
                     done();
                 });
-        }).timeout(2300)
+        }).timeout(4700),
+        it("Invalid existing registration", done => {
+            chai
+                .request(app)
+                .post("/users/register")
+                .send({
+                    "user_name": `${fuzzUsername}`,
+                    "email": `${fuzzUsername}@gmail.com`
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }).timeout(4700)
 });
 
 
@@ -234,7 +301,6 @@ describe("========== Password Reset ==========", () => {
             chai
                 .request(app)
                 .post("/users/resetPassword")
-                .send({})
                 .end((err, res) => {
                     expect(res).to.have.status(401);
                     expect(res.body.status).to.equals("error");
@@ -278,6 +344,21 @@ describe("========== Password Reset ==========", () => {
                 .post("/users/resetPassword")
                 .send({
                     "newPassword": "jellyfisherman"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid input");
+                    done();
+                })
+        }),
+        it("Invalid params", done => {
+            chai
+                .request(app)
+                .post("/users/resetPassword")
+                .send({
+                    "newPassword": null,
+                    "fromUrl": ""
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(401);
@@ -370,20 +451,26 @@ describe("========== Verify Account ========== ", () => {
                     expect(res.body.body).to.equals("Invalid input");
                     done();
                 })
+        }),
+        it("Invalid params", done => {
+            chai
+                .request(app)
+                .post("/users/verifyAccount")
+                .send({
+                    "activationCode": null,
+                    "password": null,
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid input");
+                    done();
+                })
         })
 });
 
 describe("============= Various APIS ==============", () => {
-    it("Profile (not logged in)", done => {
-            chai
-                .request(app)
-                .get("/users/profile")
-                .end((err, res) => {
-                    expect(res).to.have.status(200);
-                    done();
-                });
-        }),
-        it("getTime", done => {
+    it("getTime", done => {
             chai
                 .request(app)
                 .get("/getTime")
@@ -393,116 +480,126 @@ describe("============= Various APIS ==============", () => {
                     done();
                 });
         }),
-        it("Invalid params", done => {
-            chai
-                .request(app)
-                .post("/createArticleBet")
-                .send({
-                    "betType": "nothing"
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    expect(res.body.body).to.equals("Invalid input");
-                    done();
-                });
-        })
-        it("Invalid params", done => {
-            chai
-                .request(app)
-                .post("/createArticleBet")
-                .send({
-                    "betType": "article",
-                    "sitename": "BBC",
-                    "directory": "world",
-                    "month": "12",
-                    "year": "2020",
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    expect(res.body.status).to.equals("error");
-                    done();
-                });
-        }),
-        it("Injection", done => {
-            chai
-                .request(app)
-                .post("/createArticleBet")
-                .send({
-                    "betType": "article",
-                    "sitename": "BBC",
-                    "directory": "\"console.log(`test`)",
-                    "month": "2",
-                    "year": "2020",
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    expect(res.body.status).to.equals("error");
-                    done();
-                });
-        }),
-        it("Invalid Amount", done => {
-            chai
-                .request(app)
-                .post("/createArticleBet")
-                .send({
-                    "sitename": "BBC",
-                    "directory": "world",
-                    "month": "2",
-                    "year": "2020",
-                    "searchTerm": "Trump"
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    expect(res.body.status).to.equals("error");
-                    done();
-                });
-        }).timeout(1400),
-        it("Invalid search", done => {
-            chai
-                .request(app)
-                .post("/createArticleBet")
-                .send({
-                    "betType": "article",
-                    "sitename": "CNN",
-                    "directory": "all",
-                    "month": "1",
-                    "year": "2020",
-                    "searchTerm": "putin"
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    expect(res.body.status).to.equals("error");
-                    done();
-                });
-        }).timeout(1400),
-        it("Invalid search", done => {
-            chai
-                .request(app)
-                .post("/createArticleBet")
-                .send({
-                    "sitename": "BBC",
-                    "directory": "world",
-                    "month": "2",
-                    "year": "2020",
-                    "searchTerm": "Trump",
-                    "uesr_name": "nobodiesUsernameForSure",
-                    "betAmount": "1000000000"
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    expect(res.body.status).to.equals("error");
-                    done();
-                });
-        }).timeout(1400),
+        //     it("Invalid params", done => {
+        //         chai
+        //             .request(app)
+        //             .post("/createArticleBet")
+        //             .send({
+        //                 "betType": "nothing"
+        //             })
+        //             .end((err, res) => {
+        //                 expect(res).to.have.status(400);
+        //                 expect(res.body.body).to.equals("Invalid input");
+        //                 done();
+        //             });
+        //     })
+        // it("Invalid params", done => {
+        //         chai
+        //             .request(app)
+        //             .post("/createArticleBet")
+        //             .send({
+        //                 "betType": "article",
+        //                 "sitename": "BBC",
+        //                 "directory": "world",
+        //                 "month": "12",
+        //                 "year": "2020",
+        //             })
+        //             .end((err, res) => {
+        //                 expect(res).to.have.status(400);
+        //                 expect(res.body.status).to.equals("error");
+        //                 done();
+        //             });
+        //     }),
+        //     it("Injection", done => {
+        //         chai
+        //             .request(app)
+        //             .post("/createArticleBet")
+        //             .send({
+        //                 "betType": "article",
+        //                 "sitename": "BBC",
+        //                 "directory": "\"console.log(`test`)",
+        //                 "month": "2",
+        //                 "year": "2020",
+        //             })
+        //             .end((err, res) => {
+        //                 expect(res).to.have.status(400);
+        //                 expect(res.body.status).to.equals("error");
+        //                 done();
+        //             });
+        //     }),
+        //     it("Invalid Amount", done => {
+        //         chai
+        //             .request(app)
+        //             .post("/createArticleBet")
+        //             .send({
+        //                 "sitename": "BBC",
+        //                 "directory": "world",
+        //                 "month": "2",
+        //                 "year": "2020",
+        //                 "searchTerm": "Trump"
+        //             })
+        //             .end((err, res) => {
+        //                 expect(res).to.have.status(400);
+        //                 expect(res.body.status).to.equals("error");
+        //                 done();
+        //             });
+        //     }).timeout(1400),
+        //     it("Invalid search", done => {
+        //         chai
+        //             .request(app)
+        //             .post("/createArticleBet")
+        //             .send({
+        //                 "betType": "article",
+        //                 "sitename": "CNN",
+        //                 "directory": "all",
+        //                 "month": "1",
+        //                 "year": "2020",
+        //                 "searchTerm": "putin"
+        //             })
+        //             .end((err, res) => {
+        //                 expect(res).to.have.status(400);
+        //                 expect(res.body.status).to.equals("error");
+        //                 done();
+        //             });
+        //     }).timeout(1400),
+        //     it("Invalid search", done => {
+        //         chai
+        //             .request(app)
+        //             .post("/createArticleBet")
+        //             .send({
+        //                 "sitename": "BBC",
+        //                 "directory": "world",
+        //                 "month": "2",
+        //                 "year": "2020",
+        //                 "searchTerm": "Trump",
+        //                 "uesr_name": "nobodiesUsernameForSure",
+        //                 "betAmount": "1000000000"
+        //             })
+        //             .end((err, res) => {
+        //                 expect(res).to.have.status(400);
+        //                 expect(res.body.status).to.equals("error");
+        //                 done();
+        //             });
+        //     }).timeout(1400),
         it("Get valid profiler", done => {
             chai
                 .request(app)
                 .post("/users/getProfilePicture")
                 .send({
-                    "username":"IamCathal"
+                    "username": "IamCathal"
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(200);
+                    done();
+                });
+        }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/users/getProfilePicture")
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.body).to.equals('No username given');
                     done();
                 });
         }),
@@ -511,7 +608,33 @@ describe("============= Various APIS ==============", () => {
                 .request(app)
                 .post("/users/getProfilePicture")
                 .send({
-                    "username":"testUser"
+                    "username": null
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.body).to.equals('No username given');
+                    done();
+                });
+        }),
+        it("Get invalid profiler", done => {
+            chai
+                .request(app)
+                .post("/users/getProfilePicture")
+                .send({
+                    "username": "`,`,`,`,`,/''/'/'/'/'/'drop all the tables yeah?"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.body).to.equals('Invalid username');
+                    done();
+                });
+        }),
+        it("Get valid profiler", done => {
+            chai
+                .request(app)
+                .post("/users/getProfilePicture")
+                .send({
+                    "username": "testUser"
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(200);
@@ -567,13 +690,13 @@ describe("============= Betting =============", () => {
                 .request(app)
                 .post("/bets/makeBet")
                 .send({
-                    "type":"multi",
-                    "title":"a test title",
-                    "deadline": 1584230400000,
-                    "username":"testUser",
-                    "firstPlaceCut":0.9,
-                    "secondPlaceCut":0.3,
-                    "thirdPlaceCut":0.15
+                    "type": "multi",
+                    "title": "a test title",
+                    "deadline": 1584621007,
+                    "username": "testUser",
+                    "firstPlaceCut": 0.9,
+                    "secondPlaceCut": 0.3,
+                    "thirdPlaceCut": 0.15
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(400);
@@ -587,9 +710,9 @@ describe("============= Betting =============", () => {
                 .request(app)
                 .post("/bets/makeBet")
                 .send({
-                    "firstPlaceCut":"yellow",
-                    "secondPlaceCut":0.3,
-                    "thirdPlaceCut":"green"
+                    "firstPlaceCut": "yellow",
+                    "secondPlaceCut": 0.3,
+                    "thirdPlaceCut": "green"
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(400);
@@ -598,7 +721,7 @@ describe("============= Betting =============", () => {
                     done();
                 });
         }),
-        it("Fuzzing" , done => {
+        it("Fuzzing", done => {
             chai
                 .request(app)
                 .post("/bets/decideBet")
@@ -613,13 +736,13 @@ describe("============= Betting =============", () => {
                     done();
                 });
         }),
-        it("Invalid secret" , done => {
+        it("Invalid secret", done => {
             chai
                 .request(app)
                 .post("/bets/bigButtonBet")
                 .send({
                     "secret": fuzzPassword,
-                    "action":"start"
+                    "action": "start"
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(400);
@@ -629,3 +752,162 @@ describe("============= Betting =============", () => {
                 });
         })
 })
+
+
+describe("============= Analytics APIs =============", () => {
+    it("Invalid username", done => {
+        chai
+            .request(app)
+            .post("/analytics/getBettingHistory")
+            .send({
+                "username": fuzzUsername,
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(400);
+                expect(res.body.body).to.equals('No bets found');
+                expect(res.body.status).to.equals("error");
+                done();
+            });
+    });
+    it("Valid search", done => {
+            chai
+                .request(app)
+                .post("/analytics/getBettingHistory")
+                .send({
+                    "username": "IamCathal",
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    done();
+                });
+        }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/analytics/getBettingHistory")
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals('error');
+                    expect(res.body.body).to.equals("Invalid username");
+                    done();
+                });
+        }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/analytics/getCreatedBettingHistory")
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid username");
+                    done();
+                });
+        }),
+        it("Invalid username", done => {
+            chai
+                .request(app)
+                .post("/analytics/getCreatedBettingHistory")
+                .send({
+                    "username": "thisUsernameCanNeverBeTakenBecauseItsTooLong",
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid username");
+                    done();
+                });
+        }),
+        it("Invalid username", done => {
+            chai
+                .request(app)
+                .post("/analytics/getCreatedBettingHistory")
+                .send({
+                    "password": fuzzPassword,
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid username");
+                    done();
+                });
+        }),
+        it("Valid search", done => {
+            chai
+                .request(app)
+                .post("/analytics/getCreatedBettingHistory")
+                .send({
+                    "username": "Req",
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.status).to.equals("success");
+                    done();
+                });
+        }),
+        it("Valid search", done => {
+            chai
+                .request(app)
+                .post("/analytics/getCreatedBettingHistory")
+                .send({
+                    "username": "bakePancakes",
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.status).to.equals("success");
+                    done();
+                });
+        }),
+        it("Invalid search", done => {
+            chai
+                .request(app)
+                .post("/analytics/getWinLoss")
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid username");
+                    done();
+                });
+        }),
+        it("Fuzzing", done => {
+            chai
+                .request(app)
+                .post("/analytics/getWinLoss")
+                .send({
+                    "username": fuzzUsername
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.status).to.equals("success");
+                    expect(res.body.body.wins).to.equals(0);
+                    expect(res.body.body.losses).to.equals(0);
+                    done();
+                });
+        }),
+        it("Fuzzing", done => {
+            chai
+                .request(app)
+                .post("/analytics/getPeopleReached")
+                .send({
+                    "username": "Req"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.status).to.equals("success");
+                    done();
+                });
+        }),
+        it("Invalid Search", done => {
+            chai
+                .request(app)
+                .post("/analytics/getPeopleReached")
+                .send({
+                    "_id": "Req"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid username");
+                    done();
+                });
+        })
+});
