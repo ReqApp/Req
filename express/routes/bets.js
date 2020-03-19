@@ -221,9 +221,11 @@ router.post('/makeBet', (req, res, next) => {
     const thirdPlaceCut = parseFloat(req.body.thirdPlaceCut);
 
     if (!(utilFuncs.validate(req.body.title, "title") && utilFuncs.validate(req.body.type, "type"))) {
+        console.log(utilFuncs.validate(req.body.title, "title"));
+        console.log(utilFuncs.validate(req.body.type, "type"));
         res.status(400).json({
             "status": "error",
-            "body": "Invalid input"
+            "body": "Invalid input validaet title and type"
         })
     } else {
         // if it's a multi type bet it must allocate the betting percentages
@@ -237,7 +239,7 @@ router.post('/makeBet', (req, res, next) => {
 
             if ((req.body.type && req.body.title && req.body.deadline && req.body.username) ||
                 (req.body.type && req.body.title && req.body.deadline && req.body.username &&
-                    req.body.firstPlaceCut && req.body.secondPlaceCut && req.body.thirdPlaceCut)) {
+                    req.body.firstPlaceCut != null && req.body.secondPlaceCut != null && req.body.thirdPlaceCut != null)) {
                 // bet has input parameters for either a binary or multi bet
 
                 let inputObj = {

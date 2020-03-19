@@ -94,9 +94,9 @@ function validate(input, type) {
             }
             if (input.length > 1 && input.length < 64) {
                 if (input.match(/([^A-Za-z0-9,]+)/g)) {
-                    return true;
-                } else {
                     return false;
+                } else {
+                    return true;
                 }
             }
             return false;
@@ -912,8 +912,8 @@ function createBet(input) {
             }
         } else if (input.type === "multi") {
 
-            if (input.title && input.deadline && input.username && input.firstPlaceCut &&
-                input.secondPlaceCut && input.thirdPlaceCut) {
+            if (input.title && input.deadline && input.username && input.firstPlaceCut != null &&
+                input.secondPlaceCut != null && input.thirdPlaceCut != null) {
                 let newBet = new testBets();
 
                 newBet.title = input.title;
