@@ -10,6 +10,8 @@ import SignIn from './pages/login';
 import Register from './pages/register'
 import ResetPassword from './pages/resetPassword';
 import ForgotPassword from './pages/forgotPassword'; 
+import UsersProfile from './pages/usersProfile';
+import TestGraphs from './pages/testGraphs';
 import VerifyAccount from './pages/verifyAccount';
 import {FAQ} from './pages/faq';
 import {About} from './pages/about';
@@ -55,6 +57,12 @@ class App extends Component{
                     </Route>
                     <Route exact path='/users/verifyAccount'>
                          <VerifyAccount/>
+                    </Route>
+                    <Route exact path='/users/profile'>
+                         <UsersProfile/>
+                    </Route>
+                    <Route exact path='/users/graphProfile'>
+                         <TestGraphs/>
                     </Route>
                     <Route exact path='/'>
                         <HomePage/>
