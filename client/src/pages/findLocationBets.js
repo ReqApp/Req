@@ -13,6 +13,9 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 //Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Container, Row, Col, Dropdown} from 'react-bootstrap/';
@@ -49,13 +52,16 @@ export default class FindBetPage extends React.Component{
             openError : false,
             loadCreateForm: false,
             loadCreateRegion: false,
-            selectedRegion: null
+            selectedRegion: null,
+            windowWidth: window.innerWidth
         }
         this.socket = openSocket("http://localhost:9000");
     }
 
     // Load regions on first mout
     componentDidMount(){
+        // Get size of screen for styling
+        this.setState({windowWidth : window.innerWidth});
         // Retrieve user's location
         this.getLocation();
         this.socket.on('accurateUserPos', (data) => {
@@ -69,6 +75,11 @@ export default class FindBetPage extends React.Component{
                 this.socket.emit('locationResponse', response);
             }
         });
+        window.addEventListener('resize', this.updateWindowDimensions);
+    }
+
+    updateWindowDimensions = () => {
+        this.setState({windowWidth : window.innerWidth});
     }
 
     handleCreateBetRegion = () => {
@@ -120,7 +131,7 @@ export default class FindBetPage extends React.Component{
     }
 
     handleSortBySelect = (evt) => {
-        this.setState({sortBy : evt});
+        this.setState({sortBy : evt.target.value});
     }
 
     handleScrollToRegion = (id) => {
@@ -162,8 +173,16 @@ export default class FindBetPage extends React.Component{
     }
 
     render(){
-        const {hasLocation, latlng, accurate, betRegions, bets, loadingRegions, sortBy, openError, view, loadCreateForm} = this.state;
+        const {hasLocation, latlng, accurate, betRegions, bets, loadingRegions, sortBy, openError, view, loadCreateForm, windowWidth} = this.state;
         const {mode} = this.props;
+        let useStyles = null;
+
+        if(windowWidth < 700){
+            useStyles = smallScreen;
+        }
+        else{
+            useStyles = styles;
+        }
         
         if(loadCreateForm){
             const {selectedRegion, loadCreateRegion} = this.state;
@@ -173,7 +192,7 @@ export default class FindBetPage extends React.Component{
         }else{
         let predictSearch = null;
         if(!loadingRegions){
-            predictSearch = <div style={styles.floatContainer} >
+            predictSearch = <div style={useStyles.floatContainer} >
                 <Autocomplete
                     freeSolo
                     id="free-solo-2-demo"
@@ -230,16 +249,16 @@ export default class FindBetPage extends React.Component{
                     </Button>
                   </DialogActions>
                 </Dialog>
-                <div style={styles.floatingButton}>
+                <div style={useStyles.floatingButton}>
                     <Fab variant="extended" onClick={() => this.setState({showMap : true})}>
                         <NavigationIcon className={classes.extendedIcon} />
                         Show Full Map
                     </Fab>
                 </div>
                 <Navbar />
-                <Container fluid style={styles.mainContent}>
+                <Container fluid style={useStyles.mainContent}>
                     <Row>
-                        <Col style={styles.fullMapContainer}>
+                        <Col style={useStyles.fullMapContainer}>
                             <DisplayMap
                                 hasLocation={hasLocation}
                                 data={betRegions}
@@ -252,13 +271,13 @@ export default class FindBetPage extends React.Component{
                     </Row>
                     <Container>
                     <Row>
-                        <Col>    
-                            <h2 style={styles.sortByTitle}>Available Regions</h2>
+                        <Col xs={12} md={6}>    
+                            <h2 style={useStyles.sortByTitle}>Available Regions</h2>
                         </Col>
-                        <Col>
+                        <Col xs={12} md={6}>
                             <Button
                                 onClick={this.handleCreateBetRegion}
-                                style={styles.newRegionBtn}
+                                style={useStyles.newRegionBtn}
                                 variant="contained"
                                 color="primary"
                                 className={classes.button}
@@ -268,18 +287,20 @@ export default class FindBetPage extends React.Component{
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
-                            <Dropdown>
-                                <Dropdown.Toggle variant="primary" id="dropdown-basic" style={styles.sortByDropdown}>
-                                    Sort By
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    <Dropdown.Item eventKey="popular">Popularity</Dropdown.Item>
-                                    <Dropdown.Item eventKey="closest">Closest</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
+                        <Col xs={12} md={6}>
+                        <InputLabel id="demo-simple-select-filled-label">Sort By</InputLabel>
+                            <Select
+                            style={useStyles.sortBy}
+                            labelId="demo-simple-select-filled-label"
+                            id="demo-simple-select-filled"
+                            value={sortBy}
+                            onChange={this.handleSortBySelect}
+                            >
+                            <MenuItem value='popular'>Popularity</MenuItem>
+                            <MenuItem value='closest'>Closest</MenuItem>
+                        </Select>
                         </Col>
-                        <Col>
+                        <Col xs={12} md={6}>
                             {predictSearch}
                         </Col>
                         </Row>
@@ -329,8 +350,8 @@ const styles = {
         position: 'absolute',
         right: '0px'
     },
-    sortByDropdown: {
-        marginTop: '15px'
+    sortBy: {
+        width: '200px'
     },
     floatingButton: {
         width: '200px',
@@ -347,4 +368,47 @@ const styles = {
         bottom: '0px',
         right: '0px'
     }
-} 
+}
+
+const smallScreen = {
+    mainContent: {
+        width: '100%',
+        marginTop: '0px'
+    },
+    fullMap: {
+        width: '100%',
+        height: '70vh',
+        padding: '5px'
+    },
+    miniMap: {
+        width: '100%',
+        height: '250px'
+    },
+    sortByTitle: {
+        paddingTop: '20px'
+    },
+    fullMapContainer: {
+        padding: '0px'
+    },   
+    floatContainer: {
+        width: '300px',
+        right: '0px'
+    },
+    sortBy: {
+        width: '200px'
+    },
+    floatingButton: {
+        width: '200px',
+        height: '40px',
+        position: 'fixed',
+        bottom: '20px',
+        right: '5px',
+        borderRadius: '5px',
+        border: 'none',
+        zIndex: '1000'
+    },
+    newRegionBtn: {
+        bottom: '0px',
+        right: '0px'
+    }
+}

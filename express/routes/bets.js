@@ -140,15 +140,6 @@ router.post('/addBetRegion', (req, res) => {
             'body' : 'Invalid parameters'
         });
     }
-
-    // var region = new betRegion(req.body);
-    // region.save(function(err, savedRegion) {
-    //     if (err) {
-    //         console.log(err);
-    //     } else {
-    //         res.json(savedRegion);
-    //     }
-    // });
 });
 
 // API for getting available betting regions
@@ -179,10 +170,11 @@ router.get('/getBettingRegions', (req, res) => {
                 let regionsToSend = [];
                 const LEN = betRegions.length;
                 for (var i = 0; i < LEN; i++) {
-                    let region = betRegions.pop();
+                    let region = betRegions.pop().toObject();
                     var d = utilFuncs.calcDistance({ lat: region.latitude, lng: region.longitude }, { lat: req.query.lat, lng: req.query.lng });
                     // Convert kilometers to metres
                     if ((d * 1000) <= region.radius) {
+                        region.distanceFromUser = d;
                         regionsToSend.push(region);
                         /*
                         console.log("Calculated Distance: " + (d * 1000).toString());
@@ -195,8 +187,8 @@ router.get('/getBettingRegions', (req, res) => {
                         */
                     }
                 }
-                console.log(regionsToSend);
-                res.json(regionsToSend);
+                //console.log(regionsToSend);
+                res.status(200).json(regionsToSend);
             }
         });
     }

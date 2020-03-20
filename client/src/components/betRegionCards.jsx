@@ -35,7 +35,15 @@ export default class BetRegionCards extends React.Component{
             if(sort === "popular"){
                 betRegions.sort((a, b) => {return a.num_bets - b.num_bets});
                 betRegions.reverse();
-            }else{
+            }
+            else if(sort ==='closest'){
+                betRegions.sort((a, b) => {return a.distanceFromUser - b.distanceFromUser});
+                // betRegions.forEach(element => {
+                //     console.log(element.region_name);
+                //     console.log(element.distanceFromUser);
+                // });
+            }
+            else{
                 betRegions = matchSorter(betRegions, sort, { keys: ['region_name']});
                 searchFlag = true;
             }
@@ -84,7 +92,9 @@ export default class BetRegionCards extends React.Component{
                     regionCards.push(newCard);
                 }
                 return (
-                    <div>{regionCards}</div>
+                    <div>
+                        {regionCards}
+                    </div>
                 )
             }else{
                 if(searchFlag){
@@ -119,6 +129,8 @@ const styles = {
         /*background: #FBF9F9 !important;*/
     }, 
     info: {
-        textAlign: 'center'
+        textAlign: 'center',
+        marginTop: '30px',
+        height: '100px',
     },
 }
