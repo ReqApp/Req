@@ -249,12 +249,6 @@ export default class FindBetPage extends React.Component{
                     </Button>
                   </DialogActions>
                 </Dialog>
-                <div style={useStyles.floatingButton}>
-                    <Fab variant="extended" onClick={() => this.setState({showMap : true})}>
-                        <NavigationIcon className={classes.extendedIcon} />
-                        Show Full Map
-                    </Fab>
-                </div>
                 <Navbar />
                 <Container fluid style={useStyles.mainContent}>
                     <Row>
@@ -271,10 +265,10 @@ export default class FindBetPage extends React.Component{
                     </Row>
                     <Container>
                     <Row>
-                        <Col xs={12} md={6}>    
+                        <Col xs={12} md={6} style={useStyles.columns}>    
                             <h2 style={useStyles.sortByTitle}>Available Regions</h2>
                         </Col>
-                        <Col xs={12} md={6}>
+                        <Col xs={12} md={6} style={useStyles.columns}>
                             <Button
                                 onClick={this.handleCreateBetRegion}
                                 style={useStyles.newRegionBtn}
@@ -287,7 +281,7 @@ export default class FindBetPage extends React.Component{
                         </Col>
                     </Row>
                     <Row>
-                        <Col xs={12} md={6}>
+                        <Col xs={12} md={6} style={useStyles.columns}>
                         <InputLabel id="demo-simple-select-filled-label">Sort By</InputLabel>
                             <Select
                             style={useStyles.sortBy}
@@ -300,12 +294,12 @@ export default class FindBetPage extends React.Component{
                             <MenuItem value='closest'>Closest</MenuItem>
                         </Select>
                         </Col>
-                        <Col xs={12} md={6}>
+                        <Col xs={12} md={6} style={useStyles.columns}>
                             {predictSearch}
                         </Col>
                         </Row>
                     <Row>
-                        <Col>
+                        <Col style={useStyles.columns}>
                             {cards}
                         </Col>
                     </Row>
@@ -353,20 +347,13 @@ const styles = {
     sortBy: {
         width: '200px'
     },
-    floatingButton: {
-        width: '200px',
-        height: '40px',
-        position: 'fixed',
-        bottom: '20px',
-        right: '5px',
-        borderRadius: '5px',
-        border: 'none',
-        zIndex: '1000'
-    },
     newRegionBtn: {
         position: 'absolute',
         bottom: '0px',
         right: '0px'
+    },
+    columns: {
+        padding: '0px'
     }
 }
 
@@ -396,16 +383,6 @@ const smallScreen = {
     },
     sortBy: {
         width: '200px'
-    },
-    floatingButton: {
-        width: '200px',
-        height: '40px',
-        position: 'fixed',
-        bottom: '20px',
-        right: '5px',
-        borderRadius: '5px',
-        border: 'none',
-        zIndex: '1000'
     },
     newRegionBtn: {
         bottom: '0px',

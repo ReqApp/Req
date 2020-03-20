@@ -171,10 +171,10 @@ router.get('/getBettingRegions', (req, res) => {
                 const LEN = betRegions.length;
                 for (var i = 0; i < LEN; i++) {
                     let region = betRegions.pop().toObject();
-                    var d = utilFuncs.calcDistance({ lat: region.latitude, lng: region.longitude }, { lat: req.query.lat, lng: req.query.lng });
+                    var d = 1000 * utilFuncs.calcDistance({ lat: region.latitude, lng: region.longitude }, { lat: req.query.lat, lng: req.query.lng });
                     // Convert kilometers to metres
-                    if ((d * 1000) <= region.radius) {
-                        region.distanceFromUser = d;
+                    if (d <= region.radius) {
+                        region.distanceFromUser = d.toFixed(2);
                         regionsToSend.push(region);
                         /*
                         console.log("Calculated Distance: " + (d * 1000).toString());

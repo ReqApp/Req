@@ -49,32 +49,47 @@ export default class BetRegionCards extends React.Component{
             }
             if(Array.isArray(betRegions) && betRegions.length){
                 let buttonText = '';
+                let description = '';
                 if(mode === 'find'){
                     buttonText = 'See Bets in this Region';
                 }else{
                     buttonText = 'Select Region'
                 }
                 for(var i = 0; i < display_num_regions && i < betRegions.length; i++){
+                    if(betRegions[i].description === '' || betRegions[i].description == null){
+                        description = 'No description';
+                    }
+                    else{
+                        description = betRegions[i].description;
+                    }
                     var newCard = <Paper elevation={3} key={betRegions[i]._id} id={betRegions[i]._id} style={styles.regionCards}>
                         <Container>
                             <Row>
-                            <Col xs={8}>
+                            <Col xs={12} md={8}>
                             <Container>
                                 <Row>
-                                    <Col>
+                                    <Col xs={12} md={4}>
                                         <h3>{betRegions[i].region_name}</h3>
                                     </Col>
                                 </Row>
                                 <Row>
-                                    <Col>
+                                    <Col xs={12} md={4}>
                                         <h6>Number of Bets: {betRegions[i].num_bets}</h6>
                                     </Col>
-                                    <Col>
+                                    <Col xs={12} md={4}>
                                         <h6>Description:</h6>
                                     </Col>
                                 </Row>
                                 <Row>
-                                    <Col>
+                                    <Col xs={12} md={4}>
+                                        <h6>Distance: {betRegions[i].distanceFromUser}m</h6>
+                                    </Col>
+                                    <Col xs={12} md={4}>
+                                        {description}
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col xs={12} md={4}>
                                         <Button onClick={this.handleClick.bind(this, betRegions[i]._id)}>{buttonText}</Button>
                                     </Col>
                                 </Row>
@@ -84,6 +99,7 @@ export default class BetRegionCards extends React.Component{
                                 <DisplayMap 
                                     miniMap={true} 
                                     regionDetails={betRegions[i]}
+                                    height='200px'
                                 />
                             </Col>
                             </Row>
