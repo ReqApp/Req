@@ -2,9 +2,16 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 require('./util.js');
 
-var bettingRegionSchema = new Schema({
+var betRegionSchema = new Schema({
     region_name : {
-        type : String
+        type : String,
+        required : true,
+        minlength : 1,
+        maxlength : 64
+    },
+    description : {
+        type : String,
+        maxlength : 300
     },
     latitude : {
         type : Number
@@ -24,4 +31,4 @@ var bettingRegionSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('BettingRegion', bettingRegionSchema);
+module.exports = mongoose.model('BettingRegion', betRegionSchema);

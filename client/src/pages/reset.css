@@ -1,13 +1,21 @@
 html{
     padding: 0px;
     margin: 0px;
+    scroll-behavior: smooth;
+    background: #FBF9F9;
   }
   
-  body{
+body{
     margin: 0px;
     padding: 0px;
-  }
-  
+}
+
+
+
+/* Old styling stuff */
+
+
+/*
 .main-content{
     width: 100%;
     margin-top: 0px;
@@ -55,18 +63,14 @@ html{
 .region-cards{
     padding: 20px;  
     margin-top: 20px;
-    /*background: #FBF9F9 !important;*/
+    background: #FBF9F9 !important;
 }
 
-/* .region-cards button{
+.region-cards button{
     background-color: #E8202F;
-} */
+}
 
 .info{
     text-align: center;
 }
-
-html {
-    scroll-behavior: smooth;
-    background: #FBF9F9;
-  }
+*/

@@ -23,7 +23,12 @@ var app = express();
 
 mongoose.set('useFindAndModify', false);
 
-app.use(cors());
+var corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: true,
+}
+
+app.use(cors(corsOptions));
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
