@@ -1,6 +1,7 @@
 // React
 import React from 'react';
 import PropTypes from 'prop-types';
+import {Redirect} from 'react-router-dom';
 // Material
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -15,17 +16,109 @@ import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/core/styles';
+import Snackbar from '@material-ui/core/Snackbar';
 // Components
 import Copyright from '../components/copyRight';
+import Alert from '../components/alertSnack';
 
+// Main component class
 class SignIn extends React.Component{
+  // Constructor which takes in props
   constructor(props){
+    // Remember to pass props to parent class
     super(props);
+    // When a variable updated in the state object, the page get re-rendered
+    this.state = {
+      // Keep track of user inputs
+      user_name : '',
+      password : '',
+      loggedIn : false,
+      // Used for error and success snacks(toasts)
+      msg : '',
+      msgType : '',
+      snackOpen : false
+    }
   }
 
+  submitForm = () => {
+    // Easier than writing this.state.emailAddress all the time
+    const {user_name, password} = this.state;
+
+    let formValid = true;
+    if(user_name === ''){
+      formValid = false;
+      this.setState({msg : 'Please enter your email address', msgType : 'warning', snackOpen : true});
+    }
+    if(password === ''){
+      formValid = false;
+      this.setState({msg : 'Please enter your password', msgType : 'warning', snackOpen : true});
+    }
+    if(formValid){
+      fetch('http://localhost:9000/users/login', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_name : user_name,
+          password : password
+        })
+      })
+      .then((res) => res.json())
+      .then((res) => {
+        if(res.status === "success"){
+          this.setState({msg : 'Logged In!', msgType : 'success', snackOpen : true, loggedIn : true});
+        }
+        else if(res.status === 'error' && res.body === 'Email or password invalid'){
+          this.setState({msg : 'Incorrect username or password', msgType : 'error', snackOpen : true});
+        }
+        else if(res.status === 'error' && res.body === 'Username not found'){
+          this.setState({msg : 'User could not be found', msgType : 'error', snackOpen : true});
+        }
+        else{
+          console.log(res.body);
+          this.setState({msg : 'Could not login', msgType : 'error', snackOpen : true});
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({msg : 'Could not login', msgType : 'error', snackOpen : true});
+      });
+    }
+  }
+
+  handleUserNameChange = (evt) => {
+    // Only use this.setState method to update fields in state. Never like this.state.msg = 'sasdjfasdf'
+    // evt.target.value is new value in text field
+    this.setState({user_name : evt.target.value});
+  }
+
+  handlePasswordChange = (evt) => {
+    this.setState({password : evt.target.value});
+  }
+
+  handleSnackClose = (event, reason) => {
+    if(reason === 'clickaway'){
+        return;
+    }
+    this.setState({snackOpen : false});
+}
+
   render(){
+    const {msg, msgType, snackOpen, loggedIn} = this.state;
     const {classes} = this.props;
+
+    if(loggedIn){
+      return(
+        <Redirect to='/profile' />
+      )
+    }
     return (
+      <div>
+        <Snackbar open={snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
+            <Alert onClose={this.handleSnackClose} severity={msgType}>{msg}</Alert>
+        </Snackbar>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
@@ -38,11 +131,9 @@ class SignIn extends React.Component{
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              label="Username"
               autoFocus
+              onChange={this.handleUserNameChange}
             />
             <TextField
               variant="outlined"
@@ -54,13 +145,14 @@ class SignIn extends React.Component{
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={this.handlePasswordChange}
             />
             <Button
-              type="submit"
               fullWidth
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={this.submitForm}
             >
               Sign In
             </Button>
@@ -109,6 +201,7 @@ class SignIn extends React.Component{
           <Copyright />
         </Box>
       </Container>
+      </div>
     );
   }
 }
