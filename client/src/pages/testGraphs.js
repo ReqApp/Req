@@ -11,7 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
 import WinLossPie from '../components/winLossPie';
-import SimpleCard from '../components/peopleReached';
+import PeopleReached from '../components/peopleReached';
 import WinLossBars from '../components/winLossBars';
 import WinLossOverall from '../components/winLossOverall';
 
@@ -62,7 +62,7 @@ export default function TestGraphs() {
           <WinLossPie />
           </Grid>
 
-          <SimpleCard />
+          <PeopleReached />
 
           <WinLossOverall />
 
