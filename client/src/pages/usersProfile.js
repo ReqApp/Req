@@ -6,15 +6,14 @@ import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
+import GitHubIcon from '@material-ui/icons/GitHub';
+import GTranslateIcon from '@material-ui/icons/GTranslate';
+import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
-import WinLossPie from '../components/winLossPie';
-import SimpleCard from '../components/peopleReached';
-import WinLossBars from '../components/winLossBars';
-import WinLossOverall from '../components/winLossOverall';
-
+import Chart from 'chart.js'
 
 function Copyright() {
     return (
@@ -43,9 +42,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function TestGraphs() {
-
+export default function UsersProfile() {
   const classes = useStyles();
+
+  // chartReference = React.createRef();
+
   return (
     <Container component="main" style={{border:"1px solid purple", backgroundColor:"grey"}}>
       <CssBaseline />
@@ -58,17 +59,43 @@ export default function TestGraphs() {
         </Typography>
 
           <Grid container style={{justifyContent:"center"}}>
-          HELLO WORLD
-          <WinLossPie />
+            <Grid item>
+            <img src="https://imgur.com/pTioTv4.png"
+              style={{height: "26vh",  margin: "1vh 1vh" }}/>
+            </Grid>
+            <Grid item>
+            <img src="https://imgur.com/nVTZmsM.png"
+              style={{height: "26vh",  margin: "1vh 1vh" }}/>
+            </Grid>
           </Grid>
 
-          <SimpleCard />
+          <Grid container style={{justifyContent:"center"}}>
+              <Grid item>
+                  <img src="https://imgur.com/viu6QBF.png"
+                  style={{height: "26vh",  margin: "1vh 1vh" }}/>
+              </Grid>
+              <Grid item>
+              <Grid item>
+                  <img src="https://imgur.com/yg03lkG.png"
+                  style={{height: "26vh",  margin: "1vh 1vh" }}/>
+              </Grid>
+              </Grid>
+          </Grid>
 
-          <WinLossOverall />
+          <Grid container style={{justifyContent:"center"}}>
+              <Grid item >
+                  <img src="https://imgur.com/iVuLvni.png"
+                  style={{margin: "1vh 1vh"}}/>
+              </Grid>
+              <Grid item>
+              <Grid item>
+                  <img src="https://imgur.com/xGMPWYz.png"
+                  style={{margin: "1vh 1vh"}}/>
+              </Grid>
+              </Grid>
+          </Grid>
 
-        <WinLossBars />
       </div>
-
       <Box mt={8}>
         <Copyright />
       </Box>

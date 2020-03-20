@@ -56,9 +56,10 @@ class SignIn extends React.Component{
     if(formValid){
       fetch('http://localhost:9000/users/login', {
         method: 'POST',
+        credentials: 'same-origin',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           user_name : user_name,

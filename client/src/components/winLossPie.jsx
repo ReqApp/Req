@@ -1,16 +1,19 @@
 import React, { Component } from 'react'
 import Chart from "chart.js";
 
-export default class WinLossGraph extends Component {
+export default class WinLossPie extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            loadVals: true,
-            wins: 8,
-            losses: 3
+            wins: 1,
+            losses: 1
         };
     }
     chartRef = React.createRef();
+
+    componentDidMount() {
+        this.loadData();
+    }
 
     loadData = () => {
         let targetUser = window.location.href.split("?")[1]
@@ -28,19 +31,14 @@ export default class WinLossGraph extends Component {
         }).then((res) => res.json())
         .then((res) => {
             if (res.status === "success") {
-                this.setState({wins:res.body.wins, losses:res.body.losses});
+                if (res.body.wins == 0 && res.body.losses == 0) {
+                    this.setState({wins:1, losses:1});
+                } else {
+                    this.setState({wins:res.body.wins, losses:res.body.losses});
+                }
+                
                 console.log(this.state.wins, this.state.losses)
-            } else {
-                console.log("not success");
-                console.log(res)
-            }
-        }, (err) => {
-            console.log(err);
-        });
-    }
-
-    componentDidMount() {
-        const myChartRef = this.chartRef.current.getContext("2d");
+                const myChartRef = this.chartRef.current.getContext("2d");
         
         new Chart(myChartRef, {
             type: "pie",
@@ -60,10 +58,18 @@ export default class WinLossGraph extends Component {
                 cutoutPercentage: 50
             }
         });
+            } else {
+                console.log("not success");
+                console.log(res)
+            }
+        }, (err) => {
+            console.log(err);
+        });
     }
+
     render() {
         return (
-            <div onClick={this.loadData}>
+            <div>
                 <canvas
                     id="myChart"
                     ref={this.chartRef}
