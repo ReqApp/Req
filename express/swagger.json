@@ -129,6 +129,9 @@
                 },
                 "result": {
                   "type": "number"
+                },
+                "type": {
+                  "type": "string"
                 }
               }
             }
@@ -347,7 +350,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/testBetSchema"
+                "$ref": "#/definitions/betsSchema"
               }
             }
           },
@@ -360,9 +363,9 @@
         }
       }
     },
-    "/getTestBets": {
+    "/getBets": {
       "get": {
-        "summary": "Returns bets from database",
+        "summary": "Returns bets from database in a form that can be rendered for the user",
         "tags": [
           "Betting APIs"
         ],
@@ -373,7 +376,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/testBetSchema"
+                "$ref": "#/definitions/betsSchema"
               }
             }
           },
@@ -748,6 +751,41 @@
         "responses": {
           "200": {
             "description": "Number of bets made and users reached successfully returned",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          },
+          "400": {
+            "description": "Error retrieving bets made and users reached",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
+          }
+        }
+      }
+    },
+    "/getBreakdownOfBetTypes": {
+      "post": {
+        "tags": [
+          "Analytics APIs"
+        ],
+        "summary": "Get's a breakdown of the types of bet's a user's entered",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "username": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Breakdown of bet types returned",
             "schema": {
               "$ref": "#/definitions/rest_API_Response"
             }
@@ -1214,7 +1252,7 @@
                   "type": "string"
                 },
                 "file": {
-                  "type": "encoded image"
+                  "type": "object"
                 }
               }
             }
@@ -1222,7 +1260,10 @@
         ],
         "responses": {
           "200": {
-            "description": "Profiler successfully uploaded for the given user"
+            "description": "Returns profile picture in body if exists. Otherwise none exists or could not be found.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_Response"
+            }
           },
           "400": {
             "description": "Error in the process of uploading the profiler."
@@ -1661,59 +1702,7 @@
         }
       }
     },
-    "articleBetsSchema": {
-      "required": [
-        "title"
-      ],
-      "properties": {
-        "title": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 32
-        },
-        "subtext": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 64
-        },
-        "result": {
-          "type": "string"
-        },
-        "timePosted": {
-          "type": "string"
-        },
-        "forUsers": {
-          "type": "array",
-          "items": {
-            "properties": {
-              "user_name": {
-                "type": "string"
-              },
-              "betAmount": {
-                "type": "number"
-              }
-            }
-          }
-        },
-        "againstUsers": {
-          "type": "array",
-          "items": {
-            "properties": {
-              "user_name": {
-                "type": "string"
-              },
-              "betAmount": {
-                "type": "number"
-              }
-            }
-          }
-        },
-        "ends": {
-          "type": "string"
-        }
-      }
-    },
-    "testBetsFinishedSchema": {
+    "betsFinishedSchema": {
       "description": "Main schema for completed bets",
       "required": [
         "userName",
@@ -1777,9 +1766,6 @@
         "firstPlaceCut": {
           "type": "number"
         },
-        "tester": {
-          "type": "string"
-        },
         "secondPlaceCut": {
           "type": "number"
         },
@@ -1822,7 +1808,7 @@
         }
       }
     },
-    "testBetSchema": {
+    "betsSchema": {
       "description": "Main schema for general bets",
       "required": [
         "user_name",
