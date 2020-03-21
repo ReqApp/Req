@@ -107,4 +107,32 @@ router.post('/getPeopleReached', (req, res) => {
     }
 });
 
+router.post('/getBreakdownOfBetTypes', (req, res) => {
+    if (utilFuncs.validate(req.body.username, "username")) {
+        analyticFuncs.getBreakdownofBetTypes(req.body.username).then((response) => {
+            if (response) {
+                res.status(200).json({
+                    "status": "success",
+                    "body": response
+                });
+            } else {
+                res.status(400).json({
+                    "status": "error",
+                    "body": "No bets found"
+                });
+            }
+        }, (err) => {
+            res.status(400).json({
+                "status": "error",
+                "body": "Error getting bet history breakdown"
+            });
+        });
+    } else {
+        res.status(400).json({
+            "status": "error",
+            "body": "Invalid username"
+        });
+    }
+});
+
 module.exports = router;

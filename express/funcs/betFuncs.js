@@ -780,7 +780,7 @@ function resetPassword(email, newPassword) {
             if (err) {
                 res.send(err);
             }
-            if (foundUUser) {
+            if (foundUser) {
                 foundUser.password = foundUser.generateHash(newPassword);
                 foundUser.save((err) => {
                     if (err) {

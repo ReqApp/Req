@@ -285,8 +285,64 @@ function getPeopleReached(targetUser) {
     })
 }
 
+function getBreakdownofBetTypes(targetUser) {
+    return new Promise((resolve, reject) => {
+        let resObj = {
+            multi: 0,
+            binary: 0,
+            location: 0
+        }
+        testBetsFinished.find({}, (err, bets) => {
+            if (err) {
+                reject(err);
+            }
+            if (bets.length > 0) {
+
+                bets.forEach((bet) => {
+                    if (bet.type === "binary") {
+                        // if we find them in winners,
+                        // they wont be in losers so don't check it
+                        let found = false;
+
+                        bet.winners.forEach((indivBet) => {
+                            if (indivBet.user_name === targetUser) {
+                                resObj[bet.type]++;
+                                found = true;
+                            }
+
+                        });
+                        if (!found) {
+                            bet.losers.forEach((indivBet) => {
+                                if (indivBet.user_name === targetUser) {
+                                    resObj[bet.type]++;
+                                }
+                            })
+                        }
+
+
+                    } else {
+                        bet.commonBets.forEach((indivBet) => {
+                            if (indivBet.user_name === targetUser) {
+                                resObj[bet.type]++;
+                            }
+                        })
+                    }
+                })
+
+
+
+                resolve(resObj);
+
+            } else {
+                resolve(null);
+            }
+        });
+    })
+}
+
 
 module.exports.getWinLoss = getWinLoss
-module.exports.getBettingHistory = getBettingHistory;
 module.exports.getPeopleReached = getPeopleReached;
+module.exports.getBettingHistory = getBettingHistory;
+module.exports.getBreakdownofBetTypes = getBreakdownofBetTypes;
 module.exports.getCreatedBettingHistory = getCreatedBettingHistory;

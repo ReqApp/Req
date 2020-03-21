@@ -909,5 +909,71 @@ describe("============= Analytics APIs =============", () => {
                     expect(res.body.body).to.equals("Invalid username");
                     done();
                 });
+        }),
+        it("Invalid Search", done => {
+            chai
+                .request(app)
+                .post("/analytics/getBreakdownOfBetTypes")
+                .send({
+                    "_id": "Req"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid username");
+                    done();
+                });
+        }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/analytics/getBreakdownOfBetTypes")
+
+            .end((err, res) => {
+                expect(res).to.have.status(400);
+                expect(res.body.status).to.equals("error");
+                expect(res.body.body).to.equals("Invalid username");
+                done();
+            });
+        }),
+        it("Invalid username", done => {
+            chai
+                .request(app)
+                .post("/analytics/getBreakdownOfBetTypes")
+                .send({
+                    "username": "notAnExistingUsernameBecauseThisIsTooLong"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid username");
+                    done();
+                });
+        }),
+        it("Invalid username", done => {
+            chai
+                .request(app)
+                .post("/analytics/getBreakdownOfBetTypes")
+                .send({
+                    "username": fuzzUsername
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.status).to.equals("success");
+                    done();
+                });
+        }),
+        it("Valid search", done => {
+            chai
+                .request(app)
+                .post("/analytics/getBreakdownOfBetTypes")
+                .send({
+                    "username": "IamCathal"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.status).to.equals("success");
+                    done();
+                });
         })
 });
