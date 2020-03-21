@@ -1,9 +1,9 @@
 // React
 import React, { Component } from 'react'
 // Rechart
-import { LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { CartesianGrid, XAxis, YAxis, AreaChart, Area, Tooltip} from 'recharts';
 
-export default class WinLossBars extends Component {
+export default class CreatedBetData extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -15,6 +15,7 @@ export default class WinLossBars extends Component {
 
     componentDidMount() {
         let targetUser =  window.location.href.split("?")[1];
+        // Temp call just betting history as user has not created any bets yet
         fetch("http://localhost:9000/analytics/getBettingHistory", {
             method: 'POST',
             crossDomain: true,
@@ -57,9 +58,9 @@ export default class WinLossBars extends Component {
             // Extract and format date information
             let betDate = new Date(bet.date * 1000);
             let dateString = `${betDate.getDate()}/${betDate.getMonth()+1}`;
-            dataPoint.name = dateString;
+            dataPoint.date = dateString;
             // Extract and format win/loss data
-            dataPoint.uv = bet.profitOrLoss;
+            dataPoint.Profit = bet.profitOrLoss;
             tempGraphData.push(dataPoint);
         });
         this.setState({graphData : tempGraphData, dataRetrieved : true});
@@ -69,12 +70,23 @@ export default class WinLossBars extends Component {
         const {dataRetrieved, graphData} = this.state;
         if(dataRetrieved){
             return(
-                <LineChart width={600} height={300} data={graphData}>
-                    <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-                    <CartesianGrid stroke="#ccc" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-            </LineChart>
+                <div>
+                    <h6>Created Bet Proft and Loss:</h6>
+                    <AreaChart width={500} height={250} data={graphData}
+                        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                        <defs>
+                            <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+                            <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                            </linearGradient>
+                        </defs>
+                        <XAxis dataKey="date" />
+                        <YAxis />
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <Tooltip />
+                        <Area type="monotone" dataKey="Profit" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
+                    </AreaChart>
+                </div>
             )
         }
         return null;

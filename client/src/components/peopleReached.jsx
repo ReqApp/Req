@@ -50,7 +50,9 @@ export default class PeopleReached extends Component {
         if(dataRetrieved){
             return (
                 <div>
-                    Bet's made: {betsMade}<br />People reached: {peopleReached}
+                    <h6>Bet's made: {betsMade}</h6>
+                    <br />
+                    <h6>People reached: {peopleReached}</h6>
                 </div>
             )
         }
