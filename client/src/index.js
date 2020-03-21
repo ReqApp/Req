@@ -2,28 +2,24 @@ import React, { createRef, Component } from 'react';
 import ReactDOM,{render} from 'react-dom';
 import {BrowserRouter as Router, Route, Link, Switch} from 'react-router-dom';
 import './index.css';
-import FindLocationBets from './LocationBettingPage/findLocationBets.js';
-import Bets from './pages/bets.js';
+import FindLocationBets from './pages/findLocationBets.js';
 import {HomePage} from './pages/home';
-import {DisplayMap} from './pages/maps';
 import {FAQ} from './pages/faq';
 import {About} from './pages/about';
 import {Profile} from './pages/profile';
+import CreateLocationBet from './pages/CreateLocationBet/createLocationBet.js';
 import Payment from './stripePayment.js';
 
 class App extends Component{
     render(){
         return(
                  <Switch>               
-                    <Route exact path='/maps'>
-                         <DisplayMap/>
+                    <Route exact path='/create-location-bet'>
+                        <FindLocationBets mode='create' />
                     </Route>
-                    <Route exact path='/find-bets'>
-                         <FindLocationBets/>
+                    <Route exact path='/find-location-bets'>
+                         <FindLocationBets mode='find'/>
                      </Route>
-                    <Route exact path='/bets'>
-                        <Bets/>
-                    </Route>
                     <Route exact path='/faq'>
                         <FAQ/>
                     </Route>

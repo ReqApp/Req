@@ -25,6 +25,61 @@ export class Profile extends React.Component{
         this.socket = openSocket('http://localhost:9000');
     }
     
+    componentDidMount(){
+        this.login();
+    }
+
+    login = () => {
+        fetch('http://localhost:9000/users/login', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              user_name : 'testUser',
+              password : 'gremlinsunderthebridge'
+            })
+          })
+          .then((res) => res.json())
+          .then((res) => {
+            if(res.status === "success"){
+                console.log('logged in');
+                console.log(document.cookie);
+                this.getProfile();
+              //this.setState({msg : 'Logged In!', msgType : 'success', snackOpen : true, loggedIn : true});
+            }
+            else if(res.status === 'error' && res.body === 'Email or password invalid'){
+              //this.setState({msg : 'Incorrect username or password', msgType : 'error', snackOpen : true});
+            }
+            else if(res.status === 'error' && res.body === 'Username not found'){
+              //this.setState({msg : 'User could not be found', msgType : 'error', snackOpen : true});
+            }
+            else{
+              console.log(res.body);
+              //this.setState({msg : 'Could not login', msgType : 'error', snackOpen : true});
+            }
+          })
+          .catch(err => {
+            console.log(err);
+            //this.setState({msg : 'Could not login', msgType : 'error', snackOpen : true});
+          });
+    }
+
+    getProfile = () => {
+        fetch('http://localhost:9000/users/profile', {
+            method: 'GET',
+            credentials : "include" 
+          })
+          .then(res => res.text())
+          .then(res => {
+            console.log(res);
+          }).catch(err => {
+            console.log(err);
+          });
+    }
+
     handleClick(){
         const holder = this.state.click == false ? true : false;
         let src = 'https://api.qrserver.com/v1/create-qr-code/?size=265x265&qzone=0&margin=0&data=' + window.location.href;
