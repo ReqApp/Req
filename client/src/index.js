@@ -8,7 +8,7 @@ import {HomePage} from './pages/home';
 import {DisplayMap} from './pages/maps';
 import {FAQ} from './pages/faq';
 import {About} from './pages/about';
-import {Profile} from './pages/profile';
+import {Profile} from './profilePage/profile';
 import Payment from './stripePayment.js';
 
 class App extends Component{
@@ -19,7 +19,7 @@ class App extends Component{
                          <DisplayMap/>
                     </Route>
                     <Route exact path='/find-bets'>
-                         <FindLocationBets/>
+                         <FindBetPage/>
                      </Route>
                     <Route exact path='/bets'>
                         <Bets/>

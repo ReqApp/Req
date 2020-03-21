@@ -43,7 +43,7 @@ fetch("http://localhost:9000/analytics/getWinLoss", {
                     labels: ['Win', 'Loss'],
                     datasets: [{
                         label: 'Wins vs Losses',
-                        backgroundColor: ['rgb(81, 224, 49)', 'rgb(212, 53, 53)'],
+                        backgroundColor: ['rgb(0, 0, 255)', 'rgb(212, 53, 53)'],
                         data: [wins, losses]
                     }]
                 },
@@ -124,7 +124,7 @@ fetch("http://localhost:9000/analytics/getBettingHistory", {
                         fill: 'origin',
                         label: ['Wins and Losses'],
                         data: currentStatus,
-                        backgroundColor: 'rgb(81, 224, 49)'
+                        backgroundColor: 'rgb(0, 0, 255)'
                     }, ]
                 },
                 options: {
@@ -143,8 +143,8 @@ fetch("http://localhost:9000/analytics/getBettingHistory", {
                 if (winLosses.length == 0) {
                     winLosses[0] = bet.profitOrLoss
                     if (bet.profitOrLoss > 0) {
-                        console.log(`green`);
-                        colorArr[0] = 'rgb(81, 224, 49)';
+                        console.log(`blue`);
+                        colorArr[0] = 'rgb(0, 0, 255)';
                     } else {
                         console.log(`red`);
                         colorArr[0] = 'rgb(219, 46, 46)';
@@ -152,8 +152,8 @@ fetch("http://localhost:9000/analytics/getBettingHistory", {
                 } else {
                     winLosses.push(bet.profitOrLoss)
                     if (bet.profitOrLoss > 0) {
-                        console.log(`green`);
-                        colorArr.push('rgb(81, 224, 49)');
+                        console.log(`blue`);
+                        colorArr.push('rgb(0, 0, 255)');
                     } else {
                         console.log(`red`);
                         colorArr.push('rgb(219, 46, 46)');
