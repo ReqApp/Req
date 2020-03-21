@@ -4,17 +4,14 @@ import {BrowserRouter as Router, Route, Link, Switch} from 'react-router-dom';
 import './index.css';
 import FindLocationBets from './pages/findLocationBets.js';
 import {HomePage} from './pages/home';
-import {DisplayMap} from './pages/maps';
 import SignIn from './pages/login';
 import Register from './pages/register'
 import ResetPassword from './pages/resetPassword';
 import ForgotPassword from './pages/forgotPassword'; 
-import UsersProfile from './pages/usersProfile';
 import VerifyAccount from './pages/verifyAccount';
 import {FAQ} from './pages/faq';
 import {About} from './pages/about';
 import {Profile} from './pages/profile';
-import CreateLocationBet from './pages/CreateLocationBet/createLocationBet.js';
 import Payment from './stripePayment.js';
 
 class App extends Component{
