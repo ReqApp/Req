@@ -977,3 +977,35 @@ describe("============= Analytics APIs =============", () => {
                 });
         })
 });
+
+describe("============= Various APIS ==============", () => {
+    it("Invalid payment", done => {
+            chai
+                .request(app)
+                .post("/payments/checkout")
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("You are not authorized to do this");
+
+                    done();
+                });
+        }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/payments/checkout")
+                .send({
+                    "product": "theWorld",
+                    "token":777777777777
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("You are not authorized to do this");
+
+                    done();
+                });
+        })
+
+});
