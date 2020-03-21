@@ -345,11 +345,9 @@ router.post('/login', function(req, res, next) {
                     user.save();
                     // save the JWT to schema entry
                     res.cookie('Authorization', 'Bearer ' + user.accessToken);
-                    console.log(user.accessToken);
                     res.status(200).json({
                         "status": "success",
-                        "body": "Logged in successfully",
-                        "cookie":`Bearer%20${user.accessToken}`
+                        "body": "Logged in successfully"
                     });
                 } else {
                     // if hashes don't match
