@@ -50,7 +50,7 @@ passport.use(new GoogleStrategy({
 passport.use(new GitHubStrategy({
         clientID: process.env.githubClientID,
         clientSecret: process.env.githubClientSecret,
-        callbackURL: "/users/auth/github/callback"
+        callbackURL: "http://localhost:9000/users/auth/github/callback"
     },
     function(accessToken, refreshToken, profile, cb) {
 
@@ -76,8 +76,8 @@ passport.use(new GitHubStrategy({
 ));
 
 passport.use(new SteamStrategy({
-        returnURL: 'http://localhost:8673/users/auth/steam/callback',
-        realm: 'http://localhost:8673',
+        returnURL: 'http://localhost:9000/users/auth/steam/callback',
+        realm: 'http://localhost:9000',
         apiKey: process.env.steamAPIKey
     },
     function(identifier, profile, done) {

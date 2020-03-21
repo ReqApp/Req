@@ -4,10 +4,14 @@ import {BrowserRouter as Router, Route, Link, Switch} from 'react-router-dom';
 import './index.css';
 import FindLocationBets from './pages/findLocationBets.js';
 import {HomePage} from './pages/home';
+import SignIn from './pages/login';
+import Register from './pages/register'
+import ResetPassword from './pages/resetPassword';
+import ForgotPassword from './pages/forgotPassword'; 
+import VerifyAccount from './pages/verifyAccount';
 import {FAQ} from './pages/faq';
 import {About} from './pages/about';
 import {Profile} from './pages/profile';
-import CreateLocationBet from './pages/CreateLocationBet/createLocationBet.js';
 import Payment from './stripePayment.js';
 
 class App extends Component{
@@ -26,11 +30,26 @@ class App extends Component{
                     <Route exact path='/about'>
                         <About/>
                     </Route>
-                    <Route path='/profile'>
+                    <Route path='/users/profile'>
                         <Profile/>
                     </Route>
                     <Route exact path='/payment'>
                          <Payment/>
+                    </Route>
+                    <Route exact path='/users/login'>
+                         <SignIn/>
+                    </Route>
+                    <Route exact path='/users/register'>
+                         <Register/>
+                    </Route>
+                    <Route exact path='/users/forgotPassword'>
+                         <ForgotPassword/>
+                    </Route>
+                    <Route exact path='/users/resetPassword'>
+                         <ResetPassword/>
+                    </Route>
+                    <Route exact path='/users/verifyAccount'>
+                         <VerifyAccount/>
                     </Route>
                     <Route exact path='/'>
                         <HomePage/>
