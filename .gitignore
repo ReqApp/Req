@@ -7,3 +7,4 @@ token.json
 credentials.json
 express/token.json
 express/credentials.json
+client/package-lock.json
