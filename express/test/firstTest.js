@@ -763,9 +763,9 @@ describe("============= Analytics APIs =============", () => {
                 "username": fuzzUsername,
             })
             .end((err, res) => {
-                expect(res).to.have.status(400);
+                expect(res).to.have.status(200);
                 expect(res.body.body).to.equals('No bets found');
-                expect(res.body.status).to.equals("error");
+                expect(res.body.status).to.equals("success");
                 done();
             });
     });

@@ -53,7 +53,7 @@ func getLoginSecret() string {
 
 func sendErrorEmail(errMessage string) {
 	reqSecret := getLoginSecret()
-	_, err := http.PostForm("http://localhost:9000/tasks/sendEmail", url.Values{"secret": {reqSecret}, "subject": {"Error finalising big red button bet"}, "errorMessage": {errMessage}})
+	_, err := http.PostForm("http://localhost:9000/tasks/sendEmail", url.Values{"secret": {reqSecret}, "subject": {"Error in goFuncs"}, "errorMessage": {errMessage}})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -98,22 +98,20 @@ func checkForOutOfDateBets(secret string) {
 	res, err := http.PostForm("http://localhost:9000/bets/getAllBetsDev", url.Values{"secret": {secret}})
 	body, _ := ioutil.ReadAll(res.Body)
 	if err != nil || res.StatusCode != 200 {
-		fmt.Println(res.StatusCode)
-		fmt.Println(err)
-		log.Fatal(err)
 		sendErrorEmail("Error reaching API endpoint /bets/bigButtonBet")
+		log.Fatal(err)
 	} else {
 
 		var responseJSON responseStruct
 		json.Unmarshal(body, &responseJSON)
 		for _, val := range responseJSON {
-			// if the deadline + 24 hours has been exceede
-			// PLUNDER THEIR RICHES AND KICK THEM OVERBOARD
 			deadlineVal, err := strconv.ParseInt(val.Deadline, 10, 64)
 			if err != nil {
 				log.Fatal(err)
 			}
 
+			// If it's 24 hours past the deadline and it's not been concluded
+			// punish the person who made the bet and pay back winnings
 			if deadlineVal+86400000 < currTime {
 				fmt.Println(val.ID)
 				res, err := http.PostForm("http://localhost:9000/bets/betExpired", url.Values{"secret": {secret}, "username": {val.UserName}, "betID": {val.ID}})
@@ -137,7 +135,7 @@ func main() {
 			} else if os.Args[2] == "start" {
 				startBigButtonBet(reqSecret)
 			}
-		} else {
+		} else if os.Args[1] == "checkBets" {
 			checkForOutOfDateBets(reqSecret)
 		}
 

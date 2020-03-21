@@ -11,8 +11,8 @@ router.post('/getBettingHistory', (req, res) => {
                     "body": response
                 });
             } else {
-                res.status(400).json({
-                    "status": "error",
+                res.status(200).json({
+                    "status": "success",
                     "body": "No bets found"
                 });
             }
@@ -39,8 +39,8 @@ router.post('/getCreatedBettingHistory', (req, res) => {
                     "body": response
                 });
             } else {
-                res.status(400).json({
-                    "status": "error",
+                res.status(200).json({
+                    "status": "success",
                     "body": "No bets found"
                 });
             }
@@ -88,7 +88,7 @@ router.post('/getPeopleReached', (req, res) => {
                     "body": response
                 });
             } else {
-                res.status(400).json({
+                res.status(200).json({
                     "status": "error",
                     "body": "Error getting bets from DB"
                 });
@@ -116,8 +116,8 @@ router.post('/getBreakdownOfBetTypes', (req, res) => {
                     "body": response
                 });
             } else {
-                res.status(400).json({
-                    "status": "error",
+                res.status(200).json({
+                    "status": "success",
                     "body": "No bets found"
                 });
             }

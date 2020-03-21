@@ -1,11 +1,11 @@
-var testBetsFinished = require('../models/testBetsFinished');
-var testBets = require('../models/testBets');
+var betsFinished = require('../models/betsFinished');
+var bets = require('../models/bets');
 var User = require('../models/users');
 
 
 function getBettingHistory(targetUser) {
     return new Promise((resolve, reject) => {
-        testBetsFinished.find({}, (err, bets) => {
+        betsFinished.find({}, (err, bets) => {
             if (err) {
                 reject(err)
             }
@@ -133,7 +133,7 @@ function getBettingHistory(targetUser) {
 
 function getCreatedBettingHistory(targetUser) {
     return new Promise((resolve, reject) => {
-        testBetsFinished.find({}, (err, bets) => {
+        betsFinished.find({}, (err, bets) => {
             if (err) {
                 reject(err)
             }
@@ -185,7 +185,7 @@ function getWinLoss(targetUser) {
             "wins": 0,
             "losses": 0
         }
-        testBetsFinished.find({}, (err, bets) => {
+        betsFinished.find({}, (err, bets) => {
             if (err) {
                 reject(err);
             }
@@ -252,7 +252,7 @@ function getPeopleReached(targetUser) {
             "peopleReached": 0
         }
 
-        testBetsFinished.find({}, (err, bets) => {
+        betsFinished.find({}, (err, bets) => {
             if (err) {
                 reject(err);
             }
@@ -292,7 +292,7 @@ function getBreakdownofBetTypes(targetUser) {
             binary: 0,
             location: 0
         }
-        testBetsFinished.find({}, (err, bets) => {
+        betsFinished.find({}, (err, bets) => {
             if (err) {
                 reject(err);
             }

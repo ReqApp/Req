@@ -1,9 +1,9 @@
 var forgotPasswordUser = require('../models/forgotPasswordUsers');
-var testBetsFinished = require('../models/testBetsFinished');
+var betsFinished = require('../models/betsFinished');
 var UnverifiedUser = require('../models/unverifiedUsers');
 var generalFuncs = require('../funcs/generalFuncs');
 const keccak512 = require('js-sha3').keccak512;
-var testBets = require('../models/testBets');
+var bets = require('../models/bets');
 var User = require('../models/users');
 var BetRegion = require('../models/betRegions');
 var LocationBet = require('../models/locationBetData');
@@ -13,7 +13,7 @@ const axios = require("axios");
 
 function getBets() {
     return new Promise((resolve, reject) => {
-        testBets.find({}, (err, response) => {
+        bets.find({}, (err, response) => {
             if (err) {
                 reject(err);
             } else {
@@ -109,7 +109,7 @@ function betOn(userObj) {
     return new Promise((resolve, reject) => {
         if (userObj.type === "binary") {
             if (userObj.side === "yes") {
-                testBets.findOneAndUpdate({ _id: userObj.betID }, { $push: { forUsers: { user_name: userObj.username, betAmount: userObj.betAmount } } },
+                bets.findOneAndUpdate({ _id: userObj.betID }, { $push: { forUsers: { user_name: userObj.username, betAmount: userObj.betAmount } } },
                     (err, result) => {
                         if (err) {
                             reject(err);
@@ -124,7 +124,7 @@ function betOn(userObj) {
                         }
                     });
             } else {
-                testBets.findOneAndUpdate({ _id: userObj.betID }, { $push: { againstUsers: { user_name: userObj.username, betAmount: userObj.betAmount } } },
+                bets.findOneAndUpdate({ _id: userObj.betID }, { $push: { againstUsers: { user_name: userObj.username, betAmount: userObj.betAmount } } },
                     (err, result) => {
                         if (err) {
                             reject(err);
@@ -138,7 +138,7 @@ function betOn(userObj) {
                     });
             }
         } else if (userObj.type === "multi") {
-            testBets.findOneAndUpdate({ _id: userObj.betID }, { $push: { commonBets: { user_name: userObj.username, betAmount: userObj.betAmount, bet: userObj.bet } } },
+            bets.findOneAndUpdate({ _id: userObj.betID }, { $push: { commonBets: { user_name: userObj.username, betAmount: userObj.betAmount, bet: userObj.bet } } },
                 (err, result) => {
                     if (err) {
                         reject(err);
@@ -151,7 +151,8 @@ function betOn(userObj) {
                     }
                 })
         } else {
-            reject("Incorrect bet type");
+            console.log("poggers")
+            reject("Incorrect bet typee");
         }
     })
 }
@@ -159,7 +160,7 @@ function betOn(userObj) {
 function alreadyBetOn(userObj) {
     return new Promise((resolve, reject) => {
         if (userObj.type === "binary") {
-            testBets.findOne({ _id: userObj.betID }, (err, res) => {
+            bets.findOne({ _id: userObj.betID }, (err, res) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -188,7 +189,7 @@ function alreadyBetOn(userObj) {
                 }
             });
         } else if (userObj.type === "multi") {
-            testBets.findOne({ _id: userObj.betID }, (err, res) => {
+            bets.findOne({ _id: userObj.betID }, (err, res) => {
                 if (err) {
                     reject(err);
                 }
@@ -243,6 +244,8 @@ function hasEnoughCoins(username, transactionAmount) {
                     } else {
                         resolve(null);
                     }
+                } else {
+                    reject("Invalid username")
                 }
             }
         });
@@ -271,7 +274,7 @@ function payOut(username, percentage, winnings) {
 
 function deleteBet(betID) {
     return new Promise((resolve, reject) => {
-        testBets.deleteOne({ _id: betID }, (err) => {
+        bets.deleteOne({ _id: betID }, (err) => {
             if (err) {
                 console.log(`delete err ${err}`);
                 reject(err);
@@ -286,7 +289,7 @@ function deleteBet(betID) {
 function decideBet(inputObj) {
     return new Promise((resolve, reject) => {
         let badBet = false;
-        testBets.findOne({ _id: inputObj.betID }, (err, foundBet) => {
+        bets.findOne({ _id: inputObj.betID }, (err, foundBet) => {
 
             if (err) {
                 reject(err);
@@ -333,6 +336,9 @@ function decideBet(inputObj) {
                         if (betData) {
                             if (foundBet.type === "binary") {
 
+                                if (!(inputObj.result === "yes" || inputObj.result === "no")) {
+                                    reject("Invalid result given")
+                                }
                                 const againstTotal = parseInt(betData[0].againstBetTotal, 10);
                                 const forTotal = parseInt(betData[0].forBetTotal, 10);
 
@@ -415,15 +421,15 @@ function decideBet(inputObj) {
                                                 })
 
                                                 // if paid out anything or nothing, still delete the bet
-                                                // deleteBet(inputObj.betID).then((response) => {
-                                                //     if (response) {
-                                                //         resolve(true);
-                                                //     } else {
-                                                //         resolve(null);
-                                                //     }
-                                                // }, (err) => {
-                                                //     reject(err);
-                                                // })
+                                                deleteBet(inputObj.betID).then((response) => {
+                                                    if (response) {
+                                                        resolve(true);
+                                                    } else {
+                                                        resolve(null);
+                                                    }
+                                                }, (err) => {
+                                                    reject(err);
+                                                })
 
 
                                             }, (err) => {
@@ -746,7 +752,7 @@ function addBetToFinishedDB(betInfo, winners, losers, betSummary, result) {
             }
         }
 
-        newBet = new testBetsFinished({
+        newBet = new betsFinished({
             user_name: betInfo.user_name,
             title: betInfo.title,
             type: betInfo.type,
@@ -763,6 +769,8 @@ function addBetToFinishedDB(betInfo, winners, losers, betSummary, result) {
             losers: losersArr,
             result: result
         });
+
+        console.log(newBet);
 
 
         newBet.save((err) => {
@@ -801,7 +809,7 @@ function resetPassword(email, newPassword) {
 function isValidBetID(betID) {
     return new Promise((resolve, reject) => {
         if (betID) {
-            testBets.findOne({ _id: betID }, (err, res) => {
+            bets.findOne({ _id: betID }, (err, res) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -847,7 +855,8 @@ function anonymiseBetData(allBets) {
                     username: indivBet.user_name,
                     deadline: indivBet.deadline,
                     forBetTotal: forTotal,
-                    againstBetTotal: againstTotal
+                    againstBetTotal: againstTotal,
+                    betID: indivBet._id
                 }
                 betArr.push(tempBet);
 
@@ -862,7 +871,8 @@ function anonymiseBetData(allBets) {
                     title: indivBet.title,
                     username: indivBet.user_name,
                     deadline: indivBet.deadline,
-                    betsTotal: commonTotal
+                    betsTotal: commonTotal,
+                    betID: indivBet._id
                 }
                 betArr.push(tempBet);
             }
@@ -891,9 +901,9 @@ function isSignedIn(reqCookies) {
 function createBet(input) {
     return new Promise((resolve, reject) => {
         if (input.type === "binary") {
-            if (input.title && input.side && input.deadline && input.username) {
+            if (input.title && input.deadline && input.username) {
 
-                let newBet = new testBets();
+                let newBet = new bets();
 
                 newBet.title = input.title;
                 newBet.side = input.side;
@@ -916,7 +926,7 @@ function createBet(input) {
 
             if (input.title && input.deadline && input.username && input.firstPlaceCut != null &&
                 input.secondPlaceCut != null && input.thirdPlaceCut != null) {
-                let newBet = new testBets();
+                let newBet = new bets();
 
                 newBet.title = input.title;
                 newBet.deadline = input.deadline;
@@ -1009,13 +1019,13 @@ function verifyJwt(jwtString) {
     return val;
 }
 
-function createLocationBet(data){
+function createLocationBet(data) {
     return new Promise((resolve, reject) => {
         let locationBet = new LocationBet(data);
-        locationBet.save((err , savedBet) => {
-            if(err){
+        locationBet.save((err, savedBet) => {
+            if (err) {
                 reject(err);
-            }else{
+            } else {
                 addLocationBetToRegion(savedBet.bet_region_id, savedBet._id).then(response => {
                     resolve(savedBet);
                 }, err => {
@@ -1026,7 +1036,7 @@ function createLocationBet(data){
     });
 }
 
-function addLocationBetToRegion(regionID, locationBetID){
+function addLocationBetToRegion(regionID, locationBetID) {
     return new Promise((resolve, reject) => {
         BetRegion.findOneAndUpdate({ '_id': regionID }, { '$push': { 'bet_ids': locationBetID }, '$inc': { 'num_bets': 1 } }, { useFindAndModify: false }).exec((err, region) => {
             if (err) {
@@ -1038,13 +1048,13 @@ function addLocationBetToRegion(regionID, locationBetID){
     });
 }
 
-function createRegion(data){
+function createRegion(data) {
     return new Promise((resolve, reject) => {
         let region = BetRegion(data);
         region.save((err, savedRegion) => {
-            if(err){
+            if (err) {
                 reject(err);
-            }else{
+            } else {
                 resolve(savedRegion);
             }
         });

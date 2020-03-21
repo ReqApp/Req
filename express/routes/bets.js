@@ -1,5 +1,5 @@
 var betRegion = require('../models/betRegions');
-var testBetsFinished = require('../models/testBetsFinished');
+var betsFinished = require('../models/betsFinished');
 var generalFuncs = require("../funcs/generalFuncs");
 const utilFuncs = require('../funcs/betFuncs');
 var router = require('express').Router();
@@ -38,43 +38,43 @@ router.get('/debugTest', (req, res, next) => {
 //TODO update docs
 router.post('/createLocationBet', (req, res) => {
     let data = req.body;
-    if(data.location_name && data.latitude && data.longitude && data.radius && data.bet_region_id && data.bet_id){
-        if(!isNaN(data.latitude) && !isNaN(data.longitude) && !isNaN(data.radius)){
-            if(utilFuncs.validate(data.bet_region_id, 'id') && utilFuncs.validate(data.bet_id, 'id')){
+    if (data.location_name && data.latitude && data.longitude && data.radius && data.bet_region_id && data.bet_id) {
+        if (!isNaN(data.latitude) && !isNaN(data.longitude) && !isNaN(data.radius)) {
+            if (utilFuncs.validate(data.bet_region_id, 'id') && utilFuncs.validate(data.bet_id, 'id')) {
                 utilFuncs.createLocationBet(data).then(response => {
-                    if(response){
+                    if (response) {
                         res.status(200).json({
-                            'status' : 'success',
-                            'body' : 'Location bet made'
+                            'status': 'success',
+                            'body': 'Location bet made'
                         });
-                    }else{
+                    } else {
                         res.status(400).json({
-                            'status' : 'error',
-                            'body' : 'Location bet not made'
+                            'status': 'error',
+                            'body': 'Location bet not made'
                         })
                     }
                 }, err => {
                     res.status(400).json({
-                        'status' : 'error',
-                        'body' : `Error: ${err}`
+                        'status': 'error',
+                        'body': `Error: ${err}`
                     })
                 });
-            }else{
+            } else {
                 res.status(400).json({
-                    'status' : 'error',
-                    'body' : 'Invalid IDs'
+                    'status': 'error',
+                    'body': 'Invalid IDs'
                 });
             }
-        }else{
+        } else {
             res.status(400).json({
-                'status' : 'error',
-                'body' : 'Invalid lat, lng or radius'
+                'status': 'error',
+                'body': 'Invalid lat, lng or radius'
             });
         }
-    }else{
+    } else {
         res.status(400).json({
-            'status' : 'error',
-            'body' : 'Incomplete data'
+            'status': 'error',
+            'body': 'Incomplete data'
         });
     }
 });
@@ -106,36 +106,36 @@ router.get('/getBetsInRegion', (req, res) => {
 // TODO update docs
 router.post('/addBetRegion', (req, res) => {
     let region = req.body;
-    if(region.region_name && region.description && region.latitude && region.longitude && region.radius){
-        if(!isNaN(region.latitude) && !isNaN(region.longitude) && !isNaN(region.radius)){
+    if (region.region_name && region.description && region.latitude && region.longitude && region.radius) {
+        if (!isNaN(region.latitude) && !isNaN(region.longitude) && !isNaN(region.radius)) {
             utilFuncs.createRegion(region).then(savedRegion => {
-                if(savedRegion){
+                if (savedRegion) {
                     res.status(200).json({
-                        'status' : 'success',
-                        'body' : savedRegion
+                        'status': 'success',
+                        'body': savedRegion
                     });
-                }else{
+                } else {
                     res.status(400).json({
-                        'status' : 'error',
-                        'body' : 'Could not create region'
+                        'status': 'error',
+                        'body': 'Could not create region'
                     });
                 }
-                }, err => {
-                    res.status(200).json({
-                        'status' : 'error',
-                        'body' : err
-                    });
+            }, err => {
+                res.status(200).json({
+                    'status': 'error',
+                    'body': err
                 });
-        }else{
+            });
+        } else {
             res.status(400).json({
-                'status' : 'error',
-                'body' : 'Invalid parameters'
+                'status': 'error',
+                'body': 'Invalid parameters'
             });
         }
-    }else{
+    } else {
         res.status(400).json({
-            'status' : 'error',
-            'body' : 'Invalid parameters'
+            'status': 'error',
+            'body': 'Invalid parameters'
         });
     }
 });
@@ -344,6 +344,7 @@ router.post('/makeBet', (req, res, next) => {
                     })
                 }
             } else {
+                console.log(req.body.type, req.body.title, req.body.deadline, req.body.username, req.body.firstPlaceCut, req.body.secondPlaceCut, req.body.thirdPlaceCut)
                 res.status(400).json({
                     "status": "error",
                     "body": "Invalid input"
@@ -443,6 +444,7 @@ router.post('/betOn', (req, res, next) => {
                                     });
                                 }
                             }, (err) => {
+                                console.log("caught bet on err " + err);
                                 res.status(400).json({
                                     "status": "error",
                                     "body": "Error adding bet to DB"
@@ -637,7 +639,7 @@ router.post('/pressBigButton', (req, res, next) => {
 
 // needs server side processing to anonymise the betting users before being sent back to the user
 // otherwise the user can see who has bet what amount of any kind
-router.post('/getTestBets', (req, res, next) => {
+router.post('/getBets', (req, res, next) => {
     utilFuncs.getBets().then((data) => {
         if (data) {
             utilFuncs.anonymiseBetData(data).then((response) => {
