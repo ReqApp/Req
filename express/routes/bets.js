@@ -39,28 +39,42 @@ router.post('/createLocationBet', (req, res) => {
     if (data.location_name && data.latitude && data.longitude && data.radius && data.bet_region_id && data.bet_id) {
         if (!isNaN(data.latitude) && !isNaN(data.longitude) && !isNaN(data.radius)) {
             if (utilFuncs.validate(data.bet_region_id, 'id') && utilFuncs.validate(data.bet_id, 'id')) {
-                utilFuncs.createLocationBet(data).then(response => {
+                utilFuncs.isValidBetID(data.bet_id).then((response) => {
                     if (response) {
-                        res.status(200).json({
-                            'status': 'success',
-                            'body': 'Location bet made'
+                        utilFuncs.createLocationBet(data).then(response => {
+                            if (response) {
+                                res.status(200).json({
+                                    'status': 'success',
+                                    'body': 'Location bet made'
+                                });
+                            } else {
+                                res.status(400).json({
+                                    'status': 'error',
+                                    'body': 'Location bet not made'
+                                })
+                            }
+                        }, (err) => {
+                            res.status(400).json({
+                                'status': 'error',
+                                'body': `Error: ${err}`
+                            })
                         });
                     } else {
                         res.status(400).json({
                             'status': 'error',
-                            'body': 'Location bet not made'
-                        })
+                            'body': 'Invalid ID'
+                        });
                     }
-                }, err => {
+                }, () => {
                     res.status(400).json({
                         'status': 'error',
-                        'body': `Error: ${err}`
-                    })
-                });
+                        'body': 'Invalid ID'
+                    });
+                })
             } else {
                 res.status(400).json({
                     'status': 'error',
-                    'body': 'Invalid IDs'
+                    'body': 'Invalid ID'
                 });
             }
         } else {
@@ -392,9 +406,11 @@ router.post('/decideBet', (req, res) => {
                 });
             }
         }, () => {
+            // fuzz testing string can pass the check for valid ID
+            // but will fail here
             res.status(400).json({
                 "status": "error",
-                "body": "Error checking betID"
+                "body": "Invalid input"
             });
         });
     } else {

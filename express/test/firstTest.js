@@ -27,7 +27,7 @@ describe("========= Login Testing =========", () => {
                     expect(res.body.body).to.equals("Logged in successfully");
                     done();
                 });
-        }).timeout(1800),
+        }).timeout(2100),
         it("Invalid params", done => {
             chai
                 .request(app)
@@ -647,6 +647,52 @@ describe("============= Betting =============", () => {
                     expect(res.body.status).to.equals("error");
                     done();
                 });
+        }),
+        it("No Input", done => {
+            chai
+                .request(app)
+                .post("/bets/createLocationBet")
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Incomplete data");
+                    done();
+                });
+        }),
+        it("Invalid Input", done => {
+            chai
+                .request(app)
+                .post("/bets/createLocationBet")
+                .send({
+                    "location_name": "my gaff",
+                    "latitude": 02312312323,
+                    "longitude": 1293123212,
+                    "radius": 30,
+                    "bet_region_id": fuzzUsername,
+                    "bet_id": fuzzUsername
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Invalid ID");
+                    done();
+                });
+        }),
+        it("Invalid Input", done => {
+            chai
+                .request(app)
+                .post("/bets/createLocationBet")
+                .send({
+                    "location_name": "my gaff",
+                    "user_name": "testUser",
+                    "password": "YouThoughtWedTypeThePasswordOutHerehahahahaha"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("Incomplete data");
+                    done();
+                });
         })
 })
 
@@ -894,7 +940,7 @@ describe("============= Various APIS ==============", () => {
                 .post("/payments/checkout")
                 .send({
                     "product": "theWorld",
-                    "token":777777777777
+                    "token": 777777777777
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(401);

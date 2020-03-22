@@ -1018,7 +1018,7 @@ function createJwt(profile) {
     return jwt.sign(profile, process.env.JWTSECRET, {
         expiresIn: "3d"
     });
-};
+}
 
 function verifyJwt(jwtString) {
     val = jwt.verify(jwtString, process.env.JWTSECRET);
@@ -1032,7 +1032,7 @@ function createLocationBet(data) {
             if (err) {
                 reject(err);
             } else {
-                addLocationBetToRegion(savedBet.bet_region_id, savedBet._id).then(response => {
+                addLocationBetToRegion(savedBet.bet_region_id, savedBet._id).then(() => {
                     resolve(savedBet);
                 }, err => {
                     reject(err);
