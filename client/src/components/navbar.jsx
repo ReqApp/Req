@@ -9,7 +9,7 @@ export default class Navbar extends React.Component{
             <BootNav.Toggle aria-controls="basic-BootNav-nav" />
             <BootNav.Collapse id="basic-BootNav-nav">
                 <Nav className="mr-auto">
-                <Nav.Link href="#home">Home</Nav.Link>
+                <Nav.Link href="#home">Dashboard</Nav.Link>
                 <Nav.Link href="#link">Profile</Nav.Link>
                 <NavDropdown title="Betting" id="basic-nav-dropdown">
                     <NavDropdown.Item href="#action/3.1">Find bet near you</NavDropdown.Item>

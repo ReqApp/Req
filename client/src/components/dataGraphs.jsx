@@ -23,22 +23,23 @@ export default class Graphs extends React.Component{
   }
 
   render(){
+    const {user} = this.props;
     return(
       <Container>
         <Row>
           <Col>
-            <PlacedBetData />
+            <PlacedBetData user={user}/>
           </Col>
           <Col>
-            <CreatedBetData />
+            <CreatedBetData user={user}/>
           </Col>
         </Row>
         <Row>
           <Col>
-            <UserWinLoss />
+            <UserWinLoss user={user}/>
           </Col>
           <Col>
-            <PeopleReached />
+            <PeopleReached user={user}/>
           </Col>
         </Row>
       </Container>

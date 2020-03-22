@@ -14,7 +14,7 @@ export default class CreatedBetData extends Component {
     }
 
     componentDidMount() {
-        let targetUser =  window.location.href.split("?")[1];
+        const {user} = this.props;
         // Temp call just betting history as user has not created any bets yet
         fetch("http://localhost:9000/analytics/getBettingHistory", {
             method: 'POST',
@@ -24,7 +24,7 @@ export default class CreatedBetData extends Component {
                 'Access-Control-Allow-Origin': '*'
             },
             body: JSON.stringify({
-                "username": targetUser
+                "username": user
             })
         })
         .then((res) => res.json())

@@ -13,6 +13,8 @@ import {FAQ} from './pages/faq';
 import {About} from './pages/about';
 import {Profile} from './pages/profile';
 import Payment from './stripePayment.js';
+import {Dashboard} from './pages/dashboard';
+
 
 class App extends Component{
     render(){
@@ -38,6 +40,9 @@ class App extends Component{
                     </Route>
                     <Route exact path='/users/login'>
                          <SignIn/>
+                    </Route>
+                    <Route exact path='/users/dashboard'>
+                        <Dashboard />
                     </Route>
                     <Route exact path='/users/register'>
                          <Register/>

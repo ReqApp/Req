@@ -881,10 +881,57 @@ function anonymiseBetData(allBets) {
     });
 }
 
+function getBetsForUser(data, user_name){
+    return new Promise((resolve, reject) => {
+        let anonBets = [];
+        let userAmounts = [];
+        data.forEach(element => {
+            if(element.type === 'binary'){
+                let flag = true;
+                element.forUsers.forEach(user => {
+                    if(user.user_name === user_name){
+                        userAmounts.unshift(user.betAmount);
+                        anonBets.push(element.toObject());
+                        flag = false;
+                    }         
+                });
+                if(flag){
+                    element.againstUsers.forEach(user => {
+                        if(user.user_name === user_name){
+                            userAmounts.unshift(user.betAmount);
+                            anonBets.push(element.toObject());
+                        }
+                    });
+                }
+            }
+            else if(element.type === 'multi'){
+                element.commonBets.forEach(user => {
+                    if(user.user_name === user_name){
+                        userAmounts.unshift(user.betAmount);
+                        anonBets.push(element.toObject());
+                    }
+                });
+            }
+        });
+        anonymiseBetData(anonBets).then(res => {
+            if(anonBets){
+                for(let i = 0; i < anonBets.length; i++){
+                    res[i].userAmount = userAmounts[i];
+                }
+                resolve(res);
+            }else{
+                resolve(null);
+            }
+        });
+
+    });
+}
+
 
 function isSignedIn(reqCookies) {
     return new Promise((resolve, reject) => {
         if (reqCookies.Authorization) {
+            console.log(reqCookies.Authorization);
             let jwt = reqCookies.Authorization.split(' ')[1];
             const profile = verifyJwt(jwt);
             if (profile) {
@@ -1098,3 +1145,4 @@ module.exports.checkIfExisting = checkIfExisting;
 module.exports.anonymiseBetData = anonymiseBetData;
 module.exports.expiredBetPayBack = expiredBetPayBack;
 module.exports.isPasswordCompromised = isPasswordCompromised;
+module.exports.getBetsForUser = getBetsForUser;

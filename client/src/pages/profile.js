@@ -4,23 +4,33 @@ import React from 'react';
 import Typography from "@material-ui/core/Typography";
 import { Avatar } from '@material-ui/core';
 import {Button} from '@material-ui/core';
+import {Paper} from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
 // Bootstrap
 import {Container, Row, Col} from 'react-bootstrap';
 // Components
+import Navbar from '../components/navbar';
 import Graphs from '../components/dataGraphs';
+import ProfilePicture from '../components/profilePicture';
+import Coins from '../components/coins';
 //Other
 import openSocket from 'socket.io-client';
-
 
 export class Profile extends React.Component{    
     constructor(props){
         super(props);
         this.state = {
-            userName: "DEFAULT USER",
+            gettingUserName: true,
+            userName: '',
             click: false,
-            imgSrc: null
+            imgSrc: null,
         }
         this.socket = openSocket('http://localhost:9000');
+    }
+
+    componentDidMount(){
+        let targetUser =  window.location.href.split("?")[1];
+        this.setState({userName : targetUser, gettingUserName : false});
     }
     
     handleClick = () => {
@@ -49,9 +59,55 @@ export class Profile extends React.Component{
     }
 
     render(){
-        const {imgSrc, click} = this.state;
-        return(            
-            <Graphs />
+        const {userName, gettingUserName} = this.state;
+        if(!gettingUserName){
+        return(         
+            <div>
+                <Navbar />
+                <Container>
+                    <Row>
+                        <Col>
+                            <Paper elevation={3} style={styles.profile}>
+                                <Container>
+                                    <Row>
+                                        <Col>
+                                            <ProfilePicture user={userName} />
+                                        </Col>
+                                        <Col>
+                                            <h1>{userName}</h1>
+                                        </Col>
+                                        <Col>
+                                            <Coins user={userName}/>
+                                        </Col>
+                                    </Row>
+                                </Container>
+                            </Paper>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                        <Paper elevation={3} style={styles.stats}>
+                            <h2>Betting Statistics:</h2>
+                            <Graphs user={userName} />
+                        </Paper>
+                        </Col>
+                    </Row>
+                </Container>
+                
+                
+            </div>   
         );
+        }return null;
+    }
+}
+
+const styles = {
+    profile: {
+        padding: '15px',
+        marginTop: '15px',
+        marginBottom: '15px'
+    },
+    stats: {
+        padding: '15px'
     }
 }

@@ -671,6 +671,42 @@ router.post('/getBets', (req, res, next) => {
     })
 });
 
+router.post('/getBetsForUser', (req, res) => {
+    // Check if user is signed in
+    console.log(req.cookies.Authorization);
+    utilFuncs.isSignedIn(req.cookies).then(profile => {
+        if(profile){
+            // Get all bets
+            utilFuncs.getBets().then(data => {
+                // Get specific bet data from user
+                utilFuncs.getBetsForUser(data, profile.user_name).then(bets => {
+                    if(bets){
+                        res.status(200).json({
+                            'status' : 'success',
+                            'body' : bets
+                        });
+                    }else{
+                        res.status(200).json({
+                            'status' : 'success',
+                            'body' : 'No bets'
+                        })
+                    }
+                    }, err => {
+                        res.status(400).json({
+                            'status' : 'error',
+                            'body' : err
+                    });
+                });
+            });
+        }else{
+            res.status(400).json({
+                'status' : 'error',
+                'body' : 'User not signed in'
+            });
+        }
+    });
+});
+
 router.post('/betExpired', (req, res, next) => {
     // if a bet has expired then the creator will be punished
     // and winnings will be paid back

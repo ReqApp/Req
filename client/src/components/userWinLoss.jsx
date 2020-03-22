@@ -12,7 +12,7 @@ export default class UserWinLoss extends Component {
     }
 
     componentDidMount() {
-        let targetUser = window.location.href.split("?")[1]
+        const {user} = this.props;
         fetch("http://localhost:9000/analytics/getWinLoss", {
             method: 'POST',
             crossDomain: true,
@@ -21,7 +21,7 @@ export default class UserWinLoss extends Component {
                 'Access-Control-Allow-Origin': '*'
             },
             body: JSON.stringify({
-                "username":targetUser
+                "username" : user
             })
         })
         .then((res) => res.json())
