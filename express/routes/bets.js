@@ -1,10 +1,8 @@
 var betRegion = require('../models/betRegions');
-var betsFinished = require('../models/betsFinished');
 var generalFuncs = require("../funcs/generalFuncs");
 const utilFuncs = require('../funcs/betFuncs');
 var router = require('express').Router();
 var locationBet = require('../models/locationBetData');
-var User = require('../models/users');
 var mongoose = require('mongoose');
 
 /**
@@ -14,17 +12,17 @@ var mongoose = require('mongoose');
  */
 
 // Render create bet page
-router.get('/createBet', (req, res, next) => {
+router.get('/createBet', (req, res) => {
     res.render('create_bet', { title: 'CreateBet' });
 });
 
 // Render find bet page
-router.get('/findBets', (req, res, next) => {
+router.get('/findBets', (req, res) => {
     res.render('find_bets', { title: 'FindBets' });
 });
 
 // Render debug and testing page
-router.get('/debugTest', (req, res, next) => {
+router.get('/debugTest', (req, res) => {
     res.render('debugAndTestingPage');
 });
 
@@ -193,7 +191,7 @@ router.get('/getBettingRegions', (req, res) => {
 });
 
 // Allows user to add bet to betting region
-router.put('/addBetToRegion', function(req, res, next) {
+router.put('/addBetToRegion', function(req, res) {
     // Takes bet region id
     console.log(req.body);
     let regionID = mongoose.Types.ObjectId(req.body.regionID.toString());
@@ -209,7 +207,7 @@ router.put('/addBetToRegion', function(req, res, next) {
 });
 
 // Gets specific region by id
-router.get('/getRegionByID', function(req, res, next) {
+router.get('/getRegionByID', function(req, res) {
     console.log(req.query.id);
     var id = mongoose.Types.ObjectId(req.query.id.toString());
     console.log(id);
@@ -229,7 +227,7 @@ router.get('/getRegionByID', function(req, res, next) {
  */
 
 // API for adding multiple bets to database
-router.post('/addMultBets', function(req, res, next) {
+router.post('/addMultBets', function(req, res) {
     //console.log(req.body);
     locationBet.insertMany(req.body.betData, function(err, bets) {
         if (err) {
@@ -242,7 +240,7 @@ router.post('/addMultBets', function(req, res, next) {
 });
 
 // API for adding multiple bet regions to database
-router.post('/addMultRegions', function(req, res, next) {
+router.post('/addMultRegions', function(req, res) {
     console.log(req.body);
     betRegion.insertMany(req.body.regions, function(err, regions) {
         if (err) {
@@ -254,7 +252,7 @@ router.post('/addMultRegions', function(req, res, next) {
 });
 
 // API updates bet regions with multiple bets
-router.put('/addMultBetsToRegion', function(req, res, next) {
+router.put('/addMultBetsToRegion', function(req, res) {
     // Takes bet region id
     console.log(req.body);
     var regionID = mongoose.Types.ObjectId(req.body.regionID.toString());
@@ -276,7 +274,7 @@ router.put('/addMultBetsToRegion', function(req, res, next) {
     });
 });
 
-router.post('/makeBet', (req, res, next) => {
+router.post('/makeBet', (req, res) => {
 
     const firstPlaceCut = parseFloat(req.body.firstPlaceCut);
     const secondPlaceCut = parseFloat(req.body.secondPlaceCut);
@@ -354,7 +352,7 @@ router.post('/makeBet', (req, res, next) => {
     }
 });
 
-router.post('/decideBet', (req, res, next) => {
+router.post('/decideBet', (req, res) => {
 
     let inputObj = {
         "betID": req.body.betID,
@@ -393,13 +391,14 @@ router.post('/decideBet', (req, res, next) => {
                     "body": "Invalid betID"
                 });
             }
-        }, (err) => {
+        }, () => {
             res.status(400).json({
                 "status": "error",
                 "body": "Error checking betID"
             });
         });
     } else {
+        console.log("not validted")
         res.status(400).json({
             "status": "error",
             "body": "Invalid input"
@@ -407,7 +406,7 @@ router.post('/decideBet', (req, res, next) => {
     }
 });
 
-router.post('/betOn', (req, res, next) => {
+router.post('/betOn', (req, res) => {
     let inputObj = {
         "betID": req.body.betID,
         "username": req.body.username,
@@ -470,7 +469,7 @@ router.post('/betOn', (req, res, next) => {
                 "body": "Invalid betID"
             });
         }
-    }, (err) => {
+    }, () => {
         res.status(400).json({
             "status": "error",
             "body": "Error validating bet ID"
@@ -478,7 +477,7 @@ router.post('/betOn', (req, res, next) => {
     })
 });
 
-router.post('/bigButtonBet', (req, res, next) => {
+router.post('/bigButtonBet', (req, res) => {
     // A secret is defined in the env which is sent to validate
     // that it is the Req account finalising or starting a big red button bet
 
@@ -526,7 +525,7 @@ router.post('/bigButtonBet', (req, res, next) => {
                                 res.status(400).json({
                                     "status": "error",
                                     "body": "Invalid bet ID"
-                                }, (err) => {
+                                }, () => {
                                     res.status(400).json({
                                         "status": "error",
                                         "body": "Error validating betID"
@@ -541,7 +540,7 @@ router.post('/bigButtonBet', (req, res, next) => {
                         });
                     }
 
-                }, (err) => {
+                }, () => {
                     res.status(400).json({
                         "status": "error",
                         "body": "Error reading betID"
@@ -579,7 +578,7 @@ router.post('/bigButtonBet', (req, res, next) => {
                                     "body": `Error writing betID to file`
                                 });
                             }
-                        }, (err) => {
+                        }, () => {
                             res.status(400).json({
                                 "status": "err",
                                 "body": `Error reading from bigButtonID file`
@@ -614,7 +613,7 @@ router.post('/bigButtonBet', (req, res, next) => {
 
 });
 
-router.post('/pressBigButton', (req, res, next) => {
+router.post('/pressBigButton', (req, res) => {
     generalFuncs.handleBigButtonPress().then((response) => {
         if (response) {
             console.log(response);
@@ -629,7 +628,7 @@ router.post('/pressBigButton', (req, res, next) => {
             });
         }
 
-    }, (err) => {
+    }, () => {
         res.status(400).json({
             "status": "error",
             "body": "Error pressing big red button"
@@ -639,7 +638,7 @@ router.post('/pressBigButton', (req, res, next) => {
 
 // needs server side processing to anonymise the betting users before being sent back to the user
 // otherwise the user can see who has bet what amount of any kind
-router.post('/getBets', (req, res, next) => {
+router.post('/getBets', (req, res) => {
     utilFuncs.getBets().then((data) => {
         if (data) {
             utilFuncs.anonymiseBetData(data).then((response) => {
@@ -663,7 +662,7 @@ router.post('/getBets', (req, res, next) => {
                 "body": "Could not get bets"
             });
         }
-    }, (err) => {
+    }, () => {
         res.status(400).json({
             "status": "error",
             "body": "Error getting bets from DB"
@@ -671,7 +670,7 @@ router.post('/getBets', (req, res, next) => {
     })
 });
 
-router.post('/betExpired', (req, res, next) => {
+router.post('/betExpired', (req, res) => {
     // if a bet has expired then the creator will be punished
     // and winnings will be paid back
     if (req.body.secret === process.env.ReqSecret) {
@@ -709,7 +708,7 @@ router.post('/betExpired', (req, res, next) => {
     }
 });
 
-router.post('/getAllBetsDev', (req, res, next) => {
+router.post('/getAllBetsDev', (req, res) => {
     if (req.body.secret === process.env.ReqSecret) {
         utilFuncs.getBets().then((allBets) => {
             if (allBets) {

@@ -58,8 +58,16 @@ router.post('/getCreatedBettingHistory', (req, res) => {
     }
 });
 
+router.post('/hello', (req, res) => {
+    res.status(200).json({
+        "status": "success"
+    })
+})
+
 router.post('/getWinLoss', (req, res) => {
+    console.log("ok")
     if (utilFuncs.validate(req.body.username, "username")) {
+        console.log("validated")
         analyticFuncs.getWinLoss(req.body.username).then((response) => {
             res.status(200).json({
                 "status": "success",

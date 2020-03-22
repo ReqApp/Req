@@ -3,34 +3,14 @@ var UnverifiedUser = require('../models/unverifiedUsers');
 var generalFuncs = require('../funcs/generalFuncs');
 const keccak512 = require('js-sha3').keccak512;
 const utilFuncs = require('../funcs/betFuncs');
-var User = require("../models/users");
 var randomstring = require("randomstring");
-
+var User = require("../models/users");
 const passport = require("passport");
-var jwt = require('jsonwebtoken');
 var express = require('express');
-const axios = require("axios");
 var router = express.Router();
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-    res.send('respond with a resource');
-});
 
-// serves register.hbs page which is also login
-router.get('/register', (req, res, next) => {
-    res.render('register');
-});
-
-router.get('/verifyAccount', (req, res, next) => {
-    res.render('verifyAccount');
-});
-
-router.get('/testing', (req, res, next) => {
-    res.json({ status: "success", message: "Welcome To Testing API" });
-});
-
-router.post('/getProfilePicture', (req, res, next) => {
+router.post('/getProfilePicture', (req, res) => {
     if (req.body.username) {
 
         if (utilFuncs.validate(req.body.username, "username")) {
@@ -73,7 +53,7 @@ router.post('/getProfilePicture', (req, res, next) => {
     }
 });
 
-router.get('/profile', (req, res, next) => {
+router.get('/profile', (req, res) => {
     if (req.cookies.Authorization) {
         const jwtString = req.cookies.Authorization.split(' ');
         const profile = utilFuncs.verifyJwt(jwtString[1]);
@@ -86,16 +66,11 @@ router.get('/profile', (req, res, next) => {
     }
 });
 
-router.get('/forgotPassword', (req, res, next) => {
-    res.render('forgotPassword');
-});
-
-
 router.get('/auth/google', passport.authenticate('google', {
     scope: ['profile']
 }));
 
-router.get('/auth/google/callback', passport.authenticate('google'), (req, res, next) => {
+router.get('/auth/google/callback', passport.authenticate('google'), (req, res) => {
     res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
     res.redirect('http://localhost:3000');
 });
@@ -115,7 +90,7 @@ router.get('/auth/steam/callback', passport.authenticate('steam', { failureRedir
     res.redirect('http://localhost:3000');
 });
 
-router.post('/register', (req, res, next) => {
+router.post('/register', (req, res) => {
     /**
      * Handles post requests from register page
      */
@@ -222,7 +197,7 @@ router.post('/register', (req, res, next) => {
                                         newUser.password = newUser.generateHash(password);
                                         newUser.activationCode = loginCode;
 
-                                        newUser.save((err, user) => {
+                                        newUser.save((err) => {
                                             if (err) {
                                                 throw err;
                                             }
@@ -254,7 +229,7 @@ router.post('/register', (req, res, next) => {
     }
 
 });
-router.post('/verifyAccount', (req, res, next) => {
+router.post('/verifyAccount', (req, res) => {
     /**
      * Handles requests of the login code
      */
@@ -318,7 +293,7 @@ router.post('/verifyAccount', (req, res, next) => {
 });
 
 // handles POST requests to /login
-router.post('/login', function(req, res, next) {
+router.post('/login', function(req, res) {
 
     const username = req.body.user_name;
     const password = req.body.password;
@@ -365,18 +340,9 @@ router.post('/login', function(req, res, next) {
             }
         });
     }
-
-    // } else {
-    //     console.error.log("invalid params there");
-    //     res.status(401).send({
-    //         "status": "error",
-    //         "body": "Invalid parameters"
-    //     });
-    // }
 });
 
-
-router.post('/forgotPassword', (req, res, next) => {
+router.post('/forgotPassword', (req, res) => {
     if (req.body.user_name) {
         if (utilFuncs.validate(req.body.user_name, "username")) {
             const username = req.body.user_name;
@@ -443,7 +409,7 @@ router.post('/forgotPassword', (req, res, next) => {
     }
 });
 
-router.post('/resetPassword', (req, res, next) => {
+router.post('/resetPassword', (req, res) => {
     if (req.body.newPassword && req.body.fromUrl) {
 
         if (utilFuncs.validate(req.body.fromUrl, "url")) {
@@ -462,7 +428,8 @@ router.post('/resetPassword', (req, res, next) => {
                             "body": `This password has been previously used on ${resArray[Math.floor(Math.random()*resArray.length)]}. This incident has been reported to an administrator`
                         });
                     }
-                }, (err) => {
+                }, () => {
+                    // err here means the password was not found in the database
                     forgotPasswordUser.findOne({ resetUrl: req.body.fromUrl }, (err, foundUser) => {
                         if (err) {
                             res.send(err);

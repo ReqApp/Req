@@ -30,6 +30,7 @@ function getBets() {
 function validate(input, type) {
     const conditions = ["\"", "<", ">", "'", "`"];
 
+
     switch (type) {
         case 'id':
             if (!input) {
@@ -44,7 +45,10 @@ function validate(input, type) {
             if (!input) {
                 return false;
             }
-            if (parseFloat(input) == NaN) {
+            if (input === "yes" || input === "no") {
+                return true;
+            }
+            if (isNaN(parseFloat(input))) {
                 return false;
             } else {
                 return true;
@@ -113,7 +117,6 @@ function betOn(userObj) {
                     (err, result) => {
                         if (err) {
                             reject(err);
-                            var User = require('../models/users');
                         } else {
                             if (result) {
                                 console.log(`bet added`);
@@ -220,9 +223,9 @@ function isPasswordCompromised(input) {
             } else {
                 resolve(true);
             }
-        }).catch(((err) => {
+        }).catch(() => {
             reject(null);
-        }));
+        });
     });
 }
 
@@ -317,7 +320,7 @@ function decideBet(inputObj) {
                     });
 
                     expiredBetPayBack(foundBet).then((response) => {
-                        if (resposne) {
+                        if (response) {
                             resolve(true);
                         } else {
                             resolve(false);
@@ -331,10 +334,10 @@ function decideBet(inputObj) {
 
 
                 if (!badBet) {
-                    console.log("not bad bet")
                     anonymiseBetData([foundBet]).then((betData) => {
                         if (betData) {
                             if (foundBet.type === "binary") {
+
 
                                 if (!(inputObj.result === "yes" || inputObj.result === "no")) {
                                     reject("Invalid result given")
@@ -485,6 +488,9 @@ function decideBet(inputObj) {
                                     }
                                 }
                             } else if (foundBet.type === "multi") {
+                                if (!isNan(inputObj.result)) {
+                                    reject("Invalid result")
+                                }
                                 // if there were any bets at all, pay out to them
                                 if (foundBet.commonBets.length > 1) {
                                     console.log("more than 1 common")
@@ -636,7 +642,7 @@ function decideBet(inputObj) {
 }
 
 function rankAnswers(allBets, result) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         if (allBets.length < 1 || allBets === undefined) {
             resolve(false);
         }
@@ -893,7 +899,7 @@ function isSignedIn(reqCookies) {
                 resolve(null);
             }
         } else {
-            resolve(null);
+            reject("No jwt found");
         }
     })
 }
