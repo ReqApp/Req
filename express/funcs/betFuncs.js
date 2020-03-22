@@ -1084,6 +1084,7 @@ function degToRad(deg) {
 }
 
 module.exports.betOn = betOn;
+module.exports.payOut = payOut;
 module.exports.getBets = getBets;
 module.exports.validate = validate;
 module.exports.sendEmail = sendEmail;

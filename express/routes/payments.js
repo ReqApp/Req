@@ -1,5 +1,5 @@
 const stripe = require("stripe")(process.env.stripePrivateKey);
-var utilFuncs = require('../funcs/betFuncs');
+const utilFuncs = require('../funcs/betFuncs');
 var express = require('express');
 var User = require('../models/users');
 var randomstring = require("randomstring");
@@ -42,11 +42,6 @@ router.post("/checkout", async(req, res) => {
         }, {
             idempotencyKey
         });
-        console.log(`\n\n\n\n\n`);
-        console.log("Charge:", { charge });
-        console.log(charge.receipt_email);
-
-
         User.findOne({ email: charge.receipt_email }, (err, foundUser) => {
             if (err) {
                 res.status(400).json({
@@ -58,7 +53,7 @@ router.post("/checkout", async(req, res) => {
                     utilFuncs.payOut(foundUser.user_name, 1, 1000).then((response) => {
                         if (response) {
 
-                            utilFuncs.sendEmail(charge.receipt_email, 'Thank you for your purchase!', 'Login to find your coins deposited into you account').then((response) => {
+                            utilFuncs.sendEmail(charge.receipt_email, 'Thank you for your purchase!', 'Login to find your coins deposited into your account').then((response) => {
                                 if (response) {
                                     res.status(200).json({
                                         "status": "success",
@@ -98,10 +93,9 @@ router.post("/checkout", async(req, res) => {
         })
 
     } catch (error) {
-        console.error("Error:", error);
-        res.status(200).json({
+        res.status(401).json({
             "status": "error",
-            "body": "err"
+            "body": "You are not authorized to do this"
         })
     }
 
