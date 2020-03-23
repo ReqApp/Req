@@ -8,12 +8,9 @@ export class About extends React.Component{
     render(){
         return(
             <div>
-                <Header/>
-                <Spacing/>
                 <div className="container">
                      <h1>ABOUT THAT TIME ITS HIGH NOON!!!</h1>
                  </div>
-                <Footer/>
             </div>
         )
     }

@@ -112,7 +112,7 @@ class SignIn extends React.Component{
 
     if(loggedIn){
       return(
-        <Redirect to='/profile' />
+        <Redirect to='users/profile' />
       )
     }
     return (
