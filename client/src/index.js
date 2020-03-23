@@ -13,6 +13,7 @@ import {FAQ} from './pages/faq';
 import {About} from './pages/about';
 import {Profile} from './pages/profile';
 import Payment from './stripePayment.js';
+import {Error404} from './error404';
 
 class App extends Component{
     render(){
@@ -53,6 +54,10 @@ class App extends Component{
                     </Route>
                     <Route exact path='/'>
                         <HomePage/>
+                    </Route>
+                    {/*This will call the error404 for any page that doesn't match any of the path*/}
+                    <Route>
+                        <Error404/>
                     </Route>
                 </Switch>
         );
