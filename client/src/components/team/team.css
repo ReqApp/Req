@@ -1,0 +1,123 @@
+.service_bg_1 {
+  background-image: url(./team_images/cathal-photo.jpg);
+}
+
+.service_bg_2 {
+  background-image: url(./team_images/eoin-photo.jpg);
+}
+
+.service_bg_3 {
+  background-image: url(./team_images/karl-photo.jpg);
+}
+
+.service_bg_4 {
+  background-image: url(./team_images/rory-photo.jpg);
+}
+
+@media (max-width: 767px) {
+  .service_area {
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .service_area {
+    padding-top: 100px;
+    padding-bottom: 100px;
+  }
+}
+
+.service_area .single_service {
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin-bottom: 30px;
+  background-position: center;
+  overflow: hidden;
+}
+
+.service_area .single_service .service_hover {
+  text-align: center;
+  padding: 104px 0 94px 0;
+  background: rgba(0, 0, 0, 0.3);
+  -webkit-transition: 0.5s;
+  -moz-transition: 0.5s;
+  -o-transition: 0.5s;
+  transition: 0.5s;
+  position: relative;
+}
+
+.service_area .single_service .service_hover h3 {
+  font-size: 20px;
+  color: #fff;
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+
+.service_area .single_service .service_hover .hover_content {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: table;
+  width: 100%;
+  height: 100%;
+  background: #28AE60;
+  -webkit-transform: translateY(40%);
+  -moz-transform: translateY(40%);
+  -ms-transform: translateY(40%);
+  transform: translateY(40%);
+  -webkit-transition: 0.5s;
+  -moz-transition: 0.5s;
+  -o-transition: 0.5s;
+  transition: 0.5s;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.service_area .single_service .service_hover .hover_content .hover_content_inner {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  padding: 0 54px;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .service_area .single_service .service_hover .hover_content .hover_content_inner {
+    padding: 0 10px;
+  }
+}
+
+.service_area .single_service .service_hover .hover_content .hover_content_inner h4 {
+  font-size: 20px;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.service_area .single_service .service_hover .hover_content .hover_content_inner p {
+  font-size: 16px;
+  color: #fff;
+}
+
+.service_area .single_service:hover {
+  background-position: top;
+}
+
+.service_area .single_service:hover .hover_content {
+  -webkit-transform: translateY(0%);
+  -moz-transform: translateY(0%);
+  -ms-transform: translateY(0%);
+  transform: translateY(0%);
+  opacity: 1;
+  visibility: visible;
+}
+
+.service_area .single_service:hover .service_hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+.team_Header{
+  color: #131313;
+  text-align: center;
+  margin-top: 30px;
+}

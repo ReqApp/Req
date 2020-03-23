@@ -1,11 +1,11 @@
-import React,{Component} from 'react';
+import React from 'react';
 
 export class ReqLogo extends React.Component{
     render(){
         return(
-            <div className="logo">
-                <a href="index.html">
-                    <img style={{width: '50px', height: '50px'}} src="/img/reqlogo.jpg" alt="" />
+            <div className="header_logo">
+                <a href="/">
+                    <img style={{width: '75px', height: '75px'}} alt="" />
                 </a>
             </div>
         );

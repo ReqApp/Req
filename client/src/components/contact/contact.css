@@ -1,0 +1,58 @@
+.project_area {
+  background: #28AE60;
+  padding: 130px 0;
+}
+
+@media (max-width: 767px) {*/
+  .project_area {
+    padding: 100px 0;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .project_area {
+    padding: 100px 0;
+  }
+}
+
+.project_area .project_info h3 {
+  color: #fff;
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 55px;
+}
+
+.project_area .project_info p {
+  font-size: 17px;
+  color: #fff;
+  margin-bottom: 26px;
+  margin-top: 8px;
+}
+
+.project_area .project_info .boxed-btn3-white:hover {
+  background: #fff;
+  color: #131313 !important;
+}
+
+.boxed-btn3-white {
+  color: #fff;
+  display: inline-block;
+  padding: 13px 27px;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  border: 0;
+  border: 1px solid #fff;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  text-align: center;
+  color: #fff !important;
+  text-transform: capitalize;
+  -webkit-transition: 0.5s;
+  -moz-transition: 0.5s;
+  -o-transition: 0.5s;
+  transition: 0.5s;
+  cursor: pointer;
+  letter-spacing: 2px;
+}

@@ -1,17 +1,17 @@
-import React, {Component} from 'react';
+import React from 'react';
 
 export class FooterSocialLinks extends React.Component{
     render(){
-        return(<div className="socail_links">
+        return(<div className="social_links">
         <ul>
           <li>
             <a href="#">
-              <i className="ti-facebook" />
+              <i className="fa fa-facebook" />
             </a>
           </li>
           <li>
             <a href="#">
-              <i className="ti-twitter-alt" />
+              <i className="fa fa-linkedin" />
             </a>
           </li>
           <li>

@@ -5,6 +5,7 @@ import {NavLinks} from '../header/navLinks';
 import { HeaderSocialLinks } from '../header/headerSocialLinks';
 import { HeaderBetButton } from '../header/headerBetButton';
 import {SearchButton} from '../header/searchButton';
+import './component_css/header.css';
 
 export default class Header extends Component {
   render() {

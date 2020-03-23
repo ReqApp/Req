@@ -1,4 +1,4 @@
-import React,{Component} from 'react';
+import React from 'react';
 
 export class SearchButton extends React.Component{
     render(){
