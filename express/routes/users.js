@@ -1,7 +1,6 @@
 var forgotPasswordUser = require('../models/forgotPasswordUsers');
 var UnverifiedUser = require('../models/unverifiedUsers');
 var generalFuncs = require('../funcs/generalFuncs');
-const keccak512 = require('js-sha3').keccak512;
 const utilFuncs = require('../funcs/betFuncs');
 var randomstring = require("randomstring");
 var User = require("../models/users");
@@ -163,7 +162,7 @@ router.post('/register', (req, res) => {
                     "body": `This password has been previously used on ${resArray[Math.floor(Math.random()*resArray.length)]}. This incident has been reported to an administrator`
                 });
             }
-        }, (err) => {
+        }, () => {
             // Error in this case means the password was NOT found
             if (run) {
                 User.findOne({ "user_name": username }, (err, foundUser) => {
@@ -363,9 +362,12 @@ router.post('/forgotPassword', (req, res) => {
                             newUser.resetCode = resetUrlString;
                             // TODO this is a temp localhost fix
                             newUser.resetUrl = `http://localhost:9000/users/forgotPassword?from=${resetUrlString}`;
-                            newUser.save((err, user) => {
+                            newUser.save((err) => {
                                 if (err) {
-                                    throw err;
+                                    res.status(400).send({
+                                        "status": "information",
+                                        "body": `Error updating information`
+                                    });
                                 }
                             });
                             utilFuncs.sendEmail(foundUser.email, `Update your password ${foundUser.user_name}`, newUser.resetUrl).then(() => {

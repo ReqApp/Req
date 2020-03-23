@@ -1,5 +1,4 @@
 const randomstring = require('randomstring');
-var assert = require('assert');
 let chai = require("chai");
 let chaiHTTP = require("chai-http");
 let app = require("../app");
@@ -149,7 +148,7 @@ describe("========= Login Testing =========", () => {
                 .post("/users/forgotPassword")
                 .send({
                     "newPassword": "anycans4444555",
-                    "fromUrl": "\'console.log(`injection`)"
+                    "fromUrl": "'console.log(`injection`)"
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(401);
@@ -665,8 +664,8 @@ describe("============= Betting =============", () => {
                 .post("/bets/createLocationBet")
                 .send({
                     "location_name": "my gaff",
-                    "latitude": 02312312323,
-                    "longitude": 1293123212,
+                    "latitude": 82343579343,
+                    "longitude": 15249483,
                     "radius": 30,
                     "bet_region_id": fuzzUsername,
                     "bet_id": fuzzUsername

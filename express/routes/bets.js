@@ -473,7 +473,7 @@ router.post('/betOn', (req, res) => {
                         "body": "Insufficient funds"
                     });
                 }
-            }, (err) => {
+            }, () => {
                 res.status(400).json({
                     "status": "error",
                     "body": "Error retrieving coin amount"
@@ -735,7 +735,7 @@ router.post('/getAllBetsDev', (req, res) => {
                     "body": "No bets found"
                 });
             }
-        }, (err) => {
+        }, () => {
             res.status(400).json({
                 "status": "error",
                 "body": "Error retrieving bets"

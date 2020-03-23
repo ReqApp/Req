@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
-    $('#file').change( function(e) {
-        
+    $('#file').change(function(e) {
+
         var img = URL.createObjectURL(e.target.files[0]);
         console.log(e.target.files[0]);
         console.log(img);
@@ -30,7 +30,7 @@ $(document).ready(function() {
         // .done(function( script, textStatus ) {
         //     console.log( textStatus );
         // })
-        .fail(function(jqxhr, settings, exception) {
+        .fail(() => {
             $("div.log").text("Triggered ajaxError handler.");
         });
 
@@ -98,7 +98,7 @@ $(document).ready(function() {
                 success: function(token) {
                     $(location).attr('href', '/users/verifyAccount');
                 },
-                error: function(jqXHR, textStatus, errorThrown) {
+                error: (jqXHR) => {
                     swal({
                         icon: 'error',
                         title: 'Oops...',
@@ -116,11 +116,11 @@ $(document).ready(function() {
                     "user_name": $('#usernameBox').val(),
                     "password": $('#passwordBox').val()
                 },
-                success: function(token) {
+                success: () => {
                     console.log("success for load new page");
                     $(location).attr('href', '/');
                 },
-                error: function(jqXHR, textStatus, errorThrown) {
+                error: (jqXHR) => {
                     // console.log(jqXHR.responseJSON.body);
                     // swal("Oops", jqXHR.responseJSON.body, 'Not GOOD!');
                     swal({
@@ -187,12 +187,10 @@ $(document).ready(function() {
                 data: {
                     "user_name": username
                 },
-                success: function(res) {
+                success: () => {
                     $(location).attr('href', `http://localhost:9000/users/forgotPassword`);
                 },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    // console.log(jqXHR.responseJSON.body);
-                    // swal("Oops", jqXHR.responseJSON.body, 'Not GOOD!');
+                error: (jqXHR) => {
                     swal({
                         icon: 'error',
                         title: 'Oops...',
