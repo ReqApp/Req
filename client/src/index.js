@@ -14,6 +14,7 @@ import {About} from './pages/about';
 import {Profile} from './pages/profile';
 import Payment from './stripePayment.js';
 import {Dashboard} from './pages/dashboard';
+import {Home} from './pages/homePage';
 
 
 class App extends Component{
@@ -22,6 +23,9 @@ class App extends Component{
                  <Switch>               
                     <Route exact path='/create-location-bet'>
                         <FindLocationBets mode='create' />
+                    </Route>
+                    <Route exact path='/home'>
+                        <Home />
                     </Route>
                     <Route exact path='/find-location-bets'>
                          <FindLocationBets mode='find'/>

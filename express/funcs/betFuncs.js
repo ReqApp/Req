@@ -856,7 +856,9 @@ function anonymiseBetData(allBets) {
                     deadline: indivBet.deadline,
                     forBetTotal: forTotal,
                     againstBetTotal: againstTotal,
-                    betID: indivBet._id
+                    numberOfBettors : indivBet.forUsers.length + indivBet.againstUsers.length,
+                    betID: indivBet._id,
+                    type: indivBet.type
                 }
                 betArr.push(tempBet);
 
@@ -872,7 +874,12 @@ function anonymiseBetData(allBets) {
                     username: indivBet.user_name,
                     deadline: indivBet.deadline,
                     betsTotal: commonTotal,
-                    betID: indivBet._id
+                    firstPlaceCut : indivBet.firstPlaceCut,
+                    secondPlaceCut : indivBet.secondPlaceCut,
+                    thirdPlaceCut : indivBet.thirdPlaceCut,
+                    numberOfBettors : indivBet.commonBets.length,
+                    betID: indivBet._id,
+                    type: indivBet.type
                 }
                 betArr.push(tempBet);
             }
@@ -885,12 +892,14 @@ function getBetsForUser(data, user_name){
     return new Promise((resolve, reject) => {
         let anonBets = [];
         let userAmounts = [];
+        let betValues = [];
         data.forEach(element => {
             if(element.type === 'binary'){
                 let flag = true;
                 element.forUsers.forEach(user => {
                     if(user.user_name === user_name){
                         userAmounts.unshift(user.betAmount);
+                        betValues.unshift('For');
                         anonBets.push(element.toObject());
                         flag = false;
                     }         
@@ -899,6 +908,7 @@ function getBetsForUser(data, user_name){
                     element.againstUsers.forEach(user => {
                         if(user.user_name === user_name){
                             userAmounts.unshift(user.betAmount);
+                            betValues.unshift('Against');
                             anonBets.push(element.toObject());
                         }
                     });
@@ -908,6 +918,7 @@ function getBetsForUser(data, user_name){
                 element.commonBets.forEach(user => {
                     if(user.user_name === user_name){
                         userAmounts.unshift(user.betAmount);
+                        betValues.unshift(user.bet);
                         anonBets.push(element.toObject());
                     }
                 });
@@ -917,6 +928,7 @@ function getBetsForUser(data, user_name){
             if(anonBets){
                 for(let i = 0; i < anonBets.length; i++){
                     res[i].userAmount = userAmounts[i];
+                    res[i].betValue = betValues[i];
                 }
                 resolve(res);
             }else{

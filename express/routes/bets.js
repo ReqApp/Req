@@ -644,7 +644,10 @@ router.post('/getBets', (req, res, next) => {
         if (data) {
             utilFuncs.anonymiseBetData(data).then((response) => {
                 if (response) {
-                    res.status(200).json(response);
+                    res.status(200).json({
+                        'status' : 'success',
+                        'body' : response
+                    });
                 } else {
                     res.status(400).json({
                         "status": "error",

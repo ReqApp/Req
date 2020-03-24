@@ -64,9 +64,10 @@ export class Profile extends React.Component{
         return(         
             <div>
                 <Navbar />
-                <Container>
+                <div style={styles.container}>
                     <Row>
                         <Col>
+                        <h1>test</h1>
                             <Paper elevation={3} style={styles.profile}>
                                 <Container>
                                     <Row>
@@ -92,7 +93,7 @@ export class Profile extends React.Component{
                         </Paper>
                         </Col>
                     </Row>
-                </Container>
+                </div>
                 
                 
             </div>   
@@ -109,5 +110,11 @@ const styles = {
     },
     stats: {
         padding: '15px'
+    },
+    container: {
+        width: '90%',
+        marginLeft: '10px',
+        marginRight: '10px',
+        maxWidth: '100%'
     }
 }
