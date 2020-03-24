@@ -72,7 +72,6 @@ export class Dashboard extends React.Component{
                             <Row style={styles.row}>
                                 <Col xs={12} md={6} style={styles.col}>
                                     <h2>Your Current Bets:</h2>
-                                    <CurrentBets />
                                 </Col>
                                 <Col xs={12} md={6}>
                                     <h2>New Bets:</h2>

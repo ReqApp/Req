@@ -20,24 +20,153 @@ import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Input from '@material-ui/core/Input';
+import Snackbar from '@material-ui/core/Snackbar';
+import CheckIcon from '@material-ui/icons/Check';
+import ClearIcon from '@material-ui/icons/Clear';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+// Components
+import Alert from '../components/alertSnack';
+
+// TODO check if user has already bet on bet then don't display
 
 export default class betCard extends Component {
     constructor(props){
         super(props);
+        this.state = {
+            userName: process.env.REACT_APP_TEST_USER_NAME,
+            betAmount : 0,
+            betValue : 0,
+            side: '',
+            snackOpen: false,
+            msg: '',
+            msgType: ''
+        }
         
+    }
+    
+    handleBetValue = (evt) => {
+        let val = evt.target.value;
+        if(!isNaN(val)){
+            this.setState({betValue : val});
+        }else{
+            this.setState({snackOpen : true, msg : 'Please enter a number', msgType : 'warning'});
+        }
+    }
+
+    handlePlaceBet = () => {
+        const {betAmount, betValue, side, userName} = this.state;
+        const {data} = this.props;
+
+        let isFormValid = true;
+        if(betAmount == 0){
+            isFormValid = false;
+            this.setState({snackOpen : true, msg : 'Please enter a Bet Amount', msgType : 'warning'});
+        }
+        if(betValue == 0 && data.type === 'multi'){
+            isFormValid = false;
+            this.setState({snackOpen : true, msg : 'Please enter a bet Value', msgType : 'warning'});
+        }
+        if(userName === ''){
+            isFormValid = false;
+            this.setState({snackOpen : true, msg : 'Username could not be retrieved', msgType : 'warning'});
+        }
+        if(side === '' && data.type === 'binary'){
+            isFormValid = false;
+            this.setState({snackOpen : true, msg : 'Please select a side', msgType : 'warning'});
+        }
+
+        if(isFormValid){
+            let obj = {
+                betID: data.betID,
+                betAmount: betAmount,
+                username : userName,
+                type: data.type,
+                side: side,
+                bet : betValue
+            }
+
+            fetch('http://localhost:9000/betOn', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(obj)
+            })
+            .then((res) => res.json())
+            .then((res) => {
+                if(res.status === "success"){
+                    this.setState({snackOpen : true, msg : 'Bet Placed!', msgType : 'success'});
+                }
+                else if(res.body === 'You have already made a bet on this.'){
+                    this.setState({snackOpen : true, msg : 'You have already bet on this', msgType : 'warning'});
+                }
+                else if(res.body === 'Insufficient funds'){
+                    this.setState({snackOpen : true, msg : 'Insufficient funds', msgType : 'error'});
+                }
+                else{
+                    console.log(res);
+                    this.setState({snackOpen : true, msg : 'Bet could not be placed', msgType : 'error'});
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                this.setState({snackOpen : true, msg : 'Bet could not be placed', msgType : 'error'});
+            });
+        }
+    }
+
+    handleSideSelection = (evt) => {
+        let side = evt.target.value;
+        this.setState({side : side});
+    }
+
+    handleBetAmount = (evt) => {
+        let amount = evt.target.value;
+        if(!isNaN(amount)){
+            this.setState({betAmount : amount});
+        }else{
+            this.setState({snackOpen : true, msg: 'Please enter a number', msgType : 'warning'});
+        }
+    }
+
+    handleSnackClose = (event, reason) => {
+        if(reason === 'clickaway'){
+            return;
+        }
+        this.setState({snackOpen : false});
+    }
+
+    generateDeadline(date){
+        let betDate = new Date(date * 1000);
+        let dateString = `${betDate.getDate()}/${betDate.getMonth()+1}/${betDate.getFullYear()}`;
+        let timeString = `${betDate.getHours()}:${betDate.getMinutes()}`;
+        return `Deadline: ${dateString} @ ${timeString}`;
     }
 
     renderMulti = () => {
+        const {betAmount, betValue} = this.state;
         const {data} = this.props;
+
         let betDate = new Date(data.deadline * 1000);
         let dateString = `${betDate.getDate()}/${betDate.getMonth()+1}/${betDate.getFullYear()}`;
         let timeString = `${betDate.getHours()}:${betDate.getMinutes()}`;
+
         return (
                 <Paper style={styles.card}>
-                    <h3>{data.title}</h3>
                     <div>
                         <Row>
-                            <Col>
+                            <Col xs={12} md={6}>
+                                <h2>{data.title}</h2>
+                            </Col>
+                            <Col xs={12} md={6}>
+                                <Button variant='contained' onClick={this.handlePlaceBet}>Place Bet</Button>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12} md={6}>
                             <List component="nav">
                             <ListSubheader component="div">
                                 Details:
@@ -46,7 +175,9 @@ export default class betCard extends Component {
                                     <ListItemIcon>
                                         <HourglassEmptyIcon />
                                     </ListItemIcon>
-                                    <ListItemText>Deadline: {dateString} @ {timeString}</ListItemText>
+                                    <ListItemText>
+                                        {this.generateDeadline(data.deadline)}
+                                    </ListItemText>
                                 </ListItem>
                                 <ListItem>
                                 <ListItemIcon>
@@ -58,17 +189,11 @@ export default class betCard extends Component {
                                     <ListItemIcon>
                                         <MonetizationOnIcon />
                                     </ListItemIcon>
-                                    <Input
-                                        label="With normal TextField"
-                                        style={styles.input}
-                                        id="standard-adornment-weight"
-                                        endAdornment={<InputAdornment position="end">Coins</InputAdornment>}
-                                        aria-describedby="standard-weight-helper-text"
-                                    />
+                                    <ListItemText>Total Sum: {data.betsTotal}</ListItemText>
                                 </ListItem>
                             </List>
                             </Col>
-                            <Col>
+                            <Col xs={12} md={6}>
                             <List component="nav">
                                 <ListSubheader component="div">
                                     Winnings:
@@ -83,42 +208,201 @@ export default class betCard extends Component {
                                     <ListItemText>Third Place Cut: {data.thirdPlaceCut * 100}%</ListItemText>
                                 </ListItem>
                             </List>
-
                             </Col>
                         </Row>
+                        <Row>
+                            <Col xs={12} md={6}>
+                                <List component="nav">
+                                    <ListSubheader component="div">
+                                        Your Bet:
+                                    </ListSubheader>
+                                    <ListItem>
+                                        <Input
+                                            onChange={this.handleBetValue}
+                                            value={betValue}
+                                            label="With normal TextField"
+                                            style={styles.input}
+                                            id="standard-adornment-weight"
+                                            endAdornment={<InputAdornment position="end">Bet</InputAdornment>}
+                                            aria-describedby="standard-weight-helper-text"
+                                        />
+                                    </ListItem>
+                                    </List>
+                                </Col>
+                                <Col xs={12} md={6}>
+                                    <List>
+                                    <ListSubheader component="div">
+                                        Bet Value:
+                                    </ListSubheader>
+                                    <ListItem>
+                                        <Input
+                                            onChange={this.handleBetAmount}
+                                            value={betAmount}
+                                            label="With normal TextField"
+                                            style={styles.input}
+                                            id="standard-adornment-weight"
+                                            endAdornment={<InputAdornment position="end">Coins</InputAdornment>}
+                                            aria-describedby="standard-weight-helper-text"
+                                        />
+                                    </ListItem>
+                                    </List>
+                                </Col>
+                            </Row>
                     </div>
                 </Paper>
         )
     }
 
     renderBinary = () => {
+        const {side, betAmount} = this.state;
+        const {data} = this.props;
 
+        return (
+        <Paper style={styles.card}>
+            <div>
+                <Row>
+                    <Col xs={12} md={6}>
+                        <h2>{data.title}</h2>
+                    </Col>
+                    <Col xs={12} md={6}>
+                        <Button variant='contained' onClick={this.handlePlaceBet}>Place Bet</Button>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12} md={6}>
+                        <List>
+                            <ListSubheader>
+                                Details:
+                            </ListSubheader>
+                            <ListItem>
+                                <ListItemIcon>
+                                    <HourglassEmptyIcon />
+                                </ListItemIcon>
+                                <ListItemText>
+                                    {this.generateDeadline(data.deadline)}
+                                </ListItemText>
+                            </ListItem>
+                            <ListItem>
+                                <ListItemIcon>
+                                    <PeopleIcon />
+                                </ListItemIcon>
+                                <ListItemText>
+                                    Participants: {data.numberOfBettors}
+                                </ListItemText>
+                            </ListItem>
+                        </List>
+                    </Col>
+                    <Col xs={12} md={6}>
+                        <List>
+                            <ListSubheader>
+                                Breakdown:
+                            </ListSubheader>
+                            <ListItem>
+                                <ListItemIcon>
+                                    <CheckIcon style={styles.tick}/>
+                                </ListItemIcon>
+                                <ListItemText>
+                                    For Total: {data.forBetTotal}
+                                </ListItemText>
+                            </ListItem>
+                            <ListItem>
+                                <ListItemIcon>
+                                    <ClearIcon style={styles.cross}/>
+                                </ListItemIcon>
+                                <ListItemText>
+                                    Against Total: {data.againstBetTotal}
+                                </ListItemText>
+                            </ListItem>
+                        </List>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12} md={6}>
+                        <List component="nav">
+                            <ListSubheader component="div">
+                                Side:
+                            </ListSubheader>
+                            <ListItem>
+                            <Select
+                                style={styles.side}
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={side}
+                                onChange={this.handleSideSelection}
+                                >
+                                <MenuItem value='yes'>For</MenuItem>
+                                <MenuItem value='no'>Against</MenuItem>
+                            </Select>
+                            </ListItem>
+                            </List>
+                        </Col>
+                        <Col xs={12} md={6}>
+                            <List>
+                            <ListSubheader component="div">
+                                Bet Value:
+                            </ListSubheader>
+                            <ListItem>
+                                <Input
+                                    onChange={this.handleBetAmount}
+                                    value={betAmount}
+                                    label="With normal TextField"
+                                    style={styles.input}
+                                    id="standard-adornment-weight"
+                                    endAdornment={<InputAdornment position="end">Coins</InputAdornment>}
+                                    aria-describedby="standard-weight-helper-text"
+                                />
+                            </ListItem>
+                            </List>
+                        </Col>
+                    </Row>
+            </div>
+        </Paper>
+        )
     }
 
     render() {
+        const {snackOpen, msg, msgType} = this.state;
         const {data} = this.props;
+
         let display = null;
         if(data.type === 'multi'){
             display = this.renderMulti();
         }else{
-            return <h1>test</h1>;
+            display = this.renderBinary()
         }
-        return display;
+        return (
+            <div>
+                <Snackbar open={snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
+                    <Alert onClose={this.handleSnackClose} severity={msgType}>{msg}</Alert>
+                </Snackbar>
+                {display}
+            </div>
+        )
     }
 }
 
 const styles = {
     card: {
-        padding: '15px'
+        padding: '15px',
+        marginTop: '15px'
     },
     col: {
         borderLeft: 'solid'
     },
     btn: {
-        marginLeft: 'auto',
-        marginRight: 'auto'
+        display: 'block',
+        marginLeft: '35px'
+    },
+    tick: {
+        color: 'green'
+    },
+    cross: {
+        color: 'red'
     },
     input: {
         maxWidth: '150px'
+    },
+    side: {
+        minWidth: '100px'
     }
 }
