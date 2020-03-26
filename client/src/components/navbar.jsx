@@ -4,7 +4,7 @@ import {Button, Navbar as BootNav, Nav, NavDropdown, Form} from 'react-bootstrap
 export default class Navbar extends React.Component{
     render(){
         return(
-            <BootNav bg='light'expand="lg" sticky="top">    
+            <BootNav bg='light'expand="lg" sticky="top" style={styles.nav}>    
                 <BootNav.Brand href="#home">Req</BootNav.Brand>
                 <BootNav.Toggle aria-controls="basic-BootNav-nav" />
                 <BootNav.Collapse id="basic-BootNav-nav">

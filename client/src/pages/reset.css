@@ -10,6 +10,10 @@ body{
     padding: 0px;
 }
 
+.MuiDrawer-paper{
+    top: auto !important
+}
+
 
 
 /* Old styling stuff */

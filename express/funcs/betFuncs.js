@@ -980,7 +980,6 @@ function getBetsForUser(data, user_name){
 function isSignedIn(reqCookies) {
     return new Promise((resolve, reject) => {
         if (reqCookies.Authorization) {
-            console.log(reqCookies.Authorization);
             let jwt = reqCookies.Authorization.split(' ')[1];
             const profile = verifyJwt(jwt);
             if (profile) {
