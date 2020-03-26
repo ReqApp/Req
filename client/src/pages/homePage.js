@@ -14,7 +14,7 @@ import Cathal from '../images/cathalAvatar.png';
 import Karl from '../images/Karl.jpeg';
 import Rory from '../images/Rory.jpeg';
 import Eoin from '../images/eoin.jpg';
-import ReqBackground from '../images/reqBackground3.jpeg'
+import ReqBackground from '../images/reqBackground4.jpg'
 import GitHubIcon from '../images/githubIcon.svg';
 
 
@@ -72,9 +72,9 @@ export class Home extends Component {
                 </Container>
 
                 <Container>
-                <h1 style={{textAlign:'center'}}> The Team</h1>
+                <h1 style={{textAlign:'center'}} className={styles.theTeam}> The Team</h1>
 
-                    <Row style={{textAlign:'center', paddingBottom:'30px'}}>
+                    <Row style={{textAlign:'center'}}>
                         <Col>
                         <Avatar alt="Cathal O'Callaghan - Back-end Infrastructure" src={Cathal} style={{width:'120px', height:'120px', margin:'12px auto 12px auto'}}></Avatar>
                         <h4 style={{fontWeight:'bold'}}>Cathal O'Callaghan <a href="https://iamcathal.github.io"><img src={GitHubIcon} style={{height:'26px', width:'26px'}}></img></a></h4> 
@@ -101,6 +101,16 @@ export class Home extends Component {
                         </Col>
                     </Row>
                 </Container>
+                <br />
+                <br />
+                <br />
+                {/* please forgive me for this */}
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
 
             </div>
         )
@@ -110,6 +120,9 @@ export class Home extends Component {
 const styles = {
     con: {
         height: '100vh'
+    },
+    theTeam: {
+        padding: '0px 0px 50px 0px'
     },
     logo: {
         marginTop: 100,

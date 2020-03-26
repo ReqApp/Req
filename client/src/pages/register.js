@@ -17,6 +17,14 @@ import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 // Components
 import Copyright from '../components/copyRight';
+import Navbar from '../components/navbar';
+
+
+import SteamLogo from '../images/steamLogo.webp';
+import GitHubLogo from '../images/githubIcon.svg';
+import GoogleLogo from '../images/googleLogo.webp';
+
+
 
 class Register extends React.Component{
   constructor(props){
@@ -25,9 +33,12 @@ class Register extends React.Component{
   render(){
     const {classes} = this.props;
     return (
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <div className={classes.paper}>
+      <div>
+          <Navbar />
+          <Container component="main" maxWidth="xs" style={{textAlign:'center'}}>
+          <CssBaseline />
+
+          <div className={classes.paper}>
           <Typography component="h1" variant="h5">
             Register
           </Typography>
@@ -61,31 +72,25 @@ class Register extends React.Component{
               color="primary"
               className={classes.submit}
             >
-              Sign In
+              Register
             </Button>
 
             Register through a 3rd party application
 
-            <Grid container>
+            <Grid container> 
               <Grid item lg>
                 <Link href="http://localhost:9000/users/auth/github" variant="body2">
-                <Avatar className={classes.avatar}>
-                  <GitHubIcon />
-                </Avatar>
+                <img src={GitHubLogo} className={classes.OAuthApp}></img>
                 </Link>
               </Grid>
               <Grid item lg>
                 <Link href="http://localhost:9000/users/auth/google" variant="body2">
-                <Avatar className={classes.avatar}>
-                  <GTranslateIcon />
-                </Avatar>
+                <img src={GoogleLogo} className={classes.OAuthApp}></img>
                 </Link>
               </Grid>
               <Grid item lg>
                 <Link href="http://localhost:9000/users/auth/steam" variant="body2">
-                <Avatar className={classes.avatar}>
-                  <GroupWorkIcon />
-                </Avatar>
+                <img src={SteamLogo} className={classes.OAuthApp}></img>
                 </Link>
               </Grid>
             </Grid>
@@ -103,11 +108,12 @@ class Register extends React.Component{
               </Grid>
             </Grid>
           </form>
-        </div>
+          </div>
         <Box mt={8}>
           <Copyright />
         </Box>
       </Container>
+      </div>
     );
   }
 }
@@ -119,6 +125,11 @@ const classes = theme => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
+  OAuthApp: {
+    margin: '16px 0px 16px 0px',
+    width: '40px',
+    height: '40px'
+  },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.text.primary,
@@ -126,7 +137,7 @@ const classes = theme => ({
   },
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    marginTop: '30px'
   },
   submit: {
     margin: theme.spacing(3, 0, 2),

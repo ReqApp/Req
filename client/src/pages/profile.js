@@ -16,6 +16,9 @@ import Coins from '../components/coins';
 //Other
 import openSocket from 'socket.io-client';
 
+import ReqBackground from '../images/reqBackground4.jpg'
+
+
 export class Profile extends React.Component{    
     constructor(props){
         super(props);
@@ -62,12 +65,12 @@ export class Profile extends React.Component{
         const {userName, gettingUserName} = this.state;
         if(!gettingUserName){
         return(         
-            <div>
+            <div style={styles.backing}>
                 <Navbar />
+                <Container>
                 <div style={styles.container}>
                     <Row>
                         <Col>
-                        <h1>test</h1>
                             <Paper elevation={3} style={styles.profile}>
                                 <Container>
                                     <Row>
@@ -101,8 +104,7 @@ export class Profile extends React.Component{
                         </Col>
                     </Row>
                 </div>
-                
-                
+                </Container>
             </div>   
         );
         }return null;
@@ -114,6 +116,11 @@ const styles = {
         padding: '15px',
         marginTop: '15px',
         marginBottom: '15px'
+    },
+    backing: {
+        backgroundImage:`url(${ReqBackground})`,
+        backgroundPosition: 'center',
+        height:'100%'
     },
     stats: {
         padding: '15px'
