@@ -31,6 +31,9 @@ export class Home extends Component {
                                 <EuroIcon fontSize="large" style={styles.icon}/>
                                 <Typography>
                                     With Req the sky is really the limit in terms of what you can bet on
+                                    <br />
+                                    <br />
+                                    <a href=""> Create your first bet </a>
                                 </Typography>
                             </Paper>
                         </Col>
@@ -40,6 +43,9 @@ export class Home extends Component {
                                 <ExploreIcon fontSize="large" style={styles.icon}/>
                                 <Typography>
                                     Simply sitting at home using Req won't give you the full experience. Go outside and explore on your search for the next jackpot.
+                                    <br />
+                                    < br />
+                                    <a href=""> Search for bets in your area </a>
                                 </Typography>
                             </Paper>
                         </Col>
@@ -49,6 +55,9 @@ export class Home extends Component {
                                 <PeopleIcon fontSize="large" style={styles.icon}/>
                                 <Typography>
                                     All creators are credited 10% of all coins which incentivizes new and creative bets.
+                                    <br />
+                                    <br />
+                                    <a href=""> Learn about how our betting system works </a>
                                 </Typography>
                             </Paper>
                         </Col>
