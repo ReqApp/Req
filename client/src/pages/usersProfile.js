@@ -54,8 +54,8 @@ export default function UsersProfile() {
           <img src="https://avatars0.githubusercontent.com/u/6561327?s=460&u=3746478b26e66ebe22eba9ba20097b477c455cc3&v=4" 
           style={{ height: "25vh", margin: "2vh 2vh" }}
           />
-          <Typography component="h1" variant="h5">
-            IamCathal
+          <Typography component="h3" variant="h1">
+            IamCathal yeet
         </Typography>
 
           <Grid container style={{justifyContent:"center"}}>

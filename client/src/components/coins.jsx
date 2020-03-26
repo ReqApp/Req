@@ -36,7 +36,7 @@ export default class Coins extends React.Component{
         .then((res) => res.json())
         .then((res) => {
             if (res.status === "information") {
-                console.log(res);
+                console.log(res.body);
                 this.setState({loadingCoins : false, totalCoins : res.body});
             }
             else{
@@ -54,9 +54,13 @@ export default class Coins extends React.Component{
         const {loadingCoins, errorMsg, totalCoins} = this.state;
         if(!loadingCoins){
             return(
-                <Badge color="secondary" badgeContent={totalCoins} max={100000} style={styles.coinIcon}>
-                    <MonetizationOnIcon />
-                </Badge>
+                <div>
+                <h2 style={{margin:'0px', fontWeight:'bold'}}> {totalCoins } </h2>  <h5 style={{margin:'0px'}}> coins </h5>
+                </div>
+                
+                // <Badge color="secondary" badgeContent={totalCoins} max={100} style={styles.coinIcon}>
+                //     <MonetizationOnIcon />
+                // </Badge>
             )
         }
         return null;

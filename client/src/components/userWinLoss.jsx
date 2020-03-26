@@ -49,9 +49,9 @@ export default class UserWinLoss extends Component {
         const COLORS = ['#0088FE', '#00C49F'];
         if(retrievedData){
             return (
-                <div>
-                    <h6>User Win/Loss:</h6>
-                    <PieChart width={800} height={400} onMouseEnter={this.onPieEnter}>
+                <div xs="auto" style={{margin:'20px', padding:'10px', backgroundColor:'#ddb1fc', borderRadius:'8px', textAlign:'center'}}>
+                    <h4>Win vs Loss</h4>
+                    <PieChart width={280} height={400} onMouseEnter={this.onPieEnter}>
                         <Pie
                         data={graphData} 
                         cx={120} 

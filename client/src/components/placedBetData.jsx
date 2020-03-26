@@ -72,7 +72,7 @@ export default class PlacedBetData extends Component {
         const {dataRetrieved, graphData} = this.state;
         if(dataRetrieved){
             return(
-                <div>
+                <div style={{ padding:'10px', borderRadius:'8px', backgroundColor:'#ddb1fc'}}>
                     <h6>Placed Bet Proft and Loss:</h6>
                     <AreaChart width={500} height={250} data={graphData}
                         margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>

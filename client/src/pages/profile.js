@@ -70,14 +70,22 @@ export class Profile extends React.Component{
                             <Paper elevation={3} style={styles.profile}>
                                 <Container>
                                     <Row>
-                                        <Col>
+                                        <Col xs="auto">
                                             <ProfilePicture user={userName} />
                                         </Col>
                                         <Col>
-                                            <h1>{userName}</h1>
-                                        </Col>
-                                        <Col>
-                                            <Coins user={userName}/>
+                                        <Container>
+                                            <Row>
+                                                <Col xs="auto">
+                                                    <h1> {userName} </h1>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col xs="auto">
+                                                    <Coins user={userName}/> 
+                                                </Col>
+                                            </Row>
+                                        </Container>
                                         </Col>
                                     </Row>
                                 </Container>
@@ -87,7 +95,6 @@ export class Profile extends React.Component{
                     <Row>
                         <Col>
                         <Paper elevation={3} style={styles.stats}>
-                            <h2>Betting Statistics:</h2>
                             <Graphs user={userName} />
                         </Paper>
                         </Col>

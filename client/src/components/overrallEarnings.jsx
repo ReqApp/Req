@@ -2,7 +2,7 @@
 // React
 import React, { Component } from 'react'
 
-export default class PeopleReached extends Component {
+export default class OverrallEarnings extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -49,9 +49,9 @@ export default class PeopleReached extends Component {
         const {betsMade, peopleReached, dataRetrieved} = this.state;
         if(dataRetrieved){
             return (
-                <div style={{ margin: '20px', textAlign:'center', padding:'10px', borderRadius:'8px', backgroundColor:'#daa1f0'}}>
-                    <h3 style={{padding:'2px 2px 0px 2px'}}>Bets made:</h3><h2 style={{padding:'0px',  fontWeight:'bold'}}>{betsMade}</h2>
-                    <h3>People reached:</h3><h2  style={{padding:'0px', fontWeight:'bold'}}>{peopleReached}</h2>
+                <div style={{ margin: '20px', padding:'10px', borderRadius:'8px', backgroundColor:'#ddb1fc', textAlign:'center'}}>
+                    <h3> Overall earnings: </h3>
+                    <h1> 15,020</h1>
                 </div>
                 
             )

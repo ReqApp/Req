@@ -70,9 +70,9 @@ export default class CreatedBetData extends Component {
         const {dataRetrieved, graphData} = this.state;
         if(dataRetrieved){
             return(
-                <div>
+                <div style={{ padding:'10px', borderRadius:'8px', backgroundColor:'#ddb1fc'}}>
                     <h6>Created Bet Proft and Loss:</h6>
-                    <AreaChart width={500} height={250} data={graphData}
+                    <AreaChart width={470} height={230} data={graphData}
                         margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                         <defs>
                             <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
