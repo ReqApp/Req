@@ -7,6 +7,7 @@ import EuroIcon from '@material-ui/icons/Euro';
 import ExploreIcon from '@material-ui/icons/Explore';
 import PeopleIcon from '@material-ui/icons/People';
 import logo from '../images/reqGif.gif'
+import ReqAnimation from '../components/reqAnimation';
 import Copyright from '../components/copyRight'
 
 
@@ -18,11 +19,13 @@ export class Home extends Component {
                 <Container style={styles.con}>
                     <Row>
                         <Col>
-                            <img src={logo} style={styles.logo}/>
+                            {/* <img src={logo} style={styles.logo}/> */}
+                            <ReqAnimation />
                         </Col>
                     </Row>
                     <Row>
                         <Col>
+              
                             <Paper elevation={3} style={styles.card}>
                                 <h4>Win Big</h4>
                                 <EuroIcon fontSize="large" style={styles.icon}/>
