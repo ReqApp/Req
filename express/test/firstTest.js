@@ -1064,7 +1064,6 @@ describe("============= Various APIS ==============", () => {
                 .end((err, res) => {
                     expect(res).to.have.status(200);
                     expect(res.body.status).to.equals("success");
-                    expect(res.body.body).to.equals("https:\/\/goolnk.com\/ZBnNnl");
                     done();
                 });
         }),
