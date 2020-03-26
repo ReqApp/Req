@@ -2,9 +2,16 @@ import React from 'react';
 import {Button, Navbar as BootNav, Nav, NavDropdown, Form} from 'react-bootstrap/';
 import reqLogo from '../images/reqLogo.png';
 
+
+/*
+            <BootNav bg='light'expand="lg" sticky="top" style={styles.nav}>    
+                <BootNav.Brand href="#home">Req</BootNav.Brand>
+*/
+
 export default class Navbar extends React.Component{
     render(){
         return(
+
             <BootNav bg='light'expand="lg" sticky="top">    
                 <a href="/home"><img src={reqLogo} style={{width:'65px'}}/></a>
                 <BootNav.Toggle aria-controls="basic-BootNav-nav" />

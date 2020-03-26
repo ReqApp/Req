@@ -13,9 +13,8 @@ import {FAQ} from './pages/faq';
 import {About} from './pages/about';
 import {Profile} from './pages/profile';
 import Payment from './stripePayment.js';
-import {Dashboard} from './pages/dashboard';
+import Dashboard from './pages/dashboard.js';
 import {Home} from './pages/homePage';
-
 
 class App extends Component{
     render(){

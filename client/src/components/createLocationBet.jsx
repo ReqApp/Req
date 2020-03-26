@@ -6,7 +6,6 @@ import {Container, Row, Col } from 'react-bootstrap/';
 import TextField from '@material-ui/core/TextField';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {Paper} from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
@@ -40,8 +39,8 @@ export default class CreateLocationBet extends React.Component{
         this.state = {
             betType: 'none',
             side: '',
-            sliderOne: 60,
-            sliderTwo: 30,
+            sliderOne: 70,
+            sliderTwo: 20,
             sliderThree: 10,
             radius: 100,
             location_name: '',

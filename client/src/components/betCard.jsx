@@ -28,8 +28,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 // Components
 import Alert from '../components/alertSnack';
 
-// TODO check if user has already bet on bet then don't display
-
 export default class betCard extends Component {
     constructor(props){
         super(props);
