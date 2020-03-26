@@ -82,11 +82,11 @@ router.post('/shortenLink', (req, res) => {
 router.post('/getCoins', (req, res) => {
     // change in future to take in a jwt and get coins from that,
     // dont want people to be able to view other people's coin amounts
-    if (req.body.user_name) {
-        generalFuncs.getCoins(req.body.user_name).then((data) => {
+    if (req.body.username) {
+        generalFuncs.getCoins(req.body.username).then((data) => {
             if (data || data == "0") {
                 res.status(200).json({
-                    "status": "information",
+                    "status": "success",
                     "body": data
                 });
             } else {

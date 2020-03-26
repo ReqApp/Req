@@ -119,7 +119,6 @@ function betOn(userObj) {
                             reject(err);
                         } else {
                             if (result) {
-                                console.log(`bet added`);
                                 resolve(true);
                             } else {
                                 resolve(null);
@@ -154,8 +153,7 @@ function betOn(userObj) {
                     }
                 })
         } else {
-            console.log("poggers")
-            reject("Incorrect bet typee");
+            reject("Incorrect bet type");
         }
     })
 }
@@ -282,7 +280,6 @@ function deleteBet(betID) {
                 console.log(`delete err ${err}`);
                 reject(err);
             } else {
-                console.log(`delete success`);
                 resolve(true);
             }
         })
@@ -970,7 +967,6 @@ function checkIfExisting(username, type) {
                     if (foundUser) {
                         resolve(null);
                     } else {
-                        console.log(`not found`);
                         resolve(username);
                     }
                 }
@@ -1001,7 +997,6 @@ function sendEmail(email, subject, body) {
         const params = [email, subject, body];
         child(execPath, params, (err, data) => {
             if (err) {
-                console.log(err)
                 reject(err);
             }
             if (data) {

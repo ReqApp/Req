@@ -724,20 +724,20 @@ describe("============= Betting =============", () => {
 
 describe("============= Analytics APIs =============", () => {
     it("Invalid username", done => {
-        chai
-            .request(app)
-            .post("/analytics/getBettingHistory")
-            .send({
-                "username": fuzzUsername,
-            })
-            .end((err, res) => {
-                expect(res).to.have.status(200);
-                expect(res.body.body).to.equals('No bets found');
-                expect(res.body.status).to.equals("success");
-                done();
-            });
-    });
-    it("Valid search", done => {
+            chai
+                .request(app)
+                .post("/analytics/getBettingHistory")
+                .send({
+                    "username": fuzzUsername,
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.body).to.equals('No bets found');
+                    expect(res.body.status).to.equals("success");
+                    done();
+                });
+        }),
+        it("Valid search", done => {
             chai
                 .request(app)
                 .post("/analytics/getBettingHistory")
@@ -957,7 +957,45 @@ describe("============= Analytics APIs =============", () => {
                     expect(res.body.status).to.equals("success");
                     done();
                 });
-        })
+        }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/getCoins")
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.body).to.equals('No username given');
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("Invalid ussername", done => {
+            chai
+                .request(app)
+                .post("/getCoins")
+                .send({
+                    "username": fuzzUsername
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.body).to.equals('Error getting coins');
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("Valid request", done => {
+            chai
+                .request(app)
+                .post("/getCoins")
+                .send({
+                    "username": "IamCathal"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.status).to.equals("success");
+                    done();
+                });
+        });
 });
 
 describe("============= Various APIS ==============", () => {
@@ -985,6 +1023,59 @@ describe("============= Various APIS ==============", () => {
                     expect(res).to.have.status(401);
                     expect(res.body.status).to.equals("error");
                     expect(res.body.body).to.equals("You are not authorized to do this");
+
+                    done();
+                });
+        }),
+        it("No Input", done => {
+            chai
+                .request(app)
+                .post("/shortenLink")
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("No url given");
+
+                    done();
+                });
+        }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/shortenLink")
+                .send({
+                    "url": null
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("No url given");
+
+                    done();
+                });
+        }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/shortenLink")
+                .send({
+                    "url": "https://github.com/iamcathal"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.status).to.equals("success");
+                    expect(res.body.body).to.equals("https:\/\/goolnk.com\/ZBnNnl");
+                    done();
+                });
+        }),
+        it("Invalid cookies", done => {
+            chai
+                .request(app)
+                .get("/users/profile")
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.status).to.equals("error");
+                    expect(res.body.body).to.equals("No Authorization cookie present");
 
                     done();
                 });

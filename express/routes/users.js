@@ -60,8 +60,11 @@ router.get('/profile', (req, res) => {
             res.send(profile.user_name);
         }
     } else {
-        res.send("Could not get profile");
-        //res.render('register');
+        res.status(400).json({
+                "status": "error",
+                "body": "No Authorization cookie present"
+            })
+            //res.render('register');
     }
 });
 

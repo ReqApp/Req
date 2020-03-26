@@ -537,7 +537,6 @@ router.post('/bigButtonBet', (req, res) => {
                                     });
                                 })
                             } else {
-                                console.log("invalid bet id")
                                 res.status(400).json({
                                     "status": "error",
                                     "body": "Invalid bet ID"
