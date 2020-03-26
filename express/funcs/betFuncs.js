@@ -856,7 +856,9 @@ function anonymiseBetData(allBets) {
                     deadline: indivBet.deadline,
                     forBetTotal: forTotal,
                     againstBetTotal: againstTotal,
-                    betID: indivBet._id
+                    numberOfBettors : indivBet.forUsers.length + indivBet.againstUsers.length,
+                    betID: indivBet._id,
+                    type: indivBet.type
                 }
                 betArr.push(tempBet);
 
@@ -872,7 +874,12 @@ function anonymiseBetData(allBets) {
                     username: indivBet.user_name,
                     deadline: indivBet.deadline,
                     betsTotal: commonTotal,
-                    betID: indivBet._id
+                    firstPlaceCut : indivBet.firstPlaceCut,
+                    secondPlaceCut : indivBet.secondPlaceCut,
+                    thirdPlaceCut : indivBet.thirdPlaceCut,
+                    numberOfBettors : indivBet.commonBets.length,
+                    betID: indivBet._id,
+                    type: indivBet.type
                 }
                 betArr.push(tempBet);
             }
@@ -881,16 +888,55 @@ function anonymiseBetData(allBets) {
     });
 }
 
+// TODO implement location bet check
+function findNewBets(user_name){
+    return new Promise((resolve, reject) => {
+        let newBets = [];
+        getBets().then(bets => {
+            if(bets){
+                bets.forEach(bet => {
+                    let found = false;
+                    if(bet.type === 'binary'){
+                        if(bet.forUsers.find(user => user.user_name === user_name)){
+                            found = true;
+                        }
+                        if(bet.againstUsers.find(user => user.user_name === user_name)){
+                            found = true;
+                        }
+                        if(!found){
+                            newBets.push(bet);
+                        }
+                    }
+                    else{
+                        if(bet.commonBets.find(user => user.user_name === user_name)){
+                            ;;
+                        }
+                        else{
+                            newBets.push(bet);
+                        }
+                    }
+
+                })
+            }
+            resolve(newBets);
+        }, err => {
+            reject(err);
+        });
+    });
+}
+
 function getBetsForUser(data, user_name){
     return new Promise((resolve, reject) => {
         let anonBets = [];
         let userAmounts = [];
+        let betValues = [];
         data.forEach(element => {
             if(element.type === 'binary'){
                 let flag = true;
                 element.forUsers.forEach(user => {
                     if(user.user_name === user_name){
                         userAmounts.unshift(user.betAmount);
+                        betValues.push('For');
                         anonBets.push(element.toObject());
                         flag = false;
                     }         
@@ -899,6 +945,7 @@ function getBetsForUser(data, user_name){
                     element.againstUsers.forEach(user => {
                         if(user.user_name === user_name){
                             userAmounts.unshift(user.betAmount);
+                            betValues.push('Against');
                             anonBets.push(element.toObject());
                         }
                     });
@@ -908,6 +955,7 @@ function getBetsForUser(data, user_name){
                 element.commonBets.forEach(user => {
                     if(user.user_name === user_name){
                         userAmounts.unshift(user.betAmount);
+                        betValues.push(user.bet);
                         anonBets.push(element.toObject());
                     }
                 });
@@ -917,6 +965,7 @@ function getBetsForUser(data, user_name){
             if(anonBets){
                 for(let i = 0; i < anonBets.length; i++){
                     res[i].userAmount = userAmounts[i];
+                    res[i].betValue = betValues[i];
                 }
                 resolve(res);
             }else{
@@ -1146,3 +1195,4 @@ module.exports.anonymiseBetData = anonymiseBetData;
 module.exports.expiredBetPayBack = expiredBetPayBack;
 module.exports.isPasswordCompromised = isPasswordCompromised;
 module.exports.getBetsForUser = getBetsForUser;
+module.exports.findNewBets = findNewBets;
