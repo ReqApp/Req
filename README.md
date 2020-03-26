@@ -29,6 +29,10 @@ Req is a 2nd year software engineering group project made to be an app where any
 |<a href="https://github.com/Rorysweeney99"> Rory Sweeney</a> | ![](https://img.shields.io/github/followers/rorysweeney99?label=Followers&style=social) |
 |<a href="https://iamcathal.github.io"> Cathal O'Callaghan </a> | ![](https://img.shields.io/github/followers/IamCathal?label=Followers&style=social)|
 
+## Roles Within Project
+### Front end UI/UX - *Rory Sweeney & Karl Gordon*
+### Back end infrastructure/Front end UI - *Eoin Mc Ardle & Cathal O'Callaghan*
+
 ### Using Mobile-App
 1. Install expo-cli
 2. Download expo app on your phone (or use simulator)
