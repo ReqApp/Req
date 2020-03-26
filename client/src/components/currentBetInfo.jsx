@@ -33,7 +33,8 @@ export default class currentBetInfo extends Component {
     }
 
     displayBet = (bet) => {
-        if(!isNaN(bet.betValue)){
+        // For Binary Bet
+        if(bet.type === 'binary'){
             let data = [
                 { name : 'For', For : bet.forBetTotal},
                 { name : 'Against', Against : bet.againstBetTotal}
@@ -53,21 +54,24 @@ export default class currentBetInfo extends Component {
                         <YAxis />
                         <Tooltip />
                         <Legend />
-                        <Bar dataKey="For" stackId="a" fill="#8884d8" />
-                        <Bar dataKey="Against" stackId="a" fill="#8884d8" />
+                        <Bar dataKey="For" stackId="a" fill="#008000" />
+                        <Bar dataKey="Against" stackId="a" fill="#B22222" />
                     </BarChart>
                 </div>
             )
-        }else{
+        }
+        // Multi Bet
+        else{
             let data = [
                 { place : 'First', Cut : bet.betsTotal * bet.firstPlaceCut},
                 { place : 'Second', Cut : bet.betsTotal * bet.secondPlaceCut},
                 { place : 'Third', Cut : bet.betsTotal * bet.thirdPlaceCut}
             ];
+            console.log(data);
             return(
                 <div>
                     <RadarChart outerRadius={80} height={200} width={300} data={data}>
-                        <PolarGrid gridType='circle'/>
+                        <PolarGrid gridType={"circle"} />
                         <PolarAngleAxis dataKey="place" />
                         <PolarRadiusAxis angle={30}/>
                         <Radar name="Cuts" dataKey="Cut" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />

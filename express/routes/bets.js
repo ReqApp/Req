@@ -676,7 +676,6 @@ router.post('/getBets', (req, res, next) => {
 
 router.post('/getBetsForUser', (req, res) => {
     // Check if user is signed in
-    console.log(req.cookies.Authorization);
     utilFuncs.isSignedIn(req.cookies).then(profile => {
         if(profile){
             // Get all bets
@@ -702,6 +701,36 @@ router.post('/getBetsForUser', (req, res) => {
                 });
             });
         }else{
+            res.status(400).json({
+                'status' : 'error',
+                'body' : 'User not signed in'
+            });
+        }
+    });
+});
+
+router.post('/findNewBets', (req, res) => {
+    utilFuncs.isSignedIn(req.cookies).then(profile => {
+        if(profile){
+            utilFuncs.findNewBets(profile.user_name).then(bets => {
+                if(bets){
+                    res.status(200).json({
+                        'status' : 'success',
+                        'body' : bets
+                    });
+                }else{
+                    res.status(200).json({
+                        'status' : 'success',
+                        'body' : 'No bets'
+                    })
+                }
+                }, err => {
+                    res.status(400).json({
+                        'status' : 'error',
+                        'body' : err
+                });
+            });
+    }else{
             res.status(400).json({
                 'status' : 'error',
                 'body' : 'User not signed in'

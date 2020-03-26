@@ -16,7 +16,7 @@ export default class FindBets extends React.Component{
         }
     }
     componentDidMount() {
-        fetch('http://localhost:9000/getBets', {
+        fetch('http://localhost:9000/findNewBets', {
             method: 'POST',
             credentials: 'include',
             headers: {

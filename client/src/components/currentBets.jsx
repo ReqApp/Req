@@ -25,7 +25,7 @@ export default class CurrentBets extends React.Component {
           .then((res) => res.json())
           .then((res) => {
             if(res.status === "success"){
-                console.log(res);
+              console.log(res);
               this.setState({loadingBets : false, bets : res.body});
             }
             else if(res.status === 'error' && res.body === 'User not signed in'){

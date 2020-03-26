@@ -888,6 +888,43 @@ function anonymiseBetData(allBets) {
     });
 }
 
+// TODO implement location bet check
+function findNewBets(user_name){
+    return new Promise((resolve, reject) => {
+        let newBets = [];
+        getBets().then(bets => {
+            if(bets){
+                bets.forEach(bet => {
+                    let found = false;
+                    if(bet.type === 'binary'){
+                        if(bet.forUsers.find(user => user.user_name === user_name)){
+                            found = true;
+                        }
+                        if(bet.againstUsers.find(user => user.user_name === user_name)){
+                            found = true;
+                        }
+                        if(!found){
+                            newBets.push(bet);
+                        }
+                    }
+                    else{
+                        if(bet.commonBets.find(user => user.user_name === user_name)){
+                            ;;
+                        }
+                        else{
+                            newBets.push(bet);
+                        }
+                    }
+
+                })
+            }
+            resolve(newBets);
+        }, err => {
+            reject(err);
+        });
+    });
+}
+
 function getBetsForUser(data, user_name){
     return new Promise((resolve, reject) => {
         let anonBets = [];
@@ -899,7 +936,7 @@ function getBetsForUser(data, user_name){
                 element.forUsers.forEach(user => {
                     if(user.user_name === user_name){
                         userAmounts.unshift(user.betAmount);
-                        betValues.unshift('For');
+                        betValues.push('For');
                         anonBets.push(element.toObject());
                         flag = false;
                     }         
@@ -908,7 +945,7 @@ function getBetsForUser(data, user_name){
                     element.againstUsers.forEach(user => {
                         if(user.user_name === user_name){
                             userAmounts.unshift(user.betAmount);
-                            betValues.unshift('Against');
+                            betValues.push('Against');
                             anonBets.push(element.toObject());
                         }
                     });
@@ -918,7 +955,7 @@ function getBetsForUser(data, user_name){
                 element.commonBets.forEach(user => {
                     if(user.user_name === user_name){
                         userAmounts.unshift(user.betAmount);
-                        betValues.unshift(user.bet);
+                        betValues.push(user.bet);
                         anonBets.push(element.toObject());
                     }
                 });
@@ -1158,3 +1195,4 @@ module.exports.anonymiseBetData = anonymiseBetData;
 module.exports.expiredBetPayBack = expiredBetPayBack;
 module.exports.isPasswordCompromised = isPasswordCompromised;
 module.exports.getBetsForUser = getBetsForUser;
+module.exports.findNewBets = findNewBets;
