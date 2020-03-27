@@ -63,7 +63,7 @@ export default class CreateBetForm extends Component {
                 firstPlaceCut : sliderOne / 100,
                 secondPlaceCut : sliderTwo / 100,
                 thirdPlaceCut : sliderThree / 100,
-                deadline : date
+                deadline : (+date) / 1000
             }
 
             fetch('http://localhost:9000/makeBet', {

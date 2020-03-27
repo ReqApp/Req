@@ -889,6 +889,7 @@ function anonymiseBetData(allBets) {
 }
 
 // TODO implement location bet check
+// Returns bets not yet bet on or created by user
 function findNewBets(user_name){
     return new Promise((resolve, reject) => {
         let newBets = [];
@@ -896,7 +897,11 @@ function findNewBets(user_name){
             if(bets){
                 bets.forEach(bet => {
                     let found = false;
-                    if(bet.type === 'binary'){
+                    let userCreated = false;
+                    if(bet.user_name === user_name){
+                        userCreated = true;
+                    }
+                    if(bet.type === 'binary' && !userCreated){
                         if(bet.forUsers.find(user => user.user_name === user_name)){
                             found = true;
                         }
@@ -907,7 +912,7 @@ function findNewBets(user_name){
                             newBets.push(bet);
                         }
                     }
-                    else{
+                    else if(!userCreated){
                         if(bet.commonBets.find(user => user.user_name === user_name)){
                             ;;
                         }
@@ -921,6 +926,24 @@ function findNewBets(user_name){
             resolve(newBets);
         }, err => {
             reject(err);
+        });
+    });
+}
+
+function getUserCreatedBets(user_name){
+    return new Promise((resolve, reject) => {
+        let userBets = [];
+        getBets().then(bets => {
+            bets.forEach(bet => {
+                if(bet.user_name === user_name){
+                    userBets.push(bet);
+                }
+            }, err => {
+                reject(err);
+            })
+            anonymiseBetData(userBets).then(res => {
+                resolve(res);
+            });
         });
     });
 }
@@ -962,8 +985,8 @@ function getBetsForUser(data, user_name){
             }
         });
         anonymiseBetData(anonBets).then(res => {
-            if(anonBets){
-                for(let i = 0; i < anonBets.length; i++){
+            if(res){
+                for(let i = 0; i < res.length; i++){
                     res[i].userAmount = userAmounts[i];
                     res[i].betValue = betValues[i];
                 }
@@ -1195,3 +1218,4 @@ module.exports.expiredBetPayBack = expiredBetPayBack;
 module.exports.isPasswordCompromised = isPasswordCompromised;
 module.exports.getBetsForUser = getBetsForUser;
 module.exports.findNewBets = findNewBets;
+module.exports.getUserCreatedBets = getUserCreatedBets;

@@ -23,13 +23,9 @@ import PersonIcon from '@material-ui/icons/Person';
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 
 
-export default class currentBetInfo extends Component {
+export default class CurrentBetInfo extends Component {
     constructor(props) {
         super(props)
-    
-        this.state = {
-             
-        }
     }
 
     displayBet = (bet) => {

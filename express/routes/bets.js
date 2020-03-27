@@ -674,6 +674,30 @@ router.post('/getBets', (req, res, next) => {
     })
 });
 
+router.post('/getUserCreatedBets', (req, res) => {
+    utilFuncs.isSignedIn(req.cookies).then(profile => {
+        if(profile){
+            utilFuncs.getUserCreatedBets(profile.user_name)
+            .then(bets => {
+                res.status(200).json({
+                    'status' : 'success',
+                    'body' : bets
+                });
+            }, err => {
+                res.status(400).json({
+                    'status' : 'error',
+                    'body' : err
+                })
+            });
+        }else{
+            res.status(400).json({
+                'status' : 'error',
+                'body' : 'User not signed in'
+             });
+        }
+    });
+});
+
 router.post('/getBetsForUser', (req, res) => {
     // Check if user is signed in
     utilFuncs.isSignedIn(req.cookies).then(profile => {

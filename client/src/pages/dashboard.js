@@ -31,6 +31,7 @@ import Navbar from '../components/navbar';
 import CurrentBets from '../components/currentBets';
 import FindBets from '../components/findBets';
 import CreateBetForm from '../components/createBetForm';
+import UserCreatedBets from '../components/userCreatedBets';
 import Alert from '../components/alertSnack';
 import './reset.css';
 
@@ -233,10 +234,19 @@ class Dashboard extends React.Component{
                   </Row>
                   <Row style={styles.row}>
                       <Col xs={12} md={6} style={styles.col}>
+                        <Row>
+                          <Col>
                           <Paper style={styles.paper}>
                             <h2>Your Current Bets:</h2>
                             <CurrentBets />
                           </Paper>
+                          </Col>
+                          </Row>
+                          <Row>
+                            <Col>
+                              <UserCreatedBets />
+                            </Col>
+                          </Row>
                       </Col>
                       <Col xs={12} md={6}>
                         <Paper style={styles.paper}>
