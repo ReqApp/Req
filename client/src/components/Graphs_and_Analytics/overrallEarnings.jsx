@@ -6,6 +6,7 @@ export default class OverrallEarnings extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            overrallEarningsVal: 0,
             dataRetrieved: false,
             errorMsg: 'Fetching data'
         };
@@ -13,7 +14,7 @@ export default class OverrallEarnings extends Component {
 
     componentDidMount() {
         const {user} = this.props;
-        fetch("http://localhost:9000/analytics/getPeopleReached", {
+        fetch("http://localhost:9000/analytics/getBettingHistory", {
             method: 'POST',
             crossDomain: true,
             headers: {
@@ -27,7 +28,7 @@ export default class OverrallEarnings extends Component {
         .then((res) => res.json())
         .then((res) => {
             if (res.status === "success") {
-                this.setState({betsMade : res.body.betsMade, peopleReached : res.body.peopleReached, dataRetrieved: true});
+                this.parseData(res.body);
             }
             else if(res.body === 'Invalid username'){
                 this.setState({errorMsg : 'User not found'});
@@ -43,13 +44,22 @@ export default class OverrallEarnings extends Component {
         });
     }
 
+    parseData = (data) => {
+        let total = 0;
+        data.forEach(bet => {
+            total += bet.profitOrLoss;
+        });
+        console.log(`Toal is ${total}`)
+        this.setState({overrallEarningsVal: total, dataRetrieved: true});
+    }
+
     render() {
-        const {dataRetrieved} = this.state;
+        const {overrallEarningsVal, dataRetrieved} = this.state;
         if(dataRetrieved){
             return (
-                <div style={{ margin: '20px', padding:'10px', borderRadius:'8px', backgroundColor:'#ddb1fc', textAlign:'center'}}>
+                <div style={{ margin: '20px', padding:'10px', borderRadius:'8px', backgroundColor:'#c5c9c9', textAlign:'center'}}>
                     <h3> Overall earnings: </h3>
-                    <h1> 15,020</h1>
+                    <h1> {overrallEarningsVal}</h1>
                 </div>
                 
             )

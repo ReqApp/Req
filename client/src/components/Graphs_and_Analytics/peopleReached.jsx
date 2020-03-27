@@ -49,9 +49,13 @@ export default class PeopleReached extends Component {
         const {betsMade, peopleReached, dataRetrieved} = this.state;
         if(dataRetrieved){
             return (
-                <div style={{ margin: '20px', textAlign:'center', padding:'10px', borderRadius:'8px', backgroundColor:'#daa1f0'}}>
-                    <h3 style={{padding:'2px 2px 0px 2px'}}>Bets made:</h3><h2 style={{padding:'0px',  fontWeight:'bold'}}>{betsMade}</h2>
-                    <h3>People reached:</h3><h2  style={{padding:'0px', fontWeight:'bold'}}>{peopleReached}</h2>
+                <div style={{ margin: '10px', textAlign:'center', padding:'10px', borderRadius:'8px', backgroundColor:'#c5c9c9', height:'255px'}}>
+
+                    <h4 style={{padding:'2px 2px 0px 2px'}}>Bets made:</h4>
+                    <h1 style={{padding:'0px',  fontWeight:'bold'}}>{betsMade}</h1>
+
+                    <h4>People reached:</h4>
+                    <h1  style={{padding:'0px', fontWeight:'bold'}}>{peopleReached}</h1>
                 </div>
                 
             )
