@@ -1,9 +1,9 @@
 // React
 import React from 'react';
 // Bootstrap
-import {Container, Row, Col} from 'react-bootstrap';
+import {Row, Col} from 'react-bootstrap';
 // Components
-import BetCard from '../components/betCard';
+import BetCard from './betCard';
 
 
 export default class FindBets extends React.Component{

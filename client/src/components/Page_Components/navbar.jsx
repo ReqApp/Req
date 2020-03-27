@@ -1,13 +1,13 @@
 import React from 'react';
 import {Button, Navbar as BootNav, Nav, NavDropdown, Form} from 'react-bootstrap/';
-import reqLogo from '../images/reqLogo.png';
+import reqLogo from '../../images/reqLogo.png';
 
 export default class Navbar extends React.Component{
     render(){
         return(
 
             <BootNav bg='light'expand="lg" sticky="top">    
-                <a href="/home"><img src={reqLogo} style={{width:'65px'}}/></a>
+                <a href="/home"><img src={reqLogo} style={{width:'65px'}} alt='Req Logo'/></a>
                 <BootNav.Toggle aria-controls="basic-BootNav-nav" />
                 <BootNav.Collapse id="basic-BootNav-nav">
                     <Nav className="mr-auto">
@@ -28,8 +28,3 @@ export default class Navbar extends React.Component{
     }
 }
 
-const styles = {
-    colour: {
-        backgroundColor: '#a681a6',
-    }
-}

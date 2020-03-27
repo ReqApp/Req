@@ -1,40 +1,31 @@
-import React, { createRef, Component } from 'react';
-import ReactDOM,{render} from 'react-dom';
-import {BrowserRouter as Router, Route, Link, Switch} from 'react-router-dom';
+import React from 'react';
+import ReactDOM  from 'react-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import './index.css';
 import FindLocationBets from './pages/findLocationBets.js';
-import {HomePage} from './pages/home';
 import SignIn from './pages/login';
 import Register from './pages/register'
 import ResetPassword from './pages/resetPassword';
 import ForgotPassword from './pages/forgotPassword'; 
 import VerifyAccount from './pages/verifyAccount';
-import {FAQ} from './pages/faq';
-import {About} from './pages/about';
 import {Profile} from './pages/profile';
 import Payment from './stripePayment.js';
 import Dashboard from './pages/dashboard.js';
 import {Home} from './pages/homePage';
 
-class App extends Component{
+class App extends React.Component{
     render(){
         return(
                  <Switch>               
                     <Route exact path='/create-location-bet'>
                         <FindLocationBets mode='create' />
                     </Route>
-                    <Route exact path='/home'>
+                    <Route exact path='/'>
                         <Home />
                     </Route>
                     <Route exact path='/find-location-bets'>
                          <FindLocationBets mode='find'/>
                      </Route>
-                    <Route exact path='/faq'>
-                        <FAQ/>
-                    </Route>
-                    <Route exact path='/about'>
-                        <About/>
-                    </Route>
                     <Route path='/users/profile'>
                         <Profile/>
                     </Route>
@@ -58,9 +49,6 @@ class App extends Component{
                     </Route>
                     <Route exact path='/users/verifyAccount'>
                          <VerifyAccount/>
-                    </Route>
-                    <Route exact path='/'>
-                        <HomePage/>
                     </Route>
                 </Switch>
         );

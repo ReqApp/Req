@@ -9,14 +9,14 @@ import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import Navbar from '../components/navbar';
+import Navbar from '../components/Page_Components/navbar';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 // Components
-import Copyright from '../components/copyRight';
-import Alert from '../components/alertSnack';
+import Copyright from '../components/Page_Components/copyRight';
+import Alert from '../components/Miscellaneous/alertSnack';
 import SteamLogo from '../images/steamLogo.webp';
 import GitHubLogo from '../images/githubIcon.svg';
 import GoogleLogo from '../images/googleLogo.webp';
@@ -168,17 +168,17 @@ class SignIn extends React.Component{
             <Grid container> 
               <Grid item lg>
                 <Link href="http://localhost:9000/users/auth/github" variant="body2">
-                <img src={GitHubLogo} className={classes.OAuthApp}></img>
+                <img src={GitHubLogo} className={classes.OAuthApp} alt='Github Logo'></img>
                 </Link>
               </Grid>
               <Grid item lg>
                 <Link href="http://localhost:9000/users/auth/google" variant="body2">
-                <img src={GoogleLogo} className={classes.OAuthApp}></img>
+                <img src={GoogleLogo} className={classes.OAuthApp} alt='Google Logo'></img>
                 </Link>
               </Grid>
               <Grid item lg>
                 <Link href="http://localhost:9000/users/auth/steam" variant="body2">
-                <img src={SteamLogo} className={classes.OAuthApp}></img>
+                <img src={SteamLogo} className={classes.OAuthApp} alt='Steame Logo'></img>
                 </Link>
               </Grid>
             </Grid>

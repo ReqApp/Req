@@ -6,8 +6,6 @@ export default class OverrallEarnings extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            betsMade: 0,
-            peopleReached: 0,
             dataRetrieved: false,
             errorMsg: 'Fetching data'
         };
@@ -46,7 +44,7 @@ export default class OverrallEarnings extends Component {
     }
 
     render() {
-        const {betsMade, peopleReached, dataRetrieved} = this.state;
+        const {dataRetrieved} = this.state;
         if(dataRetrieved){
             return (
                 <div style={{ margin: '20px', padding:'10px', borderRadius:'8px', backgroundColor:'#ddb1fc', textAlign:'center'}}>

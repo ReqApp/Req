@@ -1,18 +1,14 @@
 // React
 import React from 'react';
 // Material
-import Typography from "@material-ui/core/Typography";
-import { Avatar } from '@material-ui/core';
-import {Button} from '@material-ui/core';
 import {Paper} from '@material-ui/core';
-import CircularProgress from '@material-ui/core/CircularProgress';
 // Bootstrap
 import {Container, Row, Col} from 'react-bootstrap';
 // Components
-import Navbar from '../components/navbar';
-import Graphs from '../components/dataGraphs';
-import ProfilePicture from '../components/profilePicture';
-import Coins from '../components/coins';
+import Navbar from '../components/Page_Components/navbar';
+import Graphs from '../components/Graphs_and_Analytics/dataGraphs';
+import ProfilePicture from '../components/Page_Components/profilePicture';
+import Coins from '../components/Graphs_and_Analytics/coins';
 //Other
 import openSocket from 'socket.io-client';
 

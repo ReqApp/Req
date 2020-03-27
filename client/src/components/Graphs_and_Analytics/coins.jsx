@@ -1,15 +1,6 @@
 // React
 import React from 'react';
 // Material
-import Typography from "@material-ui/core/Typography";
-import { Avatar } from '@material-ui/core';
-import {Button} from '@material-ui/core';
-import {Paper} from '@material-ui/core';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Badge from '@material-ui/core/Badge';
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
-// Bootstrap
-import {Container, Row, Col} from 'react-bootstrap';
 
 export default class Coins extends React.Component{
     constructor(props){
@@ -51,7 +42,7 @@ export default class Coins extends React.Component{
     }
 
     render(){
-        const {loadingCoins, errorMsg, totalCoins} = this.state;
+        const {loadingCoins, totalCoins} = this.state;
         if(!loadingCoins){
             return(
                 <div>
@@ -64,12 +55,5 @@ export default class Coins extends React.Component{
             )
         }
         return null;
-    }
-}
-
-const styles ={
-    coinIcon: {
-        height: 100,
-        width: 100
     }
 }

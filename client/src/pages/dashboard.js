@@ -2,8 +2,6 @@
 import React from 'react';
 import {Redirect} from 'react-router-dom';
 // Material
-import Typography from "@material-ui/core/Typography";
-import {Button} from '@material-ui/core';
 import {Paper} from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
@@ -27,12 +25,12 @@ import Snackbar from '@material-ui/core/Snackbar';
 // Bootstrap
 import {Container, Row, Col} from 'react-bootstrap';
 // Components
-import Navbar from '../components/navbar';
-import CurrentBets from '../components/currentBets';
-import FindBets from '../components/findBets';
-import CreateBetForm from '../components/createBetForm';
-import UserCreatedBets from '../components/userCreatedBets';
-import Alert from '../components/alertSnack';
+import Navbar from '../components/Page_Components/navbar';
+import CurrentBets from '../components/Bet_Display_Components/currentBets';
+import FindBets from '../components/Bet_Display_Components/findBets';
+import CreateBetForm from '../components/Bet_Creation_Components/createBetForm';
+import UserCreatedBets from '../components/Bet_Display_Components/userCreatedBets';
+import Alert from '../components/Miscellaneous/alertSnack';
 import './reset.css';
 
 class Dashboard extends React.Component{

@@ -41,10 +41,10 @@ export default class ProfilePicture extends React.Component{
         });
     }
     render(){
-        const {loadingProfile, profile, errorMsg} = this.state;
+        const {loadingProfile, profile} = this.state;
         if(!loadingProfile){
             return(
-                <img src={profile} style={styles.image}></img>
+                <img src={profile} style={styles.image} alt='Profile'></img>
             );
         }
         // TODO add placeholder image

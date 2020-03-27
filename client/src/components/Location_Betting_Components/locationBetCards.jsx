@@ -6,10 +6,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Render card for each bet in region
 export default class LocationBetCards extends React.Component{
-    constructor(props){
-        super(props);
-    }
-
     render(){
         let {bets} = this.props;
         let betCards = [];

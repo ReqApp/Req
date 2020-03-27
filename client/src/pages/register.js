@@ -2,34 +2,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 // Material
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import GitHubIcon from '@material-ui/icons/GitHub';
-import GTranslateIcon from '@material-ui/icons/GTranslate';
-import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 // Components
-import Copyright from '../components/copyRight';
-import Navbar from '../components/navbar';
-
+import Copyright from '../components/Page_Components/copyRight';
+import Navbar from '../components/Page_Components/navbar';
 
 import SteamLogo from '../images/steamLogo.webp';
 import GitHubLogo from '../images/githubIcon.svg';
 import GoogleLogo from '../images/googleLogo.webp';
 
-
-
 class Register extends React.Component{
-  constructor(props){
-    super(props);
-  }
   render(){
     const {classes} = this.props;
     return (
@@ -80,17 +70,17 @@ class Register extends React.Component{
             <Grid container> 
               <Grid item lg>
                 <Link href="http://localhost:9000/users/auth/github" variant="body2">
-                <img src={GitHubLogo} className={classes.OAuthApp}></img>
+                <img src={GitHubLogo} className={classes.OAuthApp} alt='Github Logo'></img>
                 </Link>
               </Grid>
               <Grid item lg>
                 <Link href="http://localhost:9000/users/auth/google" variant="body2">
-                <img src={GoogleLogo} className={classes.OAuthApp}></img>
+                <img src={GoogleLogo} className={classes.OAuthApp} alt='Google Logo'></img>
                 </Link>
               </Grid>
               <Grid item lg>
                 <Link href="http://localhost:9000/users/auth/steam" variant="body2">
-                <img src={SteamLogo} className={classes.OAuthApp}></img>
+                <img src={SteamLogo} className={classes.OAuthApp} alt='Steam Logo'></img>
                 </Link>
               </Grid>
             </Grid>

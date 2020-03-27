@@ -1,5 +1,5 @@
 import React from 'react';
-import { Map, Marker, Popup, TileLayer, Circle, CircleMarker} from "react-leaflet";
+import { Map, Marker, Popup, TileLayer, Circle } from "react-leaflet";
 import {Button} from 'react-bootstrap/';
 //import openSocket from 'socket.io-client';
 //import './findLocationBets.css';

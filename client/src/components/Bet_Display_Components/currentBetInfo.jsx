@@ -2,10 +2,10 @@
 import React, { Component } from 'react';
 // Rechart
 import {
-    BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer 
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis 
   } from 'recharts';
 // Bootstrap
-import {Container, Row, Col} from 'react-bootstrap';
+import {Row, Col} from 'react-bootstrap';
 // Material
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -16,17 +16,12 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
 import PeopleIcon from '@material-ui/icons/People';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import PersonIcon from '@material-ui/icons/Person';
-import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 
 
 export default class CurrentBetInfo extends Component {
-    constructor(props) {
-        super(props)
-    }
 
     displayBet = (bet) => {
         // For Binary Bet
@@ -137,11 +132,5 @@ export default class CurrentBetInfo extends Component {
         </ExpansionPanelDetails>
         </ExpansionPanel>
         )
-    }
-}
-
-const styles = {
-    deadline: {
-        marginTop: '5px'
     }
 }

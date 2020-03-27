@@ -12,21 +12,15 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import Button from '@material-ui/core/Button';
 import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
-import Select from '@material-ui/core/Select';
 import Typography from '@material-ui/core/Typography';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
 import Slider from '@material-ui/core/Slider';
-import { makeStyles } from '@material-ui/core/styles';
-import Input from '@material-ui/core/Input';
 import DateFnsUtils from '@date-io/date-fns';
 import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
 // Components
-import Navbar from './navbar';
+import Navbar from '../Page_Components/navbar';
 import DisplayMap from './maps';
-import BetTypeSelection from './betTypeSelection';
-import Alert from './alertSnack';
+import BetTypeSelection from '../Bet_Creation_Components/betTypeSelection';
+import Alert from '../Miscellaneous/alertSnack';
 
 
 // TODO
@@ -257,7 +251,7 @@ export default class CreateLocationBet extends React.Component{
     }
 
     render(){
-        const {betType, side, sliderOne, sliderTwo, sliderThree, radius, date, snackOpen, msg, msgType} = this.state;
+        const {betType, radius, date, snackOpen, msg, msgType} = this.state;
         const {regionData, userLocation, createRegion} = this.props;
 
         if(createRegion){
@@ -318,7 +312,6 @@ export default class CreateLocationBet extends React.Component{
                                                 defaultValue={100}
                                                 style={styles.radSlider}
                                                 aria-labelledby="discrete-slider"
-                                                valueLabelDisplay="auto"
                                                 step={100}
                                                 marks={radiusMarks}
                                                 valueLabelDisplay="on"
@@ -392,7 +385,6 @@ export default class CreateLocationBet extends React.Component{
                                                 defaultValue={100}
                                                 style={styles.radSlider}
                                                 aria-labelledby="discrete-slider"
-                                                valueLabelDisplay="auto"
                                                 step={50}
                                                 marks={radiusMarks}
                                                 valueLabelDisplay="on"

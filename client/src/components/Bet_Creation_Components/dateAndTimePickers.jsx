@@ -6,10 +6,6 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
 
 export class DateAndTimePickers extends Component {
-    constructor(props) {
-        super(props)
-    }
-
     handleDateChange = (newDate) => {
         this.props.dateChange(newDate);
     }
