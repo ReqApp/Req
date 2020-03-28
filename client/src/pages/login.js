@@ -109,12 +109,13 @@ class SignIn extends React.Component{
 }
 
   render(){
-    const {msg, msgType, snackOpen, loggedIn} = this.state;
+    const {msg, msgType, snackOpen, loggedIn, user_name} = this.state;
     const {classes} = this.props;
+    const redirectUrl = `/users/profile?${user_name}`;
 
     if(loggedIn){
       return(
-        <Redirect to='/profile' />
+        <Redirect to={redirectUrl} />
       )
     }
     return (

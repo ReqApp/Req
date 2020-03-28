@@ -39,7 +39,7 @@ router.post('/getProfilePicture', (req, res, next) => {
 
                 if (response) {
                     if (response === "noprofiler") {
-
+                        console.log("no profiler")
                         res.status(404).json({
                             "status": "error",
                             "body": "No profile picture"
@@ -59,6 +59,7 @@ router.post('/getProfilePicture', (req, res, next) => {
                 }
             })
         } else {
+            console.log("invalid username")
             res.status(400).json({
                 "status": "success",
                 "body": "Invalid username"
@@ -66,6 +67,7 @@ router.post('/getProfilePicture', (req, res, next) => {
         }
 
     } else {
+        console.log("No username given")
         res.status(400).json({
             "status": "success",
             "body": "No username given"
@@ -73,15 +75,22 @@ router.post('/getProfilePicture', (req, res, next) => {
     }
 });
 
-router.get('/profile', (req, res, next) => {
+router.post('/profile', (req, res, next) => {
     if (req.cookies.Authorization) {
         const jwtString = req.cookies.Authorization.split(' ');
         const profile = utilFuncs.verifyJwt(jwtString[1]);
         if (profile) {
-            res.send(profile.user_name);
+            res.status(200).json({
+                "status":"success",
+                "body":profile.user_name
+            })
         }
     } else {
-        res.send("Could not get profile");
+        console.log("NO COOKIES")
+        res.status(400).json({
+            "status":"error",
+            "body":"Not signed in"
+        })
         //res.render('register');
     }
 });

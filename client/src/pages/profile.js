@@ -49,7 +49,6 @@ export class Profile extends React.Component{
                 method: 'POST',
                 body: 'url=' + url
             }).then((res) => {
-                console.log("Emit sent");
                 this.socket.emit('servedQR', res.url);
             }, (err) => {
                 console.log(err);
