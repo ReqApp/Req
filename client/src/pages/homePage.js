@@ -35,7 +35,7 @@ export class Home extends Component {
                                 <h4>Win Big</h4>
                                 <EuroIcon fontSize="large" style={styles.icon}/>
                                 <Typography>
-                                    With Req the sky is really the limit in terms of what you can bet on
+                                    The sky is really the limit in terms of what you can bet on
                                     <br />
                                     <br />
                                     <a> Create your first bet </a>
@@ -47,7 +47,7 @@ export class Home extends Component {
                                 <h4>Explore</h4>
                                 <ExploreIcon fontSize="large" style={styles.icon}/>
                                 <Typography>
-                                    Simply sitting at home using Req won't give you the full experience. Go outside and explore on your search for the next jackpot.
+                                    Go outside and explore on your search for the next jackpot.
                                     <br />
                                     < br />
                                     <a> Search for bets in your area </a>
@@ -59,10 +59,10 @@ export class Home extends Component {
                                 <h4>Create</h4>
                                 <PeopleIcon fontSize="large" style={styles.icon}/>
                                 <Typography>
-                                    All creators are credited 10% of all coins which incentivizes new and creative bets.
+                                    Creators get 10% of coins placed on their bets
                                     <br />
                                     <br />
-                                    <a> Learn about how our betting system works </a>
+                                    <a> Take the getting started tour </a>
                                 </Typography>
                             </Paper>
                         </Col>

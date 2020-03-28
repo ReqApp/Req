@@ -12,6 +12,7 @@ import {Profile} from './pages/profile';
 import Payment from './stripePayment.js';
 import Dashboard from './pages/dashboard.js';
 import {Home} from './pages/homePage';
+import {Tutorial} from './pages/tutorial';
 
 class App extends React.Component{
     render(){
@@ -23,6 +24,9 @@ class App extends React.Component{
                     <Route exact path='/'>
                         <Home />
                     </Route>
+                    <Router exact path='/tutorial'>
+                        <Tutorial />
+                    </Router>
                     <Route exact path='/find-location-bets'>
                          <FindLocationBets mode='find'/>
                      </Route>
