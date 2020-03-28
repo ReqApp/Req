@@ -76,23 +76,19 @@ router.post('/getProfilePicture', (req, res, next) => {
 });
 
 router.post('/profile', (req, res, next) => {
-    if (req.cookies.Authorization) {
-        const jwtString = req.cookies.Authorization.split(' ');
-        const profile = utilFuncs.verifyJwt(jwtString[1]);
-        if (profile) {
+    utilFuncs.isSignedIn(req.cookies).then((signedIn) => {
+        if (signedIn) {
             res.status(200).json({
                 "status":"success",
-                "body":profile.user_name
+                "body": signedIn.user_name
+            })
+        } else {
+            res.status(400).json({
+                "status":"success",
+                "body": "Not signed in"
             })
         }
-    } else {
-        console.log("NO COOKIES")
-        res.status(400).json({
-            "status":"error",
-            "body":"Not signed in"
-        })
-        //res.render('register');
-    }
+    })
 });
 
 router.get('/forgotPassword', (req, res, next) => {
@@ -111,9 +107,21 @@ router.get('/auth/google/callback', passport.authenticate('google'), (req, res, 
 
 router.get('/auth/github', passport.authenticate('github'));
 
-router.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/users/register' }), (req, res) => {
-    res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
-    res.redirect('http://localhost:3000');
+router.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/users/login' }), (req, res) => {
+    User.findOne({"user_name":req.user.user_name}, (err, foundUser) => {
+        if (err) {
+            res.redirect(`http://localhost:3000/users/login`)
+        } else {
+            if (foundUser) {
+                foundUser.accessToken = utilFuncs.createJwt({user_name:foundUser.user_name});
+                foundUser.save();
+                res.cookie('Authorization', 'Bearer ' + foundUser.accessToken)
+                res.redirect(`http://localhost:3000/users/profile?${foundUser.user_name}`)
+            } else {
+                res.redirect(`http://localhost:3000/users/login`)
+            }
+        }
+    });
 });
 
 router.get('/auth/steam', passport.authenticate('steam'));

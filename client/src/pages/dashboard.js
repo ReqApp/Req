@@ -58,7 +58,7 @@ class Dashboard extends React.Component{
           },
           body: JSON.stringify({
             user_name : process.env.REACT_APP_TEST_USER_NAME,
-            password : "partyinsmacsyourenotinvited"
+            password : process.env.REACT_APP_TEST_PASS
           })
         })
         .then((res) => res.json())

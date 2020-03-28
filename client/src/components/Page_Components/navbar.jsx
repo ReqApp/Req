@@ -29,6 +29,7 @@ export default class Navbar extends React.Component{
         }).then((res) => res.json())
         .then((res) => {
             this.setState({username:res.body});
+            console.log(`username is "${res.body}"`)
             fetch('http://localhost:9000/users/getProfilePicture', {
             method: 'POST',
             crossDomain: true,
@@ -52,13 +53,15 @@ export default class Navbar extends React.Component{
             }, (err) => {
                 console.log(`err getting profile pic : ${err}`);
             })
-            }, () => {
+            }, (err) => {
+                console.log(err);
                 console.log("not signedIn")
             })
     }
 
     componentDidMount() {
         this.getProfileInfo();
+        this.setState({requestDone: true})
     }
     render(){
         const {requestDone, profilePicture, username, signedIn } = this.state;

@@ -151,8 +151,7 @@ function betOn(userObj) {
                     }
                 })
         } else {
-            console.log("poggers")
-            reject("Incorrect bet typee");
+            reject("Incorrect bet type");
         }
     })
 }
