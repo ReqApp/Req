@@ -32,37 +32,37 @@ export class Home extends Component {
                     <Row>
                         <Col>
                             <Paper elevation={3} style={styles.card}>
-                                <h4>Win Big</h4>
+                                <h2 style={{fontWeight:'bold'}}>Win Big</h2>
                                 <EuroIcon fontSize="large" style={styles.icon}/>
-                                <Typography>
-                                    The sky is really the limit in terms of what you can bet on
+                                <p>
+                                    The sky is really the limit in terms of what you can bet on. Browse
+                                    current bets
                                     <br />
-                                    <br />
-                                    <a> Create your first bet </a>
-                                </Typography>
+                                    <a href="/users/dashboard" style={{fontWeight:'bold'}}> Create your first bet </a>
+                                </p>
                             </Paper>
                         </Col>
                         <Col>
                             <Paper elevation={3} style={styles.card}>
-                                <h4>Explore</h4>
+                                <h2 style={{fontWeight:'bold'}}>Explore</h2>
                                 <ExploreIcon fontSize="large" style={styles.icon}/>
                                 <Typography>
                                     Go outside and explore on your search for the next jackpot.
                                     <br />
                                     < br />
-                                    <a> Search for bets in your area </a>
+                                    <a href="/find-location-bets" style={{fontWeight:'bold'}}> Search for bets in your area </a>
                                 </Typography>
                             </Paper>
                         </Col>
                         <Col>
                             <Paper elevation={3} style={styles.card}>
-                                <h4>Create</h4>
+                                <h2 style={{fontWeight:'bold'}}>Create</h2>
                                 <PeopleIcon fontSize="large" style={styles.icon}/>
                                 <Typography>
                                     Creators get 10% of coins placed on their bets
                                     <br />
                                     <br />
-                                    <a> Take the getting started tour </a>
+                                    <a href="/tutorial" style={{fontWeight:'bold'}}>  Take the getting started tour </a>
                                 </Typography>
                             </Paper>
                         </Col>
@@ -141,7 +141,7 @@ const styles = {
         height:'100%'
     },
     icon: {
-        margin: 15,
+        margin: 0,
         color: '#a681a6'
     },
     copy: {
