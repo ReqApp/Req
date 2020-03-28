@@ -101,8 +101,20 @@ router.get('/auth/google', passport.authenticate('google', {
 }));
 
 router.get('/auth/google/callback', passport.authenticate('google'), (req, res, next) => {
-    res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
-    res.redirect('http://localhost:3000');
+    User.findOne({"user_name":req.user.user_name}, (err, foundUser) => {
+        if (err) {
+            res.redirect(`http://localhost:3000/users/login`)
+        } else {
+            if (foundUser) {
+                foundUser.accessToken = utilFuncs.createJwt({user_name:foundUser.user_name});
+                foundUser.save();
+                res.cookie('Authorization', 'Bearer ' + foundUser.accessToken)
+                res.redirect(`http://localhost:3000/users/profile?${foundUser.user_name}`)
+            } else {
+                res.redirect(`http://localhost:3000/users/login`)
+            }
+        }
+    });
 });
 
 router.get('/auth/github', passport.authenticate('github'));
@@ -127,9 +139,20 @@ router.get('/auth/github/callback', passport.authenticate('github', { failureRed
 router.get('/auth/steam', passport.authenticate('steam'));
 
 router.get('/auth/steam/callback', passport.authenticate('steam', { failureRedirect: '/login' }), (req, res) => {
-    // Successful authentication, redirect home.
-    res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
-    res.redirect('http://localhost:3000');
+    User.findOne({"user_name":req.user.user_name}, (err, foundUser) => {
+        if (err) {
+            res.redirect(`http://localhost:3000/users/login`)
+        } else {
+            if (foundUser) {
+                foundUser.accessToken = utilFuncs.createJwt({user_name:foundUser.user_name});
+                foundUser.save();
+                res.cookie('Authorization', 'Bearer ' + foundUser.accessToken)
+                res.redirect(`http://localhost:3000/users/profile?${foundUser.user_name}`)
+            } else {
+                res.redirect(`http://localhost:3000/users/login`)
+            }
+        }
+    });
 });
 
 router.post('/register', (req, res, next) => {
