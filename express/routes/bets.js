@@ -651,7 +651,7 @@ router.post('/getBets', (req, res, next) => {
                 } else {
                     res.status(400).json({
                         "status": "error",
-                        "body": "Error anonymising data nothing"
+                        "body": "Error anonymising data"
                     });
                 }
             }, (err) => {
@@ -667,6 +667,8 @@ router.post('/getBets', (req, res, next) => {
             });
         }
     }, (err) => {
+        // this case should never happen unless
+        // mongo messes up
         res.status(400).json({
             "status": "error",
             "body": "Error getting bets from DB"
@@ -690,11 +692,16 @@ router.post('/getUserCreatedBets', (req, res) => {
                 })
             });
         }else{
-            res.status(400).json({
+            res.status(401).json({
                 'status' : 'error',
-                'body' : 'User not signed in'
+                'body' : 'You must be signed in to complete this action'
              });
         }
+    }, () => {
+        res.status(401).json({
+            'status' : 'error',
+            'body' : 'You must be signed in to complete this action'
+         });
     });
 });
 
@@ -725,11 +732,16 @@ router.post('/getBetsForUser', (req, res) => {
                 });
             });
         }else{
-            res.status(400).json({
+            res.status(401).json({
                 'status' : 'error',
-                'body' : 'User not signed in'
+                'body' : 'You must be signed in to complete this action'
             });
         }
+    }, () => {
+        res.status(401).json({
+            'status' : 'error',
+            'body' : 'You must be signed in to complete this action'
+         });
     });
 });
 
@@ -755,11 +767,16 @@ router.post('/findNewBets', (req, res) => {
                 });
             });
     }else{
-            res.status(400).json({
+            res.status(401).json({
                 'status' : 'error',
-                'body' : 'User not signed in'
+                'body' : 'You must be signed in to complete this action'
             });
         }
+    }, () => {
+        res.status(401).json({
+            'status' : 'error',
+            'body' : 'You must be signed in to complete this action'
+         });
     });
 });
 

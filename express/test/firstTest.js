@@ -750,6 +750,86 @@ describe("============= Betting =============", () => {
                     expect(res.body.status).to.equals("error");
                     done();
                 });
+        }),
+        it("No cookies", done => {
+            chai
+                .request(app)
+                .post("/bets/getUserCreatedBets")
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You must be signed in to complete this action");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("Invalid parameters", done => {
+            chai
+                .request(app)
+                .post("/bets/getUserCreatedBets")
+                .send({
+                    "_id":"galway"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You must be signed in to complete this action");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("No cookies", done => {
+            chai
+                .request(app)
+                .post("/bets/getBetsForUser")
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You must be signed in to complete this action");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("No cookies", done => {
+            chai
+                .request(app)
+                .post("/bets/getBetsForUser")
+                .send({
+                    "username": null,
+                    "password":"shouldn't be reading this"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You must be signed in to complete this action");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("No cookies", done => {
+            chai
+                .request(app)
+                .post("/bets/findNewBets")
+                .send({
+                    "username": null,
+                    "password":"shouldn't be reading this"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You must be signed in to complete this action");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("No cookies", done => {
+            chai
+                .request(app)
+                .post("/bets/findNewBets")
+                .send({
+                    "badField": fuzzUsername
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You must be signed in to complete this action");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
         })
 })
 
