@@ -6,21 +6,89 @@ import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
+import Alert from '../components/Miscellaneous/alertSnack';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import Snackbar from '@material-ui/core/Snackbar';
 import { withStyles } from '@material-ui/core/styles';
 // Components
 import Copyright from '../components/Page_Components/copyRight';
+import Navbar from '../components/Page_Components/navbar';
 
 class ForgotPassword extends React.Component{
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      username: '',
+      requestMade: false,
+      // Used for error and success snacks(toasts)
+      msg : '',
+      msgType : '',
+      snackOpen : false
+    }
+  }
+
+  submitForm = () => {
+    const {username, requestMade} = this.state;
+
+    if (username === '') {
+      this.setState({msg : 'Please enter your username', msgType : 'warning', snackOpen : true});
+    } else {
+      fetch('http://localhost:9000/users/forgotpassword', {
+        'method':'POST',
+        crossDomain: true,
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        },
+        body: JSON.stringify({
+          "user_name":username
+        })
+      }).then((res) => res.json())
+      .then((res) => {
+        console.log(res)
+        if(res.status === "success"){
+          this.setState({msg : 'Check your email for password reset link', msgType : 'success', snackOpen : true});
+        }
+        else if(res.status === 'error'){
+          this.setState({msg : res.body, msgType : 'error', snackOpen : true});
+        }
+      }, (err) => {
+        console.log(`err forgot password: ${err}`);
+      })
+    }
+  }
+
+  handleUsernameChange = (evt) => {
+    this.setState({username:evt.target.value});
+    console.log(this.state.username);
+  }
+
+  handleSnackClose = (event, reason) => {
+    if(reason === 'clickaway'){
+        return;
+    }
+    this.setState({snackOpen : false});
+}
+  componentDidMount() {
+    const {user} = this.props;
+  }
+
   render(){
-    const {classes} = this.props;
+    const {classes, msg, msgType, snackOpen} = this.props;
+
     return (
+      <div>
+         <Navbar />
+        <Snackbar open={snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
+            <Alert onClose={this.handleSnackClose} severity={msgType}>{msg}</Alert>
+        </Snackbar>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
           <Typography component="h1" variant="h5">
-            Enter your email address
+            Enter your username
           </Typography>
           <form className={classes.form} noValidate>
             <TextField
@@ -28,18 +96,20 @@ class ForgotPassword extends React.Component{
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              id="username"
+              label="Username"
+              name="Username"
+              autoComplete="Username"
+              onChange={this.handleUsernameChange}
               autoFocus
             />
+
             <Button
-              type="submit"
               fullWidth
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={this.submitForm}
             >
               Submit
             </Button>
@@ -50,6 +120,7 @@ class ForgotPassword extends React.Component{
           <Copyright />
         </Box>
       </Container>
+      </div>
     );
   }
 }

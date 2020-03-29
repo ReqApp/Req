@@ -420,7 +420,6 @@ router.post('/forgotPassword', (req, res, next) => {
     if (req.body.user_name) {
         if (utilFuncs.validate(req.body.user_name, "username")) {
             const username = req.body.user_name;
-
             utilFuncs.checkIfExisting(username, "forgotten").then((username) => {
                 // if resolved promise
                 if (username) {
@@ -429,38 +428,49 @@ router.post('/forgotPassword', (req, res, next) => {
                             res.send(err);
                         }
                         if (foundUser) {
-                            let newUser = new forgotPasswordUser();
-
-                            newUser.user_name = foundUser.user_name;
-                            newUser.email = foundUser.email;
-                            const resetUrlString = randomstring.generate(10);
-                            newUser.resetCode = resetUrlString;
-                            // TODO this is a temp localhost fix
-                            newUser.resetUrl = `http://localhost:9000/users/forgotPassword?from=${resetUrlString}`;
-                            newUser.save((err, user) => {
-                                if (err) {
-                                    throw err;
+                            
+                            utilFuncs.isOAuthUser(foundUser).then((platform) => {
+                                if (platform) {
+                                    console.log(foundUser)
+                                    res.status(401).send({
+                                        "status": "error",
+                                        "body": `You're account is managed through ${platform}, please change your password on their platform`
+                                    });
+                                } else {
+                                    // isn't an OAuth user
+                                    let newUser = new forgotPasswordUser();
+                                    newUser.user_name = foundUser.user_name;
+                                    newUser.email = foundUser.email;
+                                    const resetUrlString = randomstring.generate(10);
+                                    newUser.resetCode = resetUrlString;
+                                    // TODO this is a temp localhost fix
+                                    newUser.resetUrl = `http://localhost:9000/users/forgotPassword?from=${resetUrlString}`;
+                                    newUser.save((err, user) => {
+                                        if (err) {
+                                            throw err;
+                                        }
+                                    });
+                                    utilFuncs.sendEmail(foundUser.email, `Update your password ${foundUser.user_name}`, newUser.resetUrl).then(() => {
+                                        res.status(200).send({
+                                            "status": "success",
+                                            "body": `Password reset email sent`
+                                        });
+                                    }, (err) => {
+                                        res.status(400).send({
+                                            "status": "error",
+                                            "body": err
+                                        });
+                                    });
+                                        }
+                                    })
+                                } else {
+                                    res.status(400).send({
+                                        "status": "error",
+                                        "body": "Check your email for reset link"
+                                    });
                                 }
-                            });
-                            utilFuncs.sendEmail(foundUser.email, `Update your password ${foundUser.user_name}`, newUser.resetUrl).then(() => {
-                                res.status(200).send({
-                                    "status": "information",
-                                    "body": `Password reset email sent`
-                                });
-                            }, (err) => {
-                                res.status(400).send({
-                                    "status": "information",
-                                    "body": err
-                                });
-                            });
-                        } else {
-                            res.status(400).send({
-                                "status": "error",
-                                "body": "Check your email for reset link"
-                            });
-                        }
 
-                    });
+                            });
 
                 } else {
                     res.status(400).send({

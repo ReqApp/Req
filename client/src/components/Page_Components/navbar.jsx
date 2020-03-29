@@ -29,7 +29,6 @@ export default class Navbar extends React.Component{
         }).then((res) => res.json())
         .then((res) => {
             this.setState({username:res.body});
-            console.log(`username is "${res.body}"`)
             fetch('http://localhost:9000/users/getProfilePicture', {
             method: 'POST',
             crossDomain: true,

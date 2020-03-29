@@ -1070,6 +1070,22 @@ function createBet(input) {
     })
 }
 
+function isOAuthUser(userObj) {
+    return new Promise((resolve, reject) => {
+        const {githubID, googleID, steamID } = userObj;
+        console.log(githubID, googleID, steamID);
+        if (userObj.githubID !== null) {
+            resolve("GitHub");
+        } else if (userObj.googleID !== null) {
+            resolve("Google");
+        } else if (userObj.steamID !== null) {
+            resolve("Steam")
+        } else {
+            resolve(null);
+        }
+    })
+}
+
 function checkIfExisting(username, type) {
     if (type === "forgotten") {
         // if there is a forgotten email entry already existing (a link)
@@ -1081,7 +1097,6 @@ function checkIfExisting(username, type) {
                     if (foundUser) {
                         resolve(null);
                     } else {
-                        console.log(`not found`);
                         resolve(username);
                     }
                 }
@@ -1203,6 +1218,7 @@ module.exports.createJwt = createJwt
 module.exports.verifyJwt = verifyJwt;
 module.exports.decideBet = decideBet;
 module.exports.isSignedIn = isSignedIn;
+module.exports.isOAuthUser = isOAuthUser;
 module.exports.rankAnswers = rankAnswers;
 module.exports.calcDistance = calcDistance;
 module.exports.createLocationBet = createLocationBet;
