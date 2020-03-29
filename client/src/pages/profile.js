@@ -29,7 +29,7 @@ export class Profile extends React.Component{
 
     componentDidMount(){
         let targetUser =  window.location.href.split("?")[1];
-        this.setState({userName : targetUser, gettingUserName : false});
+        this.setState({userName : unescape(targetUser), gettingUserName : false});
     }
     
     handleClick = () => {

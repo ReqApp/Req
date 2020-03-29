@@ -35,6 +35,11 @@ router.post('/getProfilePicture', (req, res, next) => {
 
         if (utilFuncs.validate(req.body.username, "username")) {
 
+            // need to replace \ for some usernames to retrieve
+            // the profile picture correctly 
+            
+            req.body.username = req.body.username.replace("\\",'')
+
             generalFuncs.getProfilePicture(req.body.username).then((response) => {
 
                 if (response) {
