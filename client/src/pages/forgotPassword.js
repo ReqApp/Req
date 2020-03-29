@@ -62,7 +62,6 @@ class ForgotPassword extends React.Component{
 
   handleUsernameChange = (evt) => {
     this.setState({username:evt.target.value});
-    console.log(this.state.username);
   }
 
   handleSnackClose = (event, reason) => {

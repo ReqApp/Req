@@ -783,23 +783,23 @@ function addBetToFinishedDB(betInfo, winners, losers, betSummary, result) {
 }
 
 
-function resetPassword(email, newPassword) {
+function resetPassword(userEmail, newPassword) {
     return new Promise((resolve, reject) => {
-        User.findOne({ email: email }, (err, foundUser) => {
+        User.findOne({ "email": userEmail }, (err, foundUser) => {
             if (err) {
-                res.send(err);
+                reject(err);
             }
             if (foundUser) {
                 foundUser.password = foundUser.generateHash(newPassword);
                 foundUser.save((err) => {
                     if (err) {
-                        res.send(err);
                         reject(Error(err));
                     } else {
-                        console.log("password changed");
                         resolve(foundUser.user_name);
                     }
                 });
+            } else {
+                resolve(null)
             }
         });
     });

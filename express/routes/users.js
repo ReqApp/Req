@@ -512,13 +512,12 @@ router.post('/resetPassword', (req, res, next) => {
                             "body": `This password has been previously used on ${resArray[Math.floor(Math.random()*resArray.length)]}. This incident has been reported to an administrator`
                         });
                     }
-                }, (err) => {
+                }, () => {
                     forgotPasswordUser.findOne({ resetUrl: req.body.fromUrl }, (err, foundUser) => {
                         if (err) {
                             res.send(err);
                         }
                         if (foundUser) {
-
                             utilFuncs.resetPassword(foundUser.email, req.body.newPassword).then((username) => {
                                 forgotPasswordUser.deleteOne({ "user_name": username }, (err) => {
                                     if (err) {
