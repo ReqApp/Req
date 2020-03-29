@@ -37,7 +37,7 @@ router.post('/getProfilePicture', (req, res, next) => {
 
             // need to replace \ for some usernames to retrieve
             // the profile picture correctly 
-            
+
             req.body.username = req.body.username.replace("\\",'')
 
             generalFuncs.getProfilePicture(req.body.username).then((response) => {
@@ -333,20 +333,29 @@ router.post('/verifyAccount', (req, res, next) => {
 
                         newUser.save((err, user) => {
                             if (err) {
-                                throw err;
-                            }
-                            console.log("saved: " + user);
-                            res.cookie('Authorization', 'Bearer ' + user.accessToken);
-                            res.json({ "success": "account created :)" });
-                        });
-
-                        UnverifiedUser.deleteOne({ "activationCode": activationCode }, (err) => {
-                            if (err) {
-                                res.send(err);
+                                res.status(401).send({
+                                    "status": "error",
+                                    "body": "Error saving user"
+                                });
+                            } else {
+                                UnverifiedUser.deleteOne({ "activationCode": activationCode }, (err) => {
+                                    if (err) {
+                                        res.status(400).send({
+                                            "status": "error",
+                                            "body": "Error deleting unverified user account"
+                                        });
+                                    } else {
+                                        res.cookie('Authorization', 'Bearer ' + user.accessToken);
+                                        res.status(200).send({
+                                            "status": "success",
+                                            "body": "Account verified"
+                                        });
+                                    }
+                                });
                             }
                         });
                     } else {
-                        res.status(401).send({
+                        res.status(400).send({
                             "status": "error",
                             "body": "Invalid input"
                         });

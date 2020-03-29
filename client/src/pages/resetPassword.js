@@ -92,10 +92,8 @@ class ResetPassword extends React.Component {
     try {
       resetCodeString = window.location.href.split("=")[1];
       this.setState({resetCode:resetCodeString})
-      console.log(resetCodeString);
     } catch(err) {
       this.setState({resetCode:''});
-      console.log(resetCodeString);
     }
   }
 

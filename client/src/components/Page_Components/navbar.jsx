@@ -17,7 +17,6 @@ export default class Navbar extends React.Component{
     }
 
     getProfileInfo = () => {
-        // test info just for now
         fetch('http://localhost:9000/users/profile', {
             method: 'POST',
             crossDomain: true,

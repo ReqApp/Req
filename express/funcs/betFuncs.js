@@ -1073,7 +1073,6 @@ function createBet(input) {
 function isOAuthUser(userObj) {
     return new Promise((resolve, reject) => {
         const {githubID, googleID, steamID } = userObj;
-        console.log(githubID, googleID, steamID);
         if (userObj.githubID !== null) {
             resolve("GitHub");
         } else if (userObj.googleID !== null) {
