@@ -72,6 +72,11 @@ router.post('/profile', (req, res, next) => {
                 "body": "Not signed in"
             })
         }
+    }, () => {
+        res.status(400).json({
+            "status":"error",
+            "body": "Not signed in"
+        })
     })
 });
 

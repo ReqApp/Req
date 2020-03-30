@@ -26,7 +26,7 @@ describe("========= Login Testing =========", () => {
                     expect(res.body.body).to.equals("Logged in successfully");
                     done();
                 });
-        }).timeout(2100),
+        }).timeout(4500),
         it("Invalid params", done => {
             chai
                 .request(app)
@@ -276,7 +276,7 @@ describe("=========== Register Testing ===========", () => {
                     expect(res.body.status).to.equals("success");
                     done();
                 });
-        }).timeout(4700),
+        }).timeout(7000),
         it("Invalid existing registration", done => {
             chai
                 .request(app)
@@ -1074,15 +1074,15 @@ describe("============= Various APIS ==============", () => {
                     expect(res.body.status).to.equals("success");
                     done();
                 });
-        }),
+        }).timeout(3500),
         it("Invalid cookies", done => {
             chai
                 .request(app)
-                .get("/users/profile")
+                .post("/users/profile")
                 .end((err, res) => {
                     expect(res).to.have.status(400);
                     expect(res.body.status).to.equals("error");
-                    expect(res.body.body).to.equals("No Authorization cookie present");
+                    expect(res.body.body).to.equals("Not signed in");
 
                     done();
                 });
