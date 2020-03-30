@@ -14,7 +14,7 @@ export default class PlacedBetData extends Component {
     }
 
     componentDidMount() {
-        let targetUser =  window.location.href.split("?")[1];
+        const {user} = this.props;
         fetch("http://localhost:9000/analytics/getBettingHistory", {
             method: 'POST',
             crossDomain: true,
@@ -23,7 +23,7 @@ export default class PlacedBetData extends Component {
                 'Access-Control-Allow-Origin': '*'
             },
             body: JSON.stringify({
-                "username": targetUser
+                "username": user
             })
         })
         .then((res) => res.json())
@@ -52,18 +52,19 @@ export default class PlacedBetData extends Component {
     parseData = (data) => {
         data = data.sort((a, b) => (a.date > b.date) ? 1 : -1);
         let tempGraphData = [];
+        let total = 0;
         data.forEach(bet => {
             let dataPoint = {};
+            console.log(`overall bet ${JSON.stringify(bet)}`)
             // Extract and format date information
             let betDate = new Date(bet.date * 1000);
             let dateString = `${betDate.getDate()}/${betDate.getMonth()+1}`;
             dataPoint.date = dateString;
             // Extract and format win/loss data
-            dataPoint.Profit = bet.profitOrLoss;
+            total += bet.profitOrLoss;
+            dataPoint.Profit = total;
             tempGraphData.push(dataPoint);
         });
-        // Sample data added
-        tempGraphData.push({name : '18/3', Profit : 250});
 
         this.setState({graphData : tempGraphData, dataRetrieved : true});
     }
@@ -72,9 +73,9 @@ export default class PlacedBetData extends Component {
         const {dataRetrieved, graphData} = this.state;
         if(dataRetrieved){
             return(
-                <div>
-                    <h6>Placed Bet Proft and Loss:</h6>
-                    <AreaChart width={500} height={250} data={graphData}
+                <div style={{ padding:'10px', borderRadius:'8px', backgroundColor:'#c5c9c9'}}>
+                    <h6 style={{textAlign:'center'}}>Overall bet average</h6>
+                    <AreaChart width={410} height={230} data={graphData}
                         margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                         <defs>
                             <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">

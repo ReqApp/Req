@@ -14,11 +14,16 @@ router.post('/getProfilePicture', (req, res) => {
 
         if (utilFuncs.validate(req.body.username, "username")) {
 
+            // need to replace \ for some usernames to retrieve
+            // the profile picture correctly 
+
+            req.body.username = req.body.username.replace("\\",'')
+
             generalFuncs.getProfilePicture(req.body.username).then((response) => {
 
                 if (response) {
                     if (response === "noprofiler") {
-
+                        console.log("no profiler")
                         res.status(404).json({
                             "status": "error",
                             "body": "No profile picture"
@@ -38,6 +43,7 @@ router.post('/getProfilePicture', (req, res) => {
                 }
             })
         } else {
+            console.log("invalid username")
             res.status(400).json({
                 "status": "success",
                 "body": "Invalid username"
@@ -45,6 +51,7 @@ router.post('/getProfilePicture', (req, res) => {
         }
 
     } else {
+        console.log("No username given")
         res.status(400).json({
             "status": "success",
             "body": "No username given"
@@ -52,44 +59,79 @@ router.post('/getProfilePicture', (req, res) => {
     }
 });
 
-router.get('/profile', (req, res) => {
-    if (req.cookies.Authorization) {
-        const jwtString = req.cookies.Authorization.split(' ');
-        const profile = utilFuncs.verifyJwt(jwtString[1]);
-        if (profile) {
-            res.send(profile.user_name);
-        }
-    } else {
-        res.status(400).json({
-                "status": "error",
-                "body": "No Authorization cookie present"
+router.post('/profile', (req, res, next) => {
+    utilFuncs.isSignedIn(req.cookies).then((signedIn) => {
+        if (signedIn) {
+            res.status(200).json({
+                "status":"success",
+                "body": signedIn.user_name
             })
-            //res.render('register');
-    }
+        } else {
+            res.status(400).json({
+                "status":"success",
+                "body": "Not signed in"
+            })
+        }
+    })
 });
 
 router.get('/auth/google', passport.authenticate('google', {
     scope: ['profile']
 }));
 
-router.get('/auth/google/callback', passport.authenticate('google'), (req, res) => {
-    res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
-    res.redirect('http://localhost:3000');
+router.get('/auth/google/callback', passport.authenticate('google'), (req, res, next) => {
+    User.findOne({"user_name":req.user.user_name}, (err, foundUser) => {
+        if (err) {
+            res.redirect(`http://localhost:3000/users/login`)
+        } else {
+            if (foundUser) {
+                foundUser.accessToken = utilFuncs.createJwt({user_name:foundUser.user_name});
+                foundUser.save();
+                res.cookie('Authorization', 'Bearer ' + foundUser.accessToken)
+                res.redirect(`http://localhost:3000/users/profile?${foundUser.user_name}`)
+            } else {
+                res.redirect(`http://localhost:3000/users/login`)
+            }
+        }
+    });
 });
 
 router.get('/auth/github', passport.authenticate('github'));
 
-router.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/users/register' }), (req, res) => {
-    res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
-    res.redirect('http://localhost:3000');
+router.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/users/login' }), (req, res) => {
+    User.findOne({"user_name":req.user.user_name}, (err, foundUser) => {
+        if (err) {
+            res.redirect(`http://localhost:3000/users/login`)
+        } else {
+            if (foundUser) {
+                foundUser.accessToken = utilFuncs.createJwt({user_name:foundUser.user_name});
+                foundUser.save();
+                res.cookie('Authorization', 'Bearer ' + foundUser.accessToken)
+                res.redirect(`http://localhost:3000/users/profile?${foundUser.user_name}`)
+            } else {
+                res.redirect(`http://localhost:3000/users/login`)
+            }
+        }
+    });
 });
 
 router.get('/auth/steam', passport.authenticate('steam'));
 
 router.get('/auth/steam/callback', passport.authenticate('steam', { failureRedirect: '/login' }), (req, res) => {
-    // Successful authentication, redirect home.
-    res.cookie('Authorization', 'Bearer ' + req.user.accessToken);
-    res.redirect('http://localhost:3000');
+    User.findOne({"user_name":req.user.user_name}, (err, foundUser) => {
+        if (err) {
+            res.redirect(`http://localhost:3000/users/login`)
+        } else {
+            if (foundUser) {
+                foundUser.accessToken = utilFuncs.createJwt({user_name:foundUser.user_name});
+                foundUser.save();
+                res.cookie('Authorization', 'Bearer ' + foundUser.accessToken)
+                res.redirect(`http://localhost:3000/users/profile?${foundUser.user_name}`)
+            } else {
+                res.redirect(`http://localhost:3000/users/login`)
+            }
+        }
+    });
 });
 
 router.post('/register', (req, res) => {
@@ -265,20 +307,29 @@ router.post('/verifyAccount', (req, res) => {
 
                         newUser.save((err, user) => {
                             if (err) {
-                                throw err;
-                            }
-                            console.log("saved: " + user);
-                            res.cookie('Authorization', 'Bearer ' + user.accessToken);
-                            res.json({ "success": "account created :)" });
-                        });
-
-                        UnverifiedUser.deleteOne({ "activationCode": activationCode }, (err) => {
-                            if (err) {
-                                res.send(err);
+                                res.status(401).send({
+                                    "status": "error",
+                                    "body": "Error saving user"
+                                });
+                            } else {
+                                UnverifiedUser.deleteOne({ "activationCode": activationCode }, (err) => {
+                                    if (err) {
+                                        res.status(400).send({
+                                            "status": "error",
+                                            "body": "Error deleting unverified user account"
+                                        });
+                                    } else {
+                                        res.cookie('Authorization', 'Bearer ' + user.accessToken);
+                                        res.status(200).send({
+                                            "status": "success",
+                                            "body": "Account verified"
+                                        });
+                                    }
+                                });
                             }
                         });
                     } else {
-                        res.status(401).send({
+                        res.status(400).send({
                             "status": "error",
                             "body": "Invalid input"
                         });
@@ -348,7 +399,6 @@ router.post('/forgotPassword', (req, res) => {
     if (req.body.user_name) {
         if (utilFuncs.validate(req.body.user_name, "username")) {
             const username = req.body.user_name;
-
             utilFuncs.checkIfExisting(username, "forgotten").then((username) => {
                 // if resolved promise
                 if (username) {
@@ -357,41 +407,48 @@ router.post('/forgotPassword', (req, res) => {
                             res.send(err);
                         }
                         if (foundUser) {
-                            let newUser = new forgotPasswordUser();
-
-                            newUser.user_name = foundUser.user_name;
-                            newUser.email = foundUser.email;
-                            const resetUrlString = randomstring.generate(10);
-                            newUser.resetCode = resetUrlString;
-                            // TODO this is a temp localhost fix
-                            newUser.resetUrl = `http://localhost:9000/users/forgotPassword?from=${resetUrlString}`;
-                            newUser.save((err) => {
-                                if (err) {
+                            utilFuncs.isOAuthUser(foundUser).then((platform) => {
+                                if (platform) {
+                                    console.log(foundUser)
+                                    res.status(401).send({
+                                        "status": "error",
+                                        "body": `You're account is managed through ${platform}, please change your password on their platform`
+                                    });
+                                } else {
+                                    // isn't an OAuth user
+                                    let newUser = new forgotPasswordUser();
+                                    newUser.user_name = foundUser.user_name;
+                                    newUser.email = foundUser.email;
+                                    const resetUrlString = randomstring.generate(10);
+                                    newUser.resetCode = resetUrlString;
+                                    // TODO this is a temp localhost fix
+                                    newUser.resetUrl = `http://localhost:9000/users/forgotPassword?from=${resetUrlString}`;
+                                    newUser.save((err, user) => {
+                                        if (err) {
+                                            throw err;
+                                        }
+                                    });
+                                    utilFuncs.sendEmail(foundUser.email, `Update your password ${foundUser.user_name}`, newUser.resetUrl).then(() => {
+                                        res.status(200).send({
+                                            "status": "success",
+                                            "body": `Password reset email sent`
+                                        });
+                                    }, (err) => {
+                                        res.status(400).send({
+                                            "status": "error",
+                                            "body": err
+                                        });
+                                    });
+                                        }
+                                    })
+                                } else {
                                     res.status(400).send({
-                                        "status": "information",
-                                        "body": `Error updating information`
+                                        "status": "error",
+                                        "body": "Check your email for reset link"
                                     });
                                 }
-                            });
-                            utilFuncs.sendEmail(foundUser.email, `Update your password ${foundUser.user_name}`, newUser.resetUrl).then(() => {
-                                res.status(200).send({
-                                    "status": "information",
-                                    "body": `Password reset email sent`
-                                });
-                            }, (err) => {
-                                res.status(400).send({
-                                    "status": "information",
-                                    "body": err
-                                });
-                            });
-                        } else {
-                            res.status(400).send({
-                                "status": "error",
-                                "body": "Check your email for reset link"
-                            });
-                        }
 
-                    });
+                            });
 
                 } else {
                     res.status(400).send({
@@ -434,13 +491,11 @@ router.post('/resetPassword', (req, res) => {
                         });
                     }
                 }, () => {
-                    // err here means the password was not found in the database
                     forgotPasswordUser.findOne({ resetUrl: req.body.fromUrl }, (err, foundUser) => {
                         if (err) {
                             res.send(err);
                         }
                         if (foundUser) {
-
                             utilFuncs.resetPassword(foundUser.email, req.body.newPassword).then((username) => {
                                 forgotPasswordUser.deleteOne({ "user_name": username }, (err) => {
                                     if (err) {

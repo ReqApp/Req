@@ -3,23 +3,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Redirect} from 'react-router-dom';
 // Material
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import GitHubIcon from '@material-ui/icons/GitHub';
-import GTranslateIcon from '@material-ui/icons/GTranslate';
-import GroupWorkIcon from '@material-ui/icons/GroupWork';
+import Navbar from '../components/Page_Components/navbar';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 // Components
-import Copyright from '../components/copyRight';
-import Alert from '../components/alertSnack';
+import Copyright from '../components/Page_Components/copyRight';
+import Alert from '../components/Miscellaneous/alertSnack';
+import SteamLogo from '../images/steamLogo.webp';
+import GitHubLogo from '../images/githubIcon.svg';
+import GoogleLogo from '../images/googleLogo.webp';
+
+
 
 // Main component class
 class SignIn extends React.Component{
@@ -56,7 +58,7 @@ class SignIn extends React.Component{
     if(formValid){
       fetch('http://localhost:9000/users/login', {
         method: 'POST',
-        credentials: 'same-origin',
+        credentials: 'include',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json'
@@ -107,21 +109,25 @@ class SignIn extends React.Component{
 }
 
   render(){
-    const {msg, msgType, snackOpen, loggedIn} = this.state;
+    const {msg, msgType, snackOpen, loggedIn, user_name} = this.state;
     const {classes} = this.props;
+    const redirectUrl = `/users/profile?${user_name}`;
 
     if(loggedIn){
       return(
-        <Redirect to='users/profile' />
+        <Redirect to={redirectUrl} />
       )
     }
     return (
       <div>
+        <Navbar />
         <Snackbar open={snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
             <Alert onClose={this.handleSnackClose} severity={msgType}>{msg}</Alert>
         </Snackbar>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" style={{textAlign:'center'}}>
         <CssBaseline />
+
+        
         <div className={classes.paper}>
           <Typography component="h1" variant="h5">
             Sign in
@@ -160,38 +166,32 @@ class SignIn extends React.Component{
 
             Sign in through a 3rd party application
 
-            <Grid container>
+            <Grid container> 
               <Grid item lg>
-                <Link href="#" variant="body2">
-                <Avatar className={classes.avatar}>
-                  <GitHubIcon />
-                </Avatar>
+                <Link href="http://localhost:9000/users/auth/github" variant="body2">
+                <img src={GitHubLogo} className={classes.OAuthApp} alt='Github Logo'></img>
                 </Link>
               </Grid>
               <Grid item lg>
-                <Link href="#" variant="body2">
-                <Avatar className={classes.avatar}>
-                  <GTranslateIcon />
-                </Avatar>
+                <Link href="http://localhost:9000/users/auth/google" variant="body2">
+                <img src={GoogleLogo} className={classes.OAuthApp} alt='Google Logo'></img>
                 </Link>
               </Grid>
               <Grid item lg>
-                <Link href="#" variant="body2">
-                <Avatar className={classes.avatar}>
-                  <GroupWorkIcon />
-                </Avatar>
+                <Link href="http://localhost:9000/users/auth/steam" variant="body2">
+                <img src={SteamLogo} className={classes.OAuthApp} alt='Steame Logo'></img>
                 </Link>
               </Grid>
             </Grid>
             
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href="/users/forgotPassword" variant="body2">
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/users/register" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
@@ -213,6 +213,11 @@ const classes = theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+  },
+  OAuthApp: {
+    margin: '16px 0px 16px 0px',
+    width: '40px',
+    height: '40px'
   },
   avatar: {
     margin: theme.spacing(1),

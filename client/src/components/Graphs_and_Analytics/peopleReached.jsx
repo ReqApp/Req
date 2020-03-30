@@ -14,7 +14,7 @@ export default class PeopleReached extends Component {
     }
 
     componentDidMount() {
-        let targetUser = window.location.href.split("?")[1];
+        const {user} = this.props;
         fetch("http://localhost:9000/analytics/getPeopleReached", {
             method: 'POST',
             crossDomain: true,
@@ -23,7 +23,7 @@ export default class PeopleReached extends Component {
                 'Access-Control-Allow-Origin': '*'
             },
             body: JSON.stringify({
-                "username" : targetUser
+                "username" : user
             })
         })
         .then((res) => res.json())
@@ -49,11 +49,15 @@ export default class PeopleReached extends Component {
         const {betsMade, peopleReached, dataRetrieved} = this.state;
         if(dataRetrieved){
             return (
-                <div>
-                    <h6>Bet's made: {betsMade}</h6>
-                    <br />
-                    <h6>People reached: {peopleReached}</h6>
+                <div style={{ margin: '10px', textAlign:'center', padding:'10px', borderRadius:'8px', backgroundColor:'#c5c9c9', height:'255px'}}>
+
+                    <h4 style={{padding:'2px 2px 0px 2px'}}>Bets made:</h4>
+                    <h1 style={{padding:'0px',  fontWeight:'bold'}}>{betsMade}</h1>
+
+                    <h4>People reached:</h4>
+                    <h1  style={{padding:'0px', fontWeight:'bold'}}>{peopleReached}</h1>
                 </div>
+                
             )
         }
         return null;

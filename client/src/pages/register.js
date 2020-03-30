@@ -2,32 +2,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 // Material
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import GitHubIcon from '@material-ui/icons/GitHub';
-import GTranslateIcon from '@material-ui/icons/GTranslate';
-import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 // Components
-import Copyright from '../components/copyRight';
+import Copyright from '../components/Page_Components/copyRight';
+import Navbar from '../components/Page_Components/navbar';
+
+import SteamLogo from '../images/steamLogo.webp';
+import GitHubLogo from '../images/githubIcon.svg';
+import GoogleLogo from '../images/googleLogo.webp';
 
 class Register extends React.Component{
-  constructor(props){
-    super(props);
-  }
   render(){
     const {classes} = this.props;
     return (
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <div className={classes.paper}>
+      <div>
+          <Navbar />
+          <Container component="main" maxWidth="xs" style={{textAlign:'center'}}>
+          <CssBaseline />
+
+          <div className={classes.paper}>
           <Typography component="h1" variant="h5">
             Register
           </Typography>
@@ -61,31 +62,25 @@ class Register extends React.Component{
               color="primary"
               className={classes.submit}
             >
-              Sign In
+              Register
             </Button>
 
             Register through a 3rd party application
 
-            <Grid container>
+            <Grid container> 
               <Grid item lg>
                 <Link href="http://localhost:9000/users/auth/github" variant="body2">
-                <Avatar className={classes.avatar}>
-                  <GitHubIcon />
-                </Avatar>
+                <img src={GitHubLogo} className={classes.OAuthApp} alt='Github Logo'></img>
                 </Link>
               </Grid>
               <Grid item lg>
                 <Link href="http://localhost:9000/users/auth/google" variant="body2">
-                <Avatar className={classes.avatar}>
-                  <GTranslateIcon />
-                </Avatar>
+                <img src={GoogleLogo} className={classes.OAuthApp} alt='Google Logo'></img>
                 </Link>
               </Grid>
               <Grid item lg>
                 <Link href="http://localhost:9000/users/auth/steam" variant="body2">
-                <Avatar className={classes.avatar}>
-                  <GroupWorkIcon />
-                </Avatar>
+                <img src={SteamLogo} className={classes.OAuthApp} alt='Steam Logo'></img>
                 </Link>
               </Grid>
             </Grid>
@@ -103,11 +98,12 @@ class Register extends React.Component{
               </Grid>
             </Grid>
           </form>
-        </div>
+          </div>
         <Box mt={8}>
           <Copyright />
         </Box>
       </Container>
+      </div>
     );
   }
 }
@@ -119,6 +115,11 @@ const classes = theme => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
+  OAuthApp: {
+    margin: '16px 0px 16px 0px',
+    width: '40px',
+    height: '40px'
+  },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.text.primary,
@@ -126,7 +127,7 @@ const classes = theme => ({
   },
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    marginTop: '30px'
   },
   submit: {
     margin: theme.spacing(3, 0, 2),

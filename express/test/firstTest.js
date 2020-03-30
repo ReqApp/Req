@@ -444,7 +444,7 @@ describe("========== Verify Account ========== ", () => {
                     "activationCode": `${fuzzVerificationCode}`
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(401);
+                    expect(res).to.have.status(400);
                     expect(res.body.status).to.equals("error");
                     expect(res.body.body).to.equals("Invalid input");
                     done();
@@ -647,75 +647,83 @@ describe("============= Betting =============", () => {
                     done();
                 });
         }),
-        it("Invalid secret", done => {
+        it("No cookies", done => {
             chai
                 .request(app)
-                .post("/bets/bigButtonBet")
+                .post("/bets/getUserCreatedBets")
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You must be signed in to complete this action");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("Invalid parameters", done => {
+            chai
+                .request(app)
+                .post("/bets/getUserCreatedBets")
                 .send({
-                    "secret": fuzzPassword,
-                    "action": "end"
+                    "_id":"galway"
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    expect(res.body.body).to.equals("You are not authorised to do this");
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You must be signed in to complete this action");
                     expect(res.body.status).to.equals("error");
                     done();
                 });
         }),
-        it("Invalid input", done => {
+        it("No cookies", done => {
             chai
                 .request(app)
-                .post("/bets/bigButtonBet")
+                .post("/bets/getBetsForUser")
                 .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    expect(res.body.body).to.equals("Invalid input");
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You must be signed in to complete this action");
                     expect(res.body.status).to.equals("error");
                     done();
                 });
         }),
-        it("No Input", done => {
+        it("No cookies", done => {
             chai
                 .request(app)
-                .post("/bets/createLocationBet")
-                .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    expect(res.body.status).to.equals("error");
-                    expect(res.body.body).to.equals("Incomplete data");
-                    done();
-                });
-        }),
-        it("Invalid Input", done => {
-            chai
-                .request(app)
-                .post("/bets/createLocationBet")
+                .post("/bets/getBetsForUser")
                 .send({
-                    "location_name": "my gaff",
-                    "latitude": 82343579343,
-                    "longitude": 15249483,
-                    "radius": 30,
-                    "bet_region_id": fuzzUsername,
-                    "bet_id": fuzzUsername
+                    "username": null,
+                    "password":"shouldn't be reading this"
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(400);
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You must be signed in to complete this action");
                     expect(res.body.status).to.equals("error");
-                    expect(res.body.body).to.equals("Invalid ID");
                     done();
                 });
         }),
-        it("Invalid Input", done => {
+        it("No cookies", done => {
             chai
                 .request(app)
-                .post("/bets/createLocationBet")
+                .post("/bets/findNewBets")
                 .send({
-                    "location_name": "my gaff",
-                    "user_name": "testUser",
-                    "password": "YouThoughtWedTypeThePasswordOutHerehahahahaha"
+                    "username": null,
+                    "password":"shouldn't be reading this"
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(400);
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You must be signed in to complete this action");
                     expect(res.body.status).to.equals("error");
-                    expect(res.body.body).to.equals("Incomplete data");
+                    done();
+                });
+        }),
+        it("No cookies", done => {
+            chai
+                .request(app)
+                .post("/bets/findNewBets")
+                .send({
+                    "badField": fuzzUsername
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You must be signed in to complete this action");
+                    expect(res.body.status).to.equals("error");
                     done();
                 });
         })

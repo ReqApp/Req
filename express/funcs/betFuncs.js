@@ -787,23 +787,23 @@ function addBetToFinishedDB(betInfo, winners, losers, betSummary, result) {
 }
 
 
-function resetPassword(email, newPassword) {
+function resetPassword(userEmail, newPassword) {
     return new Promise((resolve, reject) => {
-        User.findOne({ email: email }, (err, foundUser) => {
+        User.findOne({ "email": userEmail }, (err, foundUser) => {
             if (err) {
-                res.send(err);
+                reject(err);
             }
             if (foundUser) {
                 foundUser.password = foundUser.generateHash(newPassword);
                 foundUser.save((err) => {
                     if (err) {
-                        res.send(err);
                         reject(Error(err));
                     } else {
-                        console.log("password changed");
                         resolve(foundUser.user_name);
                     }
                 });
+            } else {
+                resolve(null)
             }
         });
     });
@@ -859,7 +859,9 @@ function anonymiseBetData(allBets) {
                     deadline: indivBet.deadline,
                     forBetTotal: forTotal,
                     againstBetTotal: againstTotal,
-                    betID: indivBet._id
+                    numberOfBettors : indivBet.forUsers.length + indivBet.againstUsers.length,
+                    betID: indivBet._id,
+                    type: indivBet.type
                 }
                 betArr.push(tempBet);
 
@@ -875,12 +877,185 @@ function anonymiseBetData(allBets) {
                     username: indivBet.user_name,
                     deadline: indivBet.deadline,
                     betsTotal: commonTotal,
-                    betID: indivBet._id
+                    firstPlaceCut : indivBet.firstPlaceCut,
+                    secondPlaceCut : indivBet.secondPlaceCut,
+                    thirdPlaceCut : indivBet.thirdPlaceCut,
+                    numberOfBettors : indivBet.commonBets.length,
+                    betID: indivBet._id,
+                    type: indivBet.type
                 }
                 betArr.push(tempBet);
             }
         }
         resolve(betArr);
+    });
+}
+
+// TODO implement location bet check
+// Returns bets not yet bet on or created by user
+function findNewBets(user_name){
+    return new Promise((resolve, reject) => {
+        let newBets = [];
+        getBets().then(bets => {
+            if(bets){
+                bets.forEach(bet => {
+                    let found = false;
+                    let userCreated = false;
+                    if(bet.user_name === user_name){
+                        userCreated = true;
+                    }
+                    if(bet.type === 'binary' && !userCreated){
+                        if(bet.forUsers.find(user => user.user_name === user_name)){
+                            found = true;
+                        }
+                        if(bet.againstUsers.find(user => user.user_name === user_name)){
+                            found = true;
+                        }
+                        if(!found){
+                            newBets.push(bet);
+                        }
+                    }
+                    else if(!userCreated){
+                        if(bet.commonBets.find(user => user.user_name === user_name)){
+                            ;;
+                        }
+                        else{
+                            newBets.push(bet);
+                        }
+                    }
+
+                })
+            }
+            anonymiseBetData(newBets).then(res => {
+                resolve(res);
+            }, err => {
+                resolve([]);
+            })
+        }, err => {
+            reject(err);
+        });
+    });
+}
+
+function getUserCreatedBets(user_name){
+    return new Promise((resolve, reject) => {
+        let userBets = [];
+        getBets().then(bets => {
+            bets.forEach(bet => {
+                if(bet.user_name === user_name){
+                    userBets.push(bet);
+                }
+            }, err => {
+                reject(err);
+            })
+            anonymiseBetData(userBets).then(res => {
+                resolve(res);
+            });
+        });
+    });
+}
+
+function getFinishedBets(){
+    return new Promise((resolve, reject) => {
+        betsFinished.find({}, (err, finishedBets) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(finishedBets);
+            }
+        });
+    });
+}
+
+function getFinishedBetsForUser(user_name){
+    return new Promise((resolve, reject) => {
+        getFinishedBets().then(finishedBets => {
+            let returnBets = [];
+            finishedBets.forEach(elm => {
+                if(elm.user_name === user_name){
+                    returnBets.push(elm);
+                }
+                else{
+                    if(elm.type === 'binary'){
+                        let found = false;
+                        elm.forUsers.forEach(user => {
+                            if(user.user_name === user_name){
+                                found = true;
+                                returnBets.push(elm);
+                            }
+                        });
+                        if(!found){
+                            elm.againstUsers.forEach(user => {
+                                if(user.user_name === user_name){
+                                    returnBets.push(elm);
+                                }
+                            })
+                        }
+                    }
+                    else{
+                        elm.commonBets.forEach(user => {
+                            if(user.user_name === user_name){
+                                returnBets.push(elm);
+                            }
+                        })
+                    }
+                }
+            });
+            resolve(returnBets);
+        }, err => {
+            reject(err);
+        })
+    });
+}
+
+function getBetsForUser(data, user_name){
+    return new Promise((resolve, reject) => {
+        let anonBets = [];
+        let userAmounts = [];
+        let betValues = [];
+        data.forEach(element => {
+            if(element.type === 'binary'){
+                let flag = true;
+                element.forUsers.forEach(user => {
+                    if(user.user_name === user_name){
+                        userAmounts.unshift(user.betAmount);
+                        betValues.push('For');
+                        anonBets.push(element.toObject());
+                        flag = false;
+                    }         
+                });
+                if(flag){
+                    element.againstUsers.forEach(user => {
+                        if(user.user_name === user_name){
+                            userAmounts.unshift(user.betAmount);
+                            betValues.push('Against');
+                            anonBets.push(element.toObject());
+                        }
+                    });
+                }
+            }
+            else if(element.type === 'multi'){
+                element.commonBets.forEach(user => {
+                    if(user.user_name === user_name){
+                        userAmounts.unshift(user.betAmount);
+                        betValues.push(user.bet);
+                        anonBets.push(element.toObject());
+                    }
+                });
+            }
+        });
+        anonymiseBetData(anonBets).then(res => {
+            if(res){
+                for(let i = 0; i < res.length; i++){
+                    res[i].userAmount = userAmounts[i];
+                    res[i].betValue = betValues[i];
+                }
+                resolve(res);
+            }else{
+                resolve(null);
+            }
+        });
+
     });
 }
 
@@ -952,6 +1127,21 @@ function createBet(input) {
             }
         } else {
             reject("Invalid bet type");
+        }
+    })
+}
+
+function isOAuthUser(userObj) {
+    return new Promise((resolve, reject) => {
+        const {githubID, googleID, steamID } = userObj;
+        if (userObj.githubID !== null) {
+            resolve("GitHub");
+        } else if (userObj.googleID !== null) {
+            resolve("Google");
+        } else if (userObj.steamID !== null) {
+            resolve("Steam")
+        } else {
+            resolve(null);
         }
     })
 }
@@ -1088,6 +1278,7 @@ module.exports.createJwt = createJwt
 module.exports.verifyJwt = verifyJwt;
 module.exports.decideBet = decideBet;
 module.exports.isSignedIn = isSignedIn;
+module.exports.isOAuthUser = isOAuthUser;
 module.exports.rankAnswers = rankAnswers;
 module.exports.calcDistance = calcDistance;
 module.exports.createLocationBet = createLocationBet;
@@ -1100,3 +1291,7 @@ module.exports.checkIfExisting = checkIfExisting;
 module.exports.anonymiseBetData = anonymiseBetData;
 module.exports.expiredBetPayBack = expiredBetPayBack;
 module.exports.isPasswordCompromised = isPasswordCompromised;
+module.exports.getBetsForUser = getBetsForUser;
+module.exports.findNewBets = findNewBets;
+module.exports.getUserCreatedBets = getUserCreatedBets;
+module.exports.getFinishedBetsForUser = getFinishedBetsForUser;

@@ -11,6 +11,8 @@ import UserWinLoss from './userWinLoss';
 import PeopleReached from './peopleReached';
 import PlacedBetData from './placedBetData';
 import CreatedBetData from './createdBetData';
+import OverrallEarnings from './overrallEarnings';
+import BetBreakdown from './polarArea';
 
 // Graph to show total number of wins and total number of losses
 // Graph to show people reached and number of bets made
@@ -23,23 +25,30 @@ export default class Graphs extends React.Component{
   }
 
   render(){
+    const {user} = this.props;
     return(
       <Container>
         <Row>
-          <Col>
-            <PlacedBetData />
+          <Col xs="auto">
+            <PlacedBetData user={user}/>
           </Col>
-          <Col>
-            <CreatedBetData />
+          <Col xs="auto">
+            <CreatedBetData user={user}/>
           </Col>
         </Row>
         <Row>
           <Col>
-            <UserWinLoss />
+            <UserWinLoss user={user}/>
           </Col>
           <Col>
-            <PeopleReached />
+            <BetBreakdown user={user}/>
           </Col>
+          <Col xs="auto">
+            <PeopleReached user={user}/>
+          </Col>
+        </Row>
+        <Row>
+        <OverrallEarnings user={user} />
         </Row>
       </Container>
     )

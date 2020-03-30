@@ -12,7 +12,7 @@ export default class UserWinLoss extends Component {
     }
 
     componentDidMount() {
-        let targetUser = window.location.href.split("?")[1]
+        const {user} = this.props;
         fetch("http://localhost:9000/analytics/getWinLoss", {
             method: 'POST',
             crossDomain: true,
@@ -21,7 +21,7 @@ export default class UserWinLoss extends Component {
                 'Access-Control-Allow-Origin': '*'
             },
             body: JSON.stringify({
-                "username":targetUser
+                "username" : user
             })
         })
         .then((res) => res.json())
@@ -46,19 +46,19 @@ export default class UserWinLoss extends Component {
 
     render() {
         const {graphData, retrievedData} = this.state;
-        const COLORS = ['#0088FE', '#00C49F'];
+        const COLORS = ['#e0240b', '#0cb009'];
         if(retrievedData){
             return (
-                <div>
-                    <h6>User Win/Loss:</h6>
-                    <PieChart width={800} height={400} onMouseEnter={this.onPieEnter}>
+                <div xs="auto" style={{margin:'10px', padding:'10px', backgroundColor:'#c5c9c9', borderRadius:'8px', textAlign:'center'}}>
+                    <h4>Win vs Loss</h4>
+                    <PieChart width={210} height={255} onMouseEnter={this.onPieEnter}>
                         <Pie
                         data={graphData} 
-                        cx={120} 
-                        cy={200} 
-                        innerRadius={60}
-                        outerRadius={80} 
-                        fill="#8884d8"
+                        cx={110} 
+                        cy={110} 
+                        innerRadius={40}
+                        outerRadius={70} 
+                        fill="#e0240b"
                         paddingAngle={0}
                         dataKey="value"
                         label

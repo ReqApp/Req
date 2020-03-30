@@ -1,6 +1,6 @@
-import React, {createRef, Component} from 'react';
-import { Map, Marker, Popup, TileLayer, Circle, CircleMarker} from "react-leaflet";
-import {Button, Nav, Navbar, NavDropdown, Form, FormControl, Jumbotron, Container, Row, Col, Tabs, Tab, Dropdown, Modal} from 'react-bootstrap/';
+import React from 'react';
+import { Map, Marker, Popup, TileLayer, Circle } from "react-leaflet";
+import {Button} from 'react-bootstrap/';
 //import openSocket from 'socket.io-client';
 //import './findLocationBets.css';
 

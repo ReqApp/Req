@@ -1,70 +1,162 @@
-import React,{Component} from 'react';
-import Faq from 'react-faq-component';
-import Header from '../components/header';
-import Footer from '../components/footer';
-import {Spacing} from '../spacing';
+import React, { Component } from 'react'
+import Navbar from '../components/Page_Components/navbar';
+import {Container, Row, Col} from 'react-bootstrap';
+import Typography from "@material-ui/core/Typography";
+import {Paper} from '@material-ui/core';
+import EuroIcon from '@material-ui/icons/Euro';
+import ExploreIcon from '@material-ui/icons/Explore';
+import PeopleIcon from '@material-ui/icons/People';
+import ReqAnimation from '../components/Miscellaneous/reqAnimation';
+import Avatar from '@material-ui/core/Avatar';
 
-const aboutLink = <a style = "color:#0000FF" href = "/about">About</a>
-const title = "Req FAQ, A Real life based betting app developed as part of a 2nd year software engineering module."
-const cathal ="<a href ='https://github.com/IamCathal', style='color:#0366d6'>Cathal O'Callaghan</a>"
-const eoin = "<a href ='https://github.com/EoinMcArdle99', style='color:#0366d6'>Eoin Mc Ardle</a>"
-const karl = "<a href ='https://github.com/filthyhound', style='color:#0366d6'>Karl Gordon</a>"
-const rory = "<a href ='https://github.com/Rorysweeney99', style='color:#0366d6'>Rory Sweeney</a>"
-const faqDetails = {
-    title: <b>{title}</b>,
-    rows:[
-        {
-          title: <b>What is Req?</b>,
-          content: "The goal of our app is to combine a community driven network with a focus on geolocation to stand out from the crowd in terms of the modern social media app."
-                    +"With Req, users can bet on anything and everything."
-                    +"Users create bets that are tied to real world locations in such a way that if someone wants take part in a bet they have to physically be in the set location of the bet."
-        },
-        {
-          title: <b>How does it work?</b>,
-          content: "Uses who create bets are incentivized to attract the most amount of people through a 10% cut of the total amount of coins placed."
-                  +"If a bet has not been resolved within 24 hours of it's set deadline the creator of the bet is punished and all bets are returned."
-                  +"Until the bet has been completed identifying information such as usernames are not disclosed as a measure to combat creators resolving their bets in favor of someone they know." 
-                  +"Bet creators can also set their own payout percentages for the 1st, 2nd and 3rd place winners." 
-                  +"This has resulted in some interesting payouts such as 1st and 3rd place getting nothing but 2nd place wins the whole pot."
-                  +"<br/>"
-                  +"Alongside user made bets there are a handful of official bets set by Req." 
-                  +"One of the most interesting ones involves guessing how many times a big red button has been clicked by all users in a 24 hour time frame."
-                  +"This big red button sits on browsing page for bets and user's are encouraged to click or not click to their hearts content."
-                  +"The counter for the amount of global clicks is not made public until the bet has been finalized."
-        },
-        {
-          title: <b>What stack is Req using?</b>,
-          content: "For the front end we're using pure React with material ui." 
-                  +"On the backend we're primarily using express for the routing of requests and main functionality."
-                  +"There are also some maintenance scripts for tasks such as sending emails, automating Req bets and gathering data for Req bets that are written in a mix of python and go."
-                  +"<br/>"
-                  +"In terms of hosting we are deploying to AWS thanks to the $30 in credits given out to all verified GitHub student developers."
-        },
-        {
-          title: <b>Who made Req?</b>,
-          content: "<ul><li>"+cathal+"</li><li>"+eoin+"</li><li>"+karl+"</li><li>"+rory+"</li></ul>"
-        }
-    ],
+import Cathal from '../images/Team/cathalAvatar.png';
+import Karl from '../images/Team/Karl.jpeg';
+import Rory from '../images/Team/Rory.jpeg';
+import Eoin from '../images/Team/eoin.jpg';
+import ReqBackground from '../images/reqBackground4.jpg'
+import GitHubIcon from '../images/githubIcon.svg';
+
+
+export class FAQ extends Component {
+    render() {
+        return (
+            <div style={styles.backing}>
+                <Navbar />
+                <Container style={styles.con}>
+                    <Row style={styles.cards}>
+                        <Col style={styles.cards}>
+                        <Paper elevation={3} style={styles.card}>
+                                <p style={styles.bigText}>FAQ</p>
+                                <h2 style={{fontWeight:'bold', paddingTop:'2vh'}}>What is Req? </h2>
+                                <p>
+                                Req is a real life based betting app made to enable anyone to bet on anything. 
+                                With geolocation being an integral part of the app bets can be locked to users 
+                                within certain areas which incentivizes people to go out and get some fresh air.
+                                </p>
+
+                                <hr 
+                                />
+
+                                <h2 style={{fontWeight:'bold', paddingTop:'2vh'}}>Why was Req made?</h2>
+                                <p>
+                                Req is our group project for our CT216 Software Engineering module in 2nd year CS&IT NUIG.
+                                </p>
+
+                                <hr 
+                                />
+
+                                <h2 style={{fontWeight:'bold', paddingTop:'2vh'}}>Are there design docs?</h2>
+                                <p>
+                                Yes! The design docs can be viewed <a href="https://docs.google.com/document/d/1VSiNX-g0KNztlQGvLeRhXwnbwbDW9phK2VmmVpqMUvw/edit?usp=sharing">here</a>. 
+                                We also have documentation for the backend APIs which can be viewed <a href="">here</a>
+                                </p>
+
+                                <hr 
+                                />
+
+                                <h2 style={{fontWeight:'bold', paddingTop:'2vh'}}>What stack does Req use?</h2>
+                                <p>
+                                For the most part Req uses a standard MERN stack, which is Mongo, Express, React and Node. Alongside this there are various scripts
+                                for automated tasks that are written in Go
+                                </p>
+                                
+                                <hr 
+                                />
+
+                                <h2 style={{fontWeight:'bold', paddingTop:'2vh'}}>Who made Req?</h2>
+                               <Row>
+                               <Col>
+                        <Avatar alt="Cathal O'Callaghan - Back-end Infrastructure" src={Cathal} style={styles.icons}></Avatar>
+                        <h4 style={{fontWeight:'bold'}}>Cathal O'Callaghan <a href="https://iamcathal.github.io"><img src={GitHubIcon} style={{height:'26px', width:'26px'}} alt='Cathal'></img></a></h4> 
+                        <h6> Back-end Infrastructure </h6>
+                        
+                        </Col>
+                        <Col>
+                        <Avatar alt="Karl Gordon - Front-end UI/UX" src={Karl} style={styles.icons}></Avatar>
+                        <h4 style={{fontWeight:'bold'}}>Karl Gordon <a href="https://github.com/FilthyHound"><img src={GitHubIcon} style={{height:'23px', width:'23px'}} alt='Karl'></img></a></h4>
+                        <h6> Front-end UI/UX </h6>
+
+                        </Col>
+                        <Col>
+                        <Avatar alt="Rory Sweeney -  - Front-end UI/UX" src={Rory} style={styles.icons} ></Avatar>
+                        <h4 style={{fontWeight:'bold'}}>Rory Sweeney <a href="https://github.com/RorySweeney99"><img src={GitHubIcon} style={{height:'23px', width:'23px'}} alt='Rory'></img></a></h4>
+                        <h6> Front-end UI/UX </h6>
+
+                        </Col>
+                        <Col>
+                        <Avatar alt="Eoin Mc Ardle - Back-end Infrastructure/Front-end UI/UX" src={Eoin} style={styles.icons}></Avatar>
+                        <h4 style={{fontWeight:'bold'}}>Eoin Mc Ardle <a href="https://github.com/EoinMcArdle99"><img src={GitHubIcon} style={{height:'23px', width:'23px'}} alt='Eoin'></img></a></h4>
+                        <h6> Back-end Infrastructure / Front-end UI </h6>
+
+                        </Col>
+                               </Row>
+                            </Paper>
+                        </Col>
+                       
+                    </Row>
+                </Container>
+                
+
+            </div>
+        )
+    }
 }
 
-export class FAQ extends React.Component{
-    render(){
-        return(
-            <div>
-                <Header/>
-                <Spacing/>
-                <section className="accordion-section clearfix mt-3" aria-label="Question Accordions">
-                  <div className ="container">
-                    <Faq data={faqDetails} styles = {{
-                                            bgColor: '#28AE60',
-                                            titleTextColor: 'black',
-                                            rowTitleColor: 'black',
-                                            rowContentColor: 'black'
-                                                                  }}/>
-                  </div>  
-                </section>
-                <Footer/>
-            </div>
-        );
+const styles = {
+    con: {
+        height: '100vh',
+        marginTop: '80px',
+        justifyContent: 'center',
+        textAlign: 'center'
+    },
+    mainText: {
+        fontWeight: 'bold',
+        fontSize: '5vh'
+    },
+    cards: {
+        margin: '2px'
+    },
+    infoText: {
+        fontSize: '3vh'
+    },
+    icons: {
+        width:'90px',
+        height:'90px',
+        margin:'12px auto 12px auto'
+    },
+    theTeam: {
+        padding: '0px 0px 50px 0px'
+    },
+    bigText: {
+        fontSize: '6vh',
+        fontWeight: 'bold',
+        marginBottom: '0px'
+    },
+    backing: {
+        backgroundImage:`url(${ReqBackground})`,
+        backgroundPosition: 'center',
+        height:'100%'
+    },
+    logo: {
+        marginTop: 100,
+        marginBottom: 100,
+        display: 'block',
+        marginRight: 'auto',
+        marginLeft: 'auto',
+    },
+    phoneImage: {
+        height: '50%'
+    },
+    card: {
+        textAlign: 'center',
+        marginBottom: '60px',
+        padding: '2vh'
+    },
+    icon: {
+        margin: 15,
+        color: '#a681a6'
+    },
+    copy: {
+        marginTop: 20
     }
 }

@@ -1,7 +1,7 @@
 // React
 import React, { Component } from 'react'
 // Rechart
-import { CartesianGrid, XAxis, YAxis, AreaChart, Area, Tooltip} from 'recharts';
+import { BarChart, CartesianGrid, Bar, XAxis, YAxis, Cell, Tooltip} from 'recharts';
 
 export default class CreatedBetData extends Component {
     constructor(props) {
@@ -14,7 +14,7 @@ export default class CreatedBetData extends Component {
     }
 
     componentDidMount() {
-        let targetUser =  window.location.href.split("?")[1];
+        const {user} = this.props;
         // Temp call just betting history as user has not created any bets yet
         fetch("http://localhost:9000/analytics/getBettingHistory", {
             method: 'POST',
@@ -24,7 +24,7 @@ export default class CreatedBetData extends Component {
                 'Access-Control-Allow-Origin': '*'
             },
             body: JSON.stringify({
-                "username": targetUser
+                "username": user
             })
         })
         .then((res) => res.json())
@@ -68,24 +68,26 @@ export default class CreatedBetData extends Component {
 
     render() {
         const {dataRetrieved, graphData} = this.state;
+        const COLORS = ['#e0240b', '#0cb009'];
         if(dataRetrieved){
             return(
-                <div>
-                    <h6>Created Bet Proft and Loss:</h6>
-                    <AreaChart width={500} height={250} data={graphData}
+                <div style={{ padding:'10px', borderRadius:'8px', backgroundColor:'#c5c9c9'}}>
+                    <h6 style={{textAlign:'center'}}> Bet History </h6>
+                    <BarChart width={430} height={230} data={graphData}
                         margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                        <defs>
-                            <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
-                            <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
-                            </linearGradient>
-                        </defs>
                         <XAxis dataKey="date" />
                         <YAxis />
                         <CartesianGrid strokeDasharray="3 3" />
                         <Tooltip />
-                        <Area type="monotone" dataKey="Profit" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
-                    </AreaChart>
+                        <Bar dataKey="Profit" fill="#19b2b5">
+                        >
+                        {
+                            graphData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.Profit > 0 ? "#2ca02c":"#d62728"}/>
+                            ))
+                        }
+                        </Bar>
+                    </BarChart>
                 </div>
             )
         }

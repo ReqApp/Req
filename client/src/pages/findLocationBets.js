@@ -2,8 +2,6 @@
 import React from 'react';
 // Material
 import { makeStyles } from '@material-ui/core/styles';
-import Fab from '@material-ui/core/Fab';
-import NavigationIcon from '@material-ui/icons/Navigation';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Dialog from '@material-ui/core/Dialog';
@@ -18,13 +16,13 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 //Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Container, Row, Col, Dropdown} from 'react-bootstrap/';
+import {Container, Row, Col} from 'react-bootstrap/';
 // Components
-import DisplayMap from'../components/maps';
-import Navbar from '../components/navbar';
-import BetRegionCards from '../components/betRegionCards';
-import LocationBetCards from '../components/locationBetCards';
-import CreateLocationBet from '../components/createLocationBet';
+import DisplayMap from'../components/Location_Betting_Components/maps';
+import Navbar from '../components/Page_Components/navbar';
+import BetRegionCards from '../components/Location_Betting_Components/betRegionCards';
+import LocationBetCards from '../components/Location_Betting_Components/locationBetCards';
+import CreateLocationBet from '../components/Location_Betting_Components/createLocationBet';
 // Other
 import openSocket from 'socket.io-client';
 import './reset.css';
@@ -159,7 +157,7 @@ export default class FindBetPage extends React.Component{
             // Load bet creation component
             let selectedRegion;
             for(let i = 0; i < betRegions.length; i++){
-                if(betRegions[i]._id == id){
+                if(betRegions[i]._id === id){
                     selectedRegion = betRegions[i];
                     break;
                 }

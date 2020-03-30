@@ -658,11 +658,14 @@ router.post('/getBets', (req, res) => {
         if (data) {
             utilFuncs.anonymiseBetData(data).then((response) => {
                 if (response) {
-                    res.status(200).json(response);
+                    res.status(200).json({
+                        'status' : 'success',
+                        'body' : response
+                    });
                 } else {
                     res.status(400).json({
                         "status": "error",
-                        "body": "Error anonymising data nothing"
+                        "body": "Error anonymising data"
                     });
                 }
             }, (err) => {
@@ -677,7 +680,9 @@ router.post('/getBets', (req, res) => {
                 "body": "Could not get bets"
             });
         }
-    }, () => {
+    }, (err) => {
+        // this case should never happen unless
+        // mongo messes up
         res.status(400).json({
             "status": "error",
             "body": "Error getting bets from DB"
@@ -685,7 +690,140 @@ router.post('/getBets', (req, res) => {
     })
 });
 
-router.post('/betExpired', (req, res) => {
+router.post('/getFinishedBets', (req, res) => {
+    utilFuncs.isSignedIn(req.cookies).then(profile => {
+        if(profile){
+            utilFuncs.getFinishedBetsForUser(profile.user_name).then(bets => {
+                res.status(200).json({
+                    'status' : 'success',
+                    'body' : bets
+                });
+            }, err => {
+                res.status(400).json({
+                    'status' : 'error',
+                    'body' : err
+                })
+            });
+        }
+        else{
+            res.status(400).json({
+                'status' : 'error',
+                'body' : 'Could not retrieve profile'
+            })
+        }
+    }, () => {
+        res.status(400).json({
+            'status' : 'error',
+            'body' : 'Not signed in'
+        })
+    })
+});
+
+router.post('/getUserCreatedBets', (req, res) => {
+    utilFuncs.isSignedIn(req.cookies).then(profile => {
+        if(profile){
+            utilFuncs.getUserCreatedBets(profile.user_name)
+            .then(bets => {
+                res.status(200).json({
+                    'status' : 'success',
+                    'body' : bets
+                });
+            }, err => {
+                res.status(400).json({
+                    'status' : 'error',
+                    'body' : err
+                })
+            });
+        }else{
+            res.status(401).json({
+                'status' : 'error',
+                'body' : 'You must be signed in to complete this action'
+             });
+        }
+    }, () => {
+        res.status(401).json({
+            'status' : 'error',
+            'body' : 'You must be signed in to complete this action'
+         });
+    });
+});
+
+router.post('/getBetsForUser', (req, res) => {
+    // Check if user is signed in
+    utilFuncs.isSignedIn(req.cookies).then(profile => {
+        if(profile){
+            // Get all bets
+            utilFuncs.getBets().then(data => {
+                // Get specific bet data from user
+                utilFuncs.getBetsForUser(data, profile.user_name).then(bets => {
+                    if(bets){
+                        res.status(200).json({
+                            'status' : 'success',
+                            'body' : bets
+                        });
+                    }else{
+                        res.status(200).json({
+                            'status' : 'success',
+                            'body' : 'No bets'
+                        })
+                    }
+                    }, err => {
+                        res.status(400).json({
+                            'status' : 'error',
+                            'body' : err
+                    });
+                });
+            });
+        }else{
+            res.status(401).json({
+                'status' : 'error',
+                'body' : 'You must be signed in to complete this action'
+            });
+        }
+    }, () => {
+        res.status(401).json({
+            'status' : 'error',
+            'body' : 'You must be signed in to complete this action'
+         });
+    });
+});
+
+router.post('/findNewBets', (req, res) => {
+    utilFuncs.isSignedIn(req.cookies).then(profile => {
+        if(profile){
+            utilFuncs.findNewBets(profile.user_name).then(bets => {
+                if(bets){
+                    res.status(200).json({
+                        'status' : 'success',
+                        'body' : bets
+                    });
+                }else{
+                    res.status(200).json({
+                        'status' : 'success',
+                        'body' : 'No bets'
+                    })
+                }
+                }, err => {
+                    res.status(400).json({
+                        'status' : 'error',
+                        'body' : err
+                });
+            });
+    }else{
+            res.status(401).json({
+                'status' : 'error',
+                'body' : 'You must be signed in to complete this action'
+            });
+        }
+    }, () => {
+        res.status(401).json({
+            'status' : 'error',
+            'body' : 'You must be signed in to complete this action'
+         });
+    });
+});
+
+router.post('/betExpired', (req, res, next) => {
     // if a bet has expired then the creator will be punished
     // and winnings will be paid back
     if (req.body.secret === process.env.ReqSecret) {
