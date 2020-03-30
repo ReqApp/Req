@@ -59,9 +59,6 @@ class App extends React.Component{
                     <Route exact path='/users/verifyAccount'>
                          <VerifyAccount/>
                     </Route>
-                    <Route exact path='/'>
-                        <HomePage/>
-                    </Route>
                     {/*This will call the error404 for any page that doesn't match any of the path*/}
                     <Route>
                         <Error404/>

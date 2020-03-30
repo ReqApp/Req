@@ -16,7 +16,6 @@ import Eoin from '../images/Team/eoin.jpg';
 import ReqBackground from '../images/reqBackground4.jpg'
 import GitHubIcon from '../images/githubIcon.svg';
 
-
 export class FAQ extends Component {
     render() {
         return (
