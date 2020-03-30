@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import { PieChart, Pie , Cell } from 'recharts';
 
+import {Paper} from '@material-ui/core';
+
+
 export default class UserWinLoss extends Component {
     constructor(props) {
         super(props)
@@ -49,7 +52,9 @@ export default class UserWinLoss extends Component {
         const COLORS = ['#e0240b', '#0cb009'];
         if(retrievedData){
             return (
-                <div xs="auto" style={{margin:'10px', padding:'10px', backgroundColor:'#c5c9c9', borderRadius:'8px', textAlign:'center'}}>
+                <div>
+                <Paper elevation={3} style={styles.card}>
+
                     <h4>Win vs Loss</h4>
                     <PieChart width={210} height={255} onMouseEnter={this.onPieEnter}>
                         <Pie
@@ -68,9 +73,19 @@ export default class UserWinLoss extends Component {
                         }
                         </Pie>
                     </PieChart>
+                    </Paper>
                 </div>
             )
         };
         return null;
+    }
+}
+
+const styles = {
+    card: {
+        textAlign: 'center',
+        padding: '4px',
+        marginBottom: '60px',
+        borderRadius: '6px'
     }
 }

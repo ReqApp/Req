@@ -24,6 +24,7 @@
         "react-anime": "^3.0.3",
         "react-bootstrap": "^1.0.0-beta.16",
         "react-cookie": "^4.0.3",
+        "react-countup": "^4.3.3",
         "react-dom": "^16.12.0",
         "react-faq-component": "^1.0.3",
         "react-geolocated": "^3.0.1",

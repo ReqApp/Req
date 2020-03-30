@@ -2,6 +2,9 @@
 // React
 import React, { Component } from 'react'
 
+import Countup from 'react-countup';
+
+
 export default class OverrallEarnings extends Component {
     constructor(props) {
         super(props)
@@ -49,7 +52,6 @@ export default class OverrallEarnings extends Component {
         data.forEach(bet => {
             total += bet.profitOrLoss;
         });
-        console.log(`Toal is ${total}`)
         this.setState({overrallEarningsVal: total, dataRetrieved: true});
     }
 
@@ -57,9 +59,14 @@ export default class OverrallEarnings extends Component {
         const {overrallEarningsVal, dataRetrieved} = this.state;
         if(dataRetrieved){
             return (
-                <div style={{ margin: '20px', padding:'10px', borderRadius:'8px', backgroundColor:'#c5c9c9', textAlign:'center'}}>
-                    <h3> Overall earnings: </h3>
-                    <h1> {overrallEarningsVal}</h1>
+                <div>
+                        <h1>
+                            <Countup end={overrallEarningsVal} 
+                            style={{fontWeight:'bold'}}
+                            duration={3.6}
+                            />
+                        </h1>
+                        <h6> coins won</h6>
                 </div>
                 
             )

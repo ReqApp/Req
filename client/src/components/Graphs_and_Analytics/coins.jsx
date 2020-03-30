@@ -8,6 +8,10 @@ import {Paper} from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Badge from '@material-ui/core/Badge';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+
+import Countup from 'react-countup';
+
+
 // Bootstrap
 import {Container, Row, Col} from 'react-bootstrap';
 
@@ -55,8 +59,13 @@ export default class Coins extends React.Component{
         if(!loadingCoins){
             return(
                 <div>
-                <h2 style={{margin:'0px', fontWeight:'bold'}}> {totalCoins }</h2>
-                <h5>coins</h5>
+                <h1>
+                <Countup end={totalCoins} 
+                            style={{fontWeight:'bold', textAlign:'center'}}
+                            duration={3.6}
+                            />
+                </h1>
+                <h6> in the bank</h6>
                 </div>
                 
                 // <Badge color="secondary" badgeContent={totalCoins} max={100} style={styles.coinIcon}>
