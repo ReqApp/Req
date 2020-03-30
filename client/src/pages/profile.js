@@ -9,9 +9,9 @@ import Navbar from '../components/Page_Components/navbar';
 import Graphs from '../components/Graphs_and_Analytics/dataGraphs';
 import ProfilePicture from '../components/Page_Components/profilePicture';
 import Coins from '../components/Graphs_and_Analytics/coins';
+import OverrallEarnings from '../components/Graphs_and_Analytics/overrallEarnings';
 //Other
 import openSocket from 'socket.io-client';
-
 import ReqBackground from '../images/reqBackground4.jpg'
 
 
@@ -81,7 +81,12 @@ export class Profile extends React.Component{
                                             </Row>
                                             <Row>
                                                 <Col xs="auto">
-                                                    <Coins user={userName}/> 
+                                                <Coins user={userName}/> 
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col xs="auto">
+                                                <OverrallEarnings user={userName} />
                                                 </Col>
                                             </Row>
                                         </Container>
@@ -108,9 +113,9 @@ export class Profile extends React.Component{
 
 const styles = {
     profile: {
-        padding: '15px',
-        marginTop: '15px',
-        marginBottom: '15px'
+        textAlign: 'center',
+        padding: '25px',
+        marginBottom: '20px'
     },
     backing: {
         backgroundImage:`url(${ReqBackground})`,

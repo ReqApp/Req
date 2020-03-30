@@ -2,6 +2,9 @@
 // React
 import React, { Component } from 'react'
 
+import {Paper} from '@material-ui/core';
+
+
 export default class PeopleReached extends Component {
     constructor(props) {
         super(props)
@@ -49,17 +52,29 @@ export default class PeopleReached extends Component {
         const {betsMade, peopleReached, dataRetrieved} = this.state;
         if(dataRetrieved){
             return (
-                <div style={{ margin: '10px', textAlign:'center', padding:'10px', borderRadius:'8px', backgroundColor:'#c5c9c9', height:'255px'}}>
+                <div>
+                    <Paper elevation={3} style={styles.card}>
 
                     <h4 style={{padding:'2px 2px 0px 2px'}}>Bets made:</h4>
                     <h1 style={{padding:'0px',  fontWeight:'bold'}}>{betsMade}</h1>
 
                     <h4>People reached:</h4>
                     <h1  style={{padding:'0px', fontWeight:'bold'}}>{peopleReached}</h1>
+                    </Paper>
                 </div>
                 
             )
         }
         return null;
+    }
+}
+
+
+const styles = {
+    card: {
+        textAlign: 'center',
+        padding: '4px',
+        marginBottom: '60px',
+        borderRadius: '6px'
     }
 }

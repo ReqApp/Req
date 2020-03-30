@@ -1,5 +1,8 @@
 // React
 import React, { Component } from 'react'
+
+import Typography from "@material-ui/core/Typography";
+import {Paper} from '@material-ui/core';
 // Rechart
 import { CartesianGrid, XAxis, YAxis, AreaChart, Area, Tooltip} from 'recharts';
 
@@ -73,9 +76,10 @@ export default class PlacedBetData extends Component {
         const {dataRetrieved, graphData} = this.state;
         if(dataRetrieved){
             return(
-                <div style={{ padding:'10px', borderRadius:'8px', backgroundColor:'#c5c9c9'}}>
+                <div>
+                    <Paper elevation={3} style={styles.card}>
                     <h6 style={{textAlign:'center'}}>Overall bet average</h6>
-                    <AreaChart width={410} height={230} data={graphData}
+                    <AreaChart width={420} height={240} data={graphData}
                         margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                         <defs>
                             <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -89,9 +93,19 @@ export default class PlacedBetData extends Component {
                         <Tooltip />
                         <Area type="monotone" dataKey="Profit" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
                     </AreaChart>
+                    </Paper>
                 </div>
             )
         }
         return null;
+    }
+}
+
+const styles = {
+    card: {
+        textAlign: 'center',
+        padding: '4px',
+        marginBottom: '60px',
+        borderRadius: '6px'
     }
 }

@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Tooltip } from 'recharts';
 
+import {Paper} from '@material-ui/core';
+
+
 export default class betBreakdown extends Component {
     constructor(props) {
         super(props)
@@ -56,7 +59,9 @@ export default class betBreakdown extends Component {
         const COLORS = ['#e0240b', '#0cb009'];
         if(retrievedData){
             return (
-                <div style={{margin:'10px', padding:'10px', backgroundColor:'#c5c9c9', borderRadius:'8px', textAlign:'center'}}>
+                <div>
+                <Paper elevation={3} style={styles.card}>
+
                     <h4>Bet breakdown</h4>
                     <RadarChart cx={180} cy={160} outerRadius={120} width={360} height={255} data={graphData}>
                     <PolarGrid stroke="#525354"/>
@@ -65,9 +70,19 @@ export default class betBreakdown extends Component {
                     <Tooltip />
                     <Radar name={this.props.user} dataKey="val" stroke="#8884d8" fill="#6790db" fillOpacity={0.6}/>
                     </RadarChart>
+                    </Paper>
                 </div>
             )
         };
         return null;
+    }
+}
+
+const styles = {
+    card: {
+        textAlign: 'center',
+        padding: '4px',
+        marginBottom: '60px',
+        borderRadius: '6px'
     }
 }
