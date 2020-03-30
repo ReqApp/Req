@@ -680,7 +680,7 @@ router.post('/getBets', (req, res) => {
                 "body": "Could not get bets"
             });
         }
-    }, (err) => {
+    }, () => {
         // this case should never happen unless
         // mongo messes up
         res.status(400).json({
@@ -823,7 +823,7 @@ router.post('/findNewBets', (req, res) => {
     });
 });
 
-router.post('/betExpired', (req, res, next) => {
+router.post('/betExpired', (req, res) => {
     // if a bet has expired then the creator will be punished
     // and winnings will be paid back
     if (req.body.secret === process.env.ReqSecret) {

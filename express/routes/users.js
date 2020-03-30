@@ -59,7 +59,7 @@ router.post('/getProfilePicture', (req, res) => {
     }
 });
 
-router.post('/profile', (req, res, next) => {
+router.post('/profile', (req, res) => {
     utilFuncs.isSignedIn(req.cookies).then((signedIn) => {
         if (signedIn) {
             res.status(200).json({
@@ -84,7 +84,7 @@ router.get('/auth/google', passport.authenticate('google', {
     scope: ['profile']
 }));
 
-router.get('/auth/google/callback', passport.authenticate('google'), (req, res, next) => {
+router.get('/auth/google/callback', passport.authenticate('google'), (req, res) => {
     User.findOne({"user_name":req.user.user_name}, (err, foundUser) => {
         if (err) {
             res.redirect(`http://localhost:3000/users/login`)
@@ -428,8 +428,9 @@ router.post('/forgotPassword', (req, res) => {
                                     newUser.resetCode = resetUrlString;
                                     // TODO this is a temp localhost fix
                                     newUser.resetUrl = `http://localhost:9000/users/forgotPassword?from=${resetUrlString}`;
-                                    newUser.save((err, user) => {
+                                    newUser.save((err) => {
                                         if (err) {
+                                            // this is very bad if this fails
                                             throw err;
                                         }
                                     });

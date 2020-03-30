@@ -917,7 +917,7 @@ function findNewBets(user_name){
                     }
                     else if(!userCreated){
                         if(bet.commonBets.find(user => user.user_name === user_name)){
-                            ;;
+                            console.log(".")
                         }
                         else{
                             newBets.push(bet);
@@ -928,7 +928,7 @@ function findNewBets(user_name){
             }
             anonymiseBetData(newBets).then(res => {
                 resolve(res);
-            }, err => {
+            }, () => {
                 resolve([]);
             })
         }, err => {
@@ -1009,7 +1009,7 @@ function getFinishedBetsForUser(user_name){
 }
 
 function getBetsForUser(data, user_name){
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         let anonBets = [];
         let userAmounts = [];
         let betValues = [];
@@ -1133,12 +1133,15 @@ function createBet(input) {
 
 function isOAuthUser(userObj) {
     return new Promise((resolve, reject) => {
+        if (!userObj) {
+            reject("No user given");
+        }
         const {githubID, googleID, steamID } = userObj;
-        if (userObj.githubID !== null) {
+        if (githubID !== null) {
             resolve("GitHub");
-        } else if (userObj.googleID !== null) {
+        } else if (googleID !== null) {
             resolve("Google");
-        } else if (userObj.steamID !== null) {
+        } else if (steamID !== null) {
             resolve("Steam")
         } else {
             resolve(null);

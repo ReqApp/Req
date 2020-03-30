@@ -1,20 +1,8 @@
 import React, { Component } from 'react'
 import Navbar from '../components/Page_Components/navbar';
 import {Container, Row, Col} from 'react-bootstrap';
-import Typography from "@material-ui/core/Typography";
-import {Paper} from '@material-ui/core';
-import EuroIcon from '@material-ui/icons/Euro';
-import ExploreIcon from '@material-ui/icons/Explore';
-import PeopleIcon from '@material-ui/icons/People';
-import ReqAnimation from '../components/Miscellaneous/reqAnimation';
-import Avatar from '@material-ui/core/Avatar';
 
-import Cathal from '../images/Team/cathalAvatar.png';
-import Karl from '../images/Team/Karl.jpeg';
-import Rory from '../images/Team/Rory.jpeg';
-import Eoin from '../images/Team/eoin.jpg';
 import ReqBackground from '../images/reqBackground4.jpg'
-import GitHubIcon from '../images/githubIcon.svg';
 
 
 export class Tutorial extends Component {
@@ -32,7 +20,10 @@ export class Tutorial extends Component {
                                 </p>
                         </Col>
                         <Col>
-                            <img src={"https://i.imgur.com/Rq63QhY.png"} style={styles.phoneImage}></img>
+                            <img src={"https://i.imgur.com/Rq63QhY.png"} 
+                            style={styles.phoneImage}
+                            alt="Why didn't this load">
+                            </img>
                         </Col>
                         
                     </Row>
@@ -46,7 +37,10 @@ export class Tutorial extends Component {
                                 </p>
                         </Col>
                         <Col>
-                            <img src={"https://i.imgur.com/Rq63QhY.png"} style={styles.phoneImage}></img>
+                            <img src={"https://i.imgur.com/Rq63QhY.png"}
+                             style={styles.phoneImage}
+                             alt="Why didn't this load">
+                             </img>
                         </Col>
                         
                     </Row>
@@ -62,7 +56,10 @@ export class Tutorial extends Component {
                                 </p>
                         </Col>
                         <Col>
-                            <img src={"https://i.imgur.com/Rq63QhY.png"} style={styles.phoneImage}></img>
+                            <img src={"https://i.imgur.com/Rq63QhY.png"}
+                             style={styles.phoneImage}
+                             alt="Why didn't this load">
+                             </img>
                         </Col>
                         
                     </Row>
@@ -75,7 +72,10 @@ export class Tutorial extends Component {
                                 </p>
                         </Col>
                         <Col>
-                            <img src={"https://i.imgur.com/Rq63QhY.png"} style={styles.phoneImage}></img>
+                            <img src={"https://i.imgur.com/Rq63QhY.png"}
+                             style={styles.phoneImage}
+                             alt="Why didn't this load">
+                             </img>
                         </Col>
                         
                     </Row>
