@@ -922,7 +922,11 @@ function findNewBets(user_name){
 
                 })
             }
-            resolve(newBets);
+            anonymiseBetData(newBets).then(res => {
+                resolve(res);
+            }, err => {
+                resolve([]);
+            })
         }, err => {
             reject(err);
         });
