@@ -22,6 +22,7 @@ import ExploreIcon from '@material-ui/icons/Explore';
 import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
 import Snackbar from '@material-ui/core/Snackbar';
+import SearchIcon from '@material-ui/icons/Search';
 // Bootstrap
 import {Container, Row, Col} from 'react-bootstrap';
 // Components
@@ -45,7 +46,8 @@ class Dashboard extends React.Component{
           createNewBetDialog: false,
           snackOpen: false,
           msg: '',
-          msgType: ''
+          msgType: '',
+          openFindBetPane: false
         }
     }
 
@@ -114,12 +116,19 @@ class Dashboard extends React.Component{
           return;
       }
       this.setState({snackOpen : false});
-  }
+    }
+
+    handleOpenFindBetPane = () => {
+      this.setState({openFindBetPane : true});
+    }
+
+    closeFindBetPane = () => {
+      this.setState({openFindBetPane : false});
+    }
 
     render(){
-      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, snackOpen, msg, msgType} = this.state;
+      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, snackOpen, msg, msgType, openFindBetPane} = this.state;
       const {classes} = this.props;
-
       const drawer = (
         <div>
               <List>
@@ -134,6 +143,14 @@ class Dashboard extends React.Component{
               <Divider />
               <List>
               <ListSubheader>Betting</ListSubheader>
+              <ListItem button onClick={this.handleOpenFindBetPane}>
+                <ListItemIcon>
+                  <SearchIcon />
+                </ListItemIcon>
+                <ListItemText>
+                  Find Bets
+                </ListItemText>
+              </ListItem>
               <ListItem button onClick={this.renderCreateNewBetDialog}>
                 <ListItemIcon>
                   <AddIcon />
@@ -185,6 +202,10 @@ class Dashboard extends React.Component{
             <Snackbar open={snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
               <Alert onClose={this.handleSnackClose} severity={msgType}>{msg}</Alert>
             </Snackbar>
+            <FindBets
+                openPane={openFindBetPane}
+                closeDialog={this.closeFindBetPane}
+            />
             <Navbar className={classes.appBar}/>
             <div className={classes.root}>
                 <CreateBetForm 
@@ -258,7 +279,6 @@ class Dashboard extends React.Component{
                         <Col>
                         <Paper style={styles.paper}>
                           <h2>New Bets:</h2>
-                          <FindBets />
                           </Paper>
                           </Col>
                         </Row>
