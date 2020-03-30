@@ -446,7 +446,7 @@ describe("========== Verify Account ========== ", () => {
                     "activationCode": `${fuzzVerificationCode}`
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(401);
+                    expect(res).to.have.status(400);
                     expect(res.body.status).to.equals("error");
                     expect(res.body.body).to.equals("Invalid input");
                     done();
