@@ -1,14 +1,20 @@
 // React
 import React from 'react';
+// Material
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import {Button} from '@material-ui/core';
 // Bootstrap
 import {Row, Col} from 'react-bootstrap';
 // Components
 import BetCard from './betCard';
 
-
 export default class FindBets extends React.Component{
     constructor(props){
         super(props);
+        console.log(this.props);
         this.state = {
           loadingBets : true,
           bets: [],
@@ -45,16 +51,29 @@ export default class FindBets extends React.Component{
           });
     }
 
+    closeDialog = () => {
+      this.props.closeDialog();
+    }
+
     render(){
       const {loadingBets, bets} = this.state;
+      const {openPane} = this.props;
+
       if(!loadingBets){
-        return(
-          <div>
-            {bets.map((bet, index) => <Row key={index}><Col><BetCard data={bet} /></Col></Row>)}
-          </div>
+        return (
+          <Dialog open={openPane} onClose={this.closeDialog}>
+            <DialogTitle>Find Bets</DialogTitle>
+            <DialogContent>
+              {bets.map((bet, index) => <Row key={index}><Col><BetCard data={bet} /></Col></Row>)}
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.closeDialog} color="primary">
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog> 
         )
       }
       return null;
     }
-    
 }
