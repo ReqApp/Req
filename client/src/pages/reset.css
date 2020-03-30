@@ -11,7 +11,8 @@ body{
 }
 
 .MuiDrawer-paper{
-    top: auto !important
+    top: auto !important;
+    z-index: 1000 !important;
 }
 
 

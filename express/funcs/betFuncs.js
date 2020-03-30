@@ -951,6 +951,59 @@ function getUserCreatedBets(user_name){
     });
 }
 
+function getFinishedBets(){
+    return new Promise((resolve, reject) => {
+        betsFinished.find({}, (err, finishedBets) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(finishedBets);
+            }
+        });
+    });
+}
+
+function getFinishedBetsForUser(user_name){
+    return new Promise((resolve, reject) => {
+        getFinishedBets().then(finishedBets => {
+            let returnBets = [];
+            finishedBets.forEach(elm => {
+                if(elm.user_name === user_name){
+                    returnBets.push(elm);
+                }
+                else{
+                    if(elm.type === 'binary'){
+                        let found = false;
+                        elm.forUsers.forEach(user => {
+                            if(user.user_name === user_name){
+                                found = true;
+                                returnBets.push(elm);
+                            }
+                        });
+                        if(!found){
+                            elm.againstUsers.forEach(user => {
+                                if(user.user_name === user_name){
+                                    returnBets.push(elm);
+                                }
+                            })
+                        }
+                    }
+                    else{
+                        elm.commonBets.forEach(user => {
+                            if(user.user_name === user_name){
+                                returnBets.push(elm);
+                            }
+                        })
+                    }
+                }
+            });
+            resolve(returnBets);
+        }, err => {
+            reject(err);
+        })
+    });
+}
+
 function getBetsForUser(data, user_name){
     return new Promise((resolve, reject) => {
         let anonBets = [];
@@ -1237,3 +1290,4 @@ module.exports.isPasswordCompromised = isPasswordCompromised;
 module.exports.getBetsForUser = getBetsForUser;
 module.exports.findNewBets = findNewBets;
 module.exports.getUserCreatedBets = getUserCreatedBets;
+module.exports.getFinishedBetsForUser = getFinishedBetsForUser;

@@ -676,6 +676,35 @@ router.post('/getBets', (req, res, next) => {
     })
 });
 
+router.post('/getFinishedBets', (req, res) => {
+    utilFuncs.isSignedIn(req.cookies).then(profile => {
+        if(profile){
+            utilFuncs.getFinishedBetsForUser(profile.user_name).then(bets => {
+                res.status(200).json({
+                    'status' : 'success',
+                    'body' : bets
+                });
+            }, err => {
+                res.status(400).json({
+                    'status' : 'error',
+                    'body' : err
+                })
+            });
+        }
+        else{
+            res.status(400).json({
+                'status' : 'error',
+                'body' : 'Could not retrieve profile'
+            })
+        }
+    }, () => {
+        res.status(400).json({
+            'status' : 'error',
+            'body' : 'Not signed in'
+        })
+    })
+});
+
 router.post('/getUserCreatedBets', (req, res) => {
     utilFuncs.isSignedIn(req.cookies).then(profile => {
         if(profile){
