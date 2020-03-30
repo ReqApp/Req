@@ -74,7 +74,8 @@ class VerifyAccount extends React.Component {
   }
 
   render(){
-    const {classes, success, verificationCode, msg, msgType, snackOpen} = this.props;
+    const {msg, msgType, snackOpen} = this.state;
+    const {classes, success, verificationCode} = this.props;
     if (success) {
       return(
         <Redirect to='/' />

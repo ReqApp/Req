@@ -71,7 +71,8 @@ class ForgotPassword extends React.Component{
     this.setState({snackOpen : false});
 }
   render(){
-    const {classes, msg, msgType, snackOpen} = this.props;
+    const {msg, msgType, snackOpen} = this.state;
+    const {classes} = this.props;
 
     return (
       <div>

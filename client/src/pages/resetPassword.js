@@ -36,7 +36,6 @@ class ResetPassword extends React.Component {
   submitForm = () => {
     const {resetCode, newPassword, requestMade} = this.state;
 
-
     if (newPassword === '') {
       this.setState({msg : 'Please enter your new password', msgType : 'warning', snackOpen : true});
     } else {
@@ -98,7 +97,8 @@ class ResetPassword extends React.Component {
   }
 
   render(){
-    const {classes, passChanged, msg, msgType, snackOpen} = this.props;
+    const {msg,msgType, snackOpen} = this.state;
+    const {classes, passChanged} = this.props;
     if (passChanged) {
       return(
         <Redirect to='/' />
