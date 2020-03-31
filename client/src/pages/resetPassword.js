@@ -34,7 +34,7 @@ class ResetPassword extends React.Component {
   }
 
   submitForm = () => {
-    const {resetCode, newPassword, requestMade} = this.state;
+    const {newPassword} = this.state;
 
     if (newPassword === '') {
       this.setState({msg : 'Please enter your new password', msgType : 'warning', snackOpen : true});
@@ -43,7 +43,7 @@ class ResetPassword extends React.Component {
       console.log(window.location.href);
       console.log(window.location.href.split("="))
     const resetCodeString = window.location.href.split("=")[1];
-    if (resetCodeString == undefined) {
+    if (resetCodeString === undefined) {
       console.log("undefined split")
     }
     console.log(resetCodeString)
@@ -87,7 +87,7 @@ class ResetPassword extends React.Component {
 }
 
   componentDidMount() {
-    const resetCodeString = '';
+    let resetCodeString = '';
     try {
       resetCodeString = window.location.href.split("=")[1];
       this.setState({resetCode:resetCodeString})

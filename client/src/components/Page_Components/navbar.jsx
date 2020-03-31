@@ -17,7 +17,7 @@ export default class Navbar extends React.Component{
     }
 
     getProfileInfo = () => {
-        fetch('http://localhost:9000/users/profile', {
+        fetch('http://localhost:9000/users/isSignedIn', {
             method: 'POST',
             crossDomain: true,
             credentials:'include',
@@ -81,7 +81,10 @@ export default class Navbar extends React.Component{
                             </NavDropdown>
                             </Nav>
                             <Form inline>
-                            <img src={profilePicture} style={styles.profilePic}></img>
+                            <img src={profilePicture} 
+                            style={styles.profilePic}
+                            alt="hello world">
+                            </img>
                             <a href={profileLink} style={{color:'black'}}>  <p style={styles.username}> {username} </p></a>
                             </Form>
                         </BootNav.Collapse>
@@ -90,7 +93,11 @@ export default class Navbar extends React.Component{
             } else {
                 return(
                     <BootNav bg='light'expand="lg" sticky="top">    
-                        <a href="/"><img src={reqLogo} style={{width:'65px'}} alt='Req Logo'/></a>
+                        <a href="/">
+                            <img src={reqLogo} 
+                            style={{width:'65px'}} 
+                            alt='Req Logo'/>
+                        </a>
                         <BootNav.Toggle aria-controls="basic-BootNav-nav" />
                         <BootNav.Collapse id="basic-BootNav-nav">
                             <Nav className="mr-auto">

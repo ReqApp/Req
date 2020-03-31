@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
-import { Container, Typography, Grid } from '@material-ui/core';
+import {Typography} from '@material-ui/core';
 import pic404 from './images/404.png';
+import {Container, Row, Col} from 'react-bootstrap';
+import Navbar from './components/Page_Components/navbar';
+
 
 export class Error404 extends Component{
 
@@ -38,7 +41,6 @@ export class Error404 extends Component{
 
     rand=() => {
         let random = Math.floor(Math.random()*100);
-        console.log(random)
         let toSelect;
         if(random >= 0 && random <= 24){
             toSelect = 0;
@@ -59,18 +61,27 @@ export class Error404 extends Component{
     render(){
         return (
             <div>
-                <Grid container spacing = {0} direction="column" justify="center" alignItems="center" style={{minHeight : '100vh'}}>                 
-                    <Grid item xs={6}> 
-                        <Typography component="div"> 
-                            <img src = {pic404}/>
+                <Navbar />
+
+                <Container style={{paddingTop:'10vh', textAlign:'center'}}>
+                <Row>                 
+                    <Col> 
+                        <Typography style={{justifyContent:'center'}}> 
+                            <img src = {pic404} 
+                            style={{marginBottom:'4vh'}}
+                            alt="404"
+                            />
                         </Typography>
-                    </Grid>
-                    <Grid item xs={4}>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
                         <Typography component="div">    
                             {this.state.displays}
                         </Typography>
-                    </Grid>
-                </Grid>                 
+                    </Col>
+                </Row>  
+                </Container>               
             </div>
         );
     }

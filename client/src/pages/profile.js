@@ -33,7 +33,7 @@ export class Profile extends React.Component{
     }
     
     handleClick = () => {
-        const holder = this.state.click == false ? true : false;
+        const holder = this.state.click === false ? true : false;
         let src = 'https://api.qrserver.com/v1/create-qr-code/?size=265x265&qzone=0&margin=0&data=' + window.location.href;
         this.setState({click: holder, imgSrc: src});
         this.getLink();

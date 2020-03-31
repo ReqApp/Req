@@ -1,12 +1,7 @@
 import React, { Component } from 'react'
 import Navbar from '../components/Page_Components/navbar';
 import {Container, Row, Col} from 'react-bootstrap';
-import Typography from "@material-ui/core/Typography";
 import {Paper} from '@material-ui/core';
-import EuroIcon from '@material-ui/icons/Euro';
-import ExploreIcon from '@material-ui/icons/Explore';
-import PeopleIcon from '@material-ui/icons/People';
-import ReqAnimation from '../components/Miscellaneous/reqAnimation';
 import Avatar from '@material-ui/core/Avatar';
 
 import Cathal from '../images/Team/cathalAvatar.png';
@@ -47,7 +42,7 @@ export class FAQ extends Component {
                                 <h2 style={{fontWeight:'bold', paddingTop:'2vh'}}>Are there design docs?</h2>
                                 <p>
                                 Yes! The design docs can be viewed <a href="https://docs.google.com/document/d/1VSiNX-g0KNztlQGvLeRhXwnbwbDW9phK2VmmVpqMUvw/edit?usp=sharing">here</a>. 
-                                We also have documentation for the backend APIs which can be viewed <a href="">here</a>
+                                We also have documentation for the backend APIs which can be viewed <a href="/404">here</a>
                                 </p>
 
                                 <hr 

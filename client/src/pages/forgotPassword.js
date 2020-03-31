@@ -21,7 +21,6 @@ class ForgotPassword extends React.Component{
 
     this.state = {
       username: '',
-      requestMade: false,
       // Used for error and success snacks(toasts)
       msg : '',
       msgType : '',
@@ -30,7 +29,7 @@ class ForgotPassword extends React.Component{
   }
 
   submitForm = () => {
-    const {username, requestMade} = this.state;
+    const {username} = this.state;
 
     if (username === '') {
       this.setState({msg : 'Please enter your username', msgType : 'warning', snackOpen : true});

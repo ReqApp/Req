@@ -23,7 +23,6 @@ router.post('/getProfilePicture', (req, res) => {
 
                 if (response) {
                     if (response === "noprofiler") {
-                        console.log("no profiler")
                         res.status(404).json({
                             "status": "error",
                             "body": "No profile picture"
@@ -43,7 +42,6 @@ router.post('/getProfilePicture', (req, res) => {
                 }
             })
         } else {
-            console.log("invalid username")
             res.status(400).json({
                 "status": "success",
                 "body": "Invalid username"
@@ -51,7 +49,6 @@ router.post('/getProfilePicture', (req, res) => {
         }
 
     } else {
-        console.log("No username given")
         res.status(400).json({
             "status": "success",
             "body": "No username given"
@@ -59,7 +56,7 @@ router.post('/getProfilePicture', (req, res) => {
     }
 });
 
-router.post('/profile', (req, res) => {
+router.post('/isSignedIn', (req, res) => {
     utilFuncs.isSignedIn(req.cookies).then((signedIn) => {
         if (signedIn) {
             res.status(200).json({

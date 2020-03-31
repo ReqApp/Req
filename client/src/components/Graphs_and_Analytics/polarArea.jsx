@@ -56,7 +56,6 @@ export default class betBreakdown extends Component {
 
     render() {
         const {graphData, retrievedData} = this.state;
-        const COLORS = ['#e0240b', '#0cb009'];
         if(retrievedData){
             return (
                 <div>

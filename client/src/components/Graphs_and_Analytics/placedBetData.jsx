@@ -1,7 +1,6 @@
 // React
 import React, { Component } from 'react'
 
-import Typography from "@material-ui/core/Typography";
 import {Paper} from '@material-ui/core';
 // Rechart
 import { CartesianGrid, XAxis, YAxis, AreaChart, Area, Tooltip} from 'recharts';

@@ -71,7 +71,6 @@ function getBettingHistory(targetUser) {
                                         }
                                     }
                                 } else {
-                                    console.log("no")
                                         // result is no
                                     for (indivBet2 of bet.againstUsers) {
                                         if (indivBet2.user_name === targetUser) {

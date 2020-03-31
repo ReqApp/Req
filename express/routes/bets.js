@@ -414,7 +414,6 @@ router.post('/decideBet', (req, res) => {
             });
         });
     } else {
-        console.log("not validted")
         res.status(400).json({
             "status": "error",
             "body": "Invalid input"
