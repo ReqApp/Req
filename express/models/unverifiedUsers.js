@@ -20,6 +20,10 @@ var unverifiedUsersSchema = new Schema ({
         type: String,
         minlength: 8
     },
+    profilePicture: {
+        type: String,
+        default: null
+    },
     activationCode: {
         type: String,
         minlength: 6,

@@ -28,8 +28,10 @@ const upload = multer({
 
 function fileFilter(req, file, cb) {
     if (file.mimetype === 'image/png' || file.mimetype === 'image/jpeg') {
+        console.log("was jpg or png")
         cb(null, true);
     } else {
+        console.log("was not jpeg or png")
         cb(null, false);
     }
 }
@@ -40,53 +42,28 @@ router.post('/uploadImage', upload.single('imageUpload'), (req, res, next) => {
             if (response) {
                 checkImage(response).then((success) => {
                     if (success) {
-                        // Image is safe
-                        User.findOne({ user_name: req.body.user_name }, (err, foundUser) => {
-                            if (err) {
-                                res.status(400).json({
-                                    "status": "error",
-                                    "body": "User does not exist"
-                                });
-                            } else {
-                                if (foundUser) {
-                                    User.findOneAndUpdate({ user_name: foundUser.user_name }, { 'profilePicture': response }, (err) => {
-                                        if (err) {
-                                            res.status(400).json({
-                                                "status": "error",
-                                                "body": err
-                                            });
-                                        } else {
-                                            res.status(200).json({
-                                                "status": "error",
-                                                "body": "Profiler for " + foundUser.user_name + " updated to " + response
-                                            });
-                                        }
-                                    });
-                                } else {
-                                    res.status(400).json({
-                                        "status": "error",
-                                        "body": "User does not exist"
-                                    });
-                                }
-                            }
+                        // image is save
+                        res.status(200).json({
+                            "status":"success",
+                            "body": response
                         });
                     } else {
                         // Image is NSFW
-                        res.status(401).json({
+                        res.status(400).json({
                             "status": "error",
-                            "body": "We do not allow NSFW profilers. Choose another"
+                            "body": "We do not allow innapropriate profilers. Choose another"
                         });
                     }
-                }, (err) => {
+                }, () => {
                     res.status(400).json({
                         "status": "error",
-                        "body": "Please choose another image"
+                        "body": "We do not allow innapropriate profilers. Choose another"
                     });
                 });
             } else {
                 res.status(401).json({
                     "status": "error",
-                    "body": "Invalid image"
+                    "body": "Error uploading, please refresh and try again"
                 });
             }
         }).then(() => {

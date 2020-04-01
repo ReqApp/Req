@@ -69,10 +69,6 @@ class VerifyAccount extends React.Component {
     this.setState({snackOpen : false});
 }
 
-  componentDidMount() {
-
-  }
-
   render(){
     const {msg, msgType, snackOpen} = this.state;
     const {classes, success} = this.props;

@@ -137,6 +137,7 @@ router.get('/auth/steam/callback', passport.authenticate('steam', { failureRedir
 });
 
 router.post('/register', (req, res) => {
+    console.log(req.body)
     /**
      * Handles post requests from register page
      */
@@ -242,6 +243,7 @@ router.post('/register', (req, res) => {
                                         newUser.email = email;
                                         newUser.password = newUser.generateHash(password);
                                         newUser.activationCode = loginCode;
+                                        newUser.profilePicture = req.body.profilePicture
 
                                         newUser.save((err) => {
                                             if (err) {
@@ -306,6 +308,7 @@ router.post('/verifyAccount', (req, res) => {
                         newUser.email = foundUser.email;
                         newUser.password = foundUser.password;
                         newUser.accessToken = utilFuncs.createJwt({ user_name: foundUser.user_name });
+                        newUser.profilePicture = foundUser.profilePicture;
 
                         newUser.save((err, user) => {
                             if (err) {

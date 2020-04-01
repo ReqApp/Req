@@ -19,7 +19,138 @@ import SteamLogo from '../images/steamLogo.webp';
 import GitHubLogo from '../images/githubIcon.svg';
 import GoogleLogo from '../images/googleLogo.webp';
 
+const axios = require('axios');
+
+
 class Register extends React.Component{
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      username: '',
+      password: '',
+      email: '',
+      profilerChosen: false,
+      profilerValid: false,
+      profiler: '',
+
+      requestMade: false,
+      registered: false,
+      // Used for error and success snacks(toasts)
+      msg : '',
+      msgType : '',
+      snackOpen : false
+    }
+  }
+
+  submitForm = () => {
+    const {username, password, email, profiler, profilerValid } = this.state;
+    let formValid = true;
+
+    if (username === '') {
+      formValid = false;
+      this.setState({msg : 'Please enter your email address', msgType : 'warning', snackOpen : true});
+    }
+    if (password === '') {
+      formValid = false;
+      this.setState({msg : 'Please enter your email address', msgType : 'warning', snackOpen : true});
+    }
+
+    console.log(profiler);
+
+    if (formValid) {
+      if (profilerValid) {
+        console.log("profiler was valid");
+        fetch('http://localhost:9000/users/register', {
+          method: 'POST',
+        credentials: 'include',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "user_name" : username,
+          "password" : password,
+          "email": email,
+          "profilePicture": profiler
+        })
+        }).then((res) => res.json())
+        .then((res) => {
+          console.log(res)
+        }, (err) => {
+          console.error(`ERR ${err}`)
+        });
+      } else {
+        console.log("profiler was not valid")
+        fetch('http://localhost:9000/users/register', {
+        method: 'POST',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "user_name" : username,
+        "password" : password,
+        "email": email
+      })
+      }).then((res) => res.json())
+      .then((res) => {
+        console.log(res)
+      }, (err) => {
+        console.error(`ERR ${err}`)
+      });
+      }
+    } else {
+      console.log(`form is not valid`)
+    }
+  }
+
+  imageFormSubmit = (e) => {
+    this.setState({profilerChosen: true});
+
+    const formData = new FormData();
+        formData.append('imageUpload',e.target.files[0]);
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        };
+        fetch('http://localhost:9000/tasks/uploadImage', {
+          method: 'POST',
+          headers: {
+            'content-type': 'multipart/form-data'
+          }
+        })
+        axios.post('http://localhost:9000/tasks/uploadImage',formData,config)
+            .then((response) => {
+                if (response.data.status === 'success') {
+                  console.log("success uploading")
+                  this.setState({profilerValid: true, profiler: response.data.body});
+                } else {
+                  // error message profiler was invalid
+                  console.log("not success when uploading");
+                  console.log(response.data);
+                }
+            }).catch((error) => {
+              // error message profiler was onvalid
+              console.log(error)
+              console.log("eror when uploading")
+        });
+  }
+
+    handleUsernameChange = (evt) => {
+      this.setState({username:evt.target.value});
+    }
+
+    handleEmailChange = (evt) => {
+      this.setState({email:evt.target.value});
+    }
+
+    handlePasswordChange = (evt) => {
+      this.setState({password:evt.target.value});
+    }
+
   render(){
     const {classes} = this.props;
     return (
@@ -33,6 +164,18 @@ class Register extends React.Component{
             Register
           </Typography>
           <form className={classes.form} noValidate>
+          <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Username"
+              name="email"
+              onChange={this.handleUsernameChange}
+              autoComplete="username"
+              autoFocus
+            />
             <TextField
               variant="outlined"
               margin="normal"
@@ -41,6 +184,7 @@ class Register extends React.Component{
               id="email"
               label="Email Address"
               name="email"
+              onChange={this.handleEmailChange}
               autoComplete="email"
               autoFocus
             />
@@ -52,15 +196,23 @@ class Register extends React.Component{
               name="password"
               label="Password"
               type="password"
+              onChange={this.handlePasswordChange}
               id="password"
               autoComplete="current-password"
             />
+
+            <input 
+            type="file"
+            name="file"
+            onChange={(e) => this.imageFormSubmit(e)}
+            />
+
             <Button
-              type="submit"
               fullWidth
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={this.submitForm}
             >
               Register
             </Button>
