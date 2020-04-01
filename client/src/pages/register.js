@@ -9,15 +9,19 @@ import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
+import Snackbar from '@material-ui/core/Snackbar';
 import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 // Components
 import Copyright from '../components/Page_Components/copyRight';
 import Navbar from '../components/Page_Components/navbar';
+import Alert from '../components/Miscellaneous/alertSnack';
+
 
 import SteamLogo from '../images/steamLogo.webp';
 import GitHubLogo from '../images/githubIcon.svg';
 import GoogleLogo from '../images/googleLogo.webp';
+import { Redirect } from 'react-router';
 
 const axios = require('axios');
 
@@ -31,8 +35,11 @@ class Register extends React.Component{
       password: '',
       email: '',
       profilerChosen: false,
+      profilerUploaded: false,
       profilerValid: false,
       profiler: '',
+
+      success: false,
 
       requestMade: false,
       registered: false,
@@ -44,7 +51,7 @@ class Register extends React.Component{
   }
 
   submitForm = () => {
-    const {username, password, email, profiler, profilerValid } = this.state;
+    const {username, password, email, profiler, profilerValid, profilerUploaded, profilerChosen, success} = this.state;
     let formValid = true;
 
     if (username === '') {
@@ -58,9 +65,14 @@ class Register extends React.Component{
 
     console.log(profiler);
 
+    // if they chose one and clicked submit but the image is not done upoading yet
+    // this wont trigger if a valid profiler has been chosen
+    if (profilerChosen && !profilerUploaded && !profilerValid) {
+      this.setState({msg : 'Your profile picture has not uploaded yet.', msgType : 'warning', snackOpen : true});
+    }
+
     if (formValid) {
       if (profilerValid) {
-        console.log("profiler was valid");
         fetch('http://localhost:9000/users/register', {
           method: 'POST',
         credentials: 'include',
@@ -76,7 +88,13 @@ class Register extends React.Component{
         })
         }).then((res) => res.json())
         .then((res) => {
-          console.log(res)
+          if (res.status === 'success') {
+            this.setState({success:true});
+          }
+          else {
+            this.setState({msg : res.body, msgType : 'error', snackOpen : true});
+
+          }
         }, (err) => {
           console.error(`ERR ${err}`)
         });
@@ -96,18 +114,22 @@ class Register extends React.Component{
       })
       }).then((res) => res.json())
       .then((res) => {
-        console.log(res)
+        if (res.status === 'success') {
+          this.setState({success:true});
+        }
+        else {
+          this.setState({msg : res.body, msgType : 'error', snackOpen : true});
+        }
       }, (err) => {
         console.error(`ERR ${err}`)
       });
       }
-    } else {
-      console.log(`form is not valid`)
     }
   }
 
   imageFormSubmit = (e) => {
     this.setState({profilerChosen: true});
+    const {msg, msgType, snackOpen} = this.state;
 
     const formData = new FormData();
         formData.append('imageUpload',e.target.files[0]);
@@ -126,11 +148,14 @@ class Register extends React.Component{
             .then((response) => {
                 if (response.data.status === 'success') {
                   console.log("success uploading")
-                  this.setState({profilerValid: true, profiler: response.data.body});
+                  this.setState({profilerValid: true, profiler: response.data.body, profilerUploaded: true});
+                  this.setState({msg : 'Upload was successful', msgType : 'success', snackOpen : true});
+
                 } else {
                   // error message profiler was invalid
                   console.log("not success when uploading");
                   console.log(response.data);
+                  this.setState({msg : 'Image was innapropriate. Please choose another', msgType : 'warning', snackOpen : true});
                 }
             }).catch((error) => {
               // error message profiler was onvalid
@@ -138,6 +163,13 @@ class Register extends React.Component{
               console.log("eror when uploading")
         });
   }
+
+  handleSnackClose = (event, reason) => {
+    if(reason === 'clickaway'){
+        return;
+    }
+    this.setState({snackOpen : false});
+}
 
     handleUsernameChange = (evt) => {
       this.setState({username:evt.target.value});
@@ -153,9 +185,21 @@ class Register extends React.Component{
 
   render(){
     const {classes} = this.props;
+    const {msg, msgType, snackOpen, success} = this.state
+
+    if (success) {
+      return (
+        <div>]
+          <Redirect to={'/users/verifyAccount'} />
+        </div>
+      )
+    }
     return (
       <div>
           <Navbar />
+          <Snackbar open={snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
+            <Alert onClose={this.handleSnackClose} severity={msgType}>{msg}</Alert>
+        </Snackbar>
           <Container component="main" maxWidth="xs" style={{textAlign:'center'}}>
           <CssBaseline />
 
@@ -201,7 +245,9 @@ class Register extends React.Component{
               autoComplete="current-password"
             />
 
+            <h5 styles={{marginTop:'4px'}}> Profile Picture </h5>
             <input 
+            style={{marginTop:'0px'}}
             type="file"
             name="file"
             onChange={(e) => this.imageFormSubmit(e)}

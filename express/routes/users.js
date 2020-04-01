@@ -137,7 +137,6 @@ router.get('/auth/steam/callback', passport.authenticate('steam', { failureRedir
 });
 
 router.post('/register', (req, res) => {
-    console.log(req.body)
     /**
      * Handles post requests from register page
      */
@@ -325,6 +324,7 @@ router.post('/verifyAccount', (req, res) => {
                                         });
                                     } else {
                                         res.cookie('Authorization', 'Bearer ' + user.accessToken);
+                                        console.log(user.accessToken);
                                         res.status(200).send({
                                             "status": "success",
                                             "body": "Account verified"

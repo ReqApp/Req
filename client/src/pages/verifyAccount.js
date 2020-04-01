@@ -37,6 +37,7 @@ class VerifyAccount extends React.Component {
     const {verificationCode} = this.state;
       fetch('http://localhost:9000/users/verifyAccount', {
         method: 'POST',
+        credentials: 'include',
         crossDomain: true,
         headers: {
           Accept: 'application/json',
@@ -59,7 +60,6 @@ class VerifyAccount extends React.Component {
 
   handleVerificationChange = (evt) => {
     this.setState({verificationCode:evt.target.value});
-    console.log(this.state.verificationCode);
   }
 
   handleSnackClose = (event, reason) => {
@@ -70,11 +70,11 @@ class VerifyAccount extends React.Component {
 }
 
   render(){
-    const {msg, msgType, snackOpen} = this.state;
-    const {classes, success} = this.props;
+    const {msg, msgType, snackOpen, success} = this.state;
+    const {classes} = this.props;
     if (success) {
       return(
-        <Redirect to='/' />
+        <Redirect to='/tutorial' />
       )
     }
 
