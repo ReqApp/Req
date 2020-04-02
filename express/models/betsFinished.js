@@ -18,6 +18,7 @@ var betsFinishedSchema = new Schema({
     type: {
         type: String
     },
+    // Redundant
     side: {
         type: String,
         default: null
@@ -43,6 +44,7 @@ var betsFinishedSchema = new Schema({
         type: Number,
         default: 0
     },
+    // Redundant
     tester: {
         type: String
     },
@@ -62,6 +64,7 @@ var betsFinishedSchema = new Schema({
         type: Number,
         default: 0
     },
+    // Multi 
     commonTotal: {
         type: Number,
         default: 0
@@ -74,6 +77,7 @@ var betsFinishedSchema = new Schema({
     losers: [{
         user_name: String
     }],
+    // Answer
     result: {
         type: String
     }
