@@ -8,6 +8,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import {Paper} from '@material-ui/core';
+import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 // Bootstrap
 import {Row, Col} from 'react-bootstrap';
 import BetTypeSelection from '../Bet_Creation_Components/betTypeSelection';
@@ -66,18 +68,24 @@ export default class FinishedBetCard extends Component {
                         </Row>
                         <Row>
                             <Col>
-                                <List>
+                                <Typography>Result: {bet.result}</Typography>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <List dense={true}>
                                     <ListItem>
+                                        <ListItemIcon>
+                                            <HourglassEmptyIcon />
+                                        </ListItemIcon>
                                         <ListItemText>
                                             Finished: {this.generateDeadline(bet.deadline)}
                                         </ListItemText>
                                     </ListItem>
                                     <ListItem>
-                                        <ListItemText>
-                                            Result: {bet.result}
-                                        </ListItemText>
-                                    </ListItem>
-                                    <ListItem>
+                                        <ListItemIcon>
+                                            <MonetizationOnIcon />
+                                        </ListItemIcon>
                                         <ListItemText>
                                             Your Payout: {this.calcPayout(bet)}
                                         </ListItemText>
@@ -89,6 +97,7 @@ export default class FinishedBetCard extends Component {
                                 
                             </Typography>
                             </Col>
+
                         </Row>
                     </div>
                 </Paper>

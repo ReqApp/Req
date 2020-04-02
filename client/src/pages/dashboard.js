@@ -23,6 +23,7 @@ import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
 import Snackbar from '@material-ui/core/Snackbar';
 import SearchIcon from '@material-ui/icons/Search';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 // Bootstrap
 import {Container, Row, Col} from 'react-bootstrap';
 // Components
@@ -33,6 +34,7 @@ import CreateBetForm from '../components/Bet_Creation_Components/createBetForm';
 import UserCreatedBets from '../components/Bet_Display_Components/userCreatedBets';
 import FinishedBets from '../components/Bet_Display_Components/finishedBets';
 import Alert from '../components/Miscellaneous/alertSnack';
+import BuyCoins from '../components/Miscellaneous/buyCoins';
 import './reset.css';
 
 class Dashboard extends React.Component{
@@ -47,7 +49,8 @@ class Dashboard extends React.Component{
           snackOpen: false,
           msg: '',
           msgType: '',
-          openFindBetPane: false
+          openFindBetPane: false,
+          buyCoins: false
         }
     }
 
@@ -126,8 +129,16 @@ class Dashboard extends React.Component{
       this.setState({openFindBetPane : false});
     }
 
+    handleBuyCoins = () => {
+      this.setState({buyCoins : true});
+    }
+
+    handleCloseBuyCoins = () => {
+      this.setState({buyCoins : false});
+    }
+
     render(){
-      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, snackOpen, msg, msgType, openFindBetPane} = this.state;
+      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, snackOpen, msg, msgType, openFindBetPane, buyCoins} = this.state;
       const {classes} = this.props;
       const drawer = (
         <div>
@@ -138,6 +149,14 @@ class Dashboard extends React.Component{
                   <PersonIcon />
                 </ListItemIcon>
                 <ListItemText primary='Profile' />
+              </ListItem>
+              <ListItem button onClick={this.handleBuyCoins}>
+                <ListItemIcon>
+                  <MonetizationOnIcon />
+                </ListItemIcon>
+                <ListItemText>
+                  Buy Coins
+                </ListItemText>
               </ListItem>
               </List>
               <Divider />
@@ -205,6 +224,10 @@ class Dashboard extends React.Component{
             <FindBets
                 openPane={openFindBetPane}
                 closeDialog={this.closeFindBetPane}
+            />
+            <BuyCoins
+              open={buyCoins}
+              close={this.handleCloseBuyCoins}
             />
             <Navbar className={classes.appBar}/>
             <div className={classes.root}>
