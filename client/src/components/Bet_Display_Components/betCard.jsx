@@ -163,7 +163,7 @@ export default class betCard extends Component {
                 <div>
                     <Row>
                         <Col>
-                            <h2>{data.title}</h2>
+                            <h4>{data.title}</h4>
                         </Col>
                     </Row>
                     <Row>
@@ -283,7 +283,7 @@ export default class betCard extends Component {
             <div>
                 <Row>
                     <Col>
-                        <h2>{data.title}</h2>
+                        <h4>{data.title}</h4>
                     </Col>
                 </Row>
                 <Row>

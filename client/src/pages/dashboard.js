@@ -271,15 +271,7 @@ class Dashboard extends React.Component{
                       <Col xs={12} md={6}>
                         <Row>
                           <Col>
-                            <h1>Recently Finised Bets:</h1>
                             <FinishedBets />
-                          </Col>
-                        </Row>
-                        <Row>
-                        <Col>
-                        <Paper style={styles.paper}>
-                          <h2>New Bets:</h2>
-                          </Paper>
                           </Col>
                         </Row>
                       </Col>

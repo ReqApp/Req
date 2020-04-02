@@ -13,6 +13,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import IconButton from '@material-ui/core/IconButton';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
 // Bootstrap
 import {Row, Col} from 'react-bootstrap';
 // Components
@@ -77,8 +78,9 @@ export default class FindBets extends React.Component{
       let sortedBets = bets;
       if(!flag){
         if(value === 'popular'){
-          sortedBets.sort((a, b) => {return (a.numberOfBettors - b.numberOfBettors)});
+          sortedBets.sort((a, b) => {return (b.numberOfBettors - a.numberOfBettors)});
         }else{
+          console.log("deadline");
           sortedBets.sort((a,b) => {return (a.deadline - b.deadline)});
         }
         this.setState({sortedBets : sortedBets, sortBy : value});
@@ -97,7 +99,7 @@ export default class FindBets extends React.Component{
         this.setState({searchFlag : true, sortedBets : sortedBets});
       }
       else{
-        this.sort(sortBy, true);
+        this.sort(sortBy, false);
         this.setState({searchFlag : false});
       }
     }
@@ -137,15 +139,12 @@ export default class FindBets extends React.Component{
                         {...params}
                         label="Search..."
                         margin="normal"
-                        variant="outlined"
+                        variant="standard"
                         fullWidth
                         InputProps={{ ...params.InputProps, type: 'search' }}
                     />
                     )}
                 />
-                  <IconButton>
-                    <SearchIcon />
-                  </IconButton>
                 </Col>
               </Row>
               <Row>

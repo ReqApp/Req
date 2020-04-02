@@ -1,4 +1,9 @@
-import React, { Component } from 'react'
+// React
+import React, { Component } from 'react';
+// Material
+import {Paper} from '@material-ui/core';
+// Bootstrap
+import {Row, Col} from 'react-bootstrap';
 // Components
 import FinishedBetCard from './finishedBetCard';
 
@@ -34,11 +39,26 @@ export default class FinishedBets extends Component {
     }
     
     render() {
+        const {bets, loadingBets} = this.state;
+
         return (
             <div>
-                
+                <Paper style={styles.paper}>
+                    <div>
+                        <h2>Finished Bets:</h2>
+                        {bets.map((bet, index) => <Row key={index}><Col><FinishedBetCard bet={bet} /></Col></Row>)}
+                    </div>
+                </Paper>
+
             </div>
         )
+    }
+}
+
+const styles = {
+    paper: {
+        padding: '15px',
+        marginTop: '15px'
     }
 }
 

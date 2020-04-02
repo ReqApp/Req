@@ -7,6 +7,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import {Paper} from '@material-ui/core';
 // Bootstrap
 import {Row, Col} from 'react-bootstrap';
 import BetTypeSelection from '../Bet_Creation_Components/betTypeSelection';
@@ -14,14 +15,17 @@ import BetTypeSelection from '../Bet_Creation_Components/betTypeSelection';
 export default class FinishedBetCard extends Component {
     constructor(props){
         super(props);
-
     }
 
     generateDeadline(date){
         let betDate = new Date(date * 1000);
         let dateString = `${betDate.getDate()}/${betDate.getMonth()+1}/${betDate.getFullYear()}`;
         let timeString = `${betDate.getHours()}:${betDate.getMinutes()}`;
-        return `Deadline: ${dateString} @ ${timeString}`;
+        return `${dateString} @ ${timeString}`;
+    }
+
+    calcPayout = (bet) => {
+        return '0';
     }
 
     render() {
@@ -53,20 +57,50 @@ export default class FinishedBetCard extends Component {
 
         return (
             <div>
-                <Row>
-                    <Col>
-                        <h3>Title: {bet.title}</h3>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                    <Typography>
-                        Finished: {this.generateDeadline(bet.deadline)}
-                    </Typography>
-                    </Col>
-                </Row>
+                <Paper style={styles.paper}>
+                    <div>
+                        <Row>
+                            <Col>
+                                <h3>{bet.title}</h3>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <List>
+                                    <ListItem>
+                                        <ListItemText>
+                                            Finished: {this.generateDeadline(bet.deadline)}
+                                        </ListItemText>
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText>
+                                            Result: {bet.result}
+                                        </ListItemText>
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText>
+                                            Your Payout: {this.calcPayout(bet)}
+                                        </ListItemText>
+                                    </ListItem>
+                                </List>
+                            </Col>
+                            <Col>
+                            <Typography>
+                                
+                            </Typography>
+                            </Col>
+                        </Row>
+                    </div>
+                </Paper>
             </div>
         )
+    }
+}
+
+const styles = {
+    paper: {
+        padding: '15px',
+        marginTop: '15px'
     }
 }
 
