@@ -20,7 +20,7 @@ export class Tutorial extends Component {
                                 </p>
                         </Col>
                         <Col>
-                            <img src={"https://i.imgur.com/Rq63QhY.png"} 
+                            <img src={"https://i.imgur.com/MHQIjHW.png"} 
                             style={styles.phoneImage}
                             alt="Why didn't this load">
                             </img>
@@ -37,7 +37,7 @@ export class Tutorial extends Component {
                                 </p>
                         </Col>
                         <Col>
-                            <img src={"https://i.imgur.com/Rq63QhY.png"}
+                            <img src={"https://i.imgur.com/sjNwFXs.png"}
                              style={styles.phoneImage}
                              alt="Why didn't this load">
                              </img>
@@ -56,7 +56,7 @@ export class Tutorial extends Component {
                                 </p>
                         </Col>
                         <Col>
-                            <img src={"https://i.imgur.com/Rq63QhY.png"}
+                            <img src={"https://i.imgur.com/E9adi3n.png"}
                              style={styles.phoneImage}
                              alt="Why didn't this load">
                              </img>
@@ -68,11 +68,12 @@ export class Tutorial extends Component {
                         <Col>
                                 <p style={styles.mainText}> Great let's get started </p>
 
-                                <p style={styles.infoText}> <a href="/users/register"> Register an account </a>
-                                </p>
+                                <p style={styles.infoText}> <a href="/users/register"> Register an account </a> </p>
+                                <h6> or </h6>
+                                <p style={styles.infoText}> <a href="/users/dashboard"> Browse your dashboard </a> </p>
                         </Col>
                         <Col>
-                            <img src={"https://i.imgur.com/Rq63QhY.png"}
+                            <img src={"https://i.imgur.com/8njfHy5.png"}
                              style={styles.phoneImage}
                              alt="Why didn't this load">
                              </img>
