@@ -95,7 +95,7 @@ router.post('/createLocationBet', (req, res) => {
 router.get('/getBetsInRegion', (req, res) => {
     let id = req.query.id;
     if (id != null) {
-        Bet.find({ bet_region_id: id.toString() }, (err, bets) => {
+        betRegion.find({ bet_region_id: id.toString() }, (err, bets) => {
             if (err) {
                 res.status(500).json({
                     "status": "error",

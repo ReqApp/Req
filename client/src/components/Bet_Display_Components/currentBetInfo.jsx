@@ -113,7 +113,7 @@ export default class CurrentBetInfo extends Component {
     }
     
     render() {
-        const {data} = this.props
+        const {data, userCreated} = this.props
         let betDate = new Date(data.deadline * 1000);
         let dateString = `${betDate.getDate()}/${betDate.getMonth()+1}/${betDate.getFullYear()}`;
         let timeString = `${betDate.getHours()}:${betDate.getMinutes()}`;
@@ -148,12 +148,14 @@ export default class CurrentBetInfo extends Component {
                             <ListSubheader>
                                 Bet Stats:
                             </ListSubheader>
-                            <ListItem>
-                            <ListItemIcon>
-                                <PersonIcon style={styles.icon}/>
-                            </ListItemIcon>
-                            <ListItemText primary={"Your Bet: " + data.userAmount}/>
-                            </ListItem>
+                            {userCreated ?  <div></div> : 
+                                <ListItem>
+                                <ListItemIcon>
+                                    <PersonIcon style={styles.icon}/>
+                                </ListItemIcon>
+                                <ListItemText primary={"Your Bet: " + data.userAmount}/>
+                                </ListItem>
+                            }
                             <ListItem>
                             <ListItemIcon>
                                 <PeopleIcon style={styles.icon}/>

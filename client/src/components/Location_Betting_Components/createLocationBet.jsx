@@ -21,6 +21,7 @@ import Navbar from '../Page_Components/navbar';
 import DisplayMap from './maps';
 import BetTypeSelection from '../Bet_Creation_Components/betTypeSelection';
 import Alert from '../Miscellaneous/alertSnack';
+import { Redirect } from 'react-router';
 
 
 // TODO
@@ -43,7 +44,8 @@ export default class CreateLocationBet extends React.Component{
             snackOpen: false,
             msg: '',
             msgType: '',
-            description: ''
+            description: '',
+            redirectTo : ''
         }
     }
 
@@ -192,7 +194,7 @@ export default class CreateLocationBet extends React.Component{
             .then(res => {
                 if(res.status === 'success'){
                     console.log(res.body);
-                    this.setState({msg : 'Bet region created!', msgType: 'success', snackOpen : true});
+                    this.setState({msg : 'Bet region created!', msgType: 'success', snackOpen : true, redirectTo : 'find-bets'});
                 }else{
                     console.log(res);
                     this.setState({msg : 'Bet region could not be created', msgType : 'error', snackOpen : true});
@@ -251,8 +253,14 @@ export default class CreateLocationBet extends React.Component{
     }
 
     render(){
-        const {betType, radius, date, snackOpen, msg, msgType} = this.state;
+        const {betType, radius, date, snackOpen, msg, msgType, redirectTo} = this.state;
         const {regionData, userLocation, createRegion} = this.props;
+
+        if(redirectTo === 'find-bets'){
+            return(
+                <Redirect to='find-location-bets' />
+            )
+        }
 
         if(createRegion){
             const radiusMarks = [
@@ -283,7 +291,7 @@ export default class CreateLocationBet extends React.Component{
                                     </Row>
                                 <Row>
                                         <Col>
-                                            <TextField id="standard-basic" label="Bet Title" onChange={this.handleTitleChange} />
+                                            <TextField id="standard-basic" label="Region Title" onChange={this.handleTitleChange} />
                                         </Col>
                                     </Row>
                                     <Row>
@@ -323,7 +331,7 @@ export default class CreateLocationBet extends React.Component{
                                     </Row>
                                     <Row>
                                         <Col>
-                                            <Button variant="contained" onClick={this.submitRegionForm}>Create New Bet</Button>
+                                            <Button variant="contained" onClick={this.submitRegionForm}>Create Region</Button>
                                         </Col>
                                     </Row>
                                 </Container>

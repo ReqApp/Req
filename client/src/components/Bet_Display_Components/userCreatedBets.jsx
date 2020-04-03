@@ -54,7 +54,7 @@ export class UserCreatedBets extends Component {
                 <div>
                     <Paper style={styles.paper}>
                         <h3>Bets Created By You</h3>
-                        {bets.map((bet, index) => <CurrentBetInfo data={bet} key={index}/>)}
+                        {bets.map((bet, index) => <CurrentBetInfo data={bet} key={index} userCreated/>)}
                     </Paper>
                     
                 </div>

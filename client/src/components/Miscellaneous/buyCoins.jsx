@@ -6,6 +6,11 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import {Button} from '@material-ui/core';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 // Stripe
 import StripeCheckout from "react-stripe-checkout";
 
@@ -15,9 +20,7 @@ export default class BuyCoins extends React.Component{
         super(props);
         this.state = {
             product: {
-                name : "Tesla Roadster",
-                price: 64998.67,
-                description: "Cool car"
+                numCoins: 100
             },
             inTransaction: false
         }
@@ -52,6 +55,14 @@ export default class BuyCoins extends React.Component{
           })
     }
 
+    handleInputChange = (evt) => {
+        if(!isNaN(evt.target.value)){
+            if(parseInt(evt.target.value) > 0){
+                this.setState({product : { numCoins : evt.target.value}});
+            }
+        }
+    }
+
     hideDialog = () => {
         this.setState({inTransaction : true});
     }
@@ -76,13 +87,17 @@ export default class BuyCoins extends React.Component{
                     Buy Coins
                 </DialogTitle>
                 <DialogContent>
-                <div className="container">
-                    <div className="product">
-                        <h1>{product.name}</h1>
-                        <h3>On Sale · ${product.price}</h3>
-                    </div>
-
-                    </div>
+                <InputLabel htmlFor="input-with-icon-adornment">Coin Amount</InputLabel>
+                    <Input
+                    id="input-with-icon-adornment"
+                    onChange={this.handleInputChange}
+                    value={product.numCoins}
+                    startAdornment={
+                        <InputAdornment position="start">
+                            <MonetizationOnIcon />
+                        </InputAdornment>
+                    }
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={this.handleCancel}>Cancel</Button>

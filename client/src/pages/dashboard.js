@@ -272,7 +272,7 @@ class Dashboard extends React.Component{
                 <Container style={styles.mainContainer}>
                   <Row style={styles.row}>
                       <Col xs={12}>
-                        <h1>Betting Dashboard</h1>
+                        <h1 style={styles.title}>Betting Dashboard</h1>
                       </Col>
                   </Row>
                   <Row style={styles.row}>
@@ -358,6 +358,9 @@ const styles = {
     },
     menu: {
       top: 'auto'
+    },
+    title: {
+      marginTop: '10px'
     }
 }
 
