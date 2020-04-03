@@ -49,10 +49,15 @@ export default class OverrallEarnings extends Component {
 
     parseData = (data) => {
         let total = 0;
-        data.forEach(bet => {
-            total += bet.profitOrLoss;
-        });
-        this.setState({overrallEarningsVal: total, dataRetrieved: true});
+
+        if (!(data === 'No bets found')) {
+            data.forEach(bet => {
+                total += bet.profitOrLoss;
+            });
+            this.setState({overrallEarningsVal: total, dataRetrieved: true});
+        } else {
+            this.setState({overrallEarningsVal: 0, dataRetrieved: true});
+        }
     }
 
     render() {

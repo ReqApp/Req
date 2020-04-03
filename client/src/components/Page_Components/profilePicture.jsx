@@ -5,8 +5,7 @@ export default class ProfilePicture extends React.Component{
         super(props);
         this.state = {
             loadingProfile: true,
-            profile: '',
-            errorMsg: 'Loading profile'
+            profile: ''
         }
     }
     componentDidMount(){
@@ -28,16 +27,14 @@ export default class ProfilePicture extends React.Component{
                 this.setState({loadingProfile : false, profile : res.body});
             }
             else if(res.body === 'No profile picture'){
-                this.setState({errorMsg : 'No profile picture'});
+                this.setState({profile: 'https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg'});
             }
             else {
-                console.log(res);
-                this.setState({errorMsg : 'Could not retrieve profile picture'});
+                this.setState({loadingProfile: false, profile: 'https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg'});
             }
         })
-        .catch((err) => {
-            console.log(err);
-            this.setState({errorMsg : 'Could not retrieve profile picture'});
+        .catch(() => {
+            this.setState({loadingProfile: false, profile: 'https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg' });
         });
     }
     render(){

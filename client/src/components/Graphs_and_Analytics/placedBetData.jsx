@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 
 import {Paper} from '@material-ui/core';
+
 // Rechart
 import { CartesianGrid, XAxis, YAxis, AreaChart, Area, Tooltip} from 'recharts';
 
@@ -30,45 +31,36 @@ export default class PlacedBetData extends Component {
         })
         .then((res) => res.json())
         .then((res) => {
-            if(res.status === 'success'){
-                this.parseData(res.body);
-            }else{
-                console.log(res);
-                if(res.body === 'No bets found'){
-                    this.setState({errorMsg : 'Found no betting history'});
-                }
-                else if(res.body === 'Invalid username'){
-                    this.setState({errorMsg : 'User not found'});
-                }
-                else{
-                    this.setState({errorMsg : 'Could not retrieve data'});
-                }
-            }
+            this.parseData(res.body);
         })
         .catch(err => {
             console.log(err);
-            this.setState({errorMsg : 'Could not retrieve data'});
         }); 
     }
 
     parseData = (data) => {
-        data = data.sort((a, b) => (a.date > b.date) ? 1 : -1);
-        let tempGraphData = [];
-        let total = 0;
-        data.forEach(bet => {
-            let dataPoint = {};
-            console.log(`overall bet ${JSON.stringify(bet)}`)
-            // Extract and format date information
-            let betDate = new Date(bet.date * 1000);
-            let dateString = `${betDate.getDate()}/${betDate.getMonth()+1}`;
-            dataPoint.date = dateString;
-            // Extract and format win/loss data
-            total += bet.profitOrLoss;
-            dataPoint.Profit = total;
-            tempGraphData.push(dataPoint);
-        });
+        if (!(data === 'No bets found')) {
+            data = data.sort((a, b) => (a.date > b.date) ? 1 : -1);
+            let tempGraphData = [];
+            let total = 0;
+            data.forEach(bet => {
+                let dataPoint = {};
+                console.log(`overall bet ${JSON.stringify(bet)}`)
+                // Extract and format date information
+                let betDate = new Date(bet.date * 1000);
+                let dateString = `${betDate.getDate()}/${betDate.getMonth()+1}`;
+                dataPoint.date = dateString;
+                // Extract and format win/loss data
+                total += bet.profitOrLoss;
+                dataPoint.Profit = total;
+                tempGraphData.push(dataPoint);
+            });
+    
+            this.setState({graphData : tempGraphData, dataRetrieved : true});
+        } else {
+            this.setState({dataRetrieved : true});
 
-        this.setState({graphData : tempGraphData, dataRetrieved : true});
+        }
     }
 
     render() {

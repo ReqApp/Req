@@ -10,7 +10,6 @@ export default class Coins extends React.Component{
         this.state = {
             totalCoins: 5,
             dataRetrieved: false,
-            errorMsg: 'Fetching coins'
         }
     }
     componentDidMount(){
@@ -32,19 +31,16 @@ export default class Coins extends React.Component{
                 this.setState({dataRetrieved: true, totalCoins : res.body});
             }
             else{
-                console.log(res);
-                this.setState({errorMsg : 'Failed to load coins'})
+                this.setState({dataRetrieved: true, totalCoins : 0})
             }
         })
         .catch((err) => {
-            console.log(err);
-            this.setState({errorMsg : 'Failed to load coins'});
+            this.setState({dataRetrieved: true, totalCoins : 0});
         });
     }
 
     render(){
         const {dataRetrieved, totalCoins} = this.state;
-        console.log(`Total coins ${totalCoins} - ${dataRetrieved}`);
         if(dataRetrieved){
             return(
                 <div>

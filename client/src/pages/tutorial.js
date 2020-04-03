@@ -66,11 +66,16 @@ export class Tutorial extends Component {
 
                     <Row>
                         <Col>
-                                <p style={styles.mainText}> Great let's get started </p>
+                                <p style={styles.mainText}> Great, let's get started </p>
 
                                 <p style={styles.infoText}> <a href="/users/register"> Register an account </a> </p>
                                 <h6> or </h6>
                                 <p style={styles.infoText}> <a href="/users/dashboard"> Browse your dashboard </a> </p>
+                        
+                                <p style={styles.mainText}> Want more information? </p>
+
+                                <p style={styles.infoText}> <a href="/faq"> Read the FAQ </a> </p>
+
                         </Col>
                         <Col>
                             <img src={"https://i.imgur.com/8njfHy5.png"}
