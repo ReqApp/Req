@@ -860,6 +860,8 @@ function anonymiseBetData(allBets) {
                     forBetTotal: forTotal,
                     againstBetTotal: againstTotal,
                     numberOfBettors : indivBet.forUsers.length + indivBet.againstUsers.length,
+                    numberFor: indivBet.forUsers.length,
+                    numberAgainst: indivBet.againstUsers.length,
                     betID: indivBet._id,
                     type: indivBet.type
                 }
