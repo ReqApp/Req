@@ -15,6 +15,8 @@ import openSocket from 'socket.io-client';
 import ReqBackground from '../images/reqBackground4.jpg'
 
 
+import SimplePopover from '../components/Miscellaneous/QRPopover';
+
 export class Profile extends React.Component{    
     constructor(props){
         super(props);
@@ -87,6 +89,7 @@ export class Profile extends React.Component{
                                             <Row>
                                                 <Col xs="auto">
                                                 <OverrallEarnings user={userName} />
+                                                <SimplePopover/>
                                                 </Col>
                                             </Row>
                                         </Container>
