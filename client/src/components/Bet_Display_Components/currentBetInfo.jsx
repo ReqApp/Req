@@ -19,11 +19,45 @@ import ListItemText from '@material-ui/core/ListItemText';
 import PeopleIcon from '@material-ui/icons/People';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import PersonIcon from '@material-ui/icons/Person';
+import { ListSubheader } from '@material-ui/core';
+import Divider from '@material-ui/core/Divider';
 
 
 export default class CurrentBetInfo extends Component {
 
+    constructor(props){
+        super(props);
+        this.state = {
+            cutBreakdown: {
+                height: 0,
+                width: 0,
+                radius: 0
+            }
+        }
+    }
+
+    componentDidMount() {
+        this.updateWindowDimensions();
+        window.addEventListener('resize', this.updateWindowDimensions);
+    }
+
+    updateWindowDimensions = () => {
+        let obj = {
+            height: 200,
+            width: 300,
+            radius: 80
+        };
+        if(window.innerWidth < 400){
+            console.log("Width");
+            obj.height = 150;
+            obj.width = 200;
+            obj.radius = 50;
+        }
+        this.setState({cutBreakdown : obj});
+    }
+
     displayBet = (bet) => {
+        const {cutBreakdown} = this.state;
         // For Binary Bet
         if(bet.type === 'binary'){
             let data = [
@@ -54,18 +88,17 @@ export default class CurrentBetInfo extends Component {
         // Multi Bet
         else{
             let data = [
-                { place : 'First', Cut : bet.betsTotal * bet.firstPlaceCut},
-                { place : 'Second', Cut : bet.betsTotal * bet.secondPlaceCut},
-                { place : 'Third', Cut : bet.betsTotal * bet.thirdPlaceCut}
+                { place : 'First', Cut : bet.firstPlaceCut * 100},
+                { place : 'Second', Cut :  bet.secondPlaceCut * 100},
+                { place : 'Third', Cut : bet.thirdPlaceCut * 100}
             ];
             console.log(data);
             return(
                 <div>
-                    <RadarChart outerRadius={80} height={200} width={300} data={data}>
-                        <PolarGrid gridType={"circle"} />
+                    <RadarChart outerRadius={cutBreakdown.radius} height={cutBreakdown.height} width={cutBreakdown.width} data={data} style={styles.chart}>
+                        <PolarGrid gridType={"polygon"} />
                         <PolarAngleAxis dataKey="place" />
-                        <PolarRadiusAxis angle={30}/>
-                        <Radar name="Cuts" dataKey="Cut" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+                        <Radar name="Cuts" dataKey="Cut" stroke="#008E9B" fill="#008E9B" fillOpacity={0.6} />
                     </RadarChart>
                 </div>
             )
@@ -83,6 +116,7 @@ export default class CurrentBetInfo extends Component {
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1a-content"
               id="panel1a-header"
+              style={styles.summary}
             >
                 <div>
                 <Row>
@@ -99,38 +133,75 @@ export default class CurrentBetInfo extends Component {
                 </Row>
                 </div>
             </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
+            <ExpansionPanelDetails style={styles.details}>
             <div>
                 <Row>
                     <Col>
                         <List component="nav">
+                            <ListSubheader>
+                                Bet Stats:
+                            </ListSubheader>
                             <ListItem>
                             <ListItemIcon>
-                                <PeopleIcon />
+                                <PeopleIcon style={styles.icon}/>
                             </ListItemIcon>
                             <ListItemText primary={"Participants: " + data.numberOfBettors}/>
                             </ListItem>
                             <ListItem>
                             <ListItemIcon>
-                                <PersonIcon />
+                                <PersonIcon style={styles.icon}/>
                             </ListItemIcon>
                             <ListItemText primary={"Your Bet: " + data.userAmount}/>
                             </ListItem>
                             <ListItem>
                             <ListItemIcon>
-                                <MonetizationOnIcon />
+                                <MonetizationOnIcon style={styles.icon}/>
                             </ListItemIcon>
                             <ListItemText primary={"Total Sum: "  + data.betsTotal} />
                             </ListItem>
                         </List>
                 </Col>
                 <Col>
-                    {this.displayBet(data)}
+                    <Row>
+                        <Col>
+                            <List>
+                                <ListSubheader style={styles.cutTitle}>
+                                    Cut Breakdown:
+                                </ListSubheader>
+                            </List>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            {this.displayBet(data)}
+                        </Col>
+                    </Row>   
                 </Col>
             </Row>
             </div>
         </ExpansionPanelDetails>
         </ExpansionPanel>
         )
+    }
+}
+
+const styles = {
+    icon: {
+        color: '#008E9B',
+    },
+    chart: {
+        display: 'block',
+        marginRight : 'auto',
+        marginLeft: 'auto',
+        paddingTop: '0px',
+    },
+    details: {
+        paddingTop: '0px'
+    },
+    summary: {
+        paddingBottom: '0px'
+    },
+    cutTitle: {
+        paddingLeft: '20px'
     }
 }

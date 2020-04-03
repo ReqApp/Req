@@ -27,6 +27,15 @@ export default class FinishedBetCard extends Component {
     }
 
     calcPayout = (bet) => {
+        // if(bet.type === 'multi'){
+        //     let winner = false;
+        //     bet.winners.forEach(winner => {
+        //         if(winner.user_name === username){
+
+        //         }
+        //     })
+        // }
+
         return '0';
     }
 
@@ -73,10 +82,10 @@ export default class FinishedBetCard extends Component {
                         </Row>
                         <Row>
                             <Col>
-                                <List dense={true}>
+                                <List dense={false}>
                                     <ListItem>
                                         <ListItemIcon>
-                                            <HourglassEmptyIcon />
+                                            <HourglassEmptyIcon style={styles.icon}/>
                                         </ListItemIcon>
                                         <ListItemText>
                                             Finished: {this.generateDeadline(bet.deadline)}
@@ -84,7 +93,7 @@ export default class FinishedBetCard extends Component {
                                     </ListItem>
                                     <ListItem>
                                         <ListItemIcon>
-                                            <MonetizationOnIcon />
+                                            <MonetizationOnIcon style={styles.icon}/>
                                         </ListItemIcon>
                                         <ListItemText>
                                             Your Payout: {this.calcPayout(bet)}
@@ -110,6 +119,9 @@ const styles = {
     paper: {
         padding: '15px',
         marginTop: '15px'
+    },
+    icon: {
+        color: '#008E9B'
     }
 }
 

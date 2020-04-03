@@ -276,7 +276,7 @@ class Dashboard extends React.Component{
                       </Col>
                   </Row>
                   <Row style={styles.row}>
-                      <Col xs={12} md={6} style={styles.col}>
+                      <Col xs={12} sm={12} md={6} style={styles.col}>
                         <Row>
                           <Col>
                           <Paper style={styles.paper}>
@@ -291,7 +291,7 @@ class Dashboard extends React.Component{
                             </Col>
                           </Row>
                       </Col>
-                      <Col xs={12} md={6}>
+                      <Col xs={12} sm={12} md={6}>
                         <Row>
                           <Col>
                             <FinishedBets />
