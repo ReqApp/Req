@@ -148,13 +148,33 @@ export default class FindBetPage extends React.Component{
 
     handleSelection = (id) => {
         const {mode} = this.props;
-        const {betRegions} = this.state;
+        const {betRegions, latlng} = this.state;
         if(mode === 'find'){
             // Retrieve bets in selected region
-            console.log("Retreive bets for region: " + id);
             // Get bets in region and add to state
-            // TODO localhost
-            fetch("http://localhost:9000/getBetsInRegion?id=" + id).then(bets => bets.json()).then(bets => this.setState({bets : bets, view : "bets"})).catch(err => err);
+            fetch(`http://localhost:9000/getBetsInRegion?id=${id}&lat=${latlng.lat}&lng=${latlng.lng}`, {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json'
+                },
+            })
+            .then(bets => bets.json())
+            .then(res => {
+                if(res.status === 'success'){
+                    console.log(res);
+                    this.setState({bets : res.body, view : "bets"});
+                }
+                else{
+                    console.log(res);
+                    this.setState({view : 'bets'});
+                }
+                
+            })
+            .catch(err => {
+                console.log(err);
+            });
         }else{
             // Load bet creation component
             let selectedRegion;

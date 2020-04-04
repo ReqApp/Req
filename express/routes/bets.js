@@ -94,18 +94,46 @@ router.post('/createLocationBet', (req, res) => {
 
 // API for getting bets in region
 router.get('/getBetsInRegion', (req, res) => {
-    let id = req.query.id;
-    if (id != null) {
-        betRegion.find({ bet_region_id: id.toString() }, (err, bets) => {
-            if (err) {
-                res.status(500).json({
-                    "status": "error",
-                    "body": "error"
+    if(req.query.id && req.query.lat && req.query.lng){
+        if(!isNaN(req.query.lat) && !isNaN(req.query.lng) && utilFuncs.validate(req.query.id, 'id')){
+            utilFuncs.isSignedIn(req.cookies).then(profile => {
+                let username = '';
+                if(res){
+                    username = profile.user_name;
+                    utilFuncs.getBetsInRegion(req.query.id, username, req.query.lat, req.query.lng).then(bets => {
+                        res.status(200).json({
+                            'status' : 'success',
+                            'body' : bets
+                        });
+                    }, err => {
+                        res.status(400).json({
+                            'status' : 'error',
+                            'body' : err
+                        })
+                    })  
+                }else{
+                    res.status(400).json({
+                        'status' : 'error',
+                        'body' : 'Could not find profile'
+                    });
+                }
+            }, err => {
+                res.status(400).json({
+                    'status' : 'error',
+                    'body' : err
                 });
-            } else { 
-                res.status(200).json(bets);
-            }
-        });
+            })
+        }else{
+            res.status(400).json({
+                'status' : 'error',
+                'body' : 'Invalid parametres'
+            })
+        }
+    }else{
+        res.status(400).json({
+            'status' : 'error',
+            'body' : 'Missing parameters'
+        })
     }
 });
 

@@ -901,31 +901,32 @@ function findNewBets(user_name){
         getBets().then(bets => {
             if(bets){
                 bets.forEach(bet => {
-                    let found = false;
-                    let userCreated = false;
-                    if(bet.user_name === user_name){
-                        userCreated = true;
+                    if(bet.locationID === 'undefined' || bet.locationID === ''){
+                        let found = false;
+                        let userCreated = false;
+                        if(bet.user_name === user_name){
+                            userCreated = true;
+                        }
+                        if(bet.type === 'binary' && !userCreated){
+                            if(bet.forUsers.find(user => user.user_name === user_name)){
+                                found = true;
+                            }
+                            if(bet.againstUsers.find(user => user.user_name === user_name)){
+                                found = true;
+                            }   
+                            if(!found){
+                                newBets.push(bet);
+                            }
+                        }
+                        else if(!userCreated){
+                            if(bet.commonBets.find(user => user.user_name === user_name)){
+                                console.log(".")
+                            }
+                            else{
+                                newBets.push(bet);
+                            }
+                        }
                     }
-                    if(bet.type === 'binary' && !userCreated){
-                        if(bet.forUsers.find(user => user.user_name === user_name)){
-                            found = true;
-                        }
-                        if(bet.againstUsers.find(user => user.user_name === user_name)){
-                            found = true;
-                        }
-                        if(!found){
-                            newBets.push(bet);
-                        }
-                    }
-                    else if(!userCreated){
-                        if(bet.commonBets.find(user => user.user_name === user_name)){
-                            console.log(".")
-                        }
-                        else{
-                            newBets.push(bet);
-                        }
-                    }
-
                 })
             }
             anonymiseBetData(newBets).then(res => {
@@ -935,6 +936,59 @@ function findNewBets(user_name){
             })
         }, err => {
             reject(err);
+        });
+    });
+}
+
+function getBetsInRegion(regionID, username, lat, lng){
+    return new Promise((resolve, reject) => {
+        BetRegion.findOne({_id : regionID}, (err, region) => {
+            if(err){
+                reject(err);
+            }else{
+                if(region){
+                    let returnBets = [];
+                    region.bet_ids.forEach(locationBet => {
+                        // For each bet in region
+                        getBetByID(locationBet.bet_id).then(bet => {
+                            // Check if created by user or already bet on by user
+                            if(bet){
+                                if(checkIfBetIsNew(bet, username)){
+                                    let obj = bet.toObject();
+                                    // Check if user is in bet radius
+                                    if(locationBet.radius <= calcDistance(locationBet, {lat : lat, lng : lng})){
+                                        obj.inRadius = true;
+                                    }else{
+                                        obj.inRadius = false;
+                                    }
+                                    console.log(obj);
+                                    returnBets.push(obj);
+                                }
+                            }else{
+                                reject("Could not find corresponding bet")
+                            }   
+                        }, err => {
+                            reject(err);
+                        });
+
+                    });
+                    resolve(returnBets);
+                }else{
+                    reject("Could not find region")
+                }
+            } 
+        })
+    });
+}
+
+function getBetByID(id){
+    return new Promise((resolve, reject) => {
+        bets.findOne({_id : id}, (err, bet) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(bet);
+            }
         });
     });
 }
@@ -1008,6 +1062,34 @@ function getFinishedBetsForUser(user_name){
             reject(err);
         })
     });
+}
+
+function checkIfBetIsNew(bet, username){
+    if(bet.user_name === username){
+        return false;
+    }
+    if(bet.type === 'binary'){
+        bet.forUsers.forEach(user => {
+            if(user.user_name === username){
+                return false;
+            }
+        });
+        if(!found){
+            bet.againstUsers.forEach(user => {
+                if(user.user_name === username){
+                    return false;
+                }
+            })
+        }
+    }
+    else{
+        bet.commonBets.forEach(user => {
+            if(user.user_name === user_name){
+                return false
+            }
+        });
+    }
+    return true;
 }
 
 function getBetsForUser(data, user_name){
@@ -1310,3 +1392,4 @@ module.exports.getBetsForUser = getBetsForUser;
 module.exports.findNewBets = findNewBets;
 module.exports.getUserCreatedBets = getUserCreatedBets;
 module.exports.getFinishedBetsForUser = getFinishedBetsForUser;
+module.exports.getBetsInRegion = getBetsInRegion;

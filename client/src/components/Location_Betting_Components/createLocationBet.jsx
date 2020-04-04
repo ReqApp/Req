@@ -383,7 +383,7 @@ export default class CreateLocationBet extends React.Component{
                                     </Row>
                                     <Row>
                                         <Col>
-                                            <TextField id="standard-basic" label="Location Name" onChange={this.handleLocationNameChange} />
+                                            <TextField id="standard-basic" label="Location Name" onChange={this.handleLocationNameChange} style={{marginTop: '10px'}}/>
                                         </Col>
                                     </Row>
                                     <Row>
@@ -485,7 +485,7 @@ const styles = {
         marginTop: '30px',
     },
     radiusTitle: {
-        marginTop: '50px',
+        marginTop: '30px',
     },
     titleSection: {
         textAlign: 'center',
