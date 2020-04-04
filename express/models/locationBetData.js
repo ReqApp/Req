@@ -27,4 +27,4 @@ var locationBetSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('Bets', locationBetSchema);
+module.exports = mongoose.model('locationBets', locationBetSchema);

@@ -22,7 +22,7 @@ export default class LocationBetCards extends React.Component{
             )
         }else{
             return(
-                <Paper style={styles.regionCards, styles.info} elevation={3}>
+                <Paper style={{...styles.regionCards, ...styles.info}} elevation={3}>
                     <h3>Region does not contain any bets</h3>
                 </Paper>
             )

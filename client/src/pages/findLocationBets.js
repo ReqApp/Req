@@ -26,6 +26,7 @@ import CreateLocationBet from '../components/Location_Betting_Components/createL
 // Other
 import openSocket from 'socket.io-client';
 import './reset.css';
+import {Redirect} from 'react-router-dom';
 
 // Main page for location betting
 export default class FindBetPage extends React.Component{
@@ -51,7 +52,8 @@ export default class FindBetPage extends React.Component{
             loadCreateForm: false,
             loadCreateRegion: false,
             selectedRegion: null,
-            windowWidth: window.innerWidth
+            windowWidth: window.innerWidth,
+            loadCreateBetForm : false
         }
         this.socket = openSocket("http://localhost:9000");
     }
@@ -170,10 +172,29 @@ export default class FindBetPage extends React.Component{
         this.setState({openError : false});
     }
 
+    handleCreate = () => {
+        const {view} = this.state;
+        if(view === 'region'){
+            this.handleCreateBetRegion();
+        }else{
+            this.handleCreateBet();
+        }
+    }
+
+    handleCreateBet = () => {
+        this.setState({loadCreateBetForm : true});
+    }
+
     render(){
-        const {hasLocation, latlng, accurate, betRegions, bets, loadingRegions, sortBy, openError, view, loadCreateForm, windowWidth} = this.state;
+        const {hasLocation, latlng, accurate, betRegions, bets, loadingRegions, sortBy, openError, view, loadCreateForm, windowWidth, loadCreateBetForm} = this.state;
         const {mode} = this.props;
         let useStyles = null;
+
+        if(loadCreateBetForm){
+            return (
+                <Redirect to='/create-location-bet'/>
+            )
+        }
 
         if(windowWidth < 700){
             useStyles = smallScreen;
@@ -264,17 +285,17 @@ export default class FindBetPage extends React.Component{
                     <Container>
                     <Row>
                         <Col xs={12} md={6} style={useStyles.columns}>    
-                            <h2 style={useStyles.sortByTitle}>Available Regions</h2>
+                            <h2 style={useStyles.sortByTitle}>{view === 'regions' ? "Available Regions" : "Available Bets"}</h2>
                         </Col>
                         <Col xs={12} md={6} style={useStyles.columns}>
                             <Button
-                                onClick={this.handleCreateBetRegion}
+                                onClick={this.handleCreate}
                                 style={useStyles.newRegionBtn}
                                 variant="contained"
                                 color="primary"
                                 className={classes.button}
                                 endIcon={<Icon>addsharp</Icon>}>
-                                Create New Region
+                                {view === 'regions' ? "Create New Region" : "Create New Bet"}
                             </Button>
                         </Col>
                     </Row>
@@ -303,7 +324,9 @@ export default class FindBetPage extends React.Component{
                     </Row>
                     </Container>
                 </Container>
-
+                <br />
+                <br />
+                <br />
             </div>
         );
         }

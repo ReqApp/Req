@@ -1222,7 +1222,7 @@ function createLocationBet(data) {
             if (err) {
                 reject(err);
             } else {
-                addLocationBetToRegion(savedBet.bet_region_id, savedBet._id).then(() => {
+                addLocationBetToRegion(savedBet.bet_region_id, savedBet.bet_id, savedBet._id).then(() => {
                     resolve(savedBet);
                 }, err => {
                     reject(err);
@@ -1232,13 +1232,23 @@ function createLocationBet(data) {
     });
 }
 
-function addLocationBetToRegion(regionID, locationBetID) {
+function addLocationBetToRegion(regionID, betID, locationBetID) {
     return new Promise((resolve, reject) => {
         BetRegion.findOneAndUpdate({ '_id': regionID }, { '$push': { 'bet_ids': locationBetID }, '$inc': { 'num_bets': 1 } }, { useFindAndModify: false }).exec((err, region) => {
             if (err) {
                 reject(err);
             } else {
-                resolve(region);
+                bets.findOneAndUpdate({'_id' : betID}, { '$set' : { 'locationID' : locationBetID}}).exec((err, bet) => {
+                    if(err){
+                        reject(err);
+                    }
+                    else{
+                        resolve({
+                            region : region, 
+                            bet : bet
+                        });
+                    }
+                });
             }
         });
     });

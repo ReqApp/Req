@@ -50,6 +50,10 @@ var betSchema = new Schema({
     thirdPlaceCut: {
         type: Number,
         default: 0
+    },
+    locationID: {
+       type: String,
+       default: ''
     }
 });
 

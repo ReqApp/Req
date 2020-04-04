@@ -36,6 +36,7 @@ router.get('/debugTest', (req, res) => {
 //TODO update docs
 router.post('/createLocationBet', (req, res) => {
     let data = req.body;
+    console.log(data);
     if (data.location_name && data.latitude && data.longitude && data.radius && data.bet_region_id && data.bet_id) {
         if (!isNaN(data.latitude) && !isNaN(data.longitude) && !isNaN(data.radius)) {
             if (utilFuncs.validate(data.bet_region_id, 'id') && utilFuncs.validate(data.bet_id, 'id')) {
@@ -101,7 +102,7 @@ router.get('/getBetsInRegion', (req, res) => {
                     "status": "error",
                     "body": "error"
                 });
-            } else {
+            } else { 
                 res.status(200).json(bets);
             }
         });
@@ -340,7 +341,7 @@ router.post('/makeBet', (req, res) => {
                         if (response) {
                             res.status(200).json({
                                 "status": "success",
-                                "body": "Bet made!"
+                                "body": response
                             });
                         } else {
                             res.status(400).json({
