@@ -82,10 +82,6 @@ export default class FindBetPage extends React.Component{
         this.setState({windowWidth : window.innerWidth});
     }
 
-    handleCreateBetRegion = () => {
-        this.setState({loadCreateRegion : true, loadCreateForm : true});
-    }
-
     // Used to get user location
     getLocation = () => {
         // Check if geolocation is available
@@ -199,6 +195,10 @@ export default class FindBetPage extends React.Component{
         }else{
             this.handleCreateBet();
         }
+    }
+
+    handleCreateBetRegion = () => {
+        this.setState({loadCreateRegion : true});
     }
 
     handleCreateBet = () => {

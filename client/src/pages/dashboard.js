@@ -40,6 +40,7 @@ class Dashboard extends React.Component{
     constructor(props){
         super(props);
         this.state = {
+          username: '',
           loggedIn: false,
           username: '',
           redirectToLogIn: false,
@@ -47,6 +48,8 @@ class Dashboard extends React.Component{
           locationNavOpen: false,
           renderFindLocationBets: false,
           createNewBetDialog: false,
+          renderCreateNewLocationBet: false,
+          renderCreateNewRegion: false,
           snackOpen: false,
           msg: '',
           msgType: '',
@@ -67,7 +70,7 @@ class Dashboard extends React.Component{
         .then((res) => res.json())
         .then((res) => {
           if(res.status === "success"){
-            this.setState({loggedIn : true});
+            this.setState({loggedIn : true, username : res.body});
           }
           else{
             this.setState({redirectToLogIn : true});
@@ -102,7 +105,6 @@ class Dashboard extends React.Component{
       this.setState({snackOpen : true, msg : msg, msgType : type});
     }
 
-    
     handleSnackClose = (event, reason) => {
       if(reason === 'clickaway'){
           return;
@@ -126,19 +128,70 @@ class Dashboard extends React.Component{
       this.setState({buyCoins : false});
     }
 
+    handleNavAction = (action) => {
+      if(action === 'new-bet'){
+        this.setState({createNewBetDialog : true});
+      }
+      else if(action === 'find-bets'){
+        this.setState({openFindBetPane : true});
+      }
+      else if(action === 'find-location-bets'){
+        this.setState({renderFindLocationBets : true});
+      }
+      else if(action === 'create-location-bet'){
+        this.setState({renderCreateNewLocationBet : true});
+      }
+      else if(action === 'create-new-region'){
+        // TODO add create region path
+      }
+    }
+
+    handleCreateLocationBet = () => {
+      this.setState({renderCreateNewLocationBet : true});
+    }
+
+    handleCreateRegion = () => {
+      this.setState({renderCreateNewRegion : true});
+    }
+
+    handleProfile = () => {
+      this.setState({renderProfile : true});
+    }
+
     render(){
-      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, snackOpen, msg, msgType, openFindBetPane, buyCoins, redirectToLogIn} = this.state;
+      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, renderProfile, snackOpen, msg, msgType, openFindBetPane, username, buyCoins, redirectToLogIn, renderCreateNewLocationBet, renderCreateNewRegion} = this.state;
       const {classes} = this.props;
       if(redirectToLogIn){
         return (
           <Redirect to='/users/login' />
         )
       }
+      if(renderFindLocationBets){
+        return(
+          <Redirect to='/find-location-bets' />
+        )
+      }
+      if(renderCreateNewLocationBet){
+        return(
+          <Redirect to='/create-location-bet' />
+        )
+      }
+      if(renderCreateNewRegion){
+        return(
+          <Redirect to='/users/dashboard' />
+        )
+      }
+      if(renderProfile){
+        let url = `/users/profile?${username}`;
+        return(
+          <Redirect to={url} />
+        )
+      }
       const drawer = (
         <div>
               <List>
               <ListSubheader>You</ListSubheader>
-              <ListItem>
+              <ListItem button onClick={this.handleProfile}>
                 <ListItemIcon>
                   <PersonIcon />
                 </ListItemIcon>
@@ -185,13 +238,13 @@ class Dashboard extends React.Component{
                     </ListItemIcon>
                     <ListItemText primary="Find Bets" />
                   </ListItem>
-                  <ListItem className={classes.nested}>
+                  <ListItem className={classes.nested} button onClick={this.handleCreateLocationBet}>
                     <ListItemIcon>
                       <AddIcon />
                     </ListItemIcon>
                     <ListItemText primary='Create New Bet' />
                   </ListItem>
-                  <ListItem className={classes.nested}>
+                  <ListItem className={classes.nested} button onClick={this.handleCreateRegion}>
                     <ListItemIcon>
                       <AddIcon />
                     </ListItemIcon>
@@ -202,12 +255,6 @@ class Dashboard extends React.Component{
             </List>
           </div>
       );
-
-      if(renderFindLocationBets){
-        return(
-          <Redirect to='/find-location-bets' />
-        )
-      }
 
       if(loggedIn){
         return(
@@ -223,7 +270,7 @@ class Dashboard extends React.Component{
               open={buyCoins}
               close={this.handleCloseBuyCoins}
             /> */}
-            <Navbar className={classes.appBar}/>
+            <Navbar className={classes.appBar} dashboard action={this.handleNavAction}/>
             <div className={classes.root}>
                 <CreateBetForm 
                   open={createNewBetDialog} 

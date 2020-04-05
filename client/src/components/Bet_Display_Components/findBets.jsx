@@ -13,13 +13,14 @@ import SearchIcon from '@material-ui/icons/Search';
 import IconButton from '@material-ui/core/IconButton';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
 // Bootstrap
 import {Row, Col} from 'react-bootstrap';
 // Components
 import BetCard from './betCard';
 // Other
 import matchSorter from 'match-sorter';
+// CSS
+import '../../index.css';
 
 export default class FindBets extends React.Component{
     constructor(props){
@@ -112,7 +113,7 @@ export default class FindBets extends React.Component{
         return (
           <Dialog open={openPane} onClose={this.closeDialog}>
             <DialogTitle>Find Bets</DialogTitle>
-            <DialogContent>
+            <DialogContent style={styles.dialog}>
             <div>
               <Row>
                 <Col>
@@ -168,6 +169,6 @@ export default class FindBets extends React.Component{
 
 const styles = {
   dialog: {
-    width: '500px'
+    minWidth: '100px'
   }
 }

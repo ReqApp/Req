@@ -264,6 +264,11 @@ export default class betCard extends Component {
                             </List>
                         </Col>
                     </Row>
+                    <Row>
+                        <Col>
+                            <Button variant="contained" onClick={this.handlePlaceBet}>Place Bet</Button>
+                        </Col>
+                    </Row>
                     </div>
                     </ExpansionPanelDetails>
             </ExpansionPanel>
@@ -386,6 +391,11 @@ export default class betCard extends Component {
                                 />
                             </ListItem>
                             </List>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Button variant="contained" onClick={this.handlePlaceBet}>Place Bet</Button>
                         </Col>
                     </Row>
             </div>
