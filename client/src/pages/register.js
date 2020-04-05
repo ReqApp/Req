@@ -189,7 +189,7 @@ class Register extends React.Component{
 
     if (success) {
       return (
-        <div>]
+        <div>
           <Redirect to={'/users/verifyAccount'} />
         </div>
       )

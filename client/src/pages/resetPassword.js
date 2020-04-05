@@ -25,7 +25,7 @@ class ResetPassword extends React.Component {
       resetCode: '',
       newPassword: '',
       requestMade: false,
-      passChanged: true,
+      passChanged: false,
       // Used for error and success snacks(toasts)
       msg : '',
       msgType : '',
@@ -40,15 +40,8 @@ class ResetPassword extends React.Component {
       this.setState({msg : 'Please enter your new password', msgType : 'warning', snackOpen : true});
     } else {
 
-      console.log(window.location.href);
-      console.log(window.location.href.split("="))
     const resetCodeString = window.location.href.split("=")[1];
-    if (resetCodeString === undefined) {
-      console.log("undefined split")
-    }
-    console.log(resetCodeString)
 
-      const fromUrl = `http://localhost:3000/users/forgotPassword?from=${resetCodeString}`
       fetch('http://localhost:9000/users/resetPassword', {
         method: 'POST',
         crossDomain: true,
@@ -58,7 +51,7 @@ class ResetPassword extends React.Component {
         },
         body: JSON.stringify({
           "newPassword": newPassword,
-          "fromUrl": fromUrl
+          "resetCode": resetCodeString
         })
       }).then((res) => res.json())
       .then((res) => {
@@ -97,11 +90,11 @@ class ResetPassword extends React.Component {
   }
 
   render(){
-    const {msg,msgType, snackOpen} = this.state;
-    const {classes, passChanged} = this.props;
+    const {msg,msgType, snackOpen, passChanged} = this.state;
+    const {classes} = this.props;
     if (passChanged) {
       return(
-        <Redirect to='/' />
+        <Redirect to={'/'} />
       )
     }
     return (
@@ -121,6 +114,7 @@ class ResetPassword extends React.Component {
               variant="outlined"
               margin="normal"
               required
+              type="password"
               fullWidth
               id="newPassword"
               label="Password"

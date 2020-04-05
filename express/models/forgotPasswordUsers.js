@@ -20,11 +20,6 @@ var forgotPasswordUsersSchema = new Schema ({
         type: String,
         minLength: 10,
         required: true
-    },
-    resetUrl: {
-        type: String,
-        minlength: 10,
-        required: true
     }
 });
 

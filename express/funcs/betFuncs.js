@@ -41,6 +41,19 @@ function validate(input, type) {
             } else {
                 return true;
             }
+        case 'resetCode':
+            if (!input) {
+                return false
+            }
+            if (input.length === 10) {
+                if (input.match(/([^A-Za-z0-9]+)/g)) {
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                return false;
+            }
         case 'result':
             if (!input) {
                 return false;
@@ -1137,7 +1150,7 @@ function isOAuthUser(userObj) {
             reject("No user given");
         }
         const {githubID, googleID, steamID } = userObj;
-        console.log(githubID, googleID, steamID);
+        // messes up for old accounts
         if (githubID !== null) {
             resolve("GitHub");
         } else if (googleID !== null) {

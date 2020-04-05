@@ -423,17 +423,17 @@ router.post('/forgotPassword', (req, res) => {
                                     let newUser = new forgotPasswordUser();
                                     newUser.user_name = foundUser.user_name;
                                     newUser.email = foundUser.email;
-                                    const resetUrlString = randomstring.generate(10);
-                                    newUser.resetCode = resetUrlString;
+                                    const resetCode = randomstring.generate(10);
+                                    newUser.resetCode = resetCode;
                                     // TODO this is a temp localhost fix
-                                    newUser.resetUrl = `http://localhost:3000/users/resetPassword?from=${resetUrlString}`;
+                                    const resetUrl = `http://localhost:3000/users/resetPassword?from=${resetCode}`;
                                     newUser.save((err) => {
                                         if (err) {
                                             // this is very bad if this fails
                                             throw err;
                                         }
                                     });
-                                    utilFuncs.sendEmail(foundUser.email, `Update your password ${foundUser.user_name}`, newUser.resetUrl).then(() => {
+                                    utilFuncs.sendEmail(foundUser.email, `Update your password ${foundUser.user_name}`,resetUrl).then(() => {
                                         res.status(200).send({
                                             "status": "success",
                                             "body": `Password reset email sent`
@@ -477,9 +477,9 @@ router.post('/forgotPassword', (req, res) => {
 });
 
 router.post('/resetPassword', (req, res) => {
-    if (req.body.newPassword && req.body.fromUrl) {
+    if (req.body.newPassword && req.body.resetCode) {
 
-        if (utilFuncs.validate(req.body.fromUrl, "url")) {
+        if (utilFuncs.validate(req.body.resetCode, "resetCode")) {
 
             if (utilFuncs.validate(req.body.newPassword, "password")) {
 
@@ -492,11 +492,11 @@ router.post('/resetPassword', (req, res) => {
 
                         res.status(401).json({
                             "status": "error",
-                            "body": `This password has been previously used on ${resArray[Math.floor(Math.random()*resArray.length)]}. This incident has been reported to an administrator`
+                            "body": `You have used this password previously on ${resArray[Math.floor(Math.random()*resArray.length)]}. This incident has been reported to an administrator`
                         });
                     }
                 }, () => {
-                    forgotPasswordUser.findOne({ resetUrl: req.body.fromUrl }, (err, foundUser) => {
+                    forgotPasswordUser.findOne({ resetCode: req.body.resetCode }, (err, foundUser) => {
                         if (err) {
                             res.send(err);
                         }
@@ -508,8 +508,8 @@ router.post('/resetPassword', (req, res) => {
                                     } else {
                                         console.log("Deleted from forgotten table");
                                         res.status(200).send({
-                                            "status": "information",
-                                            "body": "success"
+                                            "status": "success",
+                                            "body": "Password has been reset"
                                         });
                                     }
                                 });
@@ -520,30 +520,28 @@ router.post('/resetPassword', (req, res) => {
                         } else {
                             res.status(401).send({
                                 "status": "error",
-                                "body": "Invalid input"
+                                "body": "Invalid input no matching user"
                             });
                         }
                     });
                 })
-
-
             } else {
                 res.status(401).send({
                     "status": "error",
-                    "body": "Invalid input"
+                    "body": "Invalid input bad pass"
                 });
             }
         } else {
             res.status(401).send({
                 "status": "error",
-                "body": "Invalid input"
+                "body": "Invalid input bad resetCode"
             });
         }
 
     } else {
         res.status(401).send({
             "status": "error",
-            "body": "Invalid input"
+            "body": "Invalid input no both"
         });
     }
 });
