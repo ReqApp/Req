@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import {Redirect} from 'react-router-dom';
+
 import Navbar from '../components/Page_Components/navbar';
 import {Container, Row, Col} from 'react-bootstrap';
 import Typography from "@material-ui/core/Typography";
@@ -8,6 +10,7 @@ import ExploreIcon from '@material-ui/icons/Explore';
 import PeopleIcon from '@material-ui/icons/People';
 import ReqAnimation from '../components/Miscellaneous/reqAnimation';
 import Avatar from '@material-ui/core/Avatar';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 import Cathal from '../images/Team/cathalAvatar.png';
 import Karl from '../images/Team/Karl.jpeg';
@@ -16,9 +19,23 @@ import Eoin from '../images/Team/eoin.jpg';
 import ReqBackground from '../images/reqBackground4.jpg'
 import GitHubIcon from '../images/githubIcon.svg';
 
-
 export class Home extends Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            loadTutorial: false
+        }
+    }
+
+
     render() {
+        const { loadTutorial} = this.state
+        if (loadTutorial) {
+            return(
+                <Redirect to={'/tutorial'} />
+            )
+        }
         return (
             <div style={styles.backing}>
                 <Navbar />
@@ -71,13 +88,13 @@ export class Home extends Component {
                 </Container>
 
                 <Container>
-                <h1 style={{textAlign:'center'}} className={styles.theTeam}> The Team</h1>
+                <h1 style={{textAlign:'center'}} className={styles.theTeam}> Made with <FavoriteIcon fontSize='large'/> by </h1>
 
                     <Row style={{textAlign:'center'}}>
                         <Col>
                         <Avatar alt="Cathal O'Callaghan - Back-end Infrastructure" src={Cathal} style={{width:'120px', height:'120px', margin:'12px auto 12px auto'}}></Avatar>
                         <h4 style={{fontWeight:'bold'}}>Cathal O'Callaghan <a href="https://iamcathal.github.io"><img src={GitHubIcon} style={{height:'26px', width:'26px'}} alt='Cathal'></img></a></h4> 
-                        <h6> Back-end Infrastructure </h6>
+                        <h6> Back-end Infrastructure / Front-end UI </h6>
                         
                         </Col>
                         <Col>

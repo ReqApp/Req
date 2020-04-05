@@ -1078,7 +1078,7 @@ describe("============= Various APIS ==============", () => {
         it("Invalid cookies", done => {
             chai
                 .request(app)
-                .post("/users/profile")
+                .post("/users/isSignedIn")
                 .end((err, res) => {
                     expect(res).to.have.status(400);
                     expect(res.body.status).to.equals("error");
