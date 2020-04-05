@@ -168,23 +168,23 @@ class Dashboard extends React.Component{
       }
       if(renderFindLocationBets){
         return(
-          <Redirect to='/find-location-bets' />
+          <Redirect to='/find-location-bets' push/>
         )
       }
       if(renderCreateNewLocationBet){
         return(
-          <Redirect to='/create-location-bet' />
+          <Redirect to='/create-location-bet' push/>
         )
       }
       if(renderCreateNewRegion){
         return(
-          <Redirect to='/users/dashboard' />
+          <Redirect to='/users/dashboard' push/>
         )
       }
       if(renderProfile){
         let url = `/users/profile?${username}`;
         return(
-          <Redirect to={url} />
+          <Redirect to={url} push/>
         )
       }
       const drawer = (
