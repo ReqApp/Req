@@ -4,14 +4,13 @@ import {Container, Row, Col} from 'react-bootstrap';
 
 import ReqBackground from '../images/reqBackground4.jpg'
 
-
 export class Tutorial extends Component {
     render() {
         return (
             <div style={styles.backing}>
                 <Navbar />
                 <Container style={styles.con}>
-                    <Row>
+                    <Row style={{marginTop:'5vh'}}>
                         <Col>
                                 <p style={styles.mainText}> What is Req? </p>
 
@@ -20,15 +19,13 @@ export class Tutorial extends Component {
                                 </p>
                         </Col>
                         <Col>
-                            <img src={"https://i.imgur.com/MHQIjHW.png"} 
+                            <img src={"https://i.imgur.com/OibYLmt.png"} 
                             style={styles.phoneImage}
                             alt="Why didn't this load">
                             </img>
                         </Col>
-                        
                     </Row>
-
-                    <Row>
+                    <Row  style={{marginTop:'15vh'}}>
                         <Col>
                                 <p style={styles.mainText}> Why should I create bets? </p>
 
@@ -45,7 +42,7 @@ export class Tutorial extends Component {
                         
                     </Row>
 
-                    <Row>
+                    <Row  style={{marginTop:'15vh'}}>
                         <Col>
                                 <p style={styles.mainText}> What kinds of bets are there? </p>
 
@@ -56,7 +53,7 @@ export class Tutorial extends Component {
                                 </p>
                         </Col>
                         <Col>
-                            <img src={'https://i.imgur.com/TXgas5g.png'}
+                            <img src={'https://i.imgur.com/aQwXsmH.png'}
                              style={styles.phoneImage}
                              alt="Why didn't this load">
                              </img>
@@ -64,7 +61,7 @@ export class Tutorial extends Component {
                         
                     </Row>
 
-                    <Row>
+                    <Row  style={{marginTop:'15vh'}}>
                         <Col>
                                 <p style={styles.mainText}> Great, let's get started </p>
 
@@ -96,9 +93,12 @@ export class Tutorial extends Component {
 const styles = {
     con: {
         height: '100vh',
-        marginTop: '80px',
         justifyContent: 'center',
-        textAlign: 'center'
+        textAlign: 'center',
+        backgroundImage:`url(${ReqBackground})`,
+        backgroundPosition: 'center',
+        height:'100%',
+        backgroundAttachment: 'fixed'
     },
     mainText: {
         fontWeight: 'bold',
@@ -113,7 +113,8 @@ const styles = {
     backing: {
         backgroundImage:`url(${ReqBackground})`,
         backgroundPosition: 'center',
-        height:'100%'
+        height:'100%',
+        backgroundAttachment: 'fixed'
     },
     logo: {
         marginTop: 100,
@@ -123,7 +124,7 @@ const styles = {
         marginLeft: 'auto',
     },
     phoneImage: {
-        height: '50%'
+        height: '50vh'
     },
     card: {
         textAlign: 'center',
