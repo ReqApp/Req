@@ -2,23 +2,20 @@ import React from 'react';
 // Material
 import {Paper} from '@material-ui/core';
 // Bootstrap
-import 'bootstrap/dist/css/bootstrap.min.css';
+import {Row, Col} from 'react-bootstrap';
+// Components
+import LocationBetCardInfo from './locationBetCardInfo';
 
 // Render card for each bet in region
 export default class LocationBetCards extends React.Component{
     render(){
         let {bets} = this.props;
-        let betCards = [];
 
         if(Array.isArray(bets) && bets.length){
-            for(let i = 0; i < bets.length; i++){
-                let newBetCard = <Paper key={bets[i]._id} elevation={3} style={styles.regionCards}>
-                    <h3>{bets[i].title}</h3>
-                </Paper>
-                betCards.push(newBetCard);
-            }
-            return(
-                <div>{betCards}</div>
+            return (
+                <div style={styles.cardArea}>
+                    {bets.map((bet, index) => <Row key={index}><Col><LocationBetCardInfo data={bet} index={index} /></Col></Row>)}
+                </div>
             )
         }else{
             return(
@@ -31,6 +28,9 @@ export default class LocationBetCards extends React.Component{
 }
 
 const styles = {
+    cardArea: {
+        marginTop: '20px',
+    },
     regionCards: {
         padding: '20px',
         marginTop: '20px'

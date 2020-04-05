@@ -954,7 +954,8 @@ function getBetsInRegion(regionID, username, lat, lng){
                         let bet = await getBetByID(locationBet.bet_id).catch(err => reject(err));
                         if(bet){
                             if(checkIfBetIsNew(bet, username)){
-                                let obj = bet.toObject();
+                                let arr = await anonymiseBetData([bet]).catch(err => resolve(err));
+                                let obj = arr[0];
                                 // Check if user is in bet radius
                                 if(locationBet.radius <= calcDistance(locationBet, {lat : lat, lng : lng})){
                                     obj.inRadius = true;

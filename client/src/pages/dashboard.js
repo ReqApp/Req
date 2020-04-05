@@ -23,7 +23,6 @@ import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
 import Snackbar from '@material-ui/core/Snackbar';
 import SearchIcon from '@material-ui/icons/Search';
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 // Bootstrap
 import {Container, Row, Col} from 'react-bootstrap';
 // Components
@@ -42,6 +41,8 @@ class Dashboard extends React.Component{
         super(props);
         this.state = {
           loggedIn: false,
+          username: '',
+          redirectToLogIn: false,
           mobileOpen: false,
           locationNavOpen: false,
           renderFindLocationBets: false,
@@ -55,37 +56,25 @@ class Dashboard extends React.Component{
     }
 
     componentDidMount(){
-        fetch('http://localhost:9000/users/login', {
+        fetch('http://localhost:9000/users/isSignedIn', {
           method: 'POST',
           credentials: 'include',
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            user_name : process.env.REACT_APP_TEST_USER_NAME,
-            password : process.env.REACT_APP_TEST_USER_PASS
-          })
+          }
         })
         .then((res) => res.json())
         .then((res) => {
           if(res.status === "success"){
-            console.log(res.body);
             this.setState({loggedIn : true});
           }
-          else if(res.status === 'error' && res.body === 'Email or password invalid'){
-            console.log(res.body);
-            
-          }
-          else if(res.status === 'error' && res.body === 'Username not found'){
-            console.log(res.body);
-          }
           else{
-            console.log(res.body);
+            this.setState({redirectToLogIn : true});
           }
         })
         .catch(err => {
-          console.log(err);
+          this.setState({snackOpen : true, msg : 'Could not get profile', msgType : 'error'});
         });
     }
 
@@ -138,8 +127,13 @@ class Dashboard extends React.Component{
     }
 
     render(){
-      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, snackOpen, msg, msgType, openFindBetPane, buyCoins} = this.state;
+      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, snackOpen, msg, msgType, openFindBetPane, buyCoins, redirectToLogIn} = this.state;
       const {classes} = this.props;
+      if(redirectToLogIn){
+        return (
+          <Redirect to='/users/login' />
+        )
+      }
       const drawer = (
         <div>
               <List>

@@ -27,6 +27,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 // Components
 import Alert from '../Miscellaneous/alertSnack';
+import DisplayMap from '../Location_Betting_Components/maps';
 
 export default class betCard extends Component {
     constructor(props){
@@ -154,6 +155,10 @@ export default class betCard extends Component {
                 backgroundColor: '#DCDCDC',
             }
         }
+        let md = 6;
+        if(data.location_name){
+            md = 4;
+        }
 
         return (
             <ExpansionPanel style={color, styles.expansionPanel}>
@@ -176,7 +181,7 @@ export default class betCard extends Component {
                 <ExpansionPanelDetails>
                 <div>
                 <Row>
-                    <Col xs={12} md={6}>
+                    <Col xs={12} md={md}>
                     <List component="nav">
                     <ListSubheader component="div">
                         Details:
@@ -203,7 +208,7 @@ export default class betCard extends Component {
                         </ListItem>
                     </List>
                     </Col>
-                    <Col xs={12} md={6}>
+                    <Col xs={12} md={md}>
                     <List component="nav">
                         <ListSubheader component="div">
                             Winnings:
@@ -218,7 +223,8 @@ export default class betCard extends Component {
                             <ListItemText>Third Place Cut: {data.thirdPlaceCut * 100}%</ListItemText>
                         </ListItem>
                     </List>
-                    </Col>
+                    </Col>   
+                    {data.location_name ? <Col xs={12} md={md}><DisplayMap miniMap={true} regionDetails={data} height='200px'/></Col> : <div></div>}
                 </Row>
                 <Row>
                     <Col xs={12} md={6}>
