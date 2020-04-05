@@ -1127,7 +1127,7 @@
         "tags": [
           "User APIs"
         ],
-        "description": "Allows user to change password from link sent to their email. The user will submit their new password from a unique URL which will be used to map this new password to their account.",
+        "description": "Allows user to change password from link sent to their email. The user will submit their new password from a unique code which will be used to map this new password to their account.",
         "parameters": [
           {
             "in": "body",
@@ -1139,7 +1139,7 @@
                 "newPassword": {
                   "type": "string"
                 },
-                "fromURL": {
+                "resetCode": {
                   "type": "string"
                 }
               }

@@ -300,7 +300,7 @@ describe("========== Password Reset ==========", () => {
                 .request(app)
                 .post("/users/resetPassword")
                 .end((err, res) => {
-                    expect(res).to.have.status(401);
+                    expect(res).to.have.status(400);
                     expect(res.body.status).to.equals("error");
                     expect(res.body.body).to.equals("Invalid input");
                     done();
@@ -312,10 +312,10 @@ describe("========== Password Reset ==========", () => {
                 .post("/users/resetPassword")
                 .send({
                     "newPassword": "\";console.log(`yuppa`)",
-                    "fromUrl": "https://youtube.com"
+                    "resetCode": "https://youtube.com"
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(401);
+                    expect(res).to.have.status(400);
                     expect(res.body.status).to.equals("error");
                     expect(res.body.body).to.equals("Invalid input");
                     done();
@@ -327,10 +327,10 @@ describe("========== Password Reset ==========", () => {
                 .post("/users/resetPassword")
                 .send({
                     "newPassword": "<helloworld",
-                    "fromUrl": "http://localhost:8673/resetPassword"
+                    "resetCode": "http://localhost:8673/resetPassword"
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(401);
+                    expect(res).to.have.status(400);
                     expect(res.body.status).to.equals("error");
                     expect(res.body.body).to.equals("Invalid input");
                     done();
@@ -344,7 +344,7 @@ describe("========== Password Reset ==========", () => {
                     "newPassword": "jellyfisherman"
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(401);
+                    expect(res).to.have.status(400);
                     expect(res.body.status).to.equals("error");
                     expect(res.body.body).to.equals("Invalid input");
                     done();
@@ -356,10 +356,10 @@ describe("========== Password Reset ==========", () => {
                 .post("/users/resetPassword")
                 .send({
                     "newPassword": null,
-                    "fromUrl": ""
+                    "resetCode": ""
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(401);
+                    expect(res).to.have.status(400);
                     expect(res.body.status).to.equals("error");
                     expect(res.body.body).to.equals("Invalid input");
                     done();
@@ -371,10 +371,10 @@ describe("========== Password Reset ==========", () => {
                 .post("/users/resetPassword")
                 .send({
                     "newPassword": `${fuzzPassword}`,
-                    "fromUrl": `${fuzzPassword}`
+                    "resetCode": `${fuzzPassword}`
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(401);
+                    expect(res).to.have.status(400);
                     expect(res.body.status).to.equals("error");
                     expect(res.body.body).to.equals("Invalid input");
                     done();
@@ -1062,7 +1062,7 @@ describe("============= Various APIS ==============", () => {
                     done();
                 });
         }),
-        it("Invalid input", done => {
+        it("Valid input", done => {
             chai
                 .request(app)
                 .post("/shortenLink")
