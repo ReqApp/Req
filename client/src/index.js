@@ -14,6 +14,7 @@ import {Error404} from './error404';
 import Dashboard from './pages/dashboard.js';
 import {Home} from './pages/homePage';
 import {Tutorial} from './pages/tutorial';
+import {BigRedButton} from './pages/bigRedButton';
 import {FAQ} from './pages/faq';
 
 class App extends React.Component{
@@ -37,6 +38,9 @@ class App extends React.Component{
                      </Route>
                     <Route path='/users/profile'>
                         <Profile/>
+                    </Route>
+                    <Route exact path='/bigRedButton'>
+                        <BigRedButton />
                     </Route>
                     <Route exact path='/payment'>
                          <Payment/>

@@ -34,7 +34,7 @@ import CreateBetForm from '../components/Bet_Creation_Components/createBetForm';
 import UserCreatedBets from '../components/Bet_Display_Components/userCreatedBets';
 import FinishedBets from '../components/Bet_Display_Components/finishedBets';
 import Alert from '../components/Miscellaneous/alertSnack';
-import BuyCoins from '../components/Miscellaneous/buyCoins';
+// import BuyCoins from '../components/Miscellaneous/buyCoins';
 import './reset.css';
 
 class Dashboard extends React.Component{
@@ -150,14 +150,14 @@ class Dashboard extends React.Component{
                 </ListItemIcon>
                 <ListItemText primary='Profile' />
               </ListItem>
-              <ListItem button onClick={this.handleBuyCoins}>
+              {/* <ListItem button onClick={this.handleBuyCoins}>
                 <ListItemIcon>
                   <MonetizationOnIcon />
                 </ListItemIcon>
                 <ListItemText>
                   Buy Coins
                 </ListItemText>
-              </ListItem>
+              </ListItem> */}
               </List>
               <Divider />
               <List>
@@ -225,10 +225,10 @@ class Dashboard extends React.Component{
                 openPane={openFindBetPane}
                 closeDialog={this.closeFindBetPane}
             />
-            <BuyCoins
+            {/* <BuyCoins
               open={buyCoins}
               close={this.handleCloseBuyCoins}
-            />
+            /> */}
             <Navbar className={classes.appBar}/>
             <div className={classes.root}>
                 <CreateBetForm 

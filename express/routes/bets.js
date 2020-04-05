@@ -659,7 +659,6 @@ router.post('/bigButtonBet', (req, res) => {
 router.post('/pressBigButton', (req, res) => {
     generalFuncs.handleBigButtonPress().then((response) => {
         if (response) {
-            console.log(response);
             res.status(200).json({
                 "status": "success",
                 "body": "Big red button pressed"
