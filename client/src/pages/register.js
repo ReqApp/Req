@@ -51,7 +51,7 @@ class Register extends React.Component{
   }
 
   submitForm = () => {
-    const {username, password, email, profiler, profilerValid, profilerUploaded, profilerChosen, success} = this.state;
+    const {username, password, email, profiler, profilerValid, profilerUploaded, profilerChosen} = this.state;
     let formValid = true;
 
     if (username === '') {
@@ -129,7 +129,6 @@ class Register extends React.Component{
 
   imageFormSubmit = (e) => {
     this.setState({profilerChosen: true});
-    const {msg, msgType, snackOpen} = this.state;
 
     const formData = new FormData();
         formData.append('imageUpload',e.target.files[0]);

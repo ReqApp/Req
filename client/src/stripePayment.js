@@ -1,12 +1,10 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import StripeCheckout from "react-stripe-checkout";
 import {Container, Row, Col} from 'react-bootstrap';
 
 import axios from "axios";
 import { toast } from "react-toastify";
 import Navbar from './components/Page_Components/navbar';
-import PaymentIcon from '@material-ui/icons/Payment';
 
 import "react-toastify/dist/ReactToastify.css";
 

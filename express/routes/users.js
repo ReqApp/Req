@@ -429,19 +429,21 @@ router.post('/forgotPassword', (req, res) => {
                                     const resetUrl = `http://localhost:3000/users/resetPassword?from=${resetCode}`;
                                     newUser.save((err) => {
                                         if (err) {
-                                            // this is very bad if this fails
-                                            throw err;
+                                            res.status(400).send({
+                                                "status": "error",
+                                                "body": "BAD error"
+                                            });
                                         }
                                     });
-                                    utilFuncs.sendEmail(foundUser.email, `Update your password ${foundUser.user_name}`,resetUrl).then(() => {
+                                    utilFuncs.sendEmail(foundUser.email, `Update your password ${foundUser.user_name}`, resetUrl).then(() => {
                                         res.status(200).send({
                                             "status": "success",
                                             "body": `Password reset email sent`
                                         });
-                                    }, (err) => {
+                                    }, () => {
                                         res.status(400).send({
                                             "status": "error",
-                                            "body": err
+                                            "body": "Error sending password reset email"
                                         });
                                     });
                                         }
@@ -461,9 +463,11 @@ router.post('/forgotPassword', (req, res) => {
                         "body": "Check your email for reset link"
                     });
                 }
-            }, (err) => {
-                // if rejected promise
-                console.log(`BAD RESULT: ${err}`);
+            }, () => {
+                res.status(400).send({
+                    "status": "error",
+                    "body": "Invalid input"
+                });
             });
 
 
@@ -504,7 +508,10 @@ router.post('/resetPassword', (req, res) => {
                             utilFuncs.resetPassword(foundUser.email, req.body.newPassword).then((username) => {
                                 forgotPasswordUser.deleteOne({ "user_name": username }, (err) => {
                                     if (err) {
-                                        res.send(err);
+                                        res.status(400).send({
+                                            "status": "error",
+                                            "body": "Failed to delete old password"
+                                        });
                                     } else {
                                         console.log("Deleted from forgotten table");
                                         res.status(200).send({
@@ -513,35 +520,38 @@ router.post('/resetPassword', (req, res) => {
                                         });
                                     }
                                 });
-                            }, (err) => {
-                                console.log(err);
+                            }, () => {
+                                res.status(400).send({
+                                    "status": "error",
+                                    "body": "Failed to delete old password"
+                                });
                             });
 
                         } else {
-                            res.status(401).send({
+                            res.status(400).send({
                                 "status": "error",
-                                "body": "Invalid input no matching user"
+                                "body": "Invalid input"
                             });
                         }
                     });
                 })
             } else {
-                res.status(401).send({
+                res.status(400).send({
                     "status": "error",
-                    "body": "Invalid input bad pass"
+                    "body": "Invalid input"
                 });
             }
         } else {
-            res.status(401).send({
+            res.status(400).send({
                 "status": "error",
-                "body": "Invalid input bad resetCode"
+                "body": "Invalid input"
             });
         }
 
     } else {
-        res.status(401).send({
+        res.status(400).send({
             "status": "error",
-            "body": "Invalid input no both"
+            "body": "Invalid input"
         });
     }
 });
