@@ -56,7 +56,7 @@ export class Tutorial extends Component {
                                 </p>
                         </Col>
                         <Col>
-                            <img src={"https://i.imgur.com/E9adi3n.png"}
+                            <img src={'https://i.imgur.com/TXgas5g.png'}
                              style={styles.phoneImage}
                              alt="Why didn't this load">
                              </img>

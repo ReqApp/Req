@@ -186,7 +186,7 @@ class SignIn extends React.Component{
             
             <Grid container>
               <Grid item xs>
-                <Link href="/users/forgotPassword" variant="body2" user={user_name}>
+                <Link href="/users/forgotPassword" variant="body2">
                   Forgot password?
                 </Link>
               </Grid>

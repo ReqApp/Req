@@ -48,7 +48,7 @@ class ResetPassword extends React.Component {
     }
     console.log(resetCodeString)
 
-      const fromUrl = `http://localhost:9000/users/forgotPassword?from=${resetCodeString}`
+      const fromUrl = `http://localhost:3000/users/forgotPassword?from=${resetCodeString}`
       fetch('http://localhost:9000/users/resetPassword', {
         method: 'POST',
         crossDomain: true,

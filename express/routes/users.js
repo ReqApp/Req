@@ -414,7 +414,6 @@ router.post('/forgotPassword', (req, res) => {
                         if (foundUser) {
                             utilFuncs.isOAuthUser(foundUser).then((platform) => {
                                 if (platform) {
-                                    console.log(foundUser)
                                     res.status(401).send({
                                         "status": "error",
                                         "body": `You're account is managed through ${platform}, please change your password on their platform`
@@ -427,7 +426,7 @@ router.post('/forgotPassword', (req, res) => {
                                     const resetUrlString = randomstring.generate(10);
                                     newUser.resetCode = resetUrlString;
                                     // TODO this is a temp localhost fix
-                                    newUser.resetUrl = `http://localhost:9000/users/forgotPassword?from=${resetUrlString}`;
+                                    newUser.resetUrl = `http://localhost:3000/users/resetPassword?from=${resetUrlString}`;
                                     newUser.save((err) => {
                                         if (err) {
                                             // this is very bad if this fails

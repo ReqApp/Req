@@ -1137,6 +1137,7 @@ function isOAuthUser(userObj) {
             reject("No user given");
         }
         const {githubID, googleID, steamID } = userObj;
+        console.log(githubID, googleID, steamID);
         if (githubID !== null) {
             resolve("GitHub");
         } else if (googleID !== null) {
