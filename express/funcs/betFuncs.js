@@ -944,41 +944,12 @@ function findNewBets(user_name){
 function getBetsInRegion(regionID, username, lat, lng){
     return new Promise((resolve, reject) => {
         var returnBets = [];
-        BetRegion.findOne({_id : regionID}, (err, region) => {
+        BetRegion.findOne({_id : regionID}, async (err, region) => {
             if(err){
                 reject(err);
             }else{
                 if(region){
-                    let count = 0;
-                    region.bet_ids.forEach( async id => {
-                    //for(let i =  0; i < region.bet_ids.length; i++){
-                        // console.log("Outer");
-                        // getLocationBetID(region.bet_ids[i]).then(locationBet => {
-                        //     console.log('Inner');
-                        //     // For each bet in region
-                        //     getBetByID(locationBet.bet_id).then(bet => {
-                                
-                        //         // Check if created by user or already bet on by user
-                        //         if(bet){
-                        //             if(checkIfBetIsNew(bet, username)){
-                        //                 let obj = bet.toObject();
-                        //                 // Check if user is in bet radius
-                        //                 if(locationBet.radius <= calcDistance(locationBet, {lat : lat, lng : lng})){
-                        //                     obj.inRadius = true;
-                        //                 }else{
-                        //                     obj.inRadius = false;
-                        //                 }
-                        //                 returnBets.push({...obj, ...(locationBet.toObject())}); 
-                        //             }
-                        //         }else{
-                        //             reject("Could not find corresponding bet")
-                        //         }   
-                        //     }, err => {
-                        //         reject(err);
-                        //     });
-                        // }, err => {
-                        //     reject(err);
-                        // })
+                    for(let id of region.bet_ids){
                         let locationBet = await getLocationBetID(id).catch(err => reject(err));
                         let bet = await getBetByID(locationBet.bet_id).catch(err => reject(err));
                         if(bet){
@@ -990,13 +961,13 @@ function getBetsInRegion(regionID, username, lat, lng){
                                 }else{
                                     obj.inRadius = false;
                                 }
-                                returnBets.push({...obj, ...(locationBet.toObject())});
+                                returnBets.push({...obj, ...(locationBet.toObject())}); 
                             }
-                        }
-                        if(count == region.bet_ids.length - 1){
-                            resolve(returnBets);
-                        }
-                    });
+                        }else{
+                            reject("Could not find corresponding bet")
+                        }   
+                    }
+                    resolve(returnBets);
                 }else{
                     reject("Could not find region")
                 }
