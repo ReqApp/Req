@@ -57,12 +57,20 @@ export class FAQ extends Component {
                                 <hr 
                                 />
 
+                                <h2 style={{fontWeight:'bold', paddingTop:'2vh'}}>How is Req hosted?</h2>
+                                <p>
+                                Req is currently hosted on AWS EC2 instance. Our mongo database however is hosted by the NUIG danu7 server.
+                                </p>
+
+                                <hr 
+                                />
+
                                 <h2 style={{fontWeight:'bold', paddingTop:'2vh'}}>Who made Req?</h2>
                                <Row>
                                <Col>
                         <Avatar alt="Cathal O'Callaghan - Back-end Infrastructure" src={Cathal} style={styles.icons}></Avatar>
                         <h4 style={{fontWeight:'bold'}}>Cathal O'Callaghan <a href="https://iamcathal.github.io"><img src={GitHubIcon} style={{height:'26px', width:'26px'}} alt='Cathal'></img></a></h4> 
-                        <h6> Back-end Infrastructure </h6>
+                        <h6>  Back-end Infrastructure / Front-end UI  </h6>
                         
                         </Col>
                         <Col>

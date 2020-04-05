@@ -77,7 +77,7 @@ export class Home extends Component {
                         <Col>
                         <Avatar alt="Cathal O'Callaghan - Back-end Infrastructure" src={Cathal} style={{width:'120px', height:'120px', margin:'12px auto 12px auto'}}></Avatar>
                         <h4 style={{fontWeight:'bold'}}>Cathal O'Callaghan <a href="https://iamcathal.github.io"><img src={GitHubIcon} style={{height:'26px', width:'26px'}} alt='Cathal'></img></a></h4> 
-                        <h6> Back-end Infrastructure </h6>
+                        <h6>  Back-end Infrastructure / Front-end UI </h6>
                         
                         </Col>
                         <Col>
@@ -97,6 +97,12 @@ export class Home extends Component {
                         <h4 style={{fontWeight:'bold'}}>Eoin Mc Ardle <a href="https://github.com/EoinMcArdle99"><img src={GitHubIcon} style={{height:'26px', width:'26px'}} alt='Eoin'></img></a></h4>
                         <h6> Back-end Infrastructure / Front-end UI </h6>
 
+                        </Col>
+                    </Row>
+
+                    <Row style={{marginTop:'5vh'}}>
+                        <Col style={{textAlign:'center'}}>
+                            <h3> Want to learn more? <br/>Read the <a href="/faq">FAQ</a></h3>
                         </Col>
                     </Row>
                 </Container>

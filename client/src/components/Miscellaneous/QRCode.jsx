@@ -43,10 +43,10 @@ export default class QRCode extends React.Component{
     render(){
         const {url} = this.props
         const {shortenedLink, requestDone } = this.state;
-        let requestUrl = `https://api.qrserver.com/v1/create-qr-code/?size=2000x200&qzone=0&margin=0&data=${url}`;
+        let requestUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&qzone=0&margin=0&data=${url}`;
         if (requestDone) {
             return(
-                <div styles={{borderRadius:'8px'}}>
+                <div styles={{borderRadius:'12px'}}>
                     <img src={requestUrl} style={styles.image} alt='Profile'></img>
                     <p styles={{fontWeight:'bold'}}>{ shortenedLink } </p>
                 </div>            
