@@ -137,12 +137,6 @@ class Register extends React.Component{
                 'content-type': 'multipart/form-data'
             }
         };
-        fetch('http://localhost:9000/tasks/uploadImage', {
-          method: 'POST',
-          headers: {
-            'content-type': 'multipart/form-data'
-          }
-        })
         axios.post('http://localhost:9000/tasks/uploadImage',formData,config)
             .then((response) => {
                 if (response.data.status === 'success') {
@@ -289,7 +283,7 @@ class Register extends React.Component{
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/users/login" variant="body2">
                   {"Already a member? Sign in"}
                 </Link>
               </Grid>

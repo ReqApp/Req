@@ -243,6 +243,9 @@ router.post('/register', (req, res) => {
                                         newUser.password = newUser.generateHash(password);
                                         newUser.activationCode = loginCode;
                                         newUser.profilePicture = req.body.profilePicture
+                                        newUser.githubID = null;
+                                        newUser.googleID = null;
+                                        newUser.steamID = null;
 
                                         newUser.save((err) => {
                                             if (err) {
@@ -305,9 +308,13 @@ router.post('/verifyAccount', (req, res) => {
 
                         newUser.user_name = foundUser.user_name;
                         newUser.email = foundUser.email;
+                        newUser.githubID = null;
+                        newUser.googleID = null;
+                        newUser.steamID = null;
                         newUser.password = foundUser.password;
                         newUser.accessToken = utilFuncs.createJwt({ user_name: foundUser.user_name });
                         newUser.profilePicture = foundUser.profilePicture;
+                        newUser.coins = 1000;
 
                         newUser.save((err, user) => {
                             if (err) {

@@ -44,6 +44,23 @@ export class Tutorial extends Component {
 
                     <Row  style={{marginTop:'15vh'}}>
                         <Col>
+                                <p style={styles.mainText}> What happens when a bet finishes? </p>
+
+                                <p style={styles.infoText}>  Creators are given 24 hours after the deadline to decide the result of the bet. If they fail to set the result after this time 5% of their coins is taken away.
+                                </p>
+                        </Col>
+                        <Col>
+                            <img src={"https://i.imgur.com/2WhydEu.png"}
+                             style={styles.phoneImage}
+                             alt="Why didn't this load">
+                             </img>
+                        </Col>
+                        
+                    </Row>
+
+
+                    <Row  style={{marginTop:'15vh'}}>
+                        <Col>
                                 <p style={styles.mainText}> What kinds of bets are there? </p>
 
                                 <p style={styles.infoText}> <span style={{fontWeight:'bold'}}>Binary</span> - Yes/No<br />
@@ -82,6 +99,12 @@ export class Tutorial extends Component {
                         </Col>
                         
                     </Row>
+
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
                 </Container>
                 
 

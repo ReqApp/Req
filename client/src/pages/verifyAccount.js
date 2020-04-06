@@ -90,6 +90,7 @@ class VerifyAccount extends React.Component {
           <Typography component="h1" variant="h5">
             Enter your verification code
           </Typography>
+          <h6> Check your email for verification code</h6>
           <form className={classes.form} noValidate>
             <TextField
               variant="outlined"

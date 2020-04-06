@@ -36,6 +36,8 @@ passport.use(new GoogleStrategy({
             // if not, create user in our db
             new User({
                 googleID: profile.id,
+                githubID: null,
+                steamID: null,
                 user_name: profile.displayName,
                 profilePicture: profile._json.picture,
                 accessToken: createJwt({ user_name: profile.displayName })
@@ -63,6 +65,8 @@ passport.use(new GitHubStrategy({
                 // if not, create user in our db
                 new User({
                     githubID: profile.id,
+                    googleID: null,
+                    steamID: null,
                     user_name: profile.username,
                     profilePicture: profile.photos[0].value,
                     accessToken: createJwt({ user_name: profile.username })
@@ -94,6 +98,8 @@ passport.use(new SteamStrategy({
                 // if not, create user in our db
                 new User({
                     steamID: profile._json.steamid,
+                    githubID: null,
+                    googleID: null,
                     user_name: profile._json.personaname,
                     profilePicture: profile._json.avatarfull,
                     accessToken: createJwt({ user_name: profile._json.personaname })
