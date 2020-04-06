@@ -1,5 +1,6 @@
 // React
 import React, { Component } from 'react'
+import {Redirect} from 'react-router-dom';
 // Material
 import { Typography } from '@material-ui/core';
 import List from '@material-ui/core/List';
@@ -10,6 +11,7 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import {Paper} from '@material-ui/core';
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import Link from '@material-ui/core/Link';
 // Bootstrap
 import {Row, Col} from 'react-bootstrap';
 import BetTypeSelection from '../Bet_Creation_Components/betTypeSelection';
@@ -17,6 +19,9 @@ import BetTypeSelection from '../Bet_Creation_Components/betTypeSelection';
 export default class FinishedBetCard extends Component {
     constructor(props){
         super(props);
+        this.state = {
+            navigateToProfile: false
+        }
     }
 
     generateDeadline(date){
@@ -26,47 +31,18 @@ export default class FinishedBetCard extends Component {
         return `${dateString} @ ${timeString}`;
     }
 
-    calcPayout = (bet) => {
-        // if(bet.type === 'multi'){
-        //     let winner = false;
-        //     bet.winners.forEach(winner => {
-        //         if(winner.user_name === username){
-
-        //         }
-        //     })
-        // }
-
-        return '0';
+    handleGoToProfile = () => {
+        this.setState({navigateToProfile : true});
     }
 
     render() {
+        const {navigateToProfile} = this.state;
         const {bet} = this.props;
         let details = bet.details;
-        let payout = bet.profitOrLoss;
-        let winners = null;
 
-        console.log(bet);
-
-        if(bet.type === 'multi'){
-            winners = (
-                <List>
-                    <ListSubheader>Winners</ListSubheader>
-                    <ListItem>
-                        <ListItemText>
-                            First Place: {bet.winners[0]}
-                        </ListItemText>
-                    </ListItem>
-                    <ListItem>
-                        <ListItemText>
-                            Second Place: {bet.winners[1]}
-                        </ListItemText>
-                    </ListItem>
-                    <ListItem>
-                        <ListItemText>
-                            Third Place: {bet.winners[2]}
-                        </ListItemText>
-                    </ListItem>
-                </List>
+        if(navigateToProfile){
+            return(
+                <Redirect to={`/users/profile?${bet.details.user_name}`} push/>
             )
         }
 
@@ -77,6 +53,11 @@ export default class FinishedBetCard extends Component {
                         <Row>
                             <Col>
                                 <h3>{details.title}</h3>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Typography>Created by: <Link component="button" onClick={this.handleGoToProfile}>{details.user_name}</Link></Typography>
                             </Col>
                         </Row>
                         <Row>
@@ -93,14 +74,14 @@ export default class FinishedBetCard extends Component {
                                         </ListItemIcon>
                                         <ListItemText>
                                             Finished: {this.generateDeadline(details.deadline)}
-                                        </ListItemText>
+                                        </ListItemText> 
                                     </ListItem>
                                     <ListItem>
                                         <ListItemIcon>
                                             <MonetizationOnIcon style={styles.icon}/>
                                         </ListItemIcon>
                                         <ListItemText>
-                                            Your Payout: {bet.profitOrLoss}
+                                            Your Payout: {bet.profitOrLoss} coins
                                         </ListItemText>
                                     </ListItem>
                                 </List>

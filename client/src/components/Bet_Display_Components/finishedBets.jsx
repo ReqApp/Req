@@ -1,7 +1,7 @@
 // React
 import React, { Component } from 'react';
 // Material
-import {Paper} from '@material-ui/core';
+import {Paper, Typography} from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 // Bootstrap
 import {Row, Col} from 'react-bootstrap';
@@ -36,9 +36,10 @@ export default class FinishedBets extends Component {
         .then(res => res.json())
         .then(res => {
             if(res.status === 'success'){
-                this.setState({loadingBets : false, placedBets : res.body});
+                if(res.body !== 'No bets found'){
+                    this.setState({loadingBets : false, placedBets : res.body});
+                }
             }
-            console.log(res);
         })
         .catch(err => {
             console.log(err);
@@ -57,10 +58,11 @@ export default class FinishedBets extends Component {
           })
           .then(res => res.json())
           .then(res => {
-              if(res.status === 'success'){
-                  this.setState({loadingBets : false, createdBets : res.body});
-              }
-              console.log(res);
+            if(res.status === 'success'){
+                if(res.body !== 'No bets found'){
+                    this.setState({loadingBets : false, placedBets : res.body});
+                }
+            }
           })
           .catch(err => {
               console.log(err);
@@ -69,17 +71,37 @@ export default class FinishedBets extends Component {
     
     render() {
         const {placedBets, createdBets, loadingBets} = this.state;
+        let bets = placedBets.concat(createdBets);
 
-        return (
-            <div>
-                <Paper style={styles.paper}>
-                    <div>
+        if(!loadingBets){
+            if(bets.length){
+                return(
+                    <Paper style={styles.paper}>
                         <h2>Finished Bets:</h2>
-                        {!loadingBets ? placedBets.map((bet, index) => <Row key={index}><Col><FinishedBetCard bet={bet} /></Col></Row>) : <div><CircularProgress style={styles.progess}/></div>}     
-                    </div>
-                </Paper>
+                        {bets.map((bet, index) => <Row key={index}><Col><FinishedBetCard bet={bet} /></Col></Row>)}
+                    </Paper>
+                )
 
-            </div>
+            }else{
+                return(
+                    <Paper style={styles.paper}>
+                        <h2>Finished Bets:</h2>
+                        <div style={{textAlign: 'center'}}>
+                            <Typography style={styles.text}>No Recently Finished Bets To Show</Typography>
+                        </div>
+                    </Paper>
+                )
+            }
+            
+        }
+        return(
+            <Paper style={styles.paper}>
+                <h2>Finished Bets:</h2>
+                <div style={{textAlign: 'center'}}>
+                    <CircularProgress style={styles.progress}/>
+                    <Typography style={styles.text}>Loading Bets...</Typography>
+                </div>
+            </Paper>
         )
     }
 }
@@ -91,9 +113,13 @@ const styles = {
     },
     progress: {
         marginTop: '30px',
+        display: 'block',
         marginRight: 'auto',
         marginLeft: 'auto',
-        display: 'block',
+    },
+    text: {
+        marginTop: '20px',
+        marginBottom: '40px'
     }
 }
 
