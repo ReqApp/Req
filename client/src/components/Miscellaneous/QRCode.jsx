@@ -1,5 +1,7 @@
 import React from 'react';
 
+import CircularIndeterminate from '../Miscellaneous/loadingSpinner';
+
 export default class QRCode extends React.Component{
     constructor(props){
         super(props);
@@ -54,8 +56,8 @@ export default class QRCode extends React.Component{
         } else {
             // render liquid loader
             return(
-                <div>
-                    liquid loader here
+                <div style={{margin:'9vh'}}>
+                    <CircularIndeterminate />
                 </div>
             )
         }

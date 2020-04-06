@@ -20,6 +20,7 @@ import Alert from '../components/Miscellaneous/alertSnack';
 import SteamLogo from '../images/steamLogo.webp';
 import GitHubLogo from '../images/githubIcon.svg';
 import GoogleLogo from '../images/googleLogo.webp';
+import CircularIndeterminate from '../components/Miscellaneous/loadingSpinner';
 
 
 
@@ -34,6 +35,7 @@ class SignIn extends React.Component{
       // Keep track of user inputs
       user_name : '',
       password : '',
+      requestInTransit: false,
       loggedIn : false,
       // Used for error and success snacks(toasts)
       msg : '',
@@ -56,6 +58,8 @@ class SignIn extends React.Component{
       this.setState({msg : 'Please enter your password', msgType : 'warning', snackOpen : true});
     }
     if(formValid){
+      this.setState({requestInTransit: true})
+
       fetch('http://localhost:9000/users/login', {
         method: 'POST',
         credentials: 'include',
@@ -71,22 +75,22 @@ class SignIn extends React.Component{
       .then((res) => res.json())
       .then((res) => {
         if(res.status === "success"){
-          this.setState({msg : 'Logged In!', msgType : 'success', snackOpen : true, loggedIn : true});
+          this.setState({msg : 'Logged In!', msgType : 'success', snackOpen : true, loggedIn : true, requestInTransit: false});
         }
         else if(res.status === 'error' && res.body === 'Email or password invalid'){
-          this.setState({msg : 'Incorrect username or password', msgType : 'error', snackOpen : true});
+          this.setState({msg : 'Incorrect username or password', msgType : 'error', snackOpen : true, requestInTransit: false});
         }
         else if(res.status === 'error' && res.body === 'Username not found'){
-          this.setState({msg : 'User could not be found', msgType : 'error', snackOpen : true});
+          this.setState({msg : 'User could not be found', msgType : 'error', snackOpen : true, requestInTransit: false});
         }
         else{
           console.log(res.body);
-          this.setState({msg : 'Could not login', msgType : 'error', snackOpen : true});
+          this.setState({msg : 'Could not login', msgType : 'error', snackOpen : true, requestInTransit: false});
         }
       })
       .catch(err => {
         console.log(err);
-        this.setState({msg : 'Could not login', msgType : 'error', snackOpen : true});
+        this.setState({msg : 'Could not login', msgType : 'error', snackOpen : true, requestInTransit: false});
       });
     }
   }
@@ -109,7 +113,7 @@ class SignIn extends React.Component{
 }
 
   render(){
-    const {msg, msgType, snackOpen, loggedIn, user_name} = this.state;
+    const {msg, msgType, snackOpen, loggedIn, user_name, requestInTransit} = this.state;
     const {classes} = this.props;
     const redirectUrl = `/users/profile?${user_name}`;
 
@@ -154,15 +158,20 @@ class SignIn extends React.Component{
               autoComplete="current-password"
               onChange={this.handlePasswordChange}
             />
+            { requestInTransit ? 
+            <CircularIndeterminate />
+            :
             <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-              onClick={this.submitForm}
-            >
-              Sign In
-            </Button>
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            onClick={this.submitForm}
+          >
+            Sign In
+          </Button>
+            }
+            
 
             Sign in through a 3rd party application
 

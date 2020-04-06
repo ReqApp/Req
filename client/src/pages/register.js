@@ -16,6 +16,7 @@ import Container from '@material-ui/core/Container';
 import Copyright from '../components/Page_Components/copyRight';
 import Navbar from '../components/Page_Components/navbar';
 import Alert from '../components/Miscellaneous/alertSnack';
+import CircularIndeterminate from '../components/Miscellaneous/loadingSpinner';
 
 
 import SteamLogo from '../images/steamLogo.webp';
@@ -63,7 +64,6 @@ class Register extends React.Component{
       this.setState({msg : 'Please enter your email address', msgType : 'warning', snackOpen : true});
     }
 
-    console.log(profiler);
 
     // if they chose one and clicked submit but the image is not done upoading yet
     // this wont trigger if a valid profiler has been chosen
@@ -178,7 +178,7 @@ class Register extends React.Component{
 
   render(){
     const {classes} = this.props;
-    const {msg, msgType, snackOpen, success} = this.state
+    const {msg, msgType, snackOpen, success, profilerChosen, profilerUploaded} = this.state
 
     if (success) {
       return (
@@ -187,6 +187,7 @@ class Register extends React.Component{
         </div>
       )
     }
+
     return (
       <div>
           <Navbar />
@@ -246,6 +247,8 @@ class Register extends React.Component{
             onChange={(e) => this.imageFormSubmit(e)}
             />
 
+            { profilerChosen && !profilerUploaded ? <div style={{justifyContent:'center', textAlign:'center'}}><CircularIndeterminate /></div>
+            :  
             <Button
               fullWidth
               variant="contained"
@@ -254,7 +257,8 @@ class Register extends React.Component{
               onClick={this.submitForm}
             >
               Register
-            </Button>
+            </Button>}
+
 
             Register through a 3rd party application
 
