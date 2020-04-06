@@ -1,5 +1,8 @@
 // React
 import React from 'react'
+// Material
+import {Paper, Typography} from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
 // Components
 import CurrentBetInfo from './currentBetInfo';
 
@@ -44,11 +47,36 @@ export default class CurrentBets extends React.Component {
     }
     
     render() {
-        const {bets} = this.state;
-        return (
-            <div>
-                {bets.map((bet, index) => <CurrentBetInfo data={bet} key={index}/>)}
-            </div>
+        const {bets, loadingBets} = this.state;
+        if(!loadingBets){
+          return (
+              <div>
+                  {bets.map((bet, index) => <CurrentBetInfo data={bet} key={index}/>)}
+              </div>
+          )
+        }else{
+          return(
+            <Paper style={styles.paper}>
+                <h2>Bets Created By You:</h2>
+                <div style={{textAlign: 'center'}}>
+                    <CircularProgress style={styles.progress}/>
+                    <Typography style={styles.text}>Loading Bets...</Typography>
+                </div>
+            </Paper>
         )
+        }
     }
+}
+
+const styles = {
+  paper: {
+      marginTop: '15px',
+      padding: '15px'
+  },
+  progress: {
+    marginTop: '30px',
+    display: 'block',
+    marginRight: 'auto',
+    marginLeft: 'auto',
+},
 }

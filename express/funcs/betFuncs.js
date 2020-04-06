@@ -1427,3 +1427,4 @@ module.exports.getUserCreatedBets = getUserCreatedBets;
 module.exports.getFinishedBetsForUser = getFinishedBetsForUser;
 module.exports.getBetsInRegion = getBetsInRegion;
 module.exports.updateBetWithLocData = updateBetWithLocData;
+module.exports.getLocationBetID = getLocationBetID;

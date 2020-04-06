@@ -25,8 +25,10 @@ import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
+import {Paper} from '@material-ui/core';
 // Components
 import DecideBetDialog from '../Bet_Creation_Components/decideBetDialog';
+import DisplayMap from '../Location_Betting_Components/maps';
 
 
 export default class CurrentBetInfo extends Component {
@@ -36,6 +38,7 @@ export default class CurrentBetInfo extends Component {
         this.state = {
             openDecideBetDialog: false,
             redirectToProfile : false,
+            locationData: null,
             cutBreakdownChart: {
                 height: 0,
                 width: 0,
@@ -50,6 +53,31 @@ export default class CurrentBetInfo extends Component {
     }
 
     componentDidMount() {
+        const {data} = this.props;
+
+        if(data.locationID !== ''){
+            fetch(`http://localhost:9000/getLocationBetById?id=${data.locationID}`, {
+                method : 'GET',
+                credentials : 'include',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res.status === 'success'){
+                    this.setState({locationData : res.body});
+                }else{
+                    console.log(res);
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        }
+
+
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
     }
@@ -132,7 +160,7 @@ export default class CurrentBetInfo extends Component {
     }
 
     render() {
-        const {redirectToProfile, openDecideBetDialog} = this.state;
+        const {redirectToProfile, openDecideBetDialog, locationData} = this.state;
         const {data, userCreated} = this.props
         let betDate = new Date(data.deadline * 1000);
         let dateString = `${betDate.getDate()}/${betDate.getMonth()+1}/${betDate.getFullYear()}`;
@@ -189,6 +217,7 @@ export default class CurrentBetInfo extends Component {
             </ExpansionPanelSummary>
             <ExpansionPanelDetails style={styles.details}>
             <div>
+                {locationData ? <Row><Col><Typography>Bet Location: {locationData.location_name}</Typography></Col></Row> : null}
                 <Row>
                     <Col>
                         <List component="nav">
@@ -236,6 +265,7 @@ export default class CurrentBetInfo extends Component {
                     </Row>   
                 </Col>
             </Row>
+            {locationData ? <Row><Col><Paper><DisplayMap miniMap={true} regionDetails={locationData} height='200px' /></Paper></Col></Row> : null}
             </div>
         </ExpansionPanelDetails>
         </ExpansionPanel>
@@ -243,7 +273,7 @@ export default class CurrentBetInfo extends Component {
         )
     }
 }
-
+//
 const styles = {
     chart: {
         display: 'block',

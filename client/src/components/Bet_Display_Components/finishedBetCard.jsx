@@ -7,20 +7,46 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
 import {Paper} from '@material-ui/core';
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
 import Link from '@material-ui/core/Link';
 // Bootstrap
 import {Row, Col} from 'react-bootstrap';
-import BetTypeSelection from '../Bet_Creation_Components/betTypeSelection';
+import DisplayMap from '../Location_Betting_Components/maps';
 
 export default class FinishedBetCard extends Component {
     constructor(props){
         super(props);
         this.state = {
+            locationData: null,
             navigateToProfile: false
+        }
+    }
+
+    componentDidMount(){
+        const {bet} = this.props;
+        if(bet.locationID !== ''){
+            fetch(`http://localhost:9000/getLocationBetById?id=${bet.locationID}`, {
+                method : 'GET',
+                credentials : 'include',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res.status === 'success'){
+                    this.setState({locationData : res.body});
+                }else{
+                    console.log(res);
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
         }
     }
 
@@ -36,7 +62,7 @@ export default class FinishedBetCard extends Component {
     }
 
     render() {
-        const {navigateToProfile} = this.state;
+        const {navigateToProfile, locationData} = this.state;
         const {bet, user} = this.props;
         let details = bet.details;
         let result = details.result;
@@ -66,7 +92,7 @@ export default class FinishedBetCard extends Component {
                     <div>
                         <Row>
                             <Col>
-                                <h3>{details.title}</h3>
+                                <h3>{details.title} {locationData ? <LocationOnIcon /> : null}</h3>
                             </Col>
                         </Row>
                         <Row>
@@ -100,13 +126,8 @@ export default class FinishedBetCard extends Component {
                                     </ListItem>
                                 </List>
                             </Col>
-                            <Col>
-                            <Typography>
-                                
-                            </Typography>
-                            </Col>
-
                         </Row>
+                        {locationData ? <Row><Col><Paper><DisplayMap miniMap={true} regionDetails={locationData} height='200px' /></Paper></Col></Row> : null}
                     </div>
                 </Paper>
             </div>

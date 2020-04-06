@@ -289,6 +289,51 @@ router.put('/addBetToRegion', function(req, res) {
     });
 });
 
+router.get('/getLocationBetById', (req, res) => {
+    if(req.query.id){
+        if(utilFuncs.validate(req.query.id, 'id')){
+            utilFuncs.isSignedIn(req.cookies).then(profile => {
+                if(profile){
+                    utilFuncs.getLocationBetID(req.query.id).then(bet => {
+                        res.status(200).json({
+                            'status' : 'success',
+                            'body' : bet
+                        })
+
+                    }, err => {
+                        res.status(400).json({
+                            'status' : 'error',
+                            'body' : err
+                        })
+                    })
+
+                }else{
+                    res.status(400).json({
+                        'status' : 'error',
+                        'body' : 'Not signed in'
+                    })
+                }
+            }, err => {
+                res.status(400).json({
+                    'status' : 'error',
+                    'body' : err
+                })
+            })
+        }
+        else{
+            res.status(400).json({
+                'status' : 'error',
+                'body' : 'Invalid id'
+            })
+        }
+    }else{
+        res.status(400).json({
+            'status' : 'error',
+            'body' : 'Missing parameters'
+        })
+    }
+});
+
 // Gets specific region by id
 router.get('/getRegionByID', function(req, res) {
     console.log(req.query.id);
