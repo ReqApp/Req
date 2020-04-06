@@ -37,15 +37,29 @@ export default class FinishedBetCard extends Component {
 
     render() {
         const {navigateToProfile} = this.state;
-        const {bet} = this.props;
+        const {bet, user} = this.props;
         let details = bet.details;
+        let result = details.result;
+        let payoutColour = 'black';
+        if(details.type === 'binary'){
+            if(details.result === 'no'){
+                result = 'No';
+            }else{
+                result = 'Yes';
+            }
+        }
+        if(parseInt(bet.profitOrLoss) < 0){
+            payoutColour = '#F44434';
+        }
+        else if(parseInt(bet.profitOrLoss) > 0){
+            payoutColour = '#4CAC54';
+        }
 
         if(navigateToProfile){
             return(
                 <Redirect to={`/users/profile?${bet.details.user_name}`} push/>
             )
         }
-
         return (
             <div>
                 <Paper style={styles.paper}>
@@ -57,12 +71,12 @@ export default class FinishedBetCard extends Component {
                         </Row>
                         <Row>
                             <Col>
-                                <Typography>Created by: <Link component="button" onClick={this.handleGoToProfile}>{details.user_name}</Link></Typography>
+                                <Typography>Created by: <Link component="button" onClick={this.handleGoToProfile}>{user === details.user_name ? "You" : details.user_name}</Link></Typography>
                             </Col>
                         </Row>
                         <Row>
                             <Col>
-                                <Typography>Result: {details.result}</Typography>
+                                <Typography style={{marginTop: '5px'}}>Result: {result}</Typography>
                             </Col>
                         </Row>
                         <Row>
@@ -81,7 +95,7 @@ export default class FinishedBetCard extends Component {
                                             <MonetizationOnIcon style={styles.icon}/>
                                         </ListItemIcon>
                                         <ListItemText>
-                                            Your Payout: {bet.profitOrLoss} coins
+                                            Your Payout: <span style={{color : payoutColour, fontWeight: 'bold'}}>{bet.profitOrLoss} coins</span>
                                         </ListItemText>
                                     </ListItem>
                                 </List>
@@ -106,8 +120,9 @@ const styles = {
         marginTop: '15px'
     },
     icon: {
-        color: '#008E9B'
+        color: '#292b2c'
     }
+
 }
 
 

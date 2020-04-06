@@ -71,6 +71,7 @@ export default class FinishedBets extends Component {
     
     render() {
         const {placedBets, createdBets, loadingBets} = this.state;
+        const {username} = this.props;
         let bets = placedBets.concat(createdBets);
 
         if(!loadingBets){
@@ -78,7 +79,7 @@ export default class FinishedBets extends Component {
                 return(
                     <Paper style={styles.paper}>
                         <h2>Finished Bets:</h2>
-                        {bets.map((bet, index) => <Row key={index}><Col><FinishedBetCard bet={bet} /></Col></Row>)}
+                        {bets.map((bet, index) => <Row key={index}><Col><FinishedBetCard bet={bet} user={username}/></Col></Row>)}
                     </Paper>
                 )
 

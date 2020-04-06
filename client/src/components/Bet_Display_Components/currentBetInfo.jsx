@@ -1,5 +1,6 @@
 // React
 import React, { Component } from 'react';
+import {Redirect} from 'react-router-dom';
 // Rechart
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis 
@@ -20,7 +21,7 @@ import PeopleIcon from '@material-ui/icons/People';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import PersonIcon from '@material-ui/icons/Person';
 import { ListSubheader } from '@material-ui/core';
-import Divider from '@material-ui/core/Divider';
+import Link from '@material-ui/core/Link';
 
 
 export default class CurrentBetInfo extends Component {
@@ -28,6 +29,7 @@ export default class CurrentBetInfo extends Component {
     constructor(props){
         super(props);
         this.state = {
+            redirectToProfile : false,
             cutBreakdownChart: {
                 height: 0,
                 width: 0,
@@ -111,12 +113,23 @@ export default class CurrentBetInfo extends Component {
             )
         }
     }
+
+    handleRedirectToProfile = () => {
+        this.setState({redirectToProfile : true});
+    }
     
     render() {
+        const {redirectToProfile} = this.state;
         const {data, userCreated} = this.props
         let betDate = new Date(data.deadline * 1000);
         let dateString = `${betDate.getDate()}/${betDate.getMonth()+1}/${betDate.getFullYear()}`;
         let timeString = `${betDate.getHours()}:${betDate.getMinutes()}`;
+
+        if(redirectToProfile){
+            return(
+                <Redirect to={`/users/profile?${data.username}`} push />
+            )
+        }
         return (
             <ExpansionPanel>
             <ExpansionPanelSummary
@@ -131,9 +144,18 @@ export default class CurrentBetInfo extends Component {
                         <h4>{data.title}</h4>
                     </Col>
                 </Row>
+                {userCreated ? null : 
+                    <Row>
+                        <Col>
+                            <Typography>
+                                Created By: <Link component='button' onClick={this.handleRedirectToProfile}>{data.username}</Link>
+                            </Typography>
+                        </Col>
+                    </Row>
+                }
                 <Row>
                     <Col>
-                        <Typography>
+                        <Typography style={{marginTop: '5px'}}>
                             Deadline: {dateString} @ {timeString}
                         </Typography>
                     </Col>
