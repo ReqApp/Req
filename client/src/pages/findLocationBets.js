@@ -49,11 +49,10 @@ export default class FindBetPage extends React.Component{
             sortBy : "popular",
             showMap : false,
             openError : false,
-            loadCreateForm: false,
+            loadCreateBet: false,
             loadCreateRegion: false,
             selectedRegion: null,
             windowWidth: window.innerWidth,
-            loadCreateBetForm : false
         }
         this.socket = openSocket("http://localhost:9000");
     }
@@ -180,7 +179,7 @@ export default class FindBetPage extends React.Component{
                     break;
                 }
             }
-            this.setState({loadCreateForm : true, selectedRegion : selectedRegion});
+            this.setState({loadCreateBet : true, selectedRegion : selectedRegion});
         }
     }
     
@@ -188,17 +187,12 @@ export default class FindBetPage extends React.Component{
         this.setState({openError : false});
     }
 
-    handleCreate = () => {
-        const {view} = this.state;
-        if(view === 'regions'){
-            this.setState({loadCreateRegion : true});
-        }else{
-            this.setState({loadCreateBetForm : true});
-        }
+    handleCreateNewRegion = () => {
+        this.setState({loadCreateRegion : true});
     }
 
     render(){
-        const {hasLocation, latlng, accurate, betRegions, bets, loadingRegions, sortBy, openError, view, loadCreateRegion, windowWidth, loadCreateBetForm} = this.state;
+        const {hasLocation, latlng, accurate, betRegions, bets, loadingRegions, sortBy, openError, view, loadCreateRegion, windowWidth, selectedRegion, loadCreateBet} = this.state;
         const {mode} = this.props;
         let useStyles = null;
 
@@ -208,19 +202,17 @@ export default class FindBetPage extends React.Component{
         else{
             useStyles = styles;
         }
-
-        if(loadCreateBetForm){
-            return (
-                <Redirect to='/create-location-bet' push/>
+        if(loadCreateBet){
+            return(
+                <CreateLocationBet userLocation={latlng} regionData={selectedRegion} />
             )
         }
         if(loadCreateRegion){
-            const {selectedRegion} = this.state;
-            console.log("Creating region");
             return(
-                <CreateLocationBet userLocation={latlng} regionData={selectedRegion} createRegion/>
+                <CreateLocationBet userLocation={latlng} createRegion/>
             )
-        }else{
+        }
+        else{
         let predictSearch = null;
         if(!loadingRegions){
             predictSearch = <div style={useStyles.floatContainer} >
@@ -299,17 +291,19 @@ export default class FindBetPage extends React.Component{
                         <Col xs={12} md={6} style={useStyles.columns}>    
                             <h2 style={useStyles.sortByTitle}>{view === 'regions' ? "Available Regions" : "Available Bets"}</h2>
                         </Col>
+                        {view === 'regions' ?
                         <Col xs={12} md={6} style={useStyles.columns}>
                             <Button
-                                onClick={this.handleCreate}
+                                onClick={this.handleCreateNewRegion}
                                 style={useStyles.newRegionBtn}
                                 variant="contained"
                                 color="primary"
                                 className={classes.button}
                                 endIcon={<Icon>addsharp</Icon>}>
-                                {view === 'regions' ? "Create New Region" : "Create New Bet"}
+                                Create New Region
                             </Button>
-                        </Col>
+                        </Col> : null
+                        }
                     </Row>
                     <Row>
                         <Col xs={12} md={6} style={useStyles.columns}>
