@@ -22,6 +22,10 @@ import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import PersonIcon from '@material-ui/icons/Person';
 import { ListSubheader } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
+import Button from '@material-ui/core/Button';
+import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
+// Components
+import DecideBetDialog from '../Bet_Creation_Components/decideBetDialog';
 
 
 export default class CurrentBetInfo extends Component {
@@ -29,6 +33,7 @@ export default class CurrentBetInfo extends Component {
     constructor(props){
         super(props);
         this.state = {
+            openDecideBetDialog: false,
             redirectToProfile : false,
             cutBreakdownChart: {
                 height: 0,
@@ -117,20 +122,42 @@ export default class CurrentBetInfo extends Component {
     handleRedirectToProfile = () => {
         this.setState({redirectToProfile : true});
     }
+
+    handleDecideBet = () => {
+        this.setState({openDecideBetDialog : true});
+    }
     
+    handleCloseDecideBet = () => {
+        this.setState({openDecideBetDialog : false});
+    }
+
     render() {
-        const {redirectToProfile} = this.state;
+        const {redirectToProfile, openDecideBetDialog} = this.state;
         const {data, userCreated} = this.props
         let betDate = new Date(data.deadline * 1000);
         let dateString = `${betDate.getDate()}/${betDate.getMonth()+1}/${betDate.getFullYear()}`;
         let timeString = `${betDate.getHours()}:${betDate.getMinutes()}`;
-
+        let deadlineRepresentation = (
+            <Typography style={{marginTop: '5px'}}>
+                Deadline: {dateString} @ {timeString}
+            </Typography>
+        );
+        
         if(redirectToProfile){
             return(
                 <Redirect to={`/users/profile?${data.username}`} push />
             )
         }
+        if(userCreated){
+            if(Date.now() >= data.deadline){
+                deadlineRepresentation = (
+                    <Button startIcon={<HourglassEmptyIcon /> } onClick={this.handleDecideBet}>Decide Bet</Button>
+                )
+            }
+        }
         return (
+            <div>
+            <DecideBetDialog open={openDecideBetDialog} data={data} close={this.handleCloseDecideBet} />
             <ExpansionPanel>
             <ExpansionPanelSummary
               expandIcon={<ExpandMoreIcon />}
@@ -138,7 +165,7 @@ export default class CurrentBetInfo extends Component {
               id="panel1a-header"
               style={styles.summary}
             >
-                <div>
+            <div>
                 <Row>
                     <Col>
                         <h4>{data.title}</h4>
@@ -155,12 +182,10 @@ export default class CurrentBetInfo extends Component {
                 }
                 <Row>
                     <Col>
-                        <Typography style={{marginTop: '5px'}}>
-                            Deadline: {dateString} @ {timeString}
-                        </Typography>
+                        {deadlineRepresentation}
                     </Col>
                 </Row>
-                </div>
+            </div>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails style={styles.details}>
             <div>
@@ -180,13 +205,13 @@ export default class CurrentBetInfo extends Component {
                             }
                             <ListItem>
                             <ListItemIcon>
-                                <PeopleIcon style={styles.icon}/>
+                                <PeopleIcon/>
                             </ListItemIcon>
                             <ListItemText primary={"Participants: " + data.numberOfBettors}/>
                             </ListItem>
                             <ListItem>
                             <ListItemIcon>
-                                <MonetizationOnIcon style={styles.icon}/>
+                                <MonetizationOnIcon/>
                             </ListItemIcon>
                             <ListItemText>
                                 Total Sum: {data.type === 'multi' ? data.betsTotal : data.forBetTotal + data.againstBetTotal}
@@ -214,14 +239,12 @@ export default class CurrentBetInfo extends Component {
             </div>
         </ExpansionPanelDetails>
         </ExpansionPanel>
+        </div>
         )
     }
 }
 
 const styles = {
-    icon: {
-        color: '#008E9B',
-    },
     chart: {
         display: 'block',
         marginRight : 'auto',

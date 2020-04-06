@@ -487,7 +487,7 @@ function decideBet(inputObj) {
                                     }
                                 }
                             } else if (foundBet.type === "multi") {
-                                if (!isNan(inputObj.result)) {
+                                if (!isNaN(inputObj.result)) {
                                     reject("Invalid result")
                                 }
                                 // if there were any bets at all, pay out to them

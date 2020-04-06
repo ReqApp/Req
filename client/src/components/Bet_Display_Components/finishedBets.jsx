@@ -60,7 +60,7 @@ export default class FinishedBets extends Component {
           .then(res => {
             if(res.status === 'success'){
                 if(res.body !== 'No bets found'){
-                    this.setState({loadingBets : false, placedBets : res.body});
+                    this.setState({loadingBets : false, createdBets : res.body});
                 }
             }
           })

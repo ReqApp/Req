@@ -42,7 +42,7 @@ export class UserCreatedBets extends Component {
         .catch(err => {
             console.log(err);
             this.setState({errorMsg : 'Could not get bets'});
-        })
+        });
     }
     
 

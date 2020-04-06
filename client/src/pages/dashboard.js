@@ -23,6 +23,7 @@ import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
 import Snackbar from '@material-ui/core/Snackbar';
 import SearchIcon from '@material-ui/icons/Search';
+import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 // Bootstrap
 import {Container, Row, Col} from 'react-bootstrap';
 // Components
@@ -33,7 +34,6 @@ import CreateBetForm from '../components/Bet_Creation_Components/createBetForm';
 import UserCreatedBets from '../components/Bet_Display_Components/userCreatedBets';
 import FinishedBets from '../components/Bet_Display_Components/finishedBets';
 import Alert from '../components/Miscellaneous/alertSnack';
-// import BuyCoins from '../components/Miscellaneous/buyCoins';
 import './reset.css';
 
 class Dashboard extends React.Component{
@@ -50,11 +50,11 @@ class Dashboard extends React.Component{
           createNewBetDialog: false,
           renderCreateNewLocationBet: false,
           renderCreateNewRegion: false,
+          redirectToBigRedButton: false,
           snackOpen: false,
           msg: '',
           msgType: '',
           openFindBetPane: false,
-          buyCoins: false
         }
     }
 
@@ -120,13 +120,10 @@ class Dashboard extends React.Component{
       this.setState({openFindBetPane : false});
     }
 
-    handleBuyCoins = () => {
-      this.setState({buyCoins : true});
+    handleBigRedButton = () => {
+      this.setState({redirectToBigRedButton : true});
     }
 
-    handleCloseBuyCoins = () => {
-      this.setState({buyCoins : false});
-    }
 
     handleNavAction = (action) => {
       if(action === 'new-bet'){
@@ -159,7 +156,7 @@ class Dashboard extends React.Component{
     }
 
     render(){
-      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, renderProfile, snackOpen, msg, msgType, openFindBetPane, username, buyCoins, redirectToLogIn, renderCreateNewLocationBet, renderCreateNewRegion} = this.state;
+      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, renderProfile, snackOpen, msg, msgType, openFindBetPane, username, redirectToLogIn, renderCreateNewLocationBet, renderCreateNewRegion, redirectToBigRedButton} = this.state;
       const {classes} = this.props;
       if(redirectToLogIn){
         return (
@@ -187,6 +184,11 @@ class Dashboard extends React.Component{
           <Redirect to={url} push/>
         )
       }
+      if(redirectToBigRedButton){
+        return(
+          <Redirect to='/big-red-button' push />
+        )
+      }
       const drawer = (
         <div>
               <List>
@@ -197,14 +199,6 @@ class Dashboard extends React.Component{
                 </ListItemIcon>
                 <ListItemText primary='Profile' />
               </ListItem>
-              {/* <ListItem button onClick={this.handleBuyCoins}>
-                <ListItemIcon>
-                  <MonetizationOnIcon />
-                </ListItemIcon>
-                <ListItemText>
-                  Buy Coins
-                </ListItemText>
-              </ListItem> */}
               </List>
               <Divider />
               <List>
@@ -222,6 +216,14 @@ class Dashboard extends React.Component{
                   <AddIcon />
                 </ListItemIcon>
                 <ListItemText primary='New Bet' />
+              </ListItem>
+              <ListItem button onClick={this.handleBigRedButton}>
+                <ListItemIcon>
+                  <RadioButtonCheckedIcon />
+                </ListItemIcon>
+                <ListItemText>
+                  Big Red Button
+                </ListItemText>
               </ListItem>
               <ListItem button onClick={this.handleLocationNavToggle}>
                 <ListItemIcon>
@@ -266,10 +268,6 @@ class Dashboard extends React.Component{
                 openPane={openFindBetPane}
                 closeDialog={this.closeFindBetPane}
             />
-            {/* <BuyCoins
-              open={buyCoins}
-              close={this.handleCloseBuyCoins}
-            /> */}
             <Navbar className={classes.appBar} dashboard action={this.handleNavAction}/>
             <div className={classes.root}>
                 <CreateBetForm 
