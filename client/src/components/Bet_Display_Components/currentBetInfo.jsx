@@ -24,6 +24,7 @@ import { ListSubheader } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
 // Components
 import DecideBetDialog from '../Bet_Creation_Components/decideBetDialog';
 
@@ -106,7 +107,6 @@ export default class CurrentBetInfo extends Component {
                 { place : 'Second', Cut :  bet.secondPlaceCut * 100},
                 { place : 'Third', Cut : bet.thirdPlaceCut * 100}
             ];
-            console.log(data);
             return(
                 <div>
                     <RadarChart outerRadius={cutBreakdownChart.radius} height={cutBreakdownChart.height} width={cutBreakdownChart.width} data={data} style={styles.chart}>
@@ -168,7 +168,7 @@ export default class CurrentBetInfo extends Component {
             <div>
                 <Row>
                     <Col>
-                        <h4>{data.title}</h4>
+                        <h4>{data.title} {data.locationID !== '' ? <LocationOnIcon /> : null}</h4>
                     </Col>
                 </Row>
                 {userCreated ? null : 

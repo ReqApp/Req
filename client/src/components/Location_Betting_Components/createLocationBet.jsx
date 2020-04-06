@@ -85,10 +85,11 @@ export default class CreateLocationBet extends React.Component{
             this.setState({msg : "Deadline not valid", msgType: 'error', snackOpen : true});
         }
         if(formValid){
+            var betID = null;
             let data = {
                 type: betType,
                 title: title,
-                deadline: +date,
+                deadline: +date / 1000,
                 username: 'testUser',
             }
             if(betType === 'binary'){
@@ -111,6 +112,7 @@ export default class CreateLocationBet extends React.Component{
             .then(res => res.json())
             .then(res => {
                 if(res.status === 'success'){
+                    betID = res.body._id;
                     let locationData = {
                         location_name : location_name,
                         latitude : userLocation.lat,
@@ -121,6 +123,7 @@ export default class CreateLocationBet extends React.Component{
                     }
                     fetch('http://localhost:9000/createLocationBet', {
                         method: 'POST',
+                        credentials: 'include',
                         headers: {
                             'Accept': 'application/json',
                             'Content-Type': 'application/json'
@@ -130,7 +133,33 @@ export default class CreateLocationBet extends React.Component{
                     .then(res => res.json())
                     .then(res => {
                         if(res.status === 'success'){
-                            this.setState({msg : "Bet created!", msgType : 'success', snackOpen : true});
+                            let updateData = {
+                                locationID : res.body._id,
+                                betID : betID
+                            }
+                            fetch('http://localhost:9000/updateBetWithLocData', {
+                                method : 'PUT',
+                                credentials: 'include',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(updateData)
+                            })
+                            .then(res => res.json())
+                            .then(res => {
+                                if(res.status === 'success'){
+                                    // Update made bet with new location bet ID
+                                    this.setState({msg : "Bet created!", msgType : 'success', snackOpen : true});
+                                }else{
+                                    console.log(res);
+                                    this.setState({msg : "Location Bet could not be created", msgType : 'error', snackOpen : true});
+                                }
+                            })
+                            .catch(err => {
+                                console.log(err);
+                                this.setState({msg : "Location Bet could not be created", msgType : 'error', snackOpen : true});
+                            });
                         }else{
                             console.log(res);
                             this.setState({msg : "Location Bet could not be created", msgType : 'error', snackOpen : true});
@@ -255,8 +284,6 @@ export default class CreateLocationBet extends React.Component{
     render(){
         const {betType, radius, date, snackOpen, msg, msgType, redirectTo} = this.state;
         const {regionData, userLocation, createRegion} = this.props;
-
-        console.log("In create location bet");
 
         if(redirectTo === 'find-bets'){
             return(

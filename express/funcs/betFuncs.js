@@ -865,7 +865,8 @@ function anonymiseBetData(allBets) {
                     numberFor: indivBet.forUsers.length,
                     numberAgainst: indivBet.againstUsers.length,
                     betID: indivBet._id,
-                    type: indivBet.type
+                    type: indivBet.type,
+                    locationID: indivBet.locationID
                 }
                 betArr.push(tempBet);
 
@@ -886,7 +887,8 @@ function anonymiseBetData(allBets) {
                     thirdPlaceCut : indivBet.thirdPlaceCut,
                     numberOfBettors : indivBet.commonBets.length,
                     betID: indivBet._id,
-                    type: indivBet.type
+                    type: indivBet.type,
+                    locationID: indivBet.locationID
                 }
                 betArr.push(tempBet);
             }
@@ -997,6 +999,18 @@ function getBetByID(id){
                 reject(err);
             }else{
                 resolve(bet);
+            }
+        });
+    });
+}
+
+function updateBetWithLocData(locationID, betID){
+    return new Promise((resolve, reject) => {
+        bets.findOneAndUpdate({_id : betID}, {locationID : locationID}, (err, updatedBet) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(updatedBet);
             }
         });
     });
@@ -1412,3 +1426,4 @@ module.exports.findNewBets = findNewBets;
 module.exports.getUserCreatedBets = getUserCreatedBets;
 module.exports.getFinishedBetsForUser = getFinishedBetsForUser;
 module.exports.getBetsInRegion = getBetsInRegion;
+module.exports.updateBetWithLocData = updateBetWithLocData;

@@ -46,7 +46,7 @@ router.post('/createLocationBet', (req, res) => {
                             if (response) {
                                 res.status(200).json({
                                     'status': 'success',
-                                    'body': 'Location bet made'
+                                    'body': response
                                 });
                             } else {
                                 res.status(400).json({
@@ -89,6 +89,46 @@ router.post('/createLocationBet', (req, res) => {
             'status': 'error',
             'body': 'Incomplete data'
         });
+    }
+});
+
+
+router.put('/updateBetWithLocData', (req, res) => {
+    if(req.body.locationID && req.body.betID){
+        console.log(req.cookies.Authorization);
+        utilFuncs.isSignedIn(req.cookies).then((profile) => {
+            console.log("Signed In");
+            if(utilFuncs.validate(req.body.locationID, 'id') && utilFuncs.validate(req.body.betID, 'id')){
+                console.log("Validated");
+                utilFuncs.updateBetWithLocData(req.body.locationID, req.body.betID).then((updatedBet) => {
+                    res.status(200).json({
+                        'status' : 'success',
+                        'body' : updatedBet
+                    });
+                }, err => {
+                    res.status(400).json({
+                        'status' : 'error',
+                        'body' : err
+                    })
+                });
+            }else{
+                res.status.json({
+                    'status' : 'error',
+                    'body' : 'Invalid parameters'
+                })
+            }
+
+        }, err => {
+            res.status(400).json({
+                'status' : 'error',
+                'body' : err
+            })
+        });
+    }else{
+        res.status(400).json({
+            'status' : 'error',
+            'body' : 'Missing parameter id'
+        })
     }
 });
 
