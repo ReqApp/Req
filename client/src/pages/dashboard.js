@@ -335,7 +335,7 @@ class Dashboard extends React.Component{
                       <Col xs={12} sm={12} md={6}>
                         <Row>
                           <Col>
-                            <FinishedBets />
+                            <FinishedBets username={username}/>
                           </Col>
                         </Row>
                       </Col>

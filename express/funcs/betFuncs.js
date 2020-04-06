@@ -1,6 +1,7 @@
 var forgotPasswordUser = require('../models/forgotPasswordUsers');
 var betsFinished = require('../models/betsFinished');
 var UnverifiedUser = require('../models/unverifiedUsers');
+var analyticFuncs = require('../funcs/analyticsFuncs');
 var generalFuncs = require('../funcs/generalFuncs');
 const keccak512 = require('js-sha3').keccak512;
 var bets = require('../models/bets');
@@ -1033,11 +1034,16 @@ function getFinishedBets(){
 
 function getFinishedBetsForUser(user_name){
     return new Promise((resolve, reject) => {
-        getFinishedBets().then(finishedBets => {
-            let returnBets = [];
-            finishedBets.forEach(elm => {
+        getFinishedBets().then(async finishedBets => {
+            let placeBets = [];
+            let createdBets = [];
+            let placedBetsPayouts = await analyticFuncs.getBettingHistory(user_name).catch(err => reject(err));
+            let createBetsPayouts = await analyticFuncs.getCreatedBettingHistory(user_name).catch(err => reject(err));
+
+            finishedBets.forEach((elm, index)=> {
                 if(elm.user_name === user_name){
-                    returnBets.push(elm);
+                    //createdBets.push({elm, ...(createBetsPayouts[index])});
+                    createBetsPayouts.push(elm);
                 }
                 else{
                     if(elm.type === 'binary'){
@@ -1045,13 +1051,15 @@ function getFinishedBetsForUser(user_name){
                         elm.forUsers.forEach(user => {
                             if(user.user_name === user_name){
                                 found = true;
-                                returnBets.push(elm);
+                                //placeBets.push({...elm, ...(placedBetsPayouts[index])});
+                                placeBets.push(elm);
                             }
                         });
                         if(!found){
                             elm.againstUsers.forEach(user => {
                                 if(user.user_name === user_name){
-                                    returnBets.push(elm);
+                                    //placeBets.push({...elm, ...(placedBetsPayouts[index])});
+                                    placeBets.push(elm);
                                 }
                             })
                         }
@@ -1059,13 +1067,16 @@ function getFinishedBetsForUser(user_name){
                     else{
                         elm.commonBets.forEach(user => {
                             if(user.user_name === user_name){
-                                returnBets.push(elm);
+                                //placeBets.push({...elm, ...(placedBetsPayouts[index])});
+                                placeBets.push(elm);
                             }
                         })
                     }
                 }
             });
-            resolve(returnBets);
+            console.log(placeBets);
+            console.log(placedBetsPayouts);
+            resolve({placedBets : placeBets, createdBets : createdBets});
         }, err => {
             reject(err);
         })

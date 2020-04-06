@@ -41,7 +41,11 @@ export default class FinishedBetCard extends Component {
 
     render() {
         const {bet} = this.props;
+        let details = bet.details;
+        let payout = bet.profitOrLoss;
         let winners = null;
+
+        console.log(bet);
 
         if(bet.type === 'multi'){
             winners = (
@@ -72,12 +76,12 @@ export default class FinishedBetCard extends Component {
                     <div>
                         <Row>
                             <Col>
-                                <h3>{bet.title}</h3>
+                                <h3>{details.title}</h3>
                             </Col>
                         </Row>
                         <Row>
                             <Col>
-                                <Typography>Result: {bet.result}</Typography>
+                                <Typography>Result: {details.result}</Typography>
                             </Col>
                         </Row>
                         <Row>
@@ -88,7 +92,7 @@ export default class FinishedBetCard extends Component {
                                             <HourglassEmptyIcon style={styles.icon}/>
                                         </ListItemIcon>
                                         <ListItemText>
-                                            Finished: {this.generateDeadline(bet.deadline)}
+                                            Finished: {this.generateDeadline(details.deadline)}
                                         </ListItemText>
                                     </ListItem>
                                     <ListItem>
@@ -96,7 +100,7 @@ export default class FinishedBetCard extends Component {
                                             <MonetizationOnIcon style={styles.icon}/>
                                         </ListItemIcon>
                                         <ListItemText>
-                                            Your Payout: {this.calcPayout(bet)}
+                                            Your Payout: {bet.profitOrLoss}
                                         </ListItemText>
                                     </ListItem>
                                 </List>

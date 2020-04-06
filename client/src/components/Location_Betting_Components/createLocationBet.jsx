@@ -256,6 +256,8 @@ export default class CreateLocationBet extends React.Component{
         const {betType, radius, date, snackOpen, msg, msgType, redirectTo} = this.state;
         const {regionData, userLocation, createRegion} = this.props;
 
+        console.log("In create location bet");
+
         if(redirectTo === 'find-bets'){
             return(
                 <Redirect to='find-location-bets' />
