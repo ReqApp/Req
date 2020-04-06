@@ -274,6 +274,7 @@ class Dashboard extends React.Component{
                   open={createNewBetDialog} 
                   closeDialog={this.closeCreateNewBetDialog}
                   error={this.handleError}
+                  username={username}
                 />
                 <CssBaseline />
                 <nav className={classes.drawer} style={styles.menu} aria-label="mailbox folders">

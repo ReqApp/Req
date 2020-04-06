@@ -190,31 +190,17 @@ export default class FindBetPage extends React.Component{
 
     handleCreate = () => {
         const {view} = this.state;
-        if(view === 'region'){
-            this.handleCreateBetRegion();
+        if(view === 'regions'){
+            this.setState({loadCreateRegion : true});
         }else{
-            this.handleCreateBet();
+            this.setState({loadCreateBetForm : true});
         }
-    }
-
-    handleCreateBetRegion = () => {
-        this.setState({loadCreateRegion : true});
-    }
-
-    handleCreateBet = () => {
-        this.setState({loadCreateBetForm : true});
     }
 
     render(){
-        const {hasLocation, latlng, accurate, betRegions, bets, loadingRegions, sortBy, openError, view, loadCreateForm, windowWidth, loadCreateBetForm} = this.state;
+        const {hasLocation, latlng, accurate, betRegions, bets, loadingRegions, sortBy, openError, view, loadCreateRegion, windowWidth, loadCreateBetForm} = this.state;
         const {mode} = this.props;
         let useStyles = null;
-
-        if(loadCreateBetForm){
-            return (
-                <Redirect to='/create-location-bet'/>
-            )
-        }
 
         if(windowWidth < 700){
             useStyles = smallScreen;
@@ -222,11 +208,17 @@ export default class FindBetPage extends React.Component{
         else{
             useStyles = styles;
         }
-        
-        if(loadCreateForm){
-            const {selectedRegion, loadCreateRegion} = this.state;
+
+        if(loadCreateBetForm){
+            return (
+                <Redirect to='/create-location-bet' push/>
+            )
+        }
+        if(loadCreateRegion){
+            const {selectedRegion} = this.state;
+            console.log("Creating region");
             return(
-                <CreateLocationBet userLocation={latlng} regionData={selectedRegion} createRegion={loadCreateRegion}/>
+                <CreateLocationBet userLocation={latlng} regionData={selectedRegion} createRegion/>
             )
         }else{
         let predictSearch = null;

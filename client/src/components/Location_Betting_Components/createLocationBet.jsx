@@ -309,7 +309,6 @@ export default class CreateLocationBet extends React.Component{
                                             label="Description"
                                             multiline
                                             rows="6"
-                                            defaultValue="Description..."
                                             variant="outlined"
                                             onChange={this.handleDescriptionChange}
                                             />
@@ -510,6 +509,6 @@ const styles = {
     },
     description: {
         marginTop: '20px',
-        width: '400px'
+        width: '80%'
     }
 }
