@@ -46,7 +46,7 @@ export class Tutorial extends Component {
                         <Col>
                                 <p style={styles.mainText}> What happens when a bet finishes? </p>
 
-                                <p style={styles.infoText}>  Creators are given 24 hours after the deadline to decide the result of the bet. If they fail to set the result after this time 5% of their coins is taken away.
+                                <p style={styles.infoText}>  Creators are given 24 hours after the deadline to decide the result of the bet. If they fail to set the result after this time 5% of their coins are taken away.
                                 </p>
                         </Col>
                         <Col>

@@ -595,8 +595,8 @@ describe("============= Betting =============", () => {
                     "thirdPlaceCut": 0.15
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    expect(res.body.body).to.equals('Payout percentages don\'t add up to 100%');
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals('Not signed in');
                     expect(res.body.status).to.equals("error");
                     done();
                 });
@@ -611,8 +611,8 @@ describe("============= Betting =============", () => {
                     "thirdPlaceCut": "green"
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    expect(res.body.body).to.equals('Invalid input');
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals('Not signed in');
                     expect(res.body.status).to.equals("error");
                     done();
                 });
@@ -626,8 +626,53 @@ describe("============= Betting =============", () => {
                     "result": fuzzUsername
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    expect(res.body.body).to.equals("Invalid input");
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("Not signed in");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/bets/decideBet")
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("Not signed in");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/bets/decideBet")
+                .send({
+                    "betID": fuzzUsername,
+                    "result": 32,
+                    "user_name":"testUser"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("Not signed in");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("Invalid input", done => {
+            chai
+                .request(app)
+                .post("/bets/decideBet")
+                .send({
+                    "betID": fuzzUsername,
+                    "_id":"db.collection.drop()",
+                    "yes":"\'\'\'\'\'\'",
+                    "result": "maybe",
+                    "user_name":"testUser"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("Not signed in");
                     expect(res.body.status).to.equals("error");
                     done();
                 });

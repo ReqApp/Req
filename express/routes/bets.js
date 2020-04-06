@@ -290,7 +290,9 @@ router.put('/addMultBetsToRegion', function(req, res) {
 
 router.post('/makeBet', (req, res) => {
 
-    const firstPlaceCut = parseFloat(req.body.firstPlaceCut);
+    utilFuncs.isSignedIn(req.cookies).then((signedIn) => {
+        if (signedIn) {
+            const firstPlaceCut = parseFloat(req.body.firstPlaceCut);
     const secondPlaceCut = parseFloat(req.body.secondPlaceCut);
     const thirdPlaceCut = parseFloat(req.body.thirdPlaceCut);
 
@@ -310,10 +312,8 @@ router.post('/makeBet', (req, res) => {
                 "body": "Invalid bet percentages entered"
             })
         } else {
-            // TODO: make this check signed in username instead of username input
-
-            if ((req.body.type && req.body.title && req.body.deadline && req.body.username) ||
-                (req.body.type && req.body.title && req.body.deadline && req.body.username &&
+            if ((req.body.type && req.body.title && req.body.deadline) ||
+                (req.body.type && req.body.title && req.body.deadline &&
                     req.body.firstPlaceCut != null && req.body.secondPlaceCut != null && req.body.thirdPlaceCut != null)) {
                 // bet has input parameters for either a binary or multi bet
 
@@ -322,7 +322,7 @@ router.post('/makeBet', (req, res) => {
                     "side": req.body.side,
                     "title": req.body.title,
                     "deadline": req.body.deadline,
-                    "username": req.body.username,
+                    "username": signedIn,
                     "firstPlaceCut": firstPlaceCut,
                     "secondPlaceCut": secondPlaceCut,
                     "thirdPlaceCut": thirdPlaceCut
@@ -356,7 +356,7 @@ router.post('/makeBet', (req, res) => {
                     })
                 }
             } else {
-                console.log(req.body.type, req.body.title, req.body.deadline, req.body.username, req.body.firstPlaceCut, req.body.secondPlaceCut, req.body.thirdPlaceCut)
+                console.log(req.body.type, req.body.title, req.body.deadline, signedIn, req.body.firstPlaceCut, req.body.secondPlaceCut, req.body.thirdPlaceCut)
                 res.status(400).json({
                     "status": "error",
                     "body": "Invalid input"
@@ -364,61 +364,103 @@ router.post('/makeBet', (req, res) => {
             }
         }
     }
+
+        } else {
+            res.status(401).json({
+                "status": "error",
+                "body": "Not signed in"
+            })
+        }
+    }, () => {
+        res.status(401).json({
+            "status": "error",
+            "body": "Not signed in"
+        })
+    })
 });
 
 router.post('/decideBet', (req, res) => {
 
-    let inputObj = {
-        "betID": req.body.betID,
-        "result": req.body.result,
-        "accessToken": req.cookies.Authorization
-    }
+    utilFuncs.isSignedIn(req.cookies).then((AuthenticatedUsername) => {
+        if (AuthenticatedUsername) {
+            let inputObj = {
+                "betID": req.body.betID,
+                "result": req.body.result,
+                "accessToken": req.cookies.Authorization
+            }
+        
+            if (utilFuncs.validate(req.body.betID, "id") &&
+                utilFuncs.validate(req.body.result, "result")) {
 
-    if (utilFuncs.validate(req.body.betID, "id") &&
-        utilFuncs.validate(req.body.result, "result")) {
-
-        utilFuncs.isValidBetID(inputObj.betID).then((validBetID) => {
-            if (validBetID) {
-                utilFuncs.decideBet(inputObj).then((success) => {
-                    if (success) {
-                        console.log(`Bet #${inputObj.betID} finished`);
-                        res.status(200).json({
-                            "status": "success",
-                            "body": "Bet finished successfully"
+                utilFuncs.userCreatedTheBet(inputObj.betID, AuthenticatedUsername).then((correctPerson) => {
+                    if (correctPerson) {
+                        utilFuncs.isValidBetID(inputObj.betID).then((validBetID) => {
+                            if (validBetID) {
+                                utilFuncs.decideBet(inputObj).then((success) => {
+                                    if (success) {
+                                        console.log(`Bet #${inputObj.betID} finished`);
+                                        res.status(200).json({
+                                            "status": "success",
+                                            "body": "Bet finished successfully"
+                                        });
+                                    } else {
+                                        console.log(`Bet #${inputObj.betID} unsuccessful`);
+                                        res.status(400).json({
+                                            "status": "error",
+                                            "body": "Error paying out winnings"
+                                        });
+                                    }
+                                }, (err) => {
+                                    res.status(400).json({
+                                        "status": "error",
+                                        "body": err
+                                    });
+                                });
+                            } else {
+                                res.status(400).json({
+                                    "status": "error",
+                                    "body": "Invalid betID"
+                                });
+                            }
+                        }, () => {
+                            // fuzz testing string can pass the check for valid ID
+                            // but will fail here
+                            res.status(400).json({
+                                "status": "error",
+                                "body": "Invalid input"
+                            });
                         });
                     } else {
-                        console.log(`Bet #${inputObj.betID} unsuccessful`);
-                        res.status(400).json({
-                            "status": "error",
-                            "body": "Error paying out winnings"
+                        res.status(401).json({
+                            "status":"error",
+                            "body":"You are not authorized to decide this bet"
                         });
                     }
-                }, (err) => {
-                    res.status(400).json({
-                        "status": "error",
-                        "body": err
-                    });
-                });
+                }, () => {
+                    res.status(401).json({
+                        "status":"error",
+                        "body":"You are not authorized to decide this bet"
+                    })
+                })
+        
             } else {
                 res.status(400).json({
                     "status": "error",
-                    "body": "Invalid betID"
+                    "body": "Invalid input"
                 });
             }
-        }, () => {
-            // fuzz testing string can pass the check for valid ID
-            // but will fail here
-            res.status(400).json({
+        } else {
+            res.status(401).json({
                 "status": "error",
-                "body": "Invalid input"
+                "body": "Not signed in"
             });
-        });
-    } else {
-        res.status(400).json({
+        }
+    }, () => {
+        res.status(401).json({
             "status": "error",
-            "body": "Invalid input"
+            "body": "Not signed in"
         });
-    }
+    })
 });
 
 router.post('/betOn', (req, res) => {

@@ -842,6 +842,27 @@ function isValidBetID(betID) {
     });
 }
 
+
+function userCreatedTheBet(betID, user) {
+    return new Promise((resolve, reject) => {
+        if (betID) {
+            bets.findOne({_id:betID}, (err, res) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    if (res.user_name === user) {
+                        resolve(true);
+                    } else {
+                        resolve(null);
+                    }
+                }
+            })
+        } else {
+            resolve(null)
+        }
+    })
+}
+
 function anonymiseBetData(allBets) {
     return new Promise((resolve, reject) => {
         let betArr = [];
@@ -1079,7 +1100,7 @@ function isSignedIn(reqCookies) {
             let jwt = reqCookies.Authorization.split(' ')[1];
             const profile = verifyJwt(jwt);
             if (profile) {
-                resolve(profile);
+                resolve(profile.user_name);
             } else {
                 resolve(null);
             }
@@ -1295,20 +1316,21 @@ module.exports.createJwt = createJwt
 module.exports.verifyJwt = verifyJwt;
 module.exports.decideBet = decideBet;
 module.exports.isSignedIn = isSignedIn;
+module.exports.findNewBets = findNewBets;
 module.exports.isOAuthUser = isOAuthUser;
 module.exports.rankAnswers = rankAnswers;
 module.exports.calcDistance = calcDistance;
-module.exports.createLocationBet = createLocationBet;
 module.exports.createRegion = createRegion;
 module.exports.alreadyBetOn = alreadyBetOn;
 module.exports.isValidBetID = isValidBetID;
 module.exports.resetPassword = resetPassword;
 module.exports.hasEnoughCoins = hasEnoughCoins;
+module.exports.getBetsForUser = getBetsForUser;
 module.exports.checkIfExisting = checkIfExisting;
 module.exports.anonymiseBetData = anonymiseBetData;
+module.exports.userCreatedTheBet = userCreatedTheBet;
 module.exports.expiredBetPayBack = expiredBetPayBack;
-module.exports.isPasswordCompromised = isPasswordCompromised;
-module.exports.getBetsForUser = getBetsForUser;
-module.exports.findNewBets = findNewBets;
+module.exports.createLocationBet = createLocationBet;
 module.exports.getUserCreatedBets = getUserCreatedBets;
+module.exports.isPasswordCompromised = isPasswordCompromised;
 module.exports.getFinishedBetsForUser = getFinishedBetsForUser;
