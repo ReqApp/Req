@@ -666,7 +666,7 @@ describe("============= Betting =============", () => {
                 .send({
                     "betID": fuzzUsername,
                     "_id":"db.collection.drop()",
-                    "yes":"\'\'\'\'\'\'",
+                    "yes":"badtextbadtextbadtextbadtextbadtextbadtextbadtextbadtextbadtext",
                     "result": "maybe",
                     "user_name":"testUser"
                 })

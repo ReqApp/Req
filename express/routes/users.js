@@ -61,7 +61,7 @@ router.post('/isSignedIn', (req, res) => {
         if (signedIn) {
             res.status(200).json({
                 "status":"success",
-                "body": signedIn.user_name
+                "body": signedIn
             })
         } else {
             res.status(400).json({

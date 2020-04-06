@@ -312,7 +312,7 @@ func main() {
 							  <td align="left" class="es-m-txt-c" style="padding:0;Margin:0;padding-left:10px;padding-right:30px;"><h3 style="Margin:0;line-height:29px;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:24px;font-style:normal;font-weight:normal;color:#161414;"><strong>Cathal O'Callaghan</strong></h3></td> 
 							 </tr> 
 							 <tr style="border-collapse:collapse;"> 
-							  <td align="left" class="es-m-txt-c" style="padding:0;Margin:0;padding-left:10px;padding-right:10px;padding-top:15px;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:24px;color:#1B1A1A;">Back-end infrastructure</p></td> 
+							  <td align="left" class="es-m-txt-c" style="padding:0;Margin:0;padding-left:10px;padding-right:10px;padding-top:15px;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:24px;color:#1B1A1A;">Back-end infrastructure/Front-end UI</p></td> 
 							 </tr> 
 							 <tr style="border-collapse:collapse;"> 
 							  <td align="left" style="padding:10px;Margin:0;"><span class="es-button-border es-button-border-2" style="border-style:solid;border-color:#2CB543;background:#2B27C1;border-width:0px;display:inline-block;border-radius:3px;width:auto;"><a href="https://iamcathal.github.io" class="es-button es-button-1" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:18px;color:#FFFFFF;border-style:solid;border-color:#2B27C1;border-width:10px 20px 10px 20px;display:inline-block;background:#2B27C1;border-radius:3px;font-weight:normal;font-style:normal;line-height:22px;width:auto;text-align:center;">Github</a></span></td> 
@@ -382,7 +382,7 @@ func main() {
 						  <td class="es-m-p20b" width="218" align="left" style="padding:0;Margin:0;"> 
 						   <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
 							 <tr style="border-collapse:collapse;"> 
-							  <td align="left" style="padding:0;Margin:0;padding-bottom:10px;"><h2 style="Margin:0;line-height:29px;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:24px;font-style:normal;font-weight:bold;color:#212121;">Video tour here</h2></td> 
+							  <td align="left" style="padding:0;Margin:0;padding-bottom:10px;"><h2 style="Margin:0;line-height:29px;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:24px;font-style:normal;font-weight:bold;color:#212121;">Watch the video demo</h2></td> 
 							 </tr> 
 							 <tr style="border-collapse:collapse;"> 
 							  <td align="left" style="padding:0;Margin:0;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:24px;color:#131313;">some filler text</p></td> 
@@ -455,7 +455,7 @@ func main() {
 						  <td width="237" valign="top" align="center" style="padding:0;Margin:0;"> 
 						   <table style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;" width="100%" cellspacing="0" cellpadding="0" bgcolor="transparent" role="presentation"> 
 							 <tr style="border-collapse:collapse;"> 
-							  <td align="center" style="padding:0;Margin:0;padding-bottom:15px;font-size:0;"><a target="_blank" href="http://localhost:9000/bets/buyCoins" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:16px;text-decoration:underline;color:#2CB543;"><img class="adapt-img" src="https://c8.alamy.com/comp/T3MJRJ/realistic-stack-of-golden-money-or-stack-of-coins-T3MJRJ.jpg" alt="10,000 coins" title="10,000 coins" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;width:260px;" width="237"></a></td> 
+							  <td align="center" style="padding:0;Margin:0;padding-bottom:15px;font-size:0;"><a target="_blank" href="http://localhost:3000/payment" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:16px;text-decoration:underline;color:#2CB543;"><img class="adapt-img" src="https://c8.alamy.com/comp/T3MJRJ/realistic-stack-of-golden-money-or-stack-of-coins-T3MJRJ.jpg" alt="10,000 coins" title="10,000 coins" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;width:260px;" width="237"></a></td> 
 							 </tr> 
 							 <tr style="border-collapse:collapse;"> 
 							  <td class="es-m-txt-c" align="left" style="padding:0;Margin:0;padding-bottom:10px;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:20px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:30px;color:#131313;"><strong>10,000 coins</strong></p></td> 
@@ -467,7 +467,7 @@ func main() {
 							  <td class="es-m-txt-c" align="left" style="padding:0;Margin:0;padding-top:5px;"><h2 class="price" style="Margin:0;line-height:22px;mso-line-height-rule:exactly;font-family:tahoma, verdana, segoe, sans-serif;font-size:18px;font-style:normal;font-weight:bold;color:#0B5394;">€5</h2></td> 
 							 </tr> 
 							 <tr style="border-collapse:collapse;"> 
-							  <td align="left" style="padding:0;Margin:0;padding-top:15px;"><span class="es-button-border" style="border-style:solid;border-color:#2CB543;background:#FFC80A;border-width:0px;display:inline-block;border-radius:3px;width:auto;"><a href="http://localhost:9000/bets/buyCoins" class="es-button" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:18px;color:#FFFFFF;border-style:solid;border-color:#FFC80A;border-width:10px 20px 10px 20px;display:inline-block;background:#FFC80A;border-radius:3px;font-weight:normal;font-style:normal;line-height:22px;width:auto;text-align:center;">Add to Cart</a></span></td> 
+							  <td align="left" style="padding:0;Margin:0;padding-top:15px;"><span class="es-button-border" style="border-style:solid;border-color:#2CB543;background:#FFC80A;border-width:0px;display:inline-block;border-radius:3px;width:auto;"><a href="http://localhost:3000/payment" class="es-button" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:18px;color:#FFFFFF;border-style:solid;border-color:#FFC80A;border-width:10px 20px 10px 20px;display:inline-block;background:#FFC80A;border-radius:3px;font-weight:normal;font-style:normal;line-height:22px;width:auto;text-align:center;">Add to Cart</a></span></td> 
 							 </tr> 
 						   </table></td> 
 						 </tr> 
@@ -539,9 +539,6 @@ func main() {
 	message.Raw = strings.Replace(message.Raw, "+", "-", -1)
 	message.Raw = strings.Replace(message.Raw, "=", "", -1)
 
-	// for ind, val := range os.Args {
-	// 	fmt.Println(ind, val)
-	// }
 	fmt.Println("")
 
 	_, err = srv.Users.Messages.Send("me", &message).Do()

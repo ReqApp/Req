@@ -37,7 +37,7 @@ class Register extends React.Component{
       email: '',
       profilerChosen: false,
       profilerUploaded: false,
-      profilerValid: false,
+      profilerValid: true,
       profiler: '',
 
       success: false,
@@ -99,30 +99,8 @@ class Register extends React.Component{
           console.error(`ERR ${err}`)
         });
       } else {
-        console.log("profiler was not valid")
-        fetch('http://localhost:9000/users/register', {
-        method: 'POST',
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        "user_name" : username,
-        "password" : password,
-        "email": email
-      })
-      }).then((res) => res.json())
-      .then((res) => {
-        if (res.status === 'success') {
-          this.setState({success:true});
-        }
-        else {
-          this.setState({msg : res.body, msgType : 'error', snackOpen : true});
-        }
-      }, (err) => {
-        console.error(`ERR ${err}`)
-      });
+        this.setState({msg: 'Your profile isn\t appropriate', msgType : 'warning', snackOpen : true});
+
       }
     }
   }
@@ -148,7 +126,7 @@ class Register extends React.Component{
                   // error message profiler was invalid
                   console.log("not success when uploading");
                   console.log(response.data);
-                  this.setState({msg : 'Image was innapropriate. Please choose another', msgType : 'warning', snackOpen : true});
+                  this.setState({msg : response.data.body, msgType : 'warning', snackOpen : true, profilerChosen: false, profilerValid: false});
                 }
             }).catch((error) => {
               // error message profiler was onvalid
@@ -183,7 +161,7 @@ class Register extends React.Component{
     if (success) {
       return (
         <div>
-          <Redirect to={'/users/verifyAccount'} />
+          <Redirect to={'/users/verifyAccount'} push/>
         </div>
       )
     }

@@ -49,19 +49,19 @@ router.post('/uploadImage', upload.single('imageUpload'), (req, res, next) => {
                         });
                     } else {
                         // Image is NSFW
-                        res.status(400).json({
+                        res.status(200).json({
                             "status": "error",
                             "body": "We do not allow innapropriate profilers. Choose another"
                         });
                     }
                 }, () => {
-                    res.status(400).json({
+                    res.status(200).json({
                         "status": "error",
                         "body": "We do not allow innapropriate profilers. Choose another"
                     });
                 });
             } else {
-                res.status(401).json({
+                res.status(400).json({
                     "status": "error",
                     "body": "Error uploading, please refresh and try again"
                 });

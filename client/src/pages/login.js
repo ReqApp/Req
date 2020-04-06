@@ -119,7 +119,7 @@ class SignIn extends React.Component{
 
     if(loggedIn){
       return(
-        <Redirect to={redirectUrl} />
+        <Redirect to={redirectUrl} push/>
       )
     }
     return (
