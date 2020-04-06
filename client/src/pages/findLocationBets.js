@@ -89,18 +89,17 @@ export default class FindBetPage extends React.Component{
             navigator.geolocation.getCurrentPosition((userPosition => {
             if(userPosition.coords.accuracy < 100){
                 // Set user's location
-                let location = {lat : 53.28211, lng : -9.062186 };
-                this.setState({hasLocation : true, latlng : location, accurate : true});
-                //this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : true});
-                console.log("Getting regions");
-                this.getRegions(location);
+                // let location = {lat : 53.28211, lng : -9.062186 };
+                // this.setState({hasLocation : true, latlng : location, accurate : true});
+                this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : true});
+                this.getRegions({lat : userPosition.coords.latitude, lng : userPosition.coords.longitude});
             }else{
                 //Temp
-                let location = {lat : 53.28211, lng : -9.062186 };
-                this.setState({hasLocation : true, latlng : location, accurate : true});
-                this.getRegions(location);
+                // let location = {lat : 53.28211, lng : -9.062186 };
+                // this.setState({hasLocation : true, latlng : location, accurate : true});
+                // this.getRegions(location);
 
-                //this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : false, locationError : "not-accurate", openError : true});
+                this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : false, locationError : "not-accurate", openError : true});
             }
             }));
         }

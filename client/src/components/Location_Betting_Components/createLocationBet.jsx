@@ -45,7 +45,7 @@ export default class CreateLocationBet extends React.Component{
             msg: '',
             msgType: '',
             description: '',
-            redirectTo : ''
+            redirect : false
         }
     }
 
@@ -150,7 +150,7 @@ export default class CreateLocationBet extends React.Component{
                             .then(res => {
                                 if(res.status === 'success'){
                                     // Update made bet with new location bet ID
-                                    this.setState({msg : "Bet created!", msgType : 'success', snackOpen : true});
+                                    this.setState({msg : "Bet created!", msgType : 'success', snackOpen : true, redirect : false});
                                 }else{
                                     console.log(res);
                                     this.setState({msg : "Location Bet could not be created", msgType : 'error', snackOpen : true});
@@ -223,7 +223,8 @@ export default class CreateLocationBet extends React.Component{
             .then(res => {
                 if(res.status === 'success'){
                     console.log(res.body);
-                    this.setState({msg : 'Bet region created!', msgType: 'success', snackOpen : true, redirectTo : 'find-bets'});
+                    this.setState({msg : 'Bet region created!', msgType: 'success', snackOpen : true, redirect : false});
+
                 }else{
                     console.log(res);
                     this.setState({msg : 'Bet region could not be created', msgType : 'error', snackOpen : true});
@@ -282,12 +283,12 @@ export default class CreateLocationBet extends React.Component{
     }
 
     render(){
-        const {betType, radius, date, snackOpen, msg, msgType, redirectTo} = this.state;
+        const {betType, radius, date, snackOpen, msg, msgType, redirect} = this.state;
         const {regionData, userLocation, createRegion} = this.props;
 
-        if(redirectTo === 'find-bets'){
+        if(redirect){
             return(
-                <Redirect to='find-location-bets' />
+                <Redirect to='/users/dashboard' />
             )
         }
 

@@ -1,10 +1,7 @@
 import React from 'react';
 import {Button, Navbar as BootNav, Nav, NavDropdown, Form} from 'react-bootstrap/';
 import reqLogo from '../../images/reqLogo.png';
-
-import {Button as Mbtn} from '@material-ui/core';
 import PersonAddRoundedIcon from '@material-ui/icons/PersonAddRounded';
-import MapIcon from '@material-ui/icons/Map';
 
 export default class Navbar extends React.Component{
     constructor(props) {
@@ -79,10 +76,6 @@ export default class Navbar extends React.Component{
         this.props.action('create-location-bet');
     }
 
-    handleCreateNewRegion = () => {
-        this.props.action('create-new-region');
-    }
-
     render(){
         const {requestDone, profilePicture, username, signedIn } = this.state;
         const {dashboard} = this.props;
@@ -110,7 +103,6 @@ export default class Navbar extends React.Component{
                                 <NavDropdown title="Location Betting" id="basic-nav-dropdown">
                                     <NavDropdown.Item onClick={this.handleFindLocationBets}>Find bets near you</NavDropdown.Item>
                                     <NavDropdown.Item onClick={this.handleCreateLocationBet}>Create Location Bet</NavDropdown.Item>
-                                    <NavDropdown.Item onClick={this.handleCreateNewRegion}>Create New Region</NavDropdown.Item>
                                 </NavDropdown>
                                 :
                                 <div></div>

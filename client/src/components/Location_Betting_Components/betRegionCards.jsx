@@ -1,10 +1,10 @@
 import React from 'react';
 // Material
-import {Paper} from '@material-ui/core';
+import {Paper, Button} from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 // Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Button, Container, Row, Col } from 'react-bootstrap/';
+import {Container, Row, Col } from 'react-bootstrap/';
 //Components
 import DisplayMap from './maps';
 // Other
@@ -51,7 +51,7 @@ export default class BetRegionCards extends React.Component{
                 let buttonText = '';
                 let description = '';
                 if(mode === 'find'){
-                    buttonText = 'See Bets in this Region';
+                    buttonText = 'See Bets in Region';
                 }else{
                     buttonText = 'Select Region'
                 }
@@ -90,17 +90,19 @@ export default class BetRegionCards extends React.Component{
                                 </Row>
                                 <Row>
                                     <Col xs={12} md={4}>
-                                        <Button onClick={this.handleClick.bind(this, betRegions[i]._id)}>{buttonText}</Button>
+                                        <Button onClick={this.handleClick.bind(this, betRegions[i]._id)} variant='contained' style={{marginTop: '40px'}}>{buttonText}</Button>
                                     </Col>
                                 </Row>
                             </Container>
                             </Col>
                             <Col>
+                            <Paper>
                                 <DisplayMap 
                                     miniMap={true} 
                                     regionDetails={betRegions[i]}
                                     height='200px'
                                 />
+                            </Paper>
                             </Col>
                             </Row>
                         </Container>
@@ -148,5 +150,6 @@ const styles = {
         textAlign: 'center',
         marginTop: '30px',
         height: '100px',
+        paddingTop: '30px'
     },
 }

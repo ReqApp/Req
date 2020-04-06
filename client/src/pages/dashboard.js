@@ -49,7 +49,6 @@ class Dashboard extends React.Component{
           renderFindLocationBets: false,
           createNewBetDialog: false,
           renderCreateNewLocationBet: false,
-          renderCreateNewRegion: false,
           redirectToBigRedButton: false,
           snackOpen: false,
           msg: '',
@@ -138,9 +137,6 @@ class Dashboard extends React.Component{
       else if(action === 'create-location-bet'){
         this.setState({renderCreateNewLocationBet : true});
       }
-      else if(action === 'create-new-region'){
-        // TODO add create region path
-      }
     }
 
     handleCreateLocationBet = () => {
@@ -156,7 +152,7 @@ class Dashboard extends React.Component{
     }
 
     render(){
-      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, renderProfile, snackOpen, msg, msgType, openFindBetPane, username, redirectToLogIn, renderCreateNewLocationBet, renderCreateNewRegion, redirectToBigRedButton} = this.state;
+      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, renderProfile, snackOpen, msg, msgType, openFindBetPane, username, redirectToLogIn, renderCreateNewLocationBet, redirectToBigRedButton} = this.state;
       const {classes} = this.props;
       if(redirectToLogIn){
         return (
@@ -171,11 +167,6 @@ class Dashboard extends React.Component{
       if(renderCreateNewLocationBet){
         return(
           <Redirect to='/create-location-bet' push/>
-        )
-      }
-      if(renderCreateNewRegion){
-        return(
-          <Redirect to='/users/dashboard' push/>
         )
       }
       if(renderProfile){
@@ -245,12 +236,6 @@ class Dashboard extends React.Component{
                       <AddIcon />
                     </ListItemIcon>
                     <ListItemText primary='Create New Bet' />
-                  </ListItem>
-                  <ListItem className={classes.nested} button onClick={this.handleCreateRegion}>
-                    <ListItemIcon>
-                      <AddIcon />
-                    </ListItemIcon>
-                    <ListItemText primary='Create New Region' />
                   </ListItem>
                 </List>
               </Collapse>

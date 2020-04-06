@@ -140,10 +140,6 @@ const styles = {
         padding: '15px',
         marginTop: '15px'
     },
-    icon: {
-        color: '#292b2c'
-    }
-
 }
 
 

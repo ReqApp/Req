@@ -954,22 +954,26 @@ function getBetsInRegion(regionID, username, lat, lng){
                 if(region){
                     for(let id of region.bet_ids){
                         let locationBet = await getLocationBetID(id).catch(err => reject(err));
-                        let bet = await getBetByID(locationBet.bet_id).catch(err => reject(err));
-                        if(bet){
-                            if(checkIfBetIsNew(bet, username)){
-                                let arr = await anonymiseBetData([bet]).catch(err => resolve(err));
-                                let obj = arr[0];
-                                // Check if user is in bet radius
-                                if(locationBet.radius <= calcDistance(locationBet, {lat : lat, lng : lng})){
-                                    obj.inRadius = true;
-                                }else{
-                                    obj.inRadius = false;
+                        if(locationBet){
+                            let bet = await getBetByID(locationBet.bet_id).catch(err => reject(err));
+                            if(bet){
+                                if(checkIfBetIsNew(bet, username)){
+                                    let arr = await anonymiseBetData([bet]).catch(err => resolve(err));
+                                    let obj = arr[0];
+                                    // Check if user is in bet radius
+                                    if(locationBet.radius <= calcDistance(locationBet, {lat : lat, lng : lng})){
+                                        obj.inRadius = true;
+                                    }else{
+                                        obj.inRadius = false;
+                                    }
+                                    returnBets.push({...obj, ...(locationBet.toObject())}); 
                                 }
-                                returnBets.push({...obj, ...(locationBet.toObject())}); 
+                            }else{
+                                reject("Could not find corresponding bet")
                             }
                         }else{
-                            reject("Could not find corresponding bet")
-                        }   
+                            continue;
+                        }
                     }
                     resolve(returnBets);
                 }else{
