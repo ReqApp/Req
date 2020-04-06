@@ -26,7 +26,7 @@ export default class Navbar extends React.Component{
                 'Access-Control-Allow-Origin': '*',
             },
         }).then((res) => res.json())
-        .then((res) => {
+        .then((res) => {    
             this.setState({username:res.body});
             fetch('http://localhost:9000/users/getProfilePicture', {
             method: 'POST',
@@ -40,17 +40,22 @@ export default class Navbar extends React.Component{
             })
             }).then((res) => res.json())
             .then((res) => {
+                console.log(res)
                 if (res.status === "success") {
+                    console.log(`success`)
                     this.setState({profilePicture:res.body, requestDone: true, signedIn: true});
                 } else if (res.body === "No profile picture") {
-                    this.setState({profilePicture:"https://i.imgur.com/RCzcFP0.png",  requestDone: true, signedIn: true});
-                } else if (res.body === "error") {
+                    console.log(`no profiler`)
+                    this.setState({profilePicture:"https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg",  requestDone: true, signedIn: true});
+                } else if (res.status === "error") {
+                    this.setState({profilePicture:"https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg",  requestDone: true, signedIn: true});
                     console.log("failed to get profile picture");
                 }
                 this.setState({requestDone: true});
             }, (err) => {
                 console.log(`err getting profile pic : ${err}`);
             })
+
             }, (err) => {
                 console.log(err);
                 console.log("not signedIn")

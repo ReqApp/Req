@@ -16,7 +16,7 @@ function getProfilePicture(username) {
                     resolve("noprofiler");
                 }
             } else {
-                resolve(null);
+                reject("Invalid username");
             }
         })
     });     

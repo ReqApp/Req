@@ -23,7 +23,7 @@ router.post('/getProfilePicture', (req, res) => {
 
                 if (response) {
                     if (response === "noprofiler") {
-                        res.status(404).json({
+                        res.status(200).json({
                             "status": "error",
                             "body": "No profile picture"
                         });
@@ -35,11 +35,16 @@ router.post('/getProfilePicture', (req, res) => {
                         });
                     }
                 } else {
-                    res.status(404).json({
+                    res.status(200).json({
                         "status": "error",
                         "body": "Could not find profile picture"
                     });
                 }
+            }, () => {
+                res.status(400).json({
+                    "status": "error",
+                    "body": "Invalid username"
+                });
             })
         } else {
             res.status(400).json({
@@ -195,6 +200,16 @@ router.post('/register', (req, res) => {
             run = false;
         }
 
+        if (run) {
+            if (password.length < 8) {
+                res.status(401).json({
+                    "status": "error",
+                    "body": "Password must be 8 characters in length"
+                });
+                run = false;
+            }
+        }
+
 
         utilFuncs.isPasswordCompromised(password).then((data) => {
             if (data) {
@@ -331,7 +346,6 @@ router.post('/verifyAccount', (req, res) => {
                                         });
                                     } else {
                                         res.cookie('Authorization', 'Bearer ' + user.accessToken);
-                                        console.log(user.accessToken);
                                         res.status(200).send({
                                             "status": "success",
                                             "body": "Account verified"

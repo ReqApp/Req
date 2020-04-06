@@ -6,46 +6,6 @@ var express = require('express');
 const axios = require("axios");
 var router = express.Router();
 
-
-router.get('/home', (req, res) => {
-    if (req.cookies.Authorization) {
-        const jwtString = req.cookies.Authorization.split(' ');
-        const profile = utilFuncs.verifyJwt(jwtString[1]);
-        if (profile) {
-            res.send('Hello ' + profile.user_name);
-        }
-    }
-})
-
-/*GET users, return usernames */
-router.get('/getUsers', (req, res) => {
-    User.find({}, { user_name: 1 }, function(err, users) {
-        if (err)
-            res.send(err);
-
-        res.json(users);
-    });
-});
-
-/*GET user by ID, retrieves id & username */
-router.get('/getUser/:id', (req, res) => {
-    var id = req.params.id;
-    User.find({ _id: id }, { user_name: 1 }, (function(err, users) {
-        if (err)
-            res.send(err);
-
-        res.json(users);
-    }));
-});
-
-router.get('/reactTest', function(req, res) {
-    res.send("Message from backend");
-})
-
-router.get('/profile', function(req, res) {
-    res.render('profile', { welcome: 'profile page test' });
-});
-
 router.get('/getTime', (req, res) => {
     const date = new Date();
     const currDate = date.getTime();
