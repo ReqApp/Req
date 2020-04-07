@@ -55,7 +55,7 @@ export default class CurrentBetInfo extends Component {
     componentDidMount() {
         const {data} = this.props;
         if(data.locationID && data.locationID !== ''){
-            fetch(`http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/getLocationBetById?id=${data.locationID}`, {
+            fetch(`http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/bets/getLocationBetById?id=${data.locationID}`, {
                 method : 'GET',
                 credentials : 'include',
                 headers: {

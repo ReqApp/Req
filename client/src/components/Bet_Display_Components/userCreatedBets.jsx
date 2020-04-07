@@ -17,7 +17,7 @@ export class UserCreatedBets extends Component {
     }
 
     componentDidMount() {
-        fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/getUserCreatedBets', {
+        fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/user/getUserCreatedBets', {
             method : 'POST',
             credentials : 'include',
             headers: {
