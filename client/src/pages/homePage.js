@@ -11,6 +11,7 @@ import PeopleIcon from '@material-ui/icons/People';
 import ReqAnimation from '../components/Miscellaneous/reqAnimation';
 import Avatar from '@material-ui/core/Avatar';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import Copyright from '../components/Page_Components/copyRight'
 
 import Cathal from '../images/Team/cathalAvatar.png';
 import Karl from '../images/Team/Karl.jpeg';
@@ -39,15 +40,17 @@ export class Home extends Component {
         return (
             <div style={styles.backing}>
                 <Navbar />
-                <Container style={styles.con}>
+                <div>
                     <Row>
                         <Col>
-                            {/* <img src={logo} style={styles.logo}/> */}
+                <Container>
+                    <Row>
+                        <Col xs={12}>
                             <ReqAnimation />
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
+                        <Col xs={12} md={4}>
                             <Paper elevation={3} style={styles.card}>
                                 <h2 style={{fontWeight:'bold'}}>Win Big</h2>
                                 <EuroIcon fontSize="large" style={styles.icon}/>
@@ -59,7 +62,7 @@ export class Home extends Component {
                                 </Typography>
                             </Paper>
                         </Col>
-                        <Col>
+                        <Col xs={12} md={4}>
                             <Paper elevation={3} style={styles.card}>
                                 <h2 style={{fontWeight:'bold'}}>Explore</h2>
                                 <ExploreIcon fontSize="large" style={styles.icon}/>
@@ -71,7 +74,7 @@ export class Home extends Component {
                                 </Typography>
                             </Paper>
                         </Col>
-                        <Col>
+                        <Col xs={12} md={4}>
                             <Paper elevation={3} style={styles.card}>
                                 <h2 style={{fontWeight:'bold'}}>Create</h2>
                                 <PeopleIcon fontSize="large" style={styles.icon}/>
@@ -86,30 +89,35 @@ export class Home extends Component {
                         
                     </Row>
                 </Container>
-
+                </Col>
+                </Row>
+                <Row>
+                    <Col>
                 <Container>
-                <h1 style={{textAlign:'center'}} className={styles.theTeam}> Made with <FavoriteIcon fontSize='large'/> by </h1>
-
-                    <Row style={{textAlign:'center'}}>
+                    <Row>
                         <Col>
+                            <h1 style={{textAlign:'center'}} className={styles.theTeam}> Made with <FavoriteIcon fontSize='large'/> by </h1>
+                        </Col>
+                    </Row>
+                    <Row style={{textAlign:'center'}}>
+                        <Col xs={12} md={6} lg={3}>
                         <Avatar alt="Cathal O'Callaghan - Back-end Infrastructure" src={Cathal} style={{width:'120px', height:'120px', margin:'12px auto 12px auto'}}></Avatar>
                         <h4 style={{fontWeight:'bold'}}>Cathal O'Callaghan <a href="https://iamcathal.github.io"><img src={GitHubIcon} style={{height:'26px', width:'26px'}} alt='Cathal'></img></a></h4> 
-                        <h6>  Back-end Infrastructure / Front-end UI </h6>
-                        
+                        <h6>  Back-end Infrastructure / Front-end UI </h6>   
                         </Col>
-                        <Col>
+                        <Col xs={12} md={6} lg={3}>
                         <Avatar alt="Karl Gordon - Front-end UI/UX" src={Karl} style={{width:'120px', height:'120px', margin:'12px auto 12px auto'}}></Avatar>
                         <h4 style={{fontWeight:'bold'}}>Karl Gordon <a href="https://github.com/FilthyHound"><img src={GitHubIcon} style={{height:'26px', width:'26px'}} alt='Karl'></img></a></h4>
                         <h6> Front-end UI/UX </h6>
 
                         </Col>
-                        <Col>
+                        <Col xs={12} md={6} lg={3}>
                         <Avatar alt="Rory Sweeney -  - Front-end UI/UX" src={Rory} style={{width:'120px', height:'120px', margin:'12px auto 12px auto'}}></Avatar>
                         <h4 style={{fontWeight:'bold'}}>Rory Sweeney <a href="https://github.com/RorySweeney99"><img src={GitHubIcon} style={{height:'26px', width:'26px'}} alt='Rory'></img></a></h4>
                         <h6> Front-end UI/UX </h6>
 
                         </Col>
-                        <Col>
+                        <Col xs={12} md={6} lg={3}>
                         <Avatar alt="Eoin Mc Ardle - Back-end Infrastructure/Front-end UI/UX" src={Eoin} style={{width:'120px', height:'120px', margin:'12px auto 12px auto'}}></Avatar>
                         <h4 style={{fontWeight:'bold'}}>Eoin Mc Ardle <a href="https://github.com/EoinMcArdle99"><img src={GitHubIcon} style={{height:'26px', width:'26px'}} alt='Eoin'></img></a></h4>
                         <h6> Back-end Infrastructure / Front-end UI </h6>
@@ -122,27 +130,23 @@ export class Home extends Component {
                             <h3> Want to learn more? <br/>Read the <a href="/faq">FAQ</a></h3>
                         </Col>
                     </Row>
+                    <Row>
+                        <Col>
+                            <Copyright />
+                        </Col>
+                    </Row>
                 </Container>
+                </Col>
+                </Row>
+                </div>
                 <br />
                 <br />
-                <br />
-                {/* please forgive me for this */}
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-
             </div>
         )
     }
 }
 
 const styles = {
-    con: {
-        height: '100vh'
-    },
     theTeam: {
         padding: '0px 0px 50px 0px'
     },
