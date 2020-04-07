@@ -1145,13 +1145,11 @@ function checkIfBetIsNew(bet, username){
                 return false;
             }
         });
-        if(!found){
-            bet.againstUsers.forEach(user => {
-                if(user.user_name === username){
-                    return false;
-                }
-            })
-        }
+        bet.againstUsers.forEach(user => {
+            if(user.user_name === username){
+                return false;
+            }
+        });
     }
     else{
         bet.commonBets.forEach(user => {

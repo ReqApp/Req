@@ -32,6 +32,7 @@ export class UserCreatedBets extends Component {
                     console.log(res);
                     this.setState({loadingBets : false, bets : res.body});
                 }else{
+                    console.log("You have not created any bets");
                     this.setState({errorMsg : 'You have not created any bets yet'});
                 }
             }

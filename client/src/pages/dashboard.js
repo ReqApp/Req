@@ -185,7 +185,7 @@ class Dashboard extends React.Component{
       }
       if(redirectToBigRedButton){
         return(
-          <Redirect to='/big-red-button' push />
+          <Redirect to='/bigRedButton' push />
         )
       }
       if(renderLogin){
