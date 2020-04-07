@@ -33,7 +33,6 @@ export default class UserWinLoss extends Component {
         .then((res) => res.json())
         .then((res) => {
             if (res.status === "success") {
-                console.log(res.body);
                 let tempData = [];
                 // Temp data set    
                 //tempData.push({name : 'Losses', value: 1});

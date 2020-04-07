@@ -27,7 +27,7 @@ export default class FinishedBetCard extends Component {
 
     componentDidMount(){
         const {bet} = this.props;
-        if(bet.locationID !== ''){
+        if(bet.locationID && bet.locationID !== ''){
             fetch(`http://localhost:9000/getLocationBetById?id=${bet.locationID}`, {
                 method : 'GET',
                 credentials : 'include',

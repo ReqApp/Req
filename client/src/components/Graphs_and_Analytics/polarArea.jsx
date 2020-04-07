@@ -30,23 +30,19 @@ export default class betBreakdown extends Component {
         .then((res) => res.json())
         .then((res) => {
             if (res.status === "success") {
-                console.log(res.body);
                 let resArr = [];
                 let tempData = {}
                 tempData["multi"] = res.body.multi;
 
                 tempData["binary"] = res.body.binary;
                 tempData["location"] = res.body.location;
-                console.log(`tempData = ${JSON.stringify(tempData)}`)
 
                 resArr.push({"category":"Mutli", "val": tempData["multi"]});
                 resArr.push({"category":"Binary", "val": tempData["binary"]});
                 resArr.push({"category":"Location", "val": tempData["location"]});
-                console.log(resArr)
                 this.setState({graphData : resArr, retrievedData : true});
             } else {
                 console.log("not success");
-                console.log(res)
             }
         })
         .catch(err => {

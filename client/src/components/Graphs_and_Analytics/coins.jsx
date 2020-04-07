@@ -44,7 +44,6 @@ export default class Coins extends React.Component{
 
     render(){
         const {dataRetrieved, totalCoins} = this.state;
-        console.log(`Total coins ${totalCoins} - ${dataRetrieved}`);
         if(dataRetrieved){
             return(
                 <div>

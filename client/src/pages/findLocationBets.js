@@ -65,7 +65,6 @@ export default class FindBetPage extends React.Component{
         this.getLocation();
         this.socket.on('accurateUserPos', (data) => {
             if(data.user_name === "testUser"){
-                console.log(data);
                 this.setState({hasLocation : true, latlng : data.location, accurate : true});
                 this.props.locationUpdate(data.location);
                 let response = {
@@ -117,7 +116,6 @@ export default class FindBetPage extends React.Component{
         fetch(url)
             .then(res => res.json())
             .then(regions => {
-                console.log(regions);
                 this.setState({loadingRegions : false, betRegions : regions});
             }).catch(err => {
                 console.log(err);
@@ -133,7 +131,6 @@ export default class FindBetPage extends React.Component{
         if(typeof elem !== 'undefined'){
             elem.scrollIntoView();
         }
-        console.log("Could not find bet card")
     }
 
     handleSearch = (event) => {
@@ -157,7 +154,6 @@ export default class FindBetPage extends React.Component{
             .then(bets => bets.json())
             .then(res => {
                 if(res.status === 'success'){
-                    console.log(res);
                     this.setState({bets : res.body, view : "bets"});
                 }
                 else{

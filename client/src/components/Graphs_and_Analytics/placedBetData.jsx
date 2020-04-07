@@ -57,7 +57,6 @@ export default class PlacedBetData extends Component {
         let total = 0;
         data.forEach(bet => {
             let dataPoint = {};
-            console.log(`overall bet ${JSON.stringify(bet)}`)
             // Extract and format date information
             let betDate = new Date(bet.date * 1000);
             let dateString = `${betDate.getDate()}/${betDate.getMonth()+1}`;

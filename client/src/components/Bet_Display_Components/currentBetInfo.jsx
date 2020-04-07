@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import {Redirect} from 'react-router-dom';
 // Rechart
 import {
-    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis 
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Radar, RadarChart, PolarGrid, PolarAngleAxis, 
   } from 'recharts';
 // Bootstrap
 import {Row, Col} from 'react-bootstrap';
@@ -54,8 +54,7 @@ export default class CurrentBetInfo extends Component {
 
     componentDidMount() {
         const {data} = this.props;
-
-        if(data.locationID !== ''){
+        if(data.locationID && data.locationID !== ''){
             fetch(`http://localhost:9000/getLocationBetById?id=${data.locationID}`, {
                 method : 'GET',
                 credentials : 'include',

@@ -70,7 +70,6 @@ export default class CreatedBetData extends Component {
 
     render() {
         const {dataRetrieved, graphData} = this.state;
-        const COLORS = ['#e0240b', '#0cb009'];
         if(dataRetrieved){
             return(
                 <div>
