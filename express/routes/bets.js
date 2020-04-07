@@ -887,7 +887,7 @@ router.post('/getFinishedBets', (req, res) => {
 router.post('/getUserCreatedBets', (req, res) => {
     utilFuncs.isSignedIn(req.cookies).then(user_name => {
         if(user_name){
-            utilFuncs.getUserCreatedBets(user_name)
+            utilFuncs.getUserCreatedBets(user_name.user_name)
             .then(bets => {
                 res.status(200).json({
                     'status' : 'success',
@@ -920,7 +920,7 @@ router.post('/getBetsForUser', (req, res) => {
             // Get all bets
             utilFuncs.getBets().then(data => {
                 // Get specific bet data from user
-                utilFuncs.getBetsForUser(data, user_name).then(bets => {
+                utilFuncs.getBetsForUser(data, user_name.user_name).then(bets => {
                     if(bets){
                         res.status(200).json({
                             'status' : 'success',
