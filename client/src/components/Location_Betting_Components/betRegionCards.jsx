@@ -26,10 +26,24 @@ export default class BetRegionCards extends React.Component{
     }
 
     render(){
-        let {loadingRegions, betRegions, sort, mode} = this.props;
+        let {loadingRegions, betRegions, sort, mode, error} = this.props;
         let searchFlag = false;
         // If regions are loaded display cards
-        if(!loadingRegions){
+        if(error === 'not-accurate'){
+            return(
+                <Paper style={{...styles.regionCards, ...styles.info}}>
+                    <h3>Location Inaccurate Please Use App</h3>
+                </Paper>
+            )
+        }
+        else if(error === 'not-supported'){
+            return(
+                <Paper style={{...styles.regionCards, ...styles.info}}>
+                    <h3>Location Not Supported</h3>
+                </Paper>
+            )
+        }
+        else if(!loadingRegions){
             var regionCards = [];
             const display_num_regions = 20;
             if(sort === "popular"){
@@ -131,7 +145,7 @@ export default class BetRegionCards extends React.Component{
             }
         }else{
             return(
-                <Paper style={styles.regionCards, styles.info}>
+                <Paper style={{...styles.regionCards, ...styles.info}}>
                     <h3>Loading Regions...</h3>
                     <CircularProgress />
                 </Paper>
@@ -149,7 +163,6 @@ const styles = {
     info: {
         textAlign: 'center',
         marginTop: '30px',
-        height: '100px',
         paddingTop: '30px'
     },
 }

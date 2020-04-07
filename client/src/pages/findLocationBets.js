@@ -14,6 +14,7 @@ import Icon from '@material-ui/core/Icon';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import Snackbar from '@material-ui/core/Snackbar';
 //Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Container, Row, Col} from 'react-bootstrap/';
@@ -23,6 +24,7 @@ import Navbar from '../components/Page_Components/navbar';
 import BetRegionCards from '../components/Location_Betting_Components/betRegionCards';
 import LocationBetCards from '../components/Location_Betting_Components/locationBetCards';
 import CreateLocationBet from '../components/Location_Betting_Components/createLocationBet';
+import Alert from '../components/Miscellaneous/alertSnack';
 // Other
 import openSocket from 'socket.io-client';
 import './reset.css';
@@ -53,6 +55,9 @@ export default class FindBetPage extends React.Component{
             loadCreateRegion: false,
             selectedRegion: null,
             windowWidth: window.innerWidth,
+            snackOpen: false,
+            msg: '',
+            msgType: 'info'
         }
         this.socket = openSocket("http://localhost:9000");
     }
@@ -65,12 +70,14 @@ export default class FindBetPage extends React.Component{
         this.getLocation();
         this.socket.on('accurateUserPos', (data) => {
             if(data.user_name === "testUser"){
-                this.setState({hasLocation : true, latlng : data.location, accurate : true});
-                this.props.locationUpdate(data.location);
+                this.setState({hasLocation : true, latlng : data.location, accurate : true, locationError : ''});
+                //this.props.locationUpdate(data.location);
                 let response = {
                   user : "testUser"
                 }
                 this.socket.emit('locationResponse', response);
+                this.setState({snackOpen : true, msg : 'Location Retrieved!', msgType : 'success'});
+                this.getRegions(data.location);
             }
         });
         window.addEventListener('resize', this.updateWindowDimensions);
@@ -79,6 +86,13 @@ export default class FindBetPage extends React.Component{
     updateWindowDimensions = () => {
         this.setState({windowWidth : window.innerWidth});
     }
+
+    handleSnackClose = (event, reason) => {
+        if(reason === 'clickaway'){
+            return;
+        }
+        this.setState({snackOpen : false});
+      }
 
     // Used to get user location
     getLocation = () => {
@@ -90,7 +104,7 @@ export default class FindBetPage extends React.Component{
                 // Set user's location
                 // let location = {lat : 53.28211, lng : -9.062186 };
                 // this.setState({hasLocation : true, latlng : location, accurate : true});
-                this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : true});
+                this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : true, locationError : ''});
                 this.getRegions({lat : userPosition.coords.latitude, lng : userPosition.coords.longitude});
             }else{
                 //Temp
@@ -187,7 +201,7 @@ export default class FindBetPage extends React.Component{
     }
 
     render(){
-        const {hasLocation, latlng, accurate, betRegions, bets, loadingRegions, sortBy, openError, view, loadCreateRegion, windowWidth, selectedRegion, loadCreateBet} = this.state;
+        const {hasLocation, latlng, accurate, betRegions, bets, loadingRegions, sortBy, openError, view, loadCreateRegion, windowWidth, selectedRegion, loadCreateBet, snackOpen, msg, msgType, locationError} = this.state;
         const {mode} = this.props;
         let useStyles = null;
 
@@ -243,12 +257,16 @@ export default class FindBetPage extends React.Component{
                         sort={sortBy} 
                         onSelection={this.handleSelection}
                         mode={mode}
+                        error={locationError}
                     />;
         }
 
         return(     
             // Create grid for parts
             <div>
+                <Snackbar open={snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
+                    <Alert onClose={this.handleSnackClose} severity={msgType}>{msg}</Alert>
+                </Snackbar>
                 <Dialog
                   open={openError}
                   onClose={this.handleErrorClose}

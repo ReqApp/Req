@@ -24,7 +24,6 @@ import PersonIcon from '@material-ui/icons/Person';
 import Snackbar from '@material-ui/core/Snackbar';
 import SearchIcon from '@material-ui/icons/Search';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 // Bootstrap
 import {Container, Row, Col} from 'react-bootstrap';
 // Components

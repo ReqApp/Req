@@ -53,7 +53,8 @@ export default class Dashboard extends React.Component{
       if(data.user === userName){
         Toast.show({
           text: "Location Received!",
-          duration: 3000
+          duration: 3000,
+          type: "success"
         });
         }
     });
@@ -62,12 +63,14 @@ export default class Dashboard extends React.Component{
   getUser(){
     let {serverURL, errors } = this.state;
     this.setState({gettingUser : true});
-    fetch(serverURL + '/users/profile', {
-      method: 'GET',
-      credentials : "same-origin" 
-    }).then(res => res.text()).then(res => {
+    fetch(serverURL + '/users/isSignedIn', {
+      method: 'POST',
+      credentials : "include" 
+    })
+    .then(res => res.json())
+    .then(res => {
       errors.userNotRetrived = false;
-      this.setState({userName : res, gettingUser: false, errors : errors});
+      this.setState({userName : res.body, gettingUser: false, errors : errors});
     }).catch(err => {
       errors.userNotRetrived = true;
       this.setState({errors : errors, gettingUser : false});
@@ -144,7 +147,8 @@ export default class Dashboard extends React.Component{
       Toast.show({
         text: "Location data not available",
         buttonText: "Okay",
-        duration: 10000
+        duration: 10000,
+        type: "warning"
       });
       let locationCard = <Card style={styles.card}>
         <LocationCardLayout location={location} />
@@ -162,7 +166,8 @@ export default class Dashboard extends React.Component{
       Toast.show({
         text: "Location inaccurate",
         buttonText: "Okay",
-        duration: 10000
+        duration: 10000,
+        type: "warning"
       });
       let locationCard = <Card style={styles.card}>
         <LocationCardLayout location={location} />
