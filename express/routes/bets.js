@@ -436,7 +436,7 @@ router.post('/makeBet', (req, res) => {
                     "side": req.body.side,
                     "title": req.body.title,
                     "deadline": req.body.deadline,
-                    "username": signedIn,
+                    "username": signedIn.user_name,
                     "firstPlaceCut": firstPlaceCut,
                     "secondPlaceCut": secondPlaceCut,
                     "thirdPlaceCut": thirdPlaceCut
@@ -578,73 +578,84 @@ router.post('/decideBet', (req, res) => {
 });
 
 router.post('/betOn', (req, res) => {
-    let inputObj = {
-        "betID": req.body.betID,
-        "username": req.body.username,
-        "betAmount": req.body.betAmount,
-        "type": req.body.type,
-        "side": req.body.side,
-        "bet": req.body.bet
-    }
 
-    utilFuncs.isValidBetID(inputObj.betID).then((resp) => {
-        if (resp) {
-            utilFuncs.hasEnoughCoins(req.body.username, req.body.betAmount).then((data) => {
-                if (data) {
-                    // add in func here to check if they already bet on it
-                    utilFuncs.alreadyBetOn(inputObj).then((alreadyBetOn) => {
-                        if (alreadyBetOn) {
-                            // user has already bet on this post, update their val
-                            res.status(400).json({
-                                "status": "error",
-                                "body": "You have already made a bet on this."
-                            });
-                        } else {
-                            // User has not already made a bet for this post
-                            utilFuncs.betOn(inputObj).then((response) => {
-                                if (response) {
-                                    res.status(200).json({
-                                        "status": "success",
-                                        "body": "Bet successfully added"
-                                    });
-                                } else {
+    utilFuncs.isSignedIn(req.cookies).then((profile) => {
+        if (profile) {
+
+            let inputObj = {
+                "betID": req.body.betID,
+                "username": profile.user_name,
+                "betAmount": req.body.betAmount,
+                "type": req.body.type,
+                "side": req.body.side,
+                "bet": req.body.bet
+            }
+
+            utilFuncs.isValidBetID(inputObj.betID).then((resp) => {
+                if (resp) {
+                    utilFuncs.hasEnoughCoins(profile.user_name, req.body.betAmount).then((data) => {
+                        if (data) {
+                            // add in func here to check if they already bet on it
+                            utilFuncs.alreadyBetOn(inputObj).then((alreadyBetOn) => {
+                                if (alreadyBetOn) {
+                                    // user has already bet on this post, update their val
                                     res.status(400).json({
                                         "status": "error",
-                                        "body": "Bet could not be added"
+                                        "body": "You have already made a bet on this."
+                                    });
+                                } else {
+                                    // User has not already made a bet for this post
+                                    utilFuncs.betOn(inputObj).then((response) => {
+                                        if (response) {
+                                            res.status(200).json({
+                                                "status": "success",
+                                                "body": "Bet successfully added"
+                                            });
+                                        } else {
+                                            res.status(400).json({
+                                                "status": "error",
+                                                "body": "Bet could not be added"
+                                            });
+                                        }
+                                    }, (err) => {
+                                        console.log("caught bet on err " + err);
+                                        res.status(400).json({
+                                            "status": "error",
+                                            "body": "Error adding bet to DB"
+                                        });
                                     });
                                 }
-                            }, (err) => {
-                                console.log("caught bet on err " + err);
-                                res.status(400).json({
-                                    "status": "error",
-                                    "body": "Error adding bet to DB"
-                                });
+                            });
+                        } else {
+                            res.status(400).json({
+                                "status": "error",
+                                "body": "Insufficient funds"
                             });
                         }
-                    });
+                    }, () => {
+                        res.status(400).json({
+                            "status": "error",
+                            "body": "Error retrieving coin amount"
+                        });
+                    })
                 } else {
                     res.status(400).json({
                         "status": "error",
-                        "body": "Insufficient funds"
+                        "body": "Invalid betID"
                     });
                 }
             }, () => {
                 res.status(400).json({
                     "status": "error",
-                    "body": "Error retrieving coin amount"
+                    "body": "Error validating bet ID"
                 });
             })
         } else {
             res.status(400).json({
                 "status": "error",
-                "body": "Invalid betID"
+                "body": "Not signed in"
             });
         }
-    }, () => {
-        res.status(400).json({
-            "status": "error",
-            "body": "Error validating bet ID"
-        });
     })
 });
 

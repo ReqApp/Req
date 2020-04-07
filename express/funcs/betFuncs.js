@@ -1219,7 +1219,7 @@ function isSignedIn(reqCookies) {
             let jwt = reqCookies.Authorization.split(' ')[1];
             const profile = verifyJwt(jwt);
             if (profile) {
-                resolve(profile.user_name);
+                resolve(profile);
             } else {
                 resolve(null);
             }
