@@ -89,15 +89,15 @@ router.get('/auth/google', passport.authenticate('google', {
 router.get('/auth/google/callback', passport.authenticate('google'), (req, res) => {
     User.findOne({"user_name":req.user.user_name}, (err, foundUser) => {
         if (err) {
-            res.redirect(`http://localhost:3000/users/login`)
+            res.redirect(`http://ec2-107-23-251-248.compute-1.amazonaws.com:3000/users/login`)
         } else {
             if (foundUser) {
                 foundUser.accessToken = utilFuncs.createJwt({user_name:foundUser.user_name});
                 foundUser.save();
                 res.cookie('Authorization', 'Bearer ' + foundUser.accessToken)
-                res.redirect(`http://localhost:3000/users/profile?${foundUser.user_name}`)
+                res.redirect(`http://ec2-107-23-251-248.compute-1.amazonaws.com:3000/users/profile?${foundUser.user_name}`)
             } else {
-                res.redirect(`http://localhost:3000/users/login`)
+                res.redirect(`http://ec2-107-23-251-248.compute-1.amazonaws.com:3000/users/login`)
             }
         }
     });
@@ -108,15 +108,15 @@ router.get('/auth/github', passport.authenticate('github'));
 router.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/users/login' }), (req, res) => {
     User.findOne({"user_name":req.user.user_name}, (err, foundUser) => {
         if (err) {
-            res.redirect(`http://localhost:3000/users/login`)
+            res.redirect(`http://ec2-107-23-251-248.compute-1.amazonaws.com:3000/users/login`)
         } else {
             if (foundUser) {
                 foundUser.accessToken = utilFuncs.createJwt({user_name:foundUser.user_name});
                 foundUser.save();
                 res.cookie('Authorization', 'Bearer ' + foundUser.accessToken)
-                res.redirect(`http://localhost:3000/users/profile?${foundUser.user_name}`)
+                res.redirect(`http://ec2-107-23-251-248.compute-1.amazonaws.com:3000/users/profile?${foundUser.user_name}`)
             } else {
-                res.redirect(`http://localhost:3000/users/login`)
+                res.redirect(`http://ec2-107-23-251-248.compute-1.amazonaws.com:3000/users/login`)
             }
         }
     });
@@ -127,15 +127,15 @@ router.get('/auth/steam', passport.authenticate('steam'));
 router.get('/auth/steam/callback', passport.authenticate('steam', { failureRedirect: '/login' }), (req, res) => {
     User.findOne({"user_name":req.user.user_name}, (err, foundUser) => {
         if (err) {
-            res.redirect(`http://localhost:3000/users/login`)
+            res.redirect(`http://ec2-107-23-251-248.compute-1.amazonaws.com:3000/users/login`)
         } else {
             if (foundUser) {
                 foundUser.accessToken = utilFuncs.createJwt({user_name:foundUser.user_name});
                 foundUser.save();
                 res.cookie('Authorization', 'Bearer ' + foundUser.accessToken)
-                res.redirect(`http://localhost:3000/users/profile?${foundUser.user_name}`)
+                res.redirect(`http://ec2-107-23-251-248.compute-1.amazonaws.com:3000/users/profile?${foundUser.user_name}`)
             } else {
-                res.redirect(`http://localhost:3000/users/login`)
+                res.redirect(`http://ec2-107-23-251-248.compute-1.amazonaws.com:3000/users/login`)
             }
         }
     });
@@ -446,8 +446,8 @@ router.post('/forgotPassword', (req, res) => {
                                     newUser.email = foundUser.email;
                                     const resetCode = randomstring.generate(10);
                                     newUser.resetCode = resetCode;
-                                    // TODO this is a temp localhost fix
-                                    const resetUrl = `http://localhost:3000/users/resetPassword?from=${resetCode}`;
+                                    // TODO this is a temp ec2-107-23-251-248.compute-1.amazonaws.com fix
+                                    const resetUrl = `http://ec2-107-23-251-248.compute-1.amazonaws.com:3000/users/resetPassword?from=${resetCode}`;
                                     newUser.save((err) => {
                                         if (err) {
                                             res.status(400).send({

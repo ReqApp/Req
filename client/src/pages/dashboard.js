@@ -60,7 +60,7 @@ class Dashboard extends React.Component{
     }
 
     componentDidMount(){
-        fetch('http://localhost:9000/users/isSignedIn', {
+        fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/isSignedIn', {
           method: 'POST',
           credentials: 'include',
           headers: {

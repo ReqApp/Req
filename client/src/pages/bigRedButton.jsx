@@ -31,7 +31,7 @@ export class BigRedButton extends Component {
         if (timesPressed > 0) {
             timesPressedLocal = timesPressed;
         }
-        fetch('http://localhost:9000/bets/pressBigButton', {
+        fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/bets/pressBigButton', {
             method:'POST',
             crossDomain: true,
             headers: {

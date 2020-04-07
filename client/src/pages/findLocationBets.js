@@ -54,7 +54,7 @@ export default class FindBetPage extends React.Component{
             selectedRegion: null,
             windowWidth: window.innerWidth,
         }
-        this.socket = openSocket("http://localhost:9000");
+        this.socket = openSocket("http://ec2-107-23-251-248.compute-1.amazonaws.com:9000");
     }
 
     // Load regions on first mout
@@ -110,7 +110,7 @@ export default class FindBetPage extends React.Component{
 
     // Retrieve regions when location found by map component
     getRegions = (location) => {
-        var url = new URL("http://localhost:9000/getBettingRegions"),
+        var url = new URL("http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/getBettingRegions"),
         params = location
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
         fetch(url)
@@ -143,7 +143,7 @@ export default class FindBetPage extends React.Component{
         if(mode === 'find'){
             // Retrieve bets in selected region
             // Get bets in region and add to state
-            fetch(`http://localhost:9000/getBetsInRegion?id=${id}&lat=${latlng.lat}&lng=${latlng.lng}`, {
+            fetch(`http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/getBetsInRegion?id=${id}&lat=${latlng.lat}&lng=${latlng.lng}`, {
                 method: 'GET',
                 credentials: 'include',
                 headers: {

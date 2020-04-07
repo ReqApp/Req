@@ -42,7 +42,7 @@ class ResetPassword extends React.Component {
 
     const resetCodeString = window.location.href.split("=")[1];
 
-      fetch('http://localhost:9000/users/resetPassword', {
+      fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/resetPassword', {
         method: 'POST',
         crossDomain: true,
         headers: {

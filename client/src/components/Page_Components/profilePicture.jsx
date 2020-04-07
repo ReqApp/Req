@@ -10,7 +10,7 @@ export default class ProfilePicture extends React.Component{
     }
     componentDidMount(){
         const {user} = this.props;
-        fetch("http://localhost:9000/users/getProfilePicture", {
+        fetch("http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/getProfilePicture", {
             method: 'POST',
             crossDomain: true,
             headers: {

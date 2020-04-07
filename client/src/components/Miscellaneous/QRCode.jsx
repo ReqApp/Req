@@ -23,7 +23,7 @@ export default class QRCode extends React.Component{
         }
         // requestUrl = 'https://iamcathal.github.io'
         console.log(requestUrl)
-        fetch('http://localhost:9000/shortenLink', {
+        fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/shortenLink', {
             method: 'POST',
             crossDomain: true,
             headers: {

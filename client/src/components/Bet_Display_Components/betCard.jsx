@@ -84,7 +84,7 @@ export default class betCard extends Component {
                 bet : betValue
             }
 
-            fetch('http://localhost:9000/betOn', {
+            fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/betOn', {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

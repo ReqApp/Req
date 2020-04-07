@@ -73,7 +73,7 @@ class Register extends React.Component{
 
     if (formValid) {
       if (profilerValid) {
-        fetch('http://localhost:9000/users/register', {
+        fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/register', {
           method: 'POST',
         credentials: 'include',
         headers: {
@@ -115,7 +115,7 @@ class Register extends React.Component{
                 'content-type': 'multipart/form-data'
             }
         };
-        axios.post('http://localhost:9000/tasks/uploadImage',formData,config)
+        axios.post('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/tasks/uploadImage',formData,config)
             .then((response) => {
                 if (response.data.status === 'success') {
                   console.log("success uploading")
@@ -242,17 +242,17 @@ class Register extends React.Component{
 
             <Grid container> 
               <Grid item lg>
-                <Link href="http://localhost:9000/users/auth/github" variant="body2">
+                <Link href="http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/auth/github" variant="body2">
                 <img src={GitHubLogo} className={classes.OAuthApp} alt='Github Logo'></img>
                 </Link>
               </Grid>
               <Grid item lg>
-                <Link href="http://localhost:9000/users/auth/google" variant="body2">
+                <Link href="http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/auth/google" variant="body2">
                 <img src={GoogleLogo} className={classes.OAuthApp} alt='Google Logo'></img>
                 </Link>
               </Grid>
               <Grid item lg>
-                <Link href="http://localhost:9000/users/auth/steam" variant="body2">
+                <Link href="http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/auth/steam" variant="body2">
                 <img src={SteamLogo} className={classes.OAuthApp} alt='Steam Logo'></img>
                 </Link>
               </Grid>

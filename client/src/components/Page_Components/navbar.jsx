@@ -15,7 +15,7 @@ export default class Navbar extends React.Component{
     }
 
     getProfileInfo = () => {
-        fetch('http://localhost:9000/users/isSignedIn', {
+        fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/isSignedIn', {
             method: 'POST',
             crossDomain: true,
             credentials:'include',
@@ -26,7 +26,7 @@ export default class Navbar extends React.Component{
         }).then((res) => res.json())
         .then((res) => {    
             this.setState({username:res.body});
-            fetch('http://localhost:9000/users/getProfilePicture', {
+            fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/getProfilePicture', {
             method: 'POST',
             crossDomain: true,
             headers: {

@@ -14,7 +14,7 @@ export default class Coins extends React.Component{
     }
     componentDidMount(){
         const {user} = this.props;
-        fetch("http://localhost:9000/getCoins", {
+        fetch("http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/getCoins", {
             method: 'POST',
             crossDomain: true,
             headers: {

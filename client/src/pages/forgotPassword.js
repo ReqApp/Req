@@ -34,7 +34,7 @@ class ForgotPassword extends React.Component{
     if (username === '') {
       this.setState({msg : 'Please enter your username', msgType : 'warning', snackOpen : true});
     } else {
-      fetch('http://localhost:9000/users/forgotpassword', {
+      fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/forgotpassword', {
         'method':'POST',
         crossDomain: true,
         headers: {

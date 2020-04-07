@@ -53,7 +53,7 @@ func getLoginSecret() string {
 
 func sendErrorEmail(errMessage string) {
 	reqSecret := getLoginSecret()
-	_, err := http.PostForm("http://localhost:9000/tasks/sendEmail", url.Values{"secret": {reqSecret}, "subject": {"Error in goFuncs"}, "errorMessage": {errMessage}})
+	_, err := http.PostForm("http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/tasks/sendEmail", url.Values{"secret": {reqSecret}, "subject": {"Error in goFuncs"}, "errorMessage": {errMessage}})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -71,7 +71,7 @@ func getBigButtonPresses() string {
 func endBigButtonBet(secret string) {
 	buttonPresses := getBigButtonPresses()
 	if len(buttonPresses) > 0 {
-		res, err := http.PostForm("http://localhost:9000/bets/bigButtonBet", url.Values{"secret": {secret}, "action": {"end"}, "result": {buttonPresses}})
+		res, err := http.PostForm("http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/bets/bigButtonBet", url.Values{"secret": {secret}, "action": {"end"}, "result": {buttonPresses}})
 		if err != nil || res.StatusCode != 200 {
 			body, _ := ioutil.ReadAll(res.Body)
 			fmt.Println(string(body))
@@ -82,7 +82,7 @@ func endBigButtonBet(secret string) {
 }
 
 func startBigButtonBet(secret string) {
-	res, err := http.PostForm("http://localhost:9000/bets/bigButtonbet", url.Values{"secret": {secret}, "action": {"start"}})
+	res, err := http.PostForm("http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/bets/bigButtonbet", url.Values{"secret": {secret}, "action": {"start"}})
 	if err != nil || res.StatusCode != 200 {
 		// sendErrorEmail("Error reaching API endpoint /bets/bigButtonBet")
 		body, _ := ioutil.ReadAll(res.Body)
@@ -95,7 +95,7 @@ func startBigButtonBet(secret string) {
 
 func checkForOutOfDateBets(secret string) {
 	currTime := time.Now().UnixNano()
-	res, err := http.PostForm("http://localhost:9000/bets/getAllBetsDev", url.Values{"secret": {secret}})
+	res, err := http.PostForm("http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/bets/getAllBetsDev", url.Values{"secret": {secret}})
 	body, _ := ioutil.ReadAll(res.Body)
 	if err != nil || res.StatusCode != 200 {
 		sendErrorEmail("Error reaching API endpoint /bets/bigButtonBet")
@@ -114,7 +114,7 @@ func checkForOutOfDateBets(secret string) {
 			// punish the person who made the bet and pay back winnings
 			if deadlineVal+86400000 < currTime {
 				fmt.Println(val.ID)
-				res, err := http.PostForm("http://localhost:9000/bets/betExpired", url.Values{"secret": {secret}, "username": {val.UserName}, "betID": {val.ID}})
+				res, err := http.PostForm("http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/bets/betExpired", url.Values{"secret": {secret}, "username": {val.UserName}, "betID": {val.ID}})
 				if err != nil || res.StatusCode != 200 {
 					sendErrorEmail("Error trying to punish " + val.UserName + " for expired bet:" + val.ID)
 				} else {

@@ -22,7 +22,7 @@ export default class FinishedBets extends Component {
     componentDidMount() {
         const {username} = this.props;
         // Retrieve bets that user has bet on previously
-        fetch('http://localhost:9000/analytics/getBettingHistory', {
+        fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/analytics/getBettingHistory', {
           method: 'POST',
           credentials: 'include',
           headers: {
@@ -45,7 +45,7 @@ export default class FinishedBets extends Component {
             console.log(err);
         });
         // Retrieve finished bets that user has created
-        fetch('http://localhost:9000/analytics/getCreatedBettingHistory', {
+        fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/analytics/getCreatedBettingHistory', {
             method: 'POST',
             credentials: 'include',
             headers: {

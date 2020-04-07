@@ -24,7 +24,7 @@ var app = express();
 mongoose.set('useFindAndModify', false);
 
 var corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: 'http://ec2-107-23-251-248.compute-1.amazonaws.com:3000',
     credentials: true,
 }
 

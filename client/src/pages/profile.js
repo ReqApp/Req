@@ -25,7 +25,7 @@ export class Profile extends React.Component{
             click: false,
             imgSrc: null,
         }
-        this.socket = openSocket('http://localhost:9000');
+        this.socket = openSocket('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000');
     }
 
     componentDidMount(){
@@ -42,11 +42,11 @@ export class Profile extends React.Component{
 
     getLink = () => {
         let url = window.location.href;
-        if(url.includes('localhost')){
+        if(url.includes('ec2-107-23-251-248.compute-1.amazonaws.com')){
             this.socket.emit('servedQR', "https://goolnk.com/BZY3XX");
         }else{
             // TODO change before deploying to AWS
-            fetch('http://localhost:9000/shortenLink', {
+            fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/shortenLink', {
                 method: 'POST',
                 body: 'url=' + url
             }).then((res) => {

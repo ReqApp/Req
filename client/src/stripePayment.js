@@ -22,7 +22,7 @@ export default function App() {
 
   async function handleToken(token, addresses) {
     const response = await axios.post(
-      "http://localhost:9000/payments/checkout",
+      "http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/payments/checkout",
       { token, product }
     );
     const { status } = response.data;

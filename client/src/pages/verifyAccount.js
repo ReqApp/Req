@@ -35,7 +35,7 @@ class VerifyAccount extends React.Component {
 
   submitForm = () => {
     const {verificationCode} = this.state;
-      fetch('http://localhost:9000/users/verifyAccount', {
+      fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/verifyAccount', {
         method: 'POST',
         credentials: 'include',
         crossDomain: true,

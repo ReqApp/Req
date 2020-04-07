@@ -32,7 +32,7 @@ export default class BuyCoins extends React.Component{
 
     handleBuy = (token) => {
         const {product} = this.state;
-        fetch('http://localhost:9000/payments/checkout', {
+        fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/payments/checkout', {
             method: 'POST',
             credentials: 'include',
             headers: {

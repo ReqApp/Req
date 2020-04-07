@@ -35,7 +35,7 @@ export default class FindBets extends React.Component{
         }
     }
     componentDidMount() {
-        fetch('http://localhost:9000/findNewBets', {
+        fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/findNewBets', {
             method: 'POST',
             credentials: 'include',
             headers: {

@@ -60,7 +60,7 @@ class SignIn extends React.Component{
     if(formValid){
       this.setState({requestInTransit: true})
 
-      fetch('http://localhost:9000/users/login', {
+      fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/login', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -177,17 +177,17 @@ class SignIn extends React.Component{
 
             <Grid container> 
               <Grid item lg>
-                <Link href="http://localhost:9000/users/auth/github" variant="body2">
+                <Link href="http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/auth/github" variant="body2">
                 <img src={GitHubLogo} className={classes.OAuthApp} alt='Github Logo'></img>
                 </Link>
               </Grid>
               <Grid item lg>
-                <Link href="http://localhost:9000/users/auth/google" variant="body2">
+                <Link href="http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/auth/google" variant="body2">
                 <img src={GoogleLogo} className={classes.OAuthApp} alt='Google Logo'></img>
                 </Link>
               </Grid>
               <Grid item lg>
-                <Link href="http://localhost:9000/users/auth/steam" variant="body2">
+                <Link href="http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/auth/steam" variant="body2">
                 <img src={SteamLogo} className={classes.OAuthApp} alt='Steame Logo'></img>
                 </Link>
               </Grid>

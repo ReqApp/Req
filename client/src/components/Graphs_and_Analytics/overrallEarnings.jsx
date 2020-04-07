@@ -17,7 +17,7 @@ export default class OverrallEarnings extends Component {
 
     componentDidMount() {
         const {user} = this.props;
-        fetch("http://localhost:9000/analytics/getBettingHistory", {
+        fetch("http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/analytics/getBettingHistory", {
             method: 'POST',
             crossDomain: true,
             headers: {

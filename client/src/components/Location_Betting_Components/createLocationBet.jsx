@@ -100,7 +100,7 @@ export default class CreateLocationBet extends React.Component{
                 data.thirdPlaceCut = sliderThree / 100;
             }
             
-            fetch('http://localhost:9000/makeBet', {
+            fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/makeBet', {
                 method: 'POST',
                 headers: {
                 'Accept': 'application/json',
@@ -121,7 +121,7 @@ export default class CreateLocationBet extends React.Component{
                         bet_region_id : regionData._id,
                         bet_id : res.body._id
                     }
-                    fetch('http://localhost:9000/createLocationBet', {
+                    fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/createLocationBet', {
                         method: 'POST',
                         credentials: 'include',
                         headers: {
@@ -137,7 +137,7 @@ export default class CreateLocationBet extends React.Component{
                                 locationID : res.body._id,
                                 betID : betID
                             }
-                            fetch('http://localhost:9000/updateBetWithLocData', {
+                            fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/updateBetWithLocData', {
                                 method : 'PUT',
                                 credentials: 'include',
                                 headers: {
@@ -210,7 +210,7 @@ export default class CreateLocationBet extends React.Component{
                 longitude : userLocation.lng,
                 radius : radius
             }
-            fetch('http://localhost:9000/addBetRegion', {
+            fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/addBetRegion', {
                 method: 'POST',
                 headers: {
                 'Accept': 'application/json',

@@ -52,7 +52,7 @@ passport.use(new GoogleStrategy({
 passport.use(new GitHubStrategy({
         clientID: process.env.githubClientID,
         clientSecret: process.env.githubClientSecret,
-        callbackURL: "http://localhost:9000/users/auth/github/callback"
+        callbackURL: "http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/auth/github/callback"
     },
     function(accessToken, refreshToken, profile, cb) {
 
@@ -80,8 +80,8 @@ passport.use(new GitHubStrategy({
 ));
 
 passport.use(new SteamStrategy({
-        returnURL: 'http://localhost:9000/users/auth/steam/callback',
-        realm: 'http://localhost:9000',
+        returnURL: 'http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/auth/steam/callback',
+        realm: 'http://ec2-107-23-251-248.compute-1.amazonaws.com:9000',
         apiKey: process.env.steamAPIKey
     },
     function(identifier, profile, done) {
