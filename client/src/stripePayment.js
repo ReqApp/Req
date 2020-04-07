@@ -55,7 +55,7 @@ export default function App() {
               <p style={styles.mainText}>1,000 coins</p>
               <p style={styles.infoText}>€{product.price}</p>
               <StripeCheckout
-              stripeKey="pk_test_FH36hJx3ondKxSKvaBKsL34A00NgzUy2IE"
+              stripeKey="pk_test_reKQ7QkpyIw6VDK6yrax2a8t00ppAH2ob9"
               token={handleToken}
               amount={product.price * 100}
               name="1,000 coins"
@@ -75,7 +75,7 @@ export default function App() {
               <p style={styles.mainText}>10,000 coins</p>
               <p style={styles.infoText}>€1</p>
               <StripeCheckout
-              stripeKey="pk_test_FH36hJx3ondKxSKvaBKsL34A00NgzUy2IE"
+              stripeKey="pk_test_reKQ7QkpyIw6VDK6yrax2a8t00ppAH2ob9"
               token={handleToken}
               amount={product.price * 100}
               name="10,000 coins"

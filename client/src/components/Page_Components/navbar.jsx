@@ -34,7 +34,7 @@ export default class Navbar extends React.Component{
                 'Access-Control-Allow-Origin': '*'
             },
             body: JSON.stringify({
-                "username":res.body
+                "username":res.body.user_name
             })
             }).then((res) => res.json())
             .then((res) => {
