@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 
 import {Paper} from '@material-ui/core';
 // Rechart
-import { BarChart, CartesianGrid, Bar, XAxis, YAxis, Cell, Tooltip} from 'recharts';
+import { BarChart, CartesianGrid, Bar, XAxis, YAxis, Cell, Tooltip, ResponsiveContainer} from 'recharts';
 
 export default class CreatedBetData extends Component {
     constructor(props) {
@@ -63,9 +63,10 @@ export default class CreatedBetData extends Component {
             return(
                 <div>
                      <Paper elevation={3} style={styles.card}>
-                        <h6 style={{textAlign:'center'}}> Bet History </h6>
-                        <BarChart width={440} height={240} data={graphData}
-                            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                        <h3> Bet History:</h3>
+                        <ResponsiveContainer width='100%' height={240}>
+                        <BarChart data={graphData}
+                            margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                             <XAxis dataKey="date" />
                             <YAxis />
                             <CartesianGrid strokeDasharray="3 3" />
@@ -79,6 +80,7 @@ export default class CreatedBetData extends Component {
                             }
                             </Bar>
                         </BarChart>
+                        </ResponsiveContainer>
                     </Paper>
                 </div>
             )
@@ -89,9 +91,8 @@ export default class CreatedBetData extends Component {
 
 const styles = {
     card: {
-        textAlign: 'center',
-        padding: '4px',
-        marginBottom: '60px',
-        borderRadius: '6px'
+        padding: '15px',
+        borderRadius: '6px',
+        marginBottom: '15px'
     }
 }

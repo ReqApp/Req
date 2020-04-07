@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Tooltip } from 'recharts';
+import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer} from 'recharts';
 
 import {Paper} from '@material-ui/core';
 
@@ -55,15 +55,14 @@ export default class betBreakdown extends Component {
             return (
                 <div>
                 <Paper elevation={3} style={styles.card}>
-
-                    <h4>Bet breakdown</h4>
-                    <RadarChart cx={180} cy={160} outerRadius={120} width={360} height={255} data={graphData}>
-                    <PolarGrid stroke="#525354"/>
-                    <PolarAngleAxis dataKey="category" />
-                    <PolarRadiusAxis/>
-                    <Tooltip />
-                    <Radar name={this.props.user} dataKey="val" stroke="#8884d8" fill="#6790db" fillOpacity={0.6}/>
-                    </RadarChart>
+                    <h3>Bet Breakdown:</h3>
+                    <ResponsiveContainer width='100%' height={225}>
+                        <RadarChart data={graphData} style={{marginRight : 'auto', marginLeft : 'auto', display : 'block'}}>
+                        <PolarGrid stroke="#525354"/>
+                        <PolarAngleAxis dataKey="category" />
+                        <Radar name={this.props.user} dataKey="val" stroke="#8884d8" fill="#6790db" fillOpacity={0.6}/>
+                        </RadarChart>
+                    </ResponsiveContainer>
                     </Paper>
                 </div>
             )
@@ -74,9 +73,8 @@ export default class betBreakdown extends Component {
 
 const styles = {
     card: {
-        textAlign: 'center',
-        padding: '4px',
-        marginBottom: '60px',
-        borderRadius: '6px'
+        padding: '15px',
+        borderRadius: '6px',
+        marginBottom: '20px'
     }
 }

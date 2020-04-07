@@ -44,13 +44,13 @@ export default class Coins extends React.Component{
         if(dataRetrieved){
             return(
                 <div>
-                <h1>
+                <h2>
                 <Countup end={totalCoins} 
-                            style={{fontWeight:'bold', textAlign:'center'}}
+                            style={{fontWeight:'bold', color: '#949494', textAlign:'center'}}
                             duration={3.6}
                             />
-                </h1>
-                <h6> in the bank</h6>
+                </h2>
+                <h6 style={{color: '#949494'}}> in the bank</h6>
                 </div>
 
             )

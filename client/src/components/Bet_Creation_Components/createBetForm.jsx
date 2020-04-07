@@ -35,6 +35,7 @@ export default class CreateBetForm extends Component {
 
     submitForm = () => {
         const {title, betType, sliderOne, sliderTwo, sliderThree, date, side} = this.state;
+        const {username} = this.props;
     
         let isFormValid = true;
         if(title === ''){
@@ -56,7 +57,7 @@ export default class CreateBetForm extends Component {
 
         if(isFormValid){
             let obj = {
-                username : process.env.REACT_APP_TEST_USER_NAME,
+                username : username,
                 type : betType,
                 side : side,
                 title : title,

@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import {Redirect} from 'react-router-dom';
+
 import Navbar from '../components/Page_Components/navbar';
 import {Container, Row, Col} from 'react-bootstrap';
 import Typography from "@material-ui/core/Typography";
@@ -8,6 +10,7 @@ import ExploreIcon from '@material-ui/icons/Explore';
 import PeopleIcon from '@material-ui/icons/People';
 import ReqAnimation from '../components/Miscellaneous/reqAnimation';
 import Avatar from '@material-ui/core/Avatar';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 import Cathal from '../images/Team/cathalAvatar.png';
 import Karl from '../images/Team/Karl.jpeg';
@@ -16,9 +19,23 @@ import Eoin from '../images/Team/eoin.jpg';
 import ReqBackground from '../images/reqBackground4.jpg'
 import GitHubIcon from '../images/githubIcon.svg';
 
-
 export class Home extends Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            loadTutorial: false
+        }
+    }
+
+
     render() {
+        const { loadTutorial} = this.state
+        if (loadTutorial) {
+            return(
+                <Redirect to={'/tutorial'} />
+            )
+        }
         return (
             <div style={styles.backing}>
                 <Navbar />
@@ -34,12 +51,12 @@ export class Home extends Component {
                             <Paper elevation={3} style={styles.card}>
                                 <h2 style={{fontWeight:'bold'}}>Win Big</h2>
                                 <EuroIcon fontSize="large" style={styles.icon}/>
-                                <p>
-                                    The sky is really the limit in terms of what you can bet on. Browse
-                                    current bets
+                                <Typography>
+                                    The sky is really the limit in terms of what you can bet on.
+                                    <br />
                                     <br />
                                     <a href="/users/dashboard" style={{fontWeight:'bold'}}> Create your first bet </a>
-                                </p>
+                                </Typography>
                             </Paper>
                         </Col>
                         <Col>
@@ -71,7 +88,7 @@ export class Home extends Component {
                 </Container>
 
                 <Container>
-                <h1 style={{textAlign:'center'}} className={styles.theTeam}> The Team</h1>
+                <h1 style={{textAlign:'center'}} className={styles.theTeam}> Made with <FavoriteIcon fontSize='large'/> by </h1>
 
                     <Row style={{textAlign:'center'}}>
                         <Col>
@@ -147,8 +164,8 @@ const styles = {
         height:'100%'
     },
     icon: {
-        margin: 0,
-        color: '#a681a6'
+        margin: '10px',
+        color: 'black'
     },
     copy: {
         marginTop: 20

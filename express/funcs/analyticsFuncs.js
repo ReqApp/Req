@@ -20,7 +20,7 @@ function getBettingHistory(targetUser) {
                     if (bet.type === "multi") {
 
                         if (bet.winners[0].user_name === targetUser) {
-                            console.log
+                            betHistoryObj["details"] = bet;
                             betHistoryObj["profitOrLoss"] = Math.floor(bet.commonTotal * bet.firstPlaceCut);
                             betHistoryObj["date"] = bet.deadline;
                             betHistory.push(betHistoryObj);
@@ -29,6 +29,7 @@ function getBettingHistory(targetUser) {
                         }
 
                         if (bet.winners[1].user_name === targetUser) {
+                            betHistoryObj["details"] = bet;
                             betHistoryObj["profitOrLoss"] = Math.floor(bet.commonTotal * bet.secondPlaceCut);
                             betHistoryObj["date"] = bet.deadline;
                             betHistory.push(betHistoryObj);
@@ -37,6 +38,7 @@ function getBettingHistory(targetUser) {
                         }
 
                         if (bet.winners[2].user_name === targetUser) {
+                            betHistoryObj["details"] = bet;
                             betHistoryObj["profitOrLoss"] = Math.floor(bet.commonTotal * bet.thirdPlaceCut);
                             betHistoryObj["date"] = bet.deadline;
                             betHistory.push(betHistoryObj);
@@ -49,6 +51,7 @@ function getBettingHistory(targetUser) {
                                     betHistoryObj["profitOrLoss"] = Math.floor((-1) * indivBet.betAmount);
                                 }
                             }
+                            betHistoryObj["details"] = bet;
                             betHistoryObj["date"] = bet.deadline;
                             betHistory.push(betHistoryObj);
                         }
@@ -64,6 +67,7 @@ function getBettingHistory(targetUser) {
                                         if (indivBet2.user_name === targetUser) {
                                             // console.log(`the bet ${indivBet2}`)
                                             const percentage = Math.floor((indivBet2.betAmount / bet.forTotal));
+                                            betHistoryObj["details"] = bet;
                                             betHistoryObj["profitOrLoss"] = percentage * bet.againstTotal;
                                             betHistoryObj["date"] = bet.deadline;
                                             betHistory[0] = betHistoryObj;
@@ -74,7 +78,8 @@ function getBettingHistory(targetUser) {
                                         // result is no
                                     for (indivBet2 of bet.againstUsers) {
                                         if (indivBet2.user_name === targetUser) {
-                                            betHistoryObj["profitOrLoss"] = Math.floor((indivBet2.betAmount / indivBet.againstTotal) * indivBet.forTotal);
+                                            betHistoryObj["details"] = bet;
+                                            betHistoryObj["profitOrLoss"] = Math.floor((indivBet2.betAmount / bet.againstTotal) * bet.forTotal);
                                             betHistoryObj["date"] = bet.deadline;
                                             betHistory[0] = betHistoryObj;
 
@@ -91,6 +96,7 @@ function getBettingHistory(targetUser) {
 
                                 for (indivBet2 of bet.forUsers) {
                                     if (indivBet2.user_name === targetUser) {
+                                        betHistoryObj["details"] = bet;
                                         betHistoryObj["profitOrLoss"] = (-1) * indivBet2.betAmount
                                         betHistoryObj["date"] = bet.deadline;
                                         betHistory.push(betHistoryObj);
@@ -101,6 +107,7 @@ function getBettingHistory(targetUser) {
                                 // result is no
                                 for (indivBet2 of bet.againstUsers) {
                                     if (indivBet2.user_name === targetUser) {
+                                        betHistoryObj["details"] = bet;
                                         betHistoryObj["profitOrLoss"] = (-1) * indivBet2.betAmount
                                         betHistoryObj["date"] = bet.deadline;
                                         betHistory.push(betHistoryObj);
@@ -119,6 +126,7 @@ function getBettingHistory(targetUser) {
                         // there were no bets found
                         resolve(null);
                     } else {
+                        //console.log(betHistory);
                         resolve(betHistory);
                     }
                 }
@@ -147,12 +155,14 @@ function getCreatedBettingHistory(targetUser) {
                     if (bet.type === "multi") {
 
                         if (bet.user_name === targetUser) {
+                            betHistoryObj["details"] = bet;
                             betHistoryObj["profitOrLoss"] = Math.floor(bet.commonTotal * 0.1);
                             betHistoryObj["date"] = bet.deadline;
                             betHistory.push(betHistoryObj);
                         }
                     } else {
                         if (bet.user_name === targetUser) {
+                            betHistoryObj["details"] = bet;
                             betHistoryObj["profitOrLoss"] = Math.floor(0.1 * (bet.forTotal + bet.againstTotal))
                             betHistoryObj["date"] = bet.deadline;
                             betHistory.push(betHistoryObj);

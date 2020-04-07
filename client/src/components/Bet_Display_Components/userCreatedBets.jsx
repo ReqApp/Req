@@ -1,7 +1,8 @@
 // React
 import React, { Component } from 'react';
 // Material
-import {Paper} from '@material-ui/core';
+import {Paper, Typography} from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
 // Components
 import CurrentBetInfo from './currentBetInfo';
 
@@ -42,7 +43,7 @@ export class UserCreatedBets extends Component {
         .catch(err => {
             console.log(err);
             this.setState({errorMsg : 'Could not get bets'});
-        })
+        });
     }
     
 
@@ -54,13 +55,21 @@ export class UserCreatedBets extends Component {
                 <div>
                     <Paper style={styles.paper}>
                         <h3>Bets Created By You</h3>
-                        {bets.map((bet, index) => <CurrentBetInfo data={bet} key={index}/>)}
+                        {bets.map((bet, index) => <CurrentBetInfo data={bet} key={index} userCreated/>)}
                     </Paper>
                     
                 </div>
             )
         }else{
-            return null;
+            return(
+                <Paper style={styles.paper}>
+                    <h2>Bets Created By You:</h2>
+                    <div style={{textAlign: 'center'}}>
+                        <CircularProgress style={styles.progress}/>
+                        <Typography style={styles.text}>Loading Bets...</Typography>
+                    </div>
+                </Paper>
+            )
         }
     }
 }
@@ -69,7 +78,13 @@ const styles = {
     paper: {
         marginTop: '15px',
         padding: '15px'
-    }
+    },
+    progress: {
+        marginTop: '30px',
+        display: 'block',
+        marginRight: 'auto',
+        marginLeft: 'auto',
+    },
 }
 
 export default UserCreatedBets

@@ -1,9 +1,7 @@
 import React from 'react';
 import {Button, Navbar as BootNav, Nav, NavDropdown, Form} from 'react-bootstrap/';
 import reqLogo from '../../images/reqLogo.png';
-
 import PersonAddRoundedIcon from '@material-ui/icons/PersonAddRounded';
-import MapIcon from '@material-ui/icons/Map';
 
 export default class Navbar extends React.Component{
     constructor(props) {
@@ -64,26 +62,56 @@ export default class Navbar extends React.Component{
 
     componentDidMount() {
         this.getProfileInfo();
-        this.setState({requestDone: true})
+        this.setState({requestDone: true});
     }
+
+    handleNewBet = () => {
+        this.props.action('new-bet');
+    }
+
+    handleFindBets = () => {
+        this.props.action('find-bets');
+    }
+
+    handleFindLocationBets = () => {
+        this.props.action('find-location-bets');
+    }
+
+    handleCreateLocationBet = () => {
+        this.props.action('create-location-bet');
+    }
+
     render(){
         const {requestDone, profilePicture, username, signedIn } = this.state;
+        const {dashboard} = this.props;
         let profileLink = `/users/profile?${username}`;
 
         if (requestDone) {
             if (signedIn) {
                 return(
-                    <BootNav bg='light'expand="lg" sticky="top">    
+                    <BootNav expand="lg" sticky="top" style={{backgroundColor: '#ffffff'}}>    
                         <a href="/"><img src={reqLogo} style={{width:'65px'}} alt='Req Logo'/></a>
                         <BootNav.Toggle aria-controls="basic-BootNav-nav" />
                         <BootNav.Collapse id="basic-BootNav-nav">
                             <Nav className="mr-auto">
+                            <Nav.Link href={profileLink}>Profile</Nav.Link>
                             <Nav.Link href="/users/dashboard">Dashboard</Nav.Link>
-                            <NavDropdown title="Betting" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="#action/3.1"><MapIcon /> Find bets near you</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.2">Worldwide bets</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.3">Article bets</NavDropdown.Item>
-                            </NavDropdown>
+                            {dashboard ? 
+                                <NavDropdown title="Betting" id="basic-nav-dropdown">
+                                    <NavDropdown.Item onClick={this.handleNewBet}>New Bet</NavDropdown.Item>
+                                    <NavDropdown.Item onClick={this.handleFindBets}>Find bets</NavDropdown.Item>
+                                </NavDropdown>
+                            : 
+                            <div></div>
+                            }
+                            {dashboard ?
+                                <NavDropdown title="Location Betting" id="basic-nav-dropdown">
+                                    <NavDropdown.Item onClick={this.handleFindLocationBets}>Find bets near you</NavDropdown.Item>
+                                    <NavDropdown.Item onClick={this.handleCreateLocationBet}>Create Location Bet</NavDropdown.Item>
+                                </NavDropdown>
+                                :
+                                <div></div>
+                            }
                             </Nav>
                             <Form inline>
                             <img src={profilePicture} 
@@ -107,11 +135,6 @@ export default class Navbar extends React.Component{
                         <BootNav.Collapse id="basic-BootNav-nav">
                             <Nav className="mr-auto">
                             <Nav.Link href="/users/dashboard">Dashboard</Nav.Link>
-                            <NavDropdown title="Betting" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="#action/3.1"><MapIcon /> Find bets near you</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.2">Worldwide bets</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.3">Article bets</NavDropdown.Item>
-                            </NavDropdown>
                             </Nav>
                             <Form inline>
                             <Button href="/users/login" variant="outline-primary"> Sign in  <PersonAddRoundedIcon /></Button>

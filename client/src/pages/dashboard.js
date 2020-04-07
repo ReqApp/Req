@@ -23,6 +23,8 @@ import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
 import Snackbar from '@material-ui/core/Snackbar';
 import SearchIcon from '@material-ui/icons/Search';
+import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 // Bootstrap
 import {Container, Row, Col} from 'react-bootstrap';
 // Components
@@ -39,50 +41,44 @@ class Dashboard extends React.Component{
     constructor(props){
         super(props);
         this.state = {
+          username: '',
           loggedIn: false,
+          username: '',
+          redirectToLogIn: false,
           mobileOpen: false,
           locationNavOpen: false,
           renderFindLocationBets: false,
           createNewBetDialog: false,
+          renderCreateNewLocationBet: false,
+          redirectToBigRedButton: false,
+          renderLogin: false,
           snackOpen: false,
           msg: '',
           msgType: '',
-          openFindBetPane: false
+          openFindBetPane: false,
         }
     }
 
     componentDidMount(){
-        fetch('http://localhost:9000/users/login', {
+        fetch('http://localhost:9000/users/isSignedIn', {
           method: 'POST',
           credentials: 'include',
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            user_name : process.env.REACT_APP_TEST_USER_NAME,
-            password : process.env.REACT_APP_TEST_PASS
-          })
+          }
         })
         .then((res) => res.json())
         .then((res) => {
           if(res.status === "success"){
-            console.log(res.body);
-            this.setState({loggedIn : true});
-          }
-          else if(res.status === 'error' && res.body === 'Email or password invalid'){
-            console.log(res.body);
-            
-          }
-          else if(res.status === 'error' && res.body === 'Username not found'){
-            console.log(res.body);
+            this.setState({loggedIn : true, username : res.body});
           }
           else{
-            console.log(res.body);
+            this.setState({redirectToLogIn : true});
           }
         })
         .catch(err => {
-          console.log(err);
+          this.setState({snackOpen : true, msg : 'Could not get profile', msgType : 'error'});
         });
     }
 
@@ -110,7 +106,6 @@ class Dashboard extends React.Component{
       this.setState({snackOpen : true, msg : msg, msgType : type});
     }
 
-    
     handleSnackClose = (event, reason) => {
       if(reason === 'clickaway'){
           return;
@@ -126,18 +121,93 @@ class Dashboard extends React.Component{
       this.setState({openFindBetPane : false});
     }
 
+    handleBigRedButton = () => {
+      this.setState({redirectToBigRedButton : true});
+    }
+
+
+    handleNavAction = (action) => {
+      if(action === 'new-bet'){
+        this.setState({createNewBetDialog : true});
+      }
+      else if(action === 'find-bets'){
+        this.setState({openFindBetPane : true});
+      }
+      else if(action === 'find-location-bets'){
+        this.setState({renderFindLocationBets : true});
+      }
+      else if(action === 'create-location-bet'){
+        this.setState({renderCreateNewLocationBet : true});
+      }
+    }
+
+    handleCreateLocationBet = () => {
+      this.setState({renderCreateNewLocationBet : true});
+    }
+
+    handleCreateRegion = () => {
+      this.setState({renderCreateNewRegion : true});
+    }
+
+    handleProfile = () => {
+      this.setState({renderProfile : true});
+    }
+
+    handleLogout = () => {
+      console.log(document.cookie);
+      localStorage.clear('Authorization');
+      this.setState({renderLogin : true});
+    }
+
     render(){
-      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, snackOpen, msg, msgType, openFindBetPane} = this.state;
+      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, renderProfile, snackOpen, msg, msgType, openFindBetPane, username, redirectToLogIn, renderCreateNewLocationBet, redirectToBigRedButton, renderLogin} = this.state;
       const {classes} = this.props;
+      if(redirectToLogIn){
+        return (
+          <Redirect to='/users/login' />
+        )
+      }
+      if(renderFindLocationBets){
+        return(
+          <Redirect to='/find-location-bets' push/>
+        )
+      }
+      if(renderCreateNewLocationBet){
+        return(
+          <Redirect to='/create-location-bet' push/>
+        )
+      }
+      if(renderProfile){
+        let url = `/users/profile?${username}`;
+        return(
+          <Redirect to={url} push/>
+        )
+      }
+      if(redirectToBigRedButton){
+        return(
+          <Redirect to='/big-red-button' push />
+        )
+      }
+      if(renderLogin){
+        return (
+          <Redirect to='/users/login' push />
+        )
+      }
       const drawer = (
         <div>
               <List>
               <ListSubheader>You</ListSubheader>
-              <ListItem>
+              <ListItem button onClick={this.handleProfile}>
                 <ListItemIcon>
                   <PersonIcon />
                 </ListItemIcon>
                 <ListItemText primary='Profile' />
+              </ListItem>
+              <ListItem button onClick={this.handleLogout}>
+                <ListItemIcon>
+                  <ExitToAppIcon />
+                </ListItemIcon>
+                <ListItemText primary='Logout' />
               </ListItem>
               </List>
               <Divider />
@@ -157,6 +227,14 @@ class Dashboard extends React.Component{
                 </ListItemIcon>
                 <ListItemText primary='New Bet' />
               </ListItem>
+              <ListItem button onClick={this.handleBigRedButton}>
+                <ListItemIcon>
+                  <RadioButtonCheckedIcon />
+                </ListItemIcon>
+                <ListItemText>
+                  Big Red Button
+                </ListItemText>
+              </ListItem>
               <ListItem button onClick={this.handleLocationNavToggle}>
                 <ListItemIcon>
                   <LocationOnIcon />
@@ -172,29 +250,17 @@ class Dashboard extends React.Component{
                     </ListItemIcon>
                     <ListItemText primary="Find Bets" />
                   </ListItem>
-                  <ListItem className={classes.nested}>
+                  <ListItem className={classes.nested} button onClick={this.handleCreateLocationBet}>
                     <ListItemIcon>
                       <AddIcon />
                     </ListItemIcon>
                     <ListItemText primary='Create New Bet' />
-                  </ListItem>
-                  <ListItem className={classes.nested}>
-                    <ListItemIcon>
-                      <AddIcon />
-                    </ListItemIcon>
-                    <ListItemText primary='Create New Region' />
                   </ListItem>
                 </List>
               </Collapse>
             </List>
           </div>
       );
-
-      if(renderFindLocationBets){
-        return(
-          <Redirect to='/find-location-bets' />
-        )
-      }
 
       if(loggedIn){
         return(
@@ -206,12 +272,13 @@ class Dashboard extends React.Component{
                 openPane={openFindBetPane}
                 closeDialog={this.closeFindBetPane}
             />
-            <Navbar className={classes.appBar}/>
+            <Navbar className={classes.appBar} dashboard action={this.handleNavAction}/>
             <div className={classes.root}>
                 <CreateBetForm 
                   open={createNewBetDialog} 
                   closeDialog={this.closeCreateNewBetDialog}
                   error={this.handleError}
+                  username={username}
                 />
                 <CssBaseline />
                 <nav className={classes.drawer} style={styles.menu} aria-label="mailbox folders">
@@ -249,11 +316,11 @@ class Dashboard extends React.Component{
                 <Container style={styles.mainContainer}>
                   <Row style={styles.row}>
                       <Col xs={12}>
-                        <h1>Betting Dashboard</h1>
+                        <h1 style={styles.title}>Betting Dashboard</h1>
                       </Col>
                   </Row>
                   <Row style={styles.row}>
-                      <Col xs={12} md={6} style={styles.col}>
+                      <Col xs={12} sm={12} md={6} style={styles.col}>
                         <Row>
                           <Col>
                           <Paper style={styles.paper}>
@@ -268,18 +335,10 @@ class Dashboard extends React.Component{
                             </Col>
                           </Row>
                       </Col>
-                      <Col xs={12} md={6}>
+                      <Col xs={12} sm={12} md={6}>
                         <Row>
                           <Col>
-                            <h1>Recently Finised Bets:</h1>
-                            <FinishedBets />
-                          </Col>
-                        </Row>
-                        <Row>
-                        <Col>
-                        <Paper style={styles.paper}>
-                          <h2>New Bets:</h2>
-                          </Paper>
+                            <FinishedBets username={username}/>
                           </Col>
                         </Row>
                       </Col>
@@ -343,6 +402,9 @@ const styles = {
     },
     menu: {
       top: 'auto'
+    },
+    title: {
+      marginTop: '10px'
     }
 }
 

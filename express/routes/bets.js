@@ -36,6 +36,7 @@ router.get('/debugTest', (req, res) => {
 //TODO update docs
 router.post('/createLocationBet', (req, res) => {
     let data = req.body;
+    console.log(data);
     if (data.location_name && data.latitude && data.longitude && data.radius && data.bet_region_id && data.bet_id) {
         if (!isNaN(data.latitude) && !isNaN(data.longitude) && !isNaN(data.radius)) {
             if (utilFuncs.validate(data.bet_region_id, 'id') && utilFuncs.validate(data.bet_id, 'id')) {
@@ -45,7 +46,7 @@ router.post('/createLocationBet', (req, res) => {
                             if (response) {
                                 res.status(200).json({
                                     'status': 'success',
-                                    'body': 'Location bet made'
+                                    'body': response
                                 });
                             } else {
                                 res.status(400).json({
@@ -91,20 +92,88 @@ router.post('/createLocationBet', (req, res) => {
     }
 });
 
+
+router.put('/updateBetWithLocData', (req, res) => {
+    if(req.body.locationID && req.body.betID){
+        console.log(req.cookies.Authorization);
+        utilFuncs.isSignedIn(req.cookies).then((profile) => {
+            console.log("Signed In");
+            if(utilFuncs.validate(req.body.locationID, 'id') && utilFuncs.validate(req.body.betID, 'id')){
+                console.log("Validated");
+                utilFuncs.updateBetWithLocData(req.body.locationID, req.body.betID).then((updatedBet) => {
+                    res.status(200).json({
+                        'status' : 'success',
+                        'body' : updatedBet
+                    });
+                }, err => {
+                    res.status(400).json({
+                        'status' : 'error',
+                        'body' : err
+                    })
+                });
+            }else{
+                res.status.json({
+                    'status' : 'error',
+                    'body' : 'Invalid parameters'
+                })
+            }
+
+        }, err => {
+            res.status(400).json({
+                'status' : 'error',
+                'body' : err
+            })
+        });
+    }else{
+        res.status(400).json({
+            'status' : 'error',
+            'body' : 'Missing parameter id'
+        })
+    }
+});
+
 // API for getting bets in region
 router.get('/getBetsInRegion', (req, res) => {
-    let id = req.query.id;
-    if (id != null) {
-        Bet.find({ bet_region_id: id.toString() }, (err, bets) => {
-            if (err) {
-                res.status(500).json({
-                    "status": "error",
-                    "body": "error"
+    if(req.query.id && req.query.lat && req.query.lng){
+        if(!isNaN(req.query.lat) && !isNaN(req.query.lng) && utilFuncs.validate(req.query.id, 'id')){
+            utilFuncs.isSignedIn(req.cookies).then(profile => {
+                let username = '';
+                if(res){
+                    username = profile.user_name;
+                    utilFuncs.getBetsInRegion(req.query.id, username, req.query.lat, req.query.lng).then(bets => {
+                        res.status(200).json({
+                            'status' : 'success',
+                            'body' : bets
+                        });
+                    }, err => {
+                        res.status(400).json({
+                            'status' : 'error',
+                            'body' : err
+                        })
+                    })  
+                }else{
+                    res.status(400).json({
+                        'status' : 'error',
+                        'body' : 'Could not find profile'
+                    });
+                }
+            }, err => {
+                res.status(400).json({
+                    'status' : 'error',
+                    'body' : err
                 });
-            } else {
-                res.status(200).json(bets);
-            }
-        });
+            })
+        }else{
+            res.status(400).json({
+                'status' : 'error',
+                'body' : 'Invalid parametres'
+            })
+        }
+    }else{
+        res.status(400).json({
+            'status' : 'error',
+            'body' : 'Missing parameters'
+        })
     }
 });
 
@@ -218,6 +287,51 @@ router.put('/addBetToRegion', function(req, res) {
             res.json(region);
         }
     });
+});
+
+router.get('/getLocationBetById', (req, res) => {
+    if(req.query.id){
+        if(utilFuncs.validate(req.query.id, 'id')){
+            utilFuncs.isSignedIn(req.cookies).then(profile => {
+                if(profile){
+                    utilFuncs.getLocationBetID(req.query.id).then(bet => {
+                        res.status(200).json({
+                            'status' : 'success',
+                            'body' : bet
+                        })
+
+                    }, err => {
+                        res.status(400).json({
+                            'status' : 'error',
+                            'body' : err
+                        })
+                    })
+
+                }else{
+                    res.status(400).json({
+                        'status' : 'error',
+                        'body' : 'Not signed in'
+                    })
+                }
+            }, err => {
+                res.status(400).json({
+                    'status' : 'error',
+                    'body' : err
+                })
+            })
+        }
+        else{
+            res.status(400).json({
+                'status' : 'error',
+                'body' : 'Invalid id'
+            })
+        }
+    }else{
+        res.status(400).json({
+            'status' : 'error',
+            'body' : 'Missing parameters'
+        })
+    }
 });
 
 // Gets specific region by id
@@ -340,7 +454,7 @@ router.post('/makeBet', (req, res) => {
                         if (response) {
                             res.status(200).json({
                                 "status": "success",
-                                "body": "Bet made!"
+                                "body": response
                             });
                         } else {
                             res.status(400).json({
@@ -672,7 +786,6 @@ router.post('/bigButtonBet', (req, res) => {
 router.post('/pressBigButton', (req, res) => {
     generalFuncs.handleBigButtonPress().then((response) => {
         if (response) {
-            console.log(response);
             res.status(200).json({
                 "status": "success",
                 "body": "Big red button pressed"

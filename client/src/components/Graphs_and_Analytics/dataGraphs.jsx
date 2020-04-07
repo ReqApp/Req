@@ -4,7 +4,6 @@ import React from 'react';
 import {Container, Row, Col} from 'react-bootstrap';
 // Components
 import UserWinLoss from './userWinLoss';
-import PeopleReached from './peopleReached';
 import PlacedBetData from './placedBetData';
 import CreatedBetData from './createdBetData';
 import BetBreakdown from './polarArea';
@@ -19,27 +18,30 @@ export default class Graphs extends React.Component{
   render(){
     const {user} = this.props;
     return(
-      <Container>
+      <Container style={styles.container}>
         <Row>
-          <Col xs="auto">
+          <Col lg={6} md={12} xs={12}>
             <PlacedBetData user={user}/>
           </Col>
-          <Col xs="auto">
+          <Col lg={6} md={12} xs={12}>
             <CreatedBetData user={user}/>
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col lg={6} md={12} xs={12}>
             <UserWinLoss user={user}/>
           </Col>
-          <Col>
+          <Col lg={6} md={12} xs={12}>
             <BetBreakdown user={user}/>
-          </Col>
-          <Col xs="auto">
-            <PeopleReached user={user}/>
           </Col>
         </Row>
       </Container>
     )
+  }
+}
+
+const styles = {
+  container: {
+    marginTop: '20px'
   }
 }

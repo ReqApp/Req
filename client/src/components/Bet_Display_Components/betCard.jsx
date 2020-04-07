@@ -4,7 +4,6 @@ import React, { Component } from 'react'
 import {Row, Col} from 'react-bootstrap';
 // Material
 import {Button} from '@material-ui/core';
-import {Paper} from '@material-ui/core';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -20,8 +19,14 @@ import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 // Components
 import Alert from '../Miscellaneous/alertSnack';
+import DisplayMap from '../Location_Betting_Components/maps';
 
 export default class betCard extends Component {
     constructor(props){
@@ -141,122 +146,165 @@ export default class betCard extends Component {
 
     renderMulti = () => {
         const {betAmount, betValue} = this.state;
-        const {data} = this.props;
+        const {data, index} = this.props;
+
+        let color = null;
+        if(index % 2 == 0){
+            color = {
+                backgroundColor: '#DCDCDC',
+            }
+        }
+        let md = 6;
+        if(data.location_name){
+            md = 4;
+        }
 
         return (
-                <Paper style={styles.card}>
-                    <div>
-                        <Row>
-                            <Col xs={12} md={6}>
-                                <h2>{data.title}</h2>
-                            </Col>
-                            <Col xs={12} md={6}>
-                                <Button variant='contained' onClick={this.handlePlaceBet}>Place Bet</Button>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12} md={6}>
-                            <List component="nav">
+            <ExpansionPanel style={color, styles.expansionPanel}>
+                <ExpansionPanelSummary
+                    expandIcon={<ExpandMoreIcon />}
+                >
+                <div>
+                    <Row>
+                        <Col>
+                            <h4>{data.title}</h4>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Typography>Created By: {data.username}</Typography>
+                        </Col>
+                    </Row>
+                </div>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                <div>
+                <Row>
+                    <Col xs={12} md={md}>
+                    <List component="nav">
+                    <ListSubheader component="div">
+                        Details:
+                    </ListSubheader>
+                        <ListItem>
+                            <ListItemIcon>
+                                <HourglassEmptyIcon />
+                            </ListItemIcon>
+                            <ListItemText>
+                                {this.generateDeadline(data.deadline)}
+                            </ListItemText>
+                        </ListItem>
+                        <ListItem>
+                        <ListItemIcon>
+                            <PeopleIcon />
+                        </ListItemIcon>
+                        <ListItemText>Participants: {data.numberOfBettors}</ListItemText>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemIcon>
+                                <MonetizationOnIcon />
+                            </ListItemIcon>
+                            <ListItemText>Total Sum: {data.betsTotal}</ListItemText>
+                        </ListItem>
+                    </List>
+                    </Col>
+                    <Col xs={12} md={md}>
+                    <List component="nav">
+                        <ListSubheader component="div">
+                            Winnings:
+                        </ListSubheader>
+                        <ListItem>
+                            <ListItemText>First Place Cut: {data.firstPlaceCut * 100}%</ListItemText>
+                        </ListItem>
+                        <ListItem>
+                        <ListItemText>Second Place Cut: {data.secondPlaceCut * 100}%</ListItemText>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemText>Third Place Cut: {data.thirdPlaceCut * 100}%</ListItemText>
+                        </ListItem>
+                    </List>
+                    </Col>   
+                    {data.location_name ? <Col xs={12} md={md}><DisplayMap miniMap={true} regionDetails={data} height='200px'/></Col> : <div></div>}
+                </Row>
+                <Row>
+                    <Col xs={12} md={6}>
+                        <List component="nav">
                             <ListSubheader component="div">
-                                Details:
+                                Your Bet:
                             </ListSubheader>
-                                <ListItem>
-                                    <ListItemIcon>
-                                        <HourglassEmptyIcon />
-                                    </ListItemIcon>
-                                    <ListItemText>
-                                        {this.generateDeadline(data.deadline)}
-                                    </ListItemText>
-                                </ListItem>
-                                <ListItem>
-                                <ListItemIcon>
-                                    <PeopleIcon />
-                                </ListItemIcon>
-                                <ListItemText>Participants: {data.numberOfBettors}</ListItemText>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemIcon>
-                                        <MonetizationOnIcon />
-                                    </ListItemIcon>
-                                    <ListItemText>Total Sum: {data.betsTotal}</ListItemText>
-                                </ListItem>
+                            <ListItem>
+                                <Input
+                                    onChange={this.handleBetValue}
+                                    value={betValue}
+                                    label="With normal TextField"
+                                    style={styles.input}
+                                    id="standard-adornment-weight"
+                                    endAdornment={<InputAdornment position="end">Bet</InputAdornment>}
+                                    aria-describedby="standard-weight-helper-text"
+                                />
+                            </ListItem>
                             </List>
-                            </Col>
-                            <Col xs={12} md={6}>
-                            <List component="nav">
-                                <ListSubheader component="div">
-                                    Winnings:
-                                </ListSubheader>
-                                <ListItem>
-                                    <ListItemText>First Place Cut: {data.firstPlaceCut * 100}%</ListItemText>
-                                </ListItem>
-                                <ListItem>
-                                <ListItemText>Second Place Cut: {data.secondPlaceCut * 100}%</ListItemText>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemText>Third Place Cut: {data.thirdPlaceCut * 100}%</ListItemText>
-                                </ListItem>
+                        </Col>
+                        <Col xs={12} md={6}>
+                            <List>
+                            <ListSubheader component="div">
+                                Bet Value:
+                            </ListSubheader>
+                            <ListItem>
+                                <Input
+                                    onChange={this.handleBetAmount}
+                                    value={betAmount}
+                                    label="With normal TextField"
+                                    style={styles.input}
+                                    id="standard-adornment-weight"
+                                    endAdornment={<InputAdornment position="end">Coins</InputAdornment>}
+                                    aria-describedby="standard-weight-helper-text"
+                                />
+                            </ListItem>
                             </List>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12} md={6}>
-                                <List component="nav">
-                                    <ListSubheader component="div">
-                                        Your Bet:
-                                    </ListSubheader>
-                                    <ListItem>
-                                        <Input
-                                            onChange={this.handleBetValue}
-                                            value={betValue}
-                                            label="With normal TextField"
-                                            style={styles.input}
-                                            id="standard-adornment-weight"
-                                            endAdornment={<InputAdornment position="end">Bet</InputAdornment>}
-                                            aria-describedby="standard-weight-helper-text"
-                                        />
-                                    </ListItem>
-                                    </List>
-                                </Col>
-                                <Col xs={12} md={6}>
-                                    <List>
-                                    <ListSubheader component="div">
-                                        Bet Value:
-                                    </ListSubheader>
-                                    <ListItem>
-                                        <Input
-                                            onChange={this.handleBetAmount}
-                                            value={betAmount}
-                                            label="With normal TextField"
-                                            style={styles.input}
-                                            id="standard-adornment-weight"
-                                            endAdornment={<InputAdornment position="end">Coins</InputAdornment>}
-                                            aria-describedby="standard-weight-helper-text"
-                                        />
-                                    </ListItem>
-                                    </List>
-                                </Col>
-                            </Row>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Button variant="contained" onClick={this.handlePlaceBet}>Place Bet</Button>
+                        </Col>
+                    </Row>
                     </div>
-                </Paper>
+                    </ExpansionPanelDetails>
+            </ExpansionPanel>
         )
     }
 
     renderBinary = () => {
         const {side, betAmount} = this.state;
-        const {data} = this.props;
+        const {data, index} = this.props;
+
+        let color = null;
+        if(index % 2 == 0){
+            color = {
+                backgroundColor: '#DCDCDC',
+            }
+        }
 
         return (
-        <Paper style={styles.card}>
+        <ExpansionPanel style={color, styles.expansionPanel}>
+            <ExpansionPanelSummary
+                expandIcon={<ExpandMoreIcon />}
+            >
             <div>
                 <Row>
-                    <Col xs={12} md={6}>
-                        <h2>{data.title}</h2>
-                    </Col>
-                    <Col xs={12} md={6}>
-                        <Button variant='contained' onClick={this.handlePlaceBet}>Place Bet</Button>
+                    <Col>
+                        <h4>{data.title}</h4>
                     </Col>
                 </Row>
+                <Row>
+                    <Col>
+                        <Typography>Created By: {data.username}</Typography>
+                    </Col>
+                </Row>
+            </div>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+            <div>
                 <Row>
                     <Col xs={12} md={6}>
                         <List>
@@ -344,8 +392,14 @@ export default class betCard extends Component {
                             </List>
                         </Col>
                     </Row>
+                    <Row>
+                        <Col>
+                            <Button variant="contained" onClick={this.handlePlaceBet}>Place Bet</Button>
+                        </Col>
+                    </Row>
             </div>
-        </Paper>
+            </ExpansionPanelDetails>
+        </ExpansionPanel>
         )
     }
 
@@ -393,5 +447,9 @@ const styles = {
     },
     side: {
         minWidth: '100px'
+    },
+    expansionPanel: {
+        marginTop : '5px'
     }
+    
 }

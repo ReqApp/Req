@@ -70,7 +70,7 @@ export class FAQ extends Component {
                                <Col>
                         <Avatar alt="Cathal O'Callaghan - Back-end Infrastructure" src={Cathal} style={styles.icons}></Avatar>
                         <h4 style={{fontWeight:'bold'}}>Cathal O'Callaghan <a href="https://iamcathal.github.io"><img src={GitHubIcon} style={{height:'26px', width:'26px'}} alt='Cathal'></img></a></h4> 
-                        <h6>  Back-end Infrastructure / Front-end UI  </h6>
+                        <h6> Back-end Infrastructure / Front-end UI </h6>
                         
                         </Col>
                         <Col>

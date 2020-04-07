@@ -25,15 +25,12 @@ export default class DisplayMap extends React.Component{
         setTimeout(() => {
           marker.leafletElement.openPopup();
         }, 200);
-        
       }
     }
 
     fullMap(){     
         // After lifting state
         const {hasLocation, userLocation, accurate, loadingData, data} = this.props;
-        console.log(userLocation);
-  
         // Check if userlocation found
         var userMarker = null;
         if(hasLocation){

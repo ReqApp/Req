@@ -17,5 +17,6 @@ body {
   background-color: "#269440";
 }
 
-
-
+.MuiDialog-paperWidthSm{
+  min-width: 300px !important;
+}

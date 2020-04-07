@@ -52,7 +52,6 @@ export default class PeopleReached extends Component {
         const {betsMade, peopleReached, dataRetrieved} = this.state;
         if(dataRetrieved){
             return (
-                <div>
                     <Paper elevation={3} style={styles.card}>
 
                     <h4 style={{padding:'2px 2px 0px 2px'}}>Bets made:</h4>
@@ -61,7 +60,6 @@ export default class PeopleReached extends Component {
                     <h4>People reached:</h4>
                     <h1  style={{padding:'0px', fontWeight:'bold'}}>{peopleReached}</h1>
                     </Paper>
-                </div>
                 
             )
         }
@@ -73,8 +71,9 @@ export default class PeopleReached extends Component {
 const styles = {
     card: {
         textAlign: 'center',
-        padding: '4px',
-        marginBottom: '60px',
-        borderRadius: '6px'
+        padding: '10px',
+        borderRadius: '6px',
+        height: '93%',
+        marginBottom: '15px',
     }
 }

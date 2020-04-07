@@ -10,10 +10,9 @@ import Graphs from '../components/Graphs_and_Analytics/dataGraphs';
 import ProfilePicture from '../components/Page_Components/profilePicture';
 import Coins from '../components/Graphs_and_Analytics/coins';
 import OverrallEarnings from '../components/Graphs_and_Analytics/overrallEarnings';
+import PeopleReached from '../components/Graphs_and_Analytics/peopleReached';
 //Other
 import openSocket from 'socket.io-client';
-import ReqBackground from '../images/reqBackground4.jpg'
-
 
 import SimplePopover from '../components/Miscellaneous/QRPopover';
 
@@ -67,12 +66,13 @@ export class Profile extends React.Component{
                 <Container>
                 <div style={styles.container}>
                     <Row>
-                        <Col>
+                        <Col md={9}>
                             <Paper elevation={3} style={styles.profile}>
-                                <Container>
                                     <Row>
                                         <Col xs="auto">
-                                            <ProfilePicture user={userName} />
+                                            <Paper>
+                                                <ProfilePicture user={userName} />
+                                            </Paper>
                                         </Col>
                                         <Col>
                                         <Container>
@@ -85,8 +85,6 @@ export class Profile extends React.Component{
                                                 <Col xs="auto">
                                                 <Coins user={userName}/> 
                                                 </Col>
-                                            </Row>
-                                            <Row>
                                                 <Col xs="auto">
                                                 <OverrallEarnings user={userName} />
                                                 <SimplePopover/>
@@ -95,15 +93,15 @@ export class Profile extends React.Component{
                                         </Container>
                                         </Col>
                                     </Row>
-                                </Container>
                             </Paper>
+                        </Col>
+                        <Col md={3}>
+                            <PeopleReached user={userName} />
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
-                        <Paper elevation={3} style={styles.stats}>
+                        <Col style={{padding: '0px'}}>
                             <Graphs user={userName} />
-                        </Paper>
                         </Col>
                     </Row>
                 </div>
@@ -116,19 +114,23 @@ export class Profile extends React.Component{
 
 const styles = {
     profile: {
+        borderRadius: '6px',
         textAlign: 'center',
-        padding: '25px',
-        marginBottom: '20px'
+        padding: '15px',
+        marginBottom: '15px'
     },
     backing: {
-        backgroundImage:`url(${ReqBackground})`,
-        backgroundPosition: 'center',
+        //backgroundImage:`url(${ReqBackground})`,
+        //backgroundPosition: 'center',
+        backgroundImage: 'linear-gradient(to top, #808387, #ffffff)',
         height:'100%'
     },
     stats: {
+        marginTop: '15px',
         padding: '15px'
     },
     container: {
+        marginTop: '20px',
         width: '90%',
         marginLeft: '10px',
         marginRight: '10px',

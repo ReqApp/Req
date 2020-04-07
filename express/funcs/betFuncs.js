@@ -1,6 +1,7 @@
 var forgotPasswordUser = require('../models/forgotPasswordUsers');
 var betsFinished = require('../models/betsFinished');
 var UnverifiedUser = require('../models/unverifiedUsers');
+var analyticFuncs = require('../funcs/analyticsFuncs');
 var generalFuncs = require('../funcs/generalFuncs');
 const keccak512 = require('js-sha3').keccak512;
 var bets = require('../models/bets');
@@ -8,6 +9,7 @@ var User = require('../models/users');
 var BetRegion = require('../models/betRegions');
 var LocationBet = require('../models/locationBetData');
 var jwt = require('jsonwebtoken');
+var mongoose = require('mongoose');
 const axios = require("axios");
 
 
@@ -498,7 +500,7 @@ function decideBet(inputObj) {
                                     }
                                 }
                             } else if (foundBet.type === "multi") {
-                                if (!isNan(inputObj.result)) {
+                                if (!isNaN(inputObj.result)) {
                                     reject("Invalid result")
                                 }
                                 // if there were any bets at all, pay out to them
@@ -894,8 +896,11 @@ function anonymiseBetData(allBets) {
                     forBetTotal: forTotal,
                     againstBetTotal: againstTotal,
                     numberOfBettors : indivBet.forUsers.length + indivBet.againstUsers.length,
+                    numberFor: indivBet.forUsers.length,
+                    numberAgainst: indivBet.againstUsers.length,
                     betID: indivBet._id,
-                    type: indivBet.type
+                    type: indivBet.type,
+                    locationID: indivBet.locationID
                 }
                 betArr.push(tempBet);
 
@@ -916,7 +921,8 @@ function anonymiseBetData(allBets) {
                     thirdPlaceCut : indivBet.thirdPlaceCut,
                     numberOfBettors : indivBet.commonBets.length,
                     betID: indivBet._id,
-                    type: indivBet.type
+                    type: indivBet.type,
+                    locationID: indivBet.locationID
                 }
                 betArr.push(tempBet);
             }
@@ -933,31 +939,32 @@ function findNewBets(user_name){
         getBets().then(bets => {
             if(bets){
                 bets.forEach(bet => {
-                    let found = false;
-                    let userCreated = false;
-                    if(bet.user_name === user_name){
-                        userCreated = true;
+                    if(bet.locationID === 'undefined' || bet.locationID === ''){
+                        let found = false;
+                        let userCreated = false;
+                        if(bet.user_name === user_name){
+                            userCreated = true;
+                        }
+                        if(bet.type === 'binary' && !userCreated){
+                            if(bet.forUsers.find(user => user.user_name === user_name)){
+                                found = true;
+                            }
+                            if(bet.againstUsers.find(user => user.user_name === user_name)){
+                                found = true;
+                            }   
+                            if(!found){
+                                newBets.push(bet);
+                            }
+                        }
+                        else if(!userCreated){
+                            if(bet.commonBets.find(user => user.user_name === user_name)){
+                                console.log(".")
+                            }
+                            else{
+                                newBets.push(bet);
+                            }
+                        }
                     }
-                    if(bet.type === 'binary' && !userCreated){
-                        if(bet.forUsers.find(user => user.user_name === user_name)){
-                            found = true;
-                        }
-                        if(bet.againstUsers.find(user => user.user_name === user_name)){
-                            found = true;
-                        }
-                        if(!found){
-                            newBets.push(bet);
-                        }
-                    }
-                    else if(!userCreated){
-                        if(bet.commonBets.find(user => user.user_name === user_name)){
-                            console.log(".")
-                        }
-                        else{
-                            newBets.push(bet);
-                        }
-                    }
-
                 })
             }
             anonymiseBetData(newBets).then(res => {
@@ -967,6 +974,82 @@ function findNewBets(user_name){
             })
         }, err => {
             reject(err);
+        });
+    });
+}
+
+function getBetsInRegion(regionID, username, lat, lng){
+    return new Promise((resolve, reject) => {
+        var returnBets = [];
+        BetRegion.findOne({_id : regionID}, async (err, region) => {
+            if(err){
+                reject(err);
+            }else{
+                if(region){
+                    for(let id of region.bet_ids){
+                        let locationBet = await getLocationBetID(id).catch(err => reject(err));
+                        if(locationBet){
+                            let bet = await getBetByID(locationBet.bet_id).catch(err => reject(err));
+                            if(bet){
+                                if(checkIfBetIsNew(bet, username)){
+                                    let arr = await anonymiseBetData([bet]).catch(err => resolve(err));
+                                    let obj = arr[0];
+                                    // Check if user is in bet radius
+                                    if(locationBet.radius <= calcDistance(locationBet, {lat : lat, lng : lng})){
+                                        obj.inRadius = true;
+                                    }else{
+                                        obj.inRadius = false;
+                                    }
+                                    returnBets.push({...obj, ...(locationBet.toObject())}); 
+                                }
+                            }else{
+                                reject("Could not find corresponding bet")
+                            }
+                        }else{
+                            continue;
+                        }
+                    }
+                    resolve(returnBets);
+                }else{
+                    reject("Could not find region")
+                }
+            } 
+        })
+    });
+}
+
+function getLocationBetID(id){
+    return new Promise((resolve, reject) => {
+        LocationBet.findOne({_id : id}, (err, locationBet) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(locationBet);
+            }
+        });
+    });
+}
+
+function getBetByID(id){
+    return new Promise((resolve, reject) => {
+        bets.findOne({_id : mongoose.Types.ObjectId(id)}, (err, bet) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(bet);
+            }
+        });
+    });
+}
+
+function updateBetWithLocData(locationID, betID){
+    return new Promise((resolve, reject) => {
+        bets.findOneAndUpdate({_id : betID}, {locationID : locationID}, (err, updatedBet) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(updatedBet);
+            }
         });
     });
 }
@@ -1003,11 +1086,16 @@ function getFinishedBets(){
 
 function getFinishedBetsForUser(user_name){
     return new Promise((resolve, reject) => {
-        getFinishedBets().then(finishedBets => {
-            let returnBets = [];
-            finishedBets.forEach(elm => {
+        getFinishedBets().then(async finishedBets => {
+            let placeBets = [];
+            let createdBets = [];
+            let placedBetsPayouts = await analyticFuncs.getBettingHistory(user_name).catch(err => reject(err));
+            let createBetsPayouts = await analyticFuncs.getCreatedBettingHistory(user_name).catch(err => reject(err));
+
+            finishedBets.forEach((elm, index)=> {
                 if(elm.user_name === user_name){
-                    returnBets.push(elm);
+                    //createdBets.push({elm, ...(createBetsPayouts[index])});
+                    createBetsPayouts.push(elm);
                 }
                 else{
                     if(elm.type === 'binary'){
@@ -1015,13 +1103,15 @@ function getFinishedBetsForUser(user_name){
                         elm.forUsers.forEach(user => {
                             if(user.user_name === user_name){
                                 found = true;
-                                returnBets.push(elm);
+                                //placeBets.push({...elm, ...(placedBetsPayouts[index])});
+                                placeBets.push(elm);
                             }
                         });
                         if(!found){
                             elm.againstUsers.forEach(user => {
                                 if(user.user_name === user_name){
-                                    returnBets.push(elm);
+                                    //placeBets.push({...elm, ...(placedBetsPayouts[index])});
+                                    placeBets.push(elm);
                                 }
                             })
                         }
@@ -1029,17 +1119,48 @@ function getFinishedBetsForUser(user_name){
                     else{
                         elm.commonBets.forEach(user => {
                             if(user.user_name === user_name){
-                                returnBets.push(elm);
+                                //placeBets.push({...elm, ...(placedBetsPayouts[index])});
+                                placeBets.push(elm);
                             }
                         })
                     }
                 }
             });
-            resolve(returnBets);
+            console.log(placeBets);
+            console.log(placedBetsPayouts);
+            resolve({placedBets : placeBets, createdBets : createdBets});
         }, err => {
             reject(err);
         })
     });
+}
+
+function checkIfBetIsNew(bet, username){
+    if(bet.user_name === username){
+        return false;
+    }
+    if(bet.type === 'binary'){
+        bet.forUsers.forEach(user => {
+            if(user.user_name === username){
+                return false;
+            }
+        });
+        if(!found){
+            bet.againstUsers.forEach(user => {
+                if(user.user_name === username){
+                    return false;
+                }
+            })
+        }
+    }
+    else{
+        bet.commonBets.forEach(user => {
+            if(user.user_name === user_name){
+                return false
+            }
+        });
+    }
+    return true;
 }
 
 function getBetsForUser(data, user_name){
@@ -1255,7 +1376,7 @@ function createLocationBet(data) {
             if (err) {
                 reject(err);
             } else {
-                addLocationBetToRegion(savedBet.bet_region_id, savedBet._id).then(() => {
+                addLocationBetToRegion(savedBet.bet_region_id, savedBet.bet_id, savedBet._id).then(() => {
                     resolve(savedBet);
                 }, err => {
                     reject(err);
@@ -1265,13 +1386,23 @@ function createLocationBet(data) {
     });
 }
 
-function addLocationBetToRegion(regionID, locationBetID) {
+function addLocationBetToRegion(regionID, betID, locationBetID) {
     return new Promise((resolve, reject) => {
         BetRegion.findOneAndUpdate({ '_id': regionID }, { '$push': { 'bet_ids': locationBetID }, '$inc': { 'num_bets': 1 } }, { useFindAndModify: false }).exec((err, region) => {
             if (err) {
                 reject(err);
             } else {
-                resolve(region);
+                bets.findOneAndUpdate({'_id' : betID}, { '$set' : { 'locationID' : locationBetID}}).exec((err, bet) => {
+                    if(err){
+                        reject(err);
+                    }
+                    else{
+                        resolve({
+                            region : region, 
+                            bet : bet
+                        });
+                    }
+                });
             }
         });
     });
@@ -1334,3 +1465,6 @@ module.exports.createLocationBet = createLocationBet;
 module.exports.getUserCreatedBets = getUserCreatedBets;
 module.exports.isPasswordCompromised = isPasswordCompromised;
 module.exports.getFinishedBetsForUser = getFinishedBetsForUser;
+module.exports.getBetsInRegion = getBetsInRegion;
+module.exports.updateBetWithLocData = updateBetWithLocData;
+module.exports.getLocationBetID = getLocationBetID;

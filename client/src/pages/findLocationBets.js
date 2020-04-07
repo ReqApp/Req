@@ -26,6 +26,7 @@ import CreateLocationBet from '../components/Location_Betting_Components/createL
 // Other
 import openSocket from 'socket.io-client';
 import './reset.css';
+import {Redirect} from 'react-router-dom';
 
 // Main page for location betting
 export default class FindBetPage extends React.Component{
@@ -48,10 +49,10 @@ export default class FindBetPage extends React.Component{
             sortBy : "popular",
             showMap : false,
             openError : false,
-            loadCreateForm: false,
+            loadCreateBet: false,
             loadCreateRegion: false,
             selectedRegion: null,
-            windowWidth: window.innerWidth
+            windowWidth: window.innerWidth,
         }
         this.socket = openSocket("http://localhost:9000");
     }
@@ -64,7 +65,6 @@ export default class FindBetPage extends React.Component{
         this.getLocation();
         this.socket.on('accurateUserPos', (data) => {
             if(data.user_name === "testUser"){
-                console.log(data);
                 this.setState({hasLocation : true, latlng : data.location, accurate : true});
                 this.props.locationUpdate(data.location);
                 let response = {
@@ -80,10 +80,6 @@ export default class FindBetPage extends React.Component{
         this.setState({windowWidth : window.innerWidth});
     }
 
-    handleCreateBetRegion = () => {
-        this.setState({loadCreateRegion : true, loadCreateForm : true});
-    }
-
     // Used to get user location
     getLocation = () => {
         // Check if geolocation is available
@@ -92,18 +88,17 @@ export default class FindBetPage extends React.Component{
             navigator.geolocation.getCurrentPosition((userPosition => {
             if(userPosition.coords.accuracy < 100){
                 // Set user's location
-                let location = {lat : 53.28211, lng : -9.062186 };
-                this.setState({hasLocation : true, latlng : location, accurate : true});
-                //this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : true});
-                console.log("Getting regions");
-                this.getRegions(location);
+                // let location = {lat : 53.28211, lng : -9.062186 };
+                // this.setState({hasLocation : true, latlng : location, accurate : true});
+                this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : true});
+                this.getRegions({lat : userPosition.coords.latitude, lng : userPosition.coords.longitude});
             }else{
                 //Temp
-                let location = {lat : 53.28211, lng : -9.062186 };
-                this.setState({hasLocation : true, latlng : location, accurate : true});
-                this.getRegions(location);
+                // let location = {lat : 53.28211, lng : -9.062186 };
+                // this.setState({hasLocation : true, latlng : location, accurate : true});
+                // this.getRegions(location);
 
-                //this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : false, locationError : "not-accurate", openError : true});
+                this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : false, locationError : "not-accurate", openError : true});
             }
             }));
         }
@@ -121,7 +116,6 @@ export default class FindBetPage extends React.Component{
         fetch(url)
             .then(res => res.json())
             .then(regions => {
-                console.log(regions);
                 this.setState({loadingRegions : false, betRegions : regions});
             }).catch(err => {
                 console.log(err);
@@ -137,7 +131,6 @@ export default class FindBetPage extends React.Component{
         if(typeof elem !== 'undefined'){
             elem.scrollIntoView();
         }
-        console.log("Could not find bet card")
     }
 
     handleSearch = (event) => {
@@ -146,13 +139,32 @@ export default class FindBetPage extends React.Component{
 
     handleSelection = (id) => {
         const {mode} = this.props;
-        const {betRegions} = this.state;
+        const {betRegions, latlng} = this.state;
         if(mode === 'find'){
             // Retrieve bets in selected region
-            console.log("Retreive bets for region: " + id);
             // Get bets in region and add to state
-            // TODO localhost
-            fetch("http://localhost:9000/getBetsInRegion?id=" + id).then(bets => bets.json()).then(bets => this.setState({bets : bets, view : "bets"})).catch(err => err);
+            fetch(`http://localhost:9000/getBetsInRegion?id=${id}&lat=${latlng.lat}&lng=${latlng.lng}`, {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json'
+                },
+            })
+            .then(bets => bets.json())
+            .then(res => {
+                if(res.status === 'success'){
+                    this.setState({bets : res.body, view : "bets"});
+                }
+                else{
+                    console.log(res);
+                    this.setState({view : 'bets'});
+                }
+                
+            })
+            .catch(err => {
+                console.log(err);
+            });
         }else{
             // Load bet creation component
             let selectedRegion;
@@ -162,7 +174,7 @@ export default class FindBetPage extends React.Component{
                     break;
                 }
             }
-            this.setState({loadCreateForm : true, selectedRegion : selectedRegion});
+            this.setState({loadCreateBet : true, selectedRegion : selectedRegion});
         }
     }
     
@@ -170,8 +182,12 @@ export default class FindBetPage extends React.Component{
         this.setState({openError : false});
     }
 
+    handleCreateNewRegion = () => {
+        this.setState({loadCreateRegion : true});
+    }
+
     render(){
-        const {hasLocation, latlng, accurate, betRegions, bets, loadingRegions, sortBy, openError, view, loadCreateForm, windowWidth} = this.state;
+        const {hasLocation, latlng, accurate, betRegions, bets, loadingRegions, sortBy, openError, view, loadCreateRegion, windowWidth, selectedRegion, loadCreateBet} = this.state;
         const {mode} = this.props;
         let useStyles = null;
 
@@ -181,13 +197,17 @@ export default class FindBetPage extends React.Component{
         else{
             useStyles = styles;
         }
-        
-        if(loadCreateForm){
-            const {selectedRegion, loadCreateRegion} = this.state;
+        if(loadCreateBet){
             return(
-                <CreateLocationBet userLocation={latlng} regionData={selectedRegion} createRegion={loadCreateRegion}/>
+                <CreateLocationBet userLocation={latlng} regionData={selectedRegion} />
             )
-        }else{
+        }
+        if(loadCreateRegion){
+            return(
+                <CreateLocationBet userLocation={latlng} createRegion/>
+            )
+        }
+        else{
         let predictSearch = null;
         if(!loadingRegions){
             predictSearch = <div style={useStyles.floatContainer} >
@@ -264,11 +284,12 @@ export default class FindBetPage extends React.Component{
                     <Container>
                     <Row>
                         <Col xs={12} md={6} style={useStyles.columns}>    
-                            <h2 style={useStyles.sortByTitle}>Available Regions</h2>
+                            <h2 style={useStyles.sortByTitle}>{view === 'regions' ? "Available Regions" : "Available Bets"}</h2>
                         </Col>
+                        {view === 'regions' ?
                         <Col xs={12} md={6} style={useStyles.columns}>
                             <Button
-                                onClick={this.handleCreateBetRegion}
+                                onClick={this.handleCreateNewRegion}
                                 style={useStyles.newRegionBtn}
                                 variant="contained"
                                 color="primary"
@@ -276,7 +297,8 @@ export default class FindBetPage extends React.Component{
                                 endIcon={<Icon>addsharp</Icon>}>
                                 Create New Region
                             </Button>
-                        </Col>
+                        </Col> : null
+                        }
                     </Row>
                     <Row>
                         <Col xs={12} md={6} style={useStyles.columns}>
@@ -303,7 +325,9 @@ export default class FindBetPage extends React.Component{
                     </Row>
                     </Container>
                 </Container>
-
+                <br />
+                <br />
+                <br />
             </div>
         );
         }

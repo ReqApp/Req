@@ -65,13 +65,13 @@ export default class OverrallEarnings extends Component {
         if(dataRetrieved){
             return (
                 <div>
-                        <h1>
+                        <h2>
                             <Countup end={overrallEarningsVal} 
-                            style={{fontWeight:'bold'}}
+                            style={{fontWeight:'bold', color: '#949494'}}
                             duration={3.6}
                             />
-                        </h1>
-                        <h6> coins won</h6>
+                        </h2>
+                        <h6 style={{color: '#949494'}}> coins won</h6>
                 </div>
                 
             )
