@@ -51,12 +51,12 @@ export class Home extends Component {
                             <Paper elevation={3} style={styles.card}>
                                 <h2 style={{fontWeight:'bold'}}>Win Big</h2>
                                 <EuroIcon fontSize="large" style={styles.icon}/>
-                                <p>
-                                    The sky is really the limit in terms of what you can bet on. Browse
-                                    current bets
+                                <Typography>
+                                    The sky is really the limit in terms of what you can bet on.
+                                    <br />
                                     <br />
                                     <a href="/users/dashboard" style={{fontWeight:'bold'}}> Create your first bet </a>
-                                </p>
+                                </Typography>
                             </Paper>
                         </Col>
                         <Col>
@@ -158,8 +158,8 @@ const styles = {
         height:'100%'
     },
     icon: {
-        margin: 0,
-        color: '#a681a6'
+        margin: '10px',
+        color: 'black'
     },
     copy: {
         marginTop: 20

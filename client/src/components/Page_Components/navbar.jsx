@@ -84,7 +84,7 @@ export default class Navbar extends React.Component{
         if (requestDone) {
             if (signedIn) {
                 return(
-                    <BootNav bg='light'expand="lg" sticky="top">    
+                    <BootNav expand="lg" sticky="top" style={{backgroundColor: '#ffffff'}}>    
                         <a href="/"><img src={reqLogo} style={{width:'65px'}} alt='Req Logo'/></a>
                         <BootNav.Toggle aria-controls="basic-BootNav-nav" />
                         <BootNav.Collapse id="basic-BootNav-nav">
