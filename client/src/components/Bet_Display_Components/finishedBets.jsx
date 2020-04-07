@@ -88,7 +88,7 @@ export default class FinishedBets extends Component {
                     <Paper style={styles.paper}>
                         <h2>Finished Bets:</h2>
                         <div style={{textAlign: 'center'}}>
-                            <Typography style={styles.text}>No Recently Finished Bets To Show</Typography>
+                            <h6 style={styles.text}>No Recently Finished Bets To Show</h6>
                         </div>
                     </Paper>
                 )

@@ -51,7 +51,6 @@ class Dashboard extends React.Component{
           createNewBetDialog: false,
           renderCreateNewLocationBet: false,
           redirectToBigRedButton: false,
-          renderLogin: false,
           snackOpen: false,
           msg: '',
           msgType: '',
@@ -153,14 +152,8 @@ class Dashboard extends React.Component{
       this.setState({renderProfile : true});
     }
 
-    handleLogout = () => {
-      console.log(document.cookie);
-      localStorage.clear('Authorization');
-      this.setState({renderLogin : true});
-    }
-
     render(){
-      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, renderProfile, snackOpen, msg, msgType, openFindBetPane, username, redirectToLogIn, renderCreateNewLocationBet, redirectToBigRedButton, renderLogin} = this.state;
+      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, renderProfile, snackOpen, msg, msgType, openFindBetPane, username, redirectToLogIn, renderCreateNewLocationBet, redirectToBigRedButton} = this.state;
       const {classes} = this.props;
       if(redirectToLogIn){
         return (
@@ -188,11 +181,6 @@ class Dashboard extends React.Component{
           <Redirect to='/bigRedButton' push />
         )
       }
-      if(renderLogin){
-        return (
-          <Redirect to='/users/login' push />
-        )
-      }
       const drawer = (
         <div>
               <List>
@@ -202,12 +190,6 @@ class Dashboard extends React.Component{
                   <PersonIcon />
                 </ListItemIcon>
                 <ListItemText primary='Profile' />
-              </ListItem>
-              <ListItem button onClick={this.handleLogout}>
-                <ListItemIcon>
-                  <ExitToAppIcon />
-                </ListItemIcon>
-                <ListItemText primary='Logout' />
               </ListItem>
               </List>
               <Divider />

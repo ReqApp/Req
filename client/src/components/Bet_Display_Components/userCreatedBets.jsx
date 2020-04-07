@@ -33,7 +33,7 @@ export class UserCreatedBets extends Component {
                     this.setState({loadingBets : false, bets : res.body});
                 }else{
                     console.log("You have not created any bets");
-                    this.setState({errorMsg : 'You have not created any bets yet'});
+                    this.setState({loadingBets : false, errorMsg : 'You have not created any bets yet'});
                 }
             }
             else{
@@ -52,15 +52,26 @@ export class UserCreatedBets extends Component {
         const {bets, loadingBets} = this.state;
         
         if(!loadingBets){
-            return (
-                <div>
-                    <Paper style={styles.paper}>
-                        <h3>Bets Created By You</h3>
-                        {bets.map((bet, index) => <CurrentBetInfo data={bet} key={index} userCreated/>)}
-                    </Paper>
-                    
-                </div>
+            if(bets.length){
+                return (
+                    <div>
+                        <Paper style={styles.paper}>
+                            <h3>Bets Created By You</h3>
+                            {bets.map((bet, index) => <CurrentBetInfo data={bet} key={index} userCreated/>)}
+                        </Paper>
+                        
+                    </div>
+                )
+            }else{
+            return(
+                <Paper style={styles.paper}>
+                    <h2>Bets Created By You:</h2>
+                    <div style={{textAlign: 'center'}}>
+                        <h6 style={styles.text}>You Have Not Created Any Ongoing Bets</h6>
+                    </div>
+                </Paper>
             )
+            }
         }else{
             return(
                 <Paper style={styles.paper}>
@@ -86,6 +97,9 @@ const styles = {
         marginRight: 'auto',
         marginLeft: 'auto',
     },
+    text: {
+        padding: '20px'
+    }
 }
 
 export default UserCreatedBets

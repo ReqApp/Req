@@ -28,8 +28,11 @@ export default class CurrentBets extends React.Component {
           .then((res) => res.json())
           .then((res) => {
             if(res.status === "success"){
-              console.log(res);
-              this.setState({loadingBets : false, bets : res.body});
+              if(res.body !== 'No bets'){
+                this.setState({loadingBets : false, bets : res.body});
+              }else{
+                this.setState({loadingBets : false, errorMsg : "No Current Bets To Show"});
+              }
             }
             else if(res.status === 'error' && res.body === 'User not signed in'){
               console.log(res.body);
@@ -49,15 +52,26 @@ export default class CurrentBets extends React.Component {
     render() {
         const {bets, loadingBets} = this.state;
         if(!loadingBets){
-          return (
-              <div>
-                  {bets.map((bet, index) => <CurrentBetInfo data={bet} key={index}/>)}
+          if(bets.length){
+            return (
+                <div>
+                    {bets.map((bet, index) => <CurrentBetInfo data={bet} key={index}/>)}
+                </div>
+            )
+          }else{
+            return(
+              <Paper style={styles.paper}>
+              <h2>Your Current Bets:</h2>
+              <div style={{textAlign: 'center'}}>
+                  <h6 style={styles.text}>No Current Bets To Show</h6>
               </div>
-          )
+            </Paper>
+            )
+          }
         }else{
           return(
             <Paper style={styles.paper}>
-                <h2>Bets Created By You:</h2>
+                <h2>Your Current Bets:</h2>
                 <div style={{textAlign: 'center'}}>
                     <CircularProgress style={styles.progress}/>
                     <Typography style={styles.text}>Loading Bets...</Typography>
@@ -78,5 +92,8 @@ const styles = {
     display: 'block',
     marginRight: 'auto',
     marginLeft: 'auto',
-},
+  },
+  text: {
+    padding: '20px'
+  }
 }
