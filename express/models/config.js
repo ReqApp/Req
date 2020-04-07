@@ -21,33 +21,37 @@ function createJwt(profile) {
     });
 };
 
-passport.use(new GoogleStrategy({
-    clientID: process.env.googleClientID,
-    clientSecret: process.env.googleClientSecret,
-    callbackURL: "/users/auth/google/callback"
-}, (accessToken, refreshToken, profile, done) => {
+// Had to ditch google Oauth for the time
+// If we wanted to keep it after deploying to AWS we would've needed
+// to get a domain and an ssl cert, not enough time to do this
 
-    User.findOne({ googleID: profile.id }).then((currentUser) => {
-        if (currentUser) {
-            // already have this user
-            console.log('user is: ', currentUser);
-            done(null, currentUser);
-        } else {
-            // if not, create user in our db
-            new User({
-                googleID: profile.id,
-                githubID: null,
-                steamID: null,
-                user_name: profile.displayName,
-                profilePicture: profile._json.picture,
-                accessToken: createJwt({ user_name: profile.displayName })
-            }).save().then((newUser) => {
-                console.log('created new user: ', newUser);
-                done(null, newUser);
-            });
-        }
-    });
-}));
+// passport.use(new GoogleStrategy({
+//     clientID: process.env.googleClientID,
+//     clientSecret: process.env.googleClientSecret,
+//     callbackURL: "/users/auth/google/callback"
+// }, (accessToken, refreshToken, profile, done) => {
+
+//     User.findOne({ googleID: profile.id }).then((currentUser) => {
+//         if (currentUser) {
+//             // already have this user
+//             console.log('user is: ', currentUser);
+//             done(null, currentUser);
+//         } else {
+//             // if not, create user in our db
+//             new User({
+//                 googleID: profile.id,
+//                 githubID: null,
+//                 steamID: null,
+//                 user_name: profile.displayName,
+//                 profilePicture: profile._json.picture,
+//                 accessToken: createJwt({ user_name: profile.displayName })
+//             }).save().then((newUser) => {
+//                 console.log('created new user: ', newUser);
+//                 done(null, newUser);
+//             });
+//         }
+//     });
+// }));
 
 passport.use(new GitHubStrategy({
         clientID: process.env.githubClientID,

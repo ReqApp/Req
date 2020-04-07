@@ -82,26 +82,26 @@ router.post('/isSignedIn', (req, res) => {
     })
 });
 
-router.get('/auth/google', passport.authenticate('google', {
-    scope: ['profile']
-}));
+// router.get('/auth/google', passport.authenticate('google', {
+//     scope: ['profile']
+// }));
 
-router.get('/auth/google/callback', passport.authenticate('google'), (req, res) => {
-    User.findOne({"user_name":req.user.user_name}, (err, foundUser) => {
-        if (err) {
-            res.redirect(`http://ec2-107-23-251-248.compute-1.amazonaws.com:3000/users/login`)
-        } else {
-            if (foundUser) {
-                foundUser.accessToken = utilFuncs.createJwt({user_name:foundUser.user_name});
-                foundUser.save();
-                res.cookie('Authorization', 'Bearer ' + foundUser.accessToken)
-                res.redirect(`http://ec2-107-23-251-248.compute-1.amazonaws.com:3000/users/profile?${foundUser.user_name}`)
-            } else {
-                res.redirect(`http://ec2-107-23-251-248.compute-1.amazonaws.com:3000/users/login`)
-            }
-        }
-    });
-});
+// router.get('/auth/google/callback', passport.authenticate('google'), (req, res) => {
+//     User.findOne({"user_name":req.user.user_name}, (err, foundUser) => {
+//         if (err) {
+//             res.redirect(`http://ec2-107-23-251-248.compute-1.amazonaws.com:3000/users/login`)
+//         } else {
+//             if (foundUser) {
+//                 foundUser.accessToken = utilFuncs.createJwt({user_name:foundUser.user_name});
+//                 foundUser.save();
+//                 res.cookie('Authorization', 'Bearer ' + foundUser.accessToken)
+//                 res.redirect(`http://ec2-107-23-251-248.compute-1.amazonaws.com:3000/users/profile?${foundUser.user_name}`)
+//             } else {
+//                 res.redirect(`http://ec2-107-23-251-248.compute-1.amazonaws.com:3000/users/login`)
+//             }
+//         }
+//     });
+// });
 
 router.get('/auth/github', passport.authenticate('github'));
 

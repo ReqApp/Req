@@ -182,11 +182,6 @@ class SignIn extends React.Component{
                 </Link>
               </Grid>
               <Grid item lg>
-                <Link href="http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/auth/google" variant="body2">
-                <img src={GoogleLogo} className={classes.OAuthApp} alt='Google Logo'></img>
-                </Link>
-              </Grid>
-              <Grid item lg>
                 <Link href="http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/auth/steam" variant="body2">
                 <img src={SteamLogo} className={classes.OAuthApp} alt='Steame Logo'></img>
                 </Link>
