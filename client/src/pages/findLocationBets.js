@@ -108,11 +108,11 @@ export default class FindBetPage extends React.Component{
                 this.getRegions({lat : userPosition.coords.latitude, lng : userPosition.coords.longitude});
             }else{
                 //Temp
-                // let location = {lat : 53.28211, lng : -9.062186 };
-                // this.setState({hasLocation : true, latlng : location, accurate : true});
-                // this.getRegions(location);
+                let location = {lat : 53.334482, lng : -9.182187 };
+                this.setState({hasLocation : true, latlng : location, accurate : true});
+                this.getRegions(location);
 
-                this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : false, locationError : "not-accurate", openError : true});
+                //this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : false, locationError : "not-accurate", openError : true});
             }
             }));
         }
@@ -124,7 +124,7 @@ export default class FindBetPage extends React.Component{
 
     // Retrieve regions when location found by map component
     getRegions = (location) => {
-        var url = new URL("http://localhost:9000/getBettingRegions"),
+        var url = new URL("http://localhost:9000/bets/getBettingRegions"),
         params = location
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
         fetch(url)
@@ -157,7 +157,7 @@ export default class FindBetPage extends React.Component{
         if(mode === 'find'){
             // Retrieve bets in selected region
             // Get bets in region and add to state
-            fetch(`http://localhost:9000/getBetsInRegion?id=${id}&lat=${latlng.lat}&lng=${latlng.lng}`, {
+            fetch(`http://localhost:9000/bets/getBetsInRegion?id=${id}&lat=${latlng.lat}&lng=${latlng.lng}`, {
                 method: 'GET',
                 credentials: 'include',
                 headers: {
@@ -320,7 +320,7 @@ export default class FindBetPage extends React.Component{
                     </Row>
                     <Row>
                         <Col xs={12} md={6} style={useStyles.columns}>
-                        <InputLabel id="demo-simple-select-filled-label">Sort By</InputLabel>
+                        <InputLabel style={useStyles.label}>Sort By</InputLabel>
                             <Select
                             style={useStyles.sortBy}
                             labelId="demo-simple-select-filled-label"
@@ -394,6 +394,9 @@ const styles = {
     },
     columns: {
         padding: '0px'
+    },
+    label: {
+        marginTop: '0px'
     }
 }
 
@@ -412,7 +415,8 @@ const smallScreen = {
         height: '250px'
     },
     sortByTitle: {
-        paddingTop: '20px'
+        paddingTop: '20px',
+        marginTop: '40px'
     },
     fullMapContainer: {
         padding: '0px'
@@ -422,10 +426,13 @@ const smallScreen = {
         right: '0px'
     },
     sortBy: {
-        width: '200px'
+        width: '200px',
     },
     newRegionBtn: {
         bottom: '0px',
         right: '0px'
+    },
+    label: {
+        marginTop: '20px'
     }
 }
