@@ -106,7 +106,7 @@ export default class CreateLocationBet extends React.Component{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
                 },
-                credentials: 'same-origin',
+                credentials: 'include',
                 body: JSON.stringify(data)
             })
             .then(res => res.json())

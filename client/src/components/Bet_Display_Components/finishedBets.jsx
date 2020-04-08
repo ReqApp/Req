@@ -15,7 +15,8 @@ export default class FinishedBets extends Component {
         this.state = {
             loadingBets : true,
             placedBets : [],
-            createdBets : []
+            createdBets : [],
+            errorMsg : 'Loading Bets...'
         }
     }
 
@@ -38,11 +39,16 @@ export default class FinishedBets extends Component {
             if(res.status === 'success'){
                 if(res.body !== 'No bets found'){
                     this.setState({loadingBets : false, placedBets : res.body});
+                }else{
+                    this.setState({loadingBets : false, errorMsg : 'No Recently Finished Bets To Show'});
                 }
+            }else{
+                this.setState({loadingBets : false, errorMsg : 'Could not get finished bets'});
             }
         })
         .catch(err => {
             console.log(err);
+            this.setState({loadingBets : false, errorMsg : 'Could not get finished bets'});
         });
         // Retrieve finished bets that user has created
         fetch('http://localhost:9000/analytics/getCreatedBettingHistory', {
@@ -70,7 +76,7 @@ export default class FinishedBets extends Component {
     }
     
     render() {
-        const {placedBets, createdBets, loadingBets} = this.state;
+        const {placedBets, createdBets, loadingBets, errorMsg} = this.state;
         const {username} = this.props;
         let bets = placedBets.concat(createdBets);
 
@@ -88,7 +94,7 @@ export default class FinishedBets extends Component {
                     <Paper style={styles.paper}>
                         <h2>Finished Bets:</h2>
                         <div style={{textAlign: 'center'}}>
-                            <h6 style={styles.text}>No Recently Finished Bets To Show</h6>
+                            <h6 style={styles.text}>{errorMsg}</h6>
                         </div>
                     </Paper>
                 )

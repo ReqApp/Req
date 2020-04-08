@@ -165,7 +165,7 @@ export default class CurrentBetInfo extends Component {
         let dateString = `${betDate.getDate()}/${betDate.getMonth()+1}/${betDate.getFullYear()}`;
         let minutes = betDate.getMinutes().toString();
         if(minutes.length == 1){
-            minutes += '0';
+            minutes = '0' + minutes;
         }
         let timeString = `${betDate.getHours()}:${minutes}`;
         let deadlineRepresentation = (
@@ -180,7 +180,7 @@ export default class CurrentBetInfo extends Component {
             )
         }
         if(userCreated){
-            if(Date.now() >= data.deadline){
+            if(Date.now() <= data.deadline){
                 deadlineRepresentation = (
                     <Button startIcon={<HourglassEmptyIcon /> } onClick={this.handleDecideBet}>Decide Bet</Button>
                 )

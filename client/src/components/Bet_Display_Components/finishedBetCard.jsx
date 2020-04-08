@@ -55,7 +55,7 @@ export default class FinishedBetCard extends Component {
         let dateString = `${betDate.getDate()}/${betDate.getMonth()+1}/${betDate.getFullYear()}`;
         let minutes = betDate.getMinutes().toString();
         if(minutes.length == 1){
-            minutes += '0';
+            minutes = '0' + minutes;
         }
         let timeString = `${betDate.getHours()}:${minutes}`;
         return `${dateString} @ ${timeString}`;
