@@ -24,6 +24,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {Paper} from '@material-ui/core';
 // Components
 import Alert from '../Miscellaneous/alertSnack';
 import DisplayMap from '../Location_Betting_Components/maps';
@@ -32,7 +33,6 @@ export default class betCard extends Component {
     constructor(props){
         super(props);
         this.state = {
-            userName: process.env.REACT_APP_TEST_USER_NAME,
             betAmount : 0,
             betValue : 0,
             side: '',
@@ -53,7 +53,7 @@ export default class betCard extends Component {
     }
 
     handlePlaceBet = () => {
-        const {betAmount, betValue, side, userName} = this.state;
+        const {betAmount, betValue, side} = this.state;
         const {data} = this.props;
 
         let isFormValid = true;
@@ -65,10 +65,6 @@ export default class betCard extends Component {
             isFormValid = false;
             this.setState({snackOpen : true, msg : 'Please enter a bet Value', msgType : 'warning'});
         }
-        if(userName === ''){
-            isFormValid = false;
-            this.setState({snackOpen : true, msg : 'Username could not be retrieved', msgType : 'warning'});
-        }
         if(side === '' && data.type === 'binary'){
             isFormValid = false;
             this.setState({snackOpen : true, msg : 'Please select a side', msgType : 'warning'});
@@ -78,7 +74,6 @@ export default class betCard extends Component {
             let obj = {
                 betID: data.betID,
                 betAmount: betAmount,
-                username : userName,
                 type: data.type,
                 side: side,
                 bet : betValue
@@ -158,10 +153,6 @@ export default class betCard extends Component {
                 backgroundColor: '#DCDCDC',
             }
         }
-        let md = 6;
-        if(data.location_name){
-            md = 4;
-        }
 
         return (
             <ExpansionPanel style={color, styles.expansionPanel}>
@@ -179,12 +170,13 @@ export default class betCard extends Component {
                             <Typography>Created By: {data.username}</Typography>
                         </Col>
                     </Row>
+                    {data.location_name ? <Row><Col>Location Name: {data.location_name}</Col></Row> : null}
                 </div>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                 <div>
                 <Row>
-                    <Col xs={12} md={md}>
+                    <Col xs={12} md={6}>
                     <List component="nav">
                     <ListSubheader component="div">
                         Details:
@@ -211,7 +203,7 @@ export default class betCard extends Component {
                         </ListItem>
                     </List>
                     </Col>
-                    <Col xs={12} md={md}>
+                    <Col xs={12} md={6}>
                     <List component="nav">
                         <ListSubheader component="div">
                             Winnings:
@@ -227,8 +219,8 @@ export default class betCard extends Component {
                         </ListItem>
                     </List>
                     </Col>   
-                    {data.location_name ? <Col xs={12} md={md}><DisplayMap miniMap={true} regionDetails={data} height='200px'/></Col> : <div></div>}
                 </Row>
+                {data.location_name ? <Row><Col><Paper><DisplayMap miniMap={true} regionDetails={data} height='200px'/></Paper></Col></Row> : <div></div>}
                 <Row>
                     <Col xs={12} md={6}>
                         <List component="nav">
@@ -305,6 +297,7 @@ export default class betCard extends Component {
                         <Typography>Created By: {data.username}</Typography>
                     </Col>
                 </Row>
+                {data.location_name ? <Row><Col>Location Name: {data.location_name}</Col></Row> : null}
             </div>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
@@ -357,6 +350,7 @@ export default class betCard extends Component {
                         </List>
                     </Col>
                 </Row>
+                {data.location_name ? <Row><Col><Paper><DisplayMap miniMap={true} regionDetails={data} height='200px'/></Paper></Col></Row> : <div></div>}
                 <Row>
                     <Col xs={12} md={6}>
                         <List component="nav">
@@ -407,16 +401,39 @@ export default class betCard extends Component {
         )
     }
 
+    renderGoToLocation = () => {
+        const {data} = this.props;
+        return(
+            <div>
+                <ExpansionPanel style={styles.expansionPanel}>
+                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                        <h3><span style={{fontWeight : 'normal'}}>Go To:{' '}</span>{data.location_name}< span style={{fontWeight : 'normal'}}>{' '}to see bet</span></h3>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                        <DisplayMap miniMap={true} regionDetails={data} height='200px' />
+                    </ExpansionPanelDetails>
+                </ExpansionPanel>
+            </div>
+        )
+    }
+
     render() {
         const {snackOpen, msg, msgType} = this.state;
         const {data} = this.props;
 
         let display = null;
+
         if(data.type === 'multi'){
             display = this.renderMulti();
         }else{
             display = this.renderBinary()
         }
+        if(data.location_name){
+            if(data.inRadius == false){
+                display=this.renderGoToLocation();
+            }
+        }
+
         return (
             <div>
                 <Snackbar open={snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
