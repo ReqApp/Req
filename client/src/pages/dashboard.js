@@ -24,6 +24,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import Snackbar from '@material-ui/core/Snackbar';
 import SearchIcon from '@material-ui/icons/Search';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 // Bootstrap
 import {Container, Row, Col} from 'react-bootstrap';
 // Components
@@ -54,6 +55,7 @@ class Dashboard extends React.Component{
           msg: '',
           msgType: '',
           openFindBetPane: false,
+          redirectToBuyCoins: false
         }
     }
 
@@ -123,6 +125,10 @@ class Dashboard extends React.Component{
       this.setState({redirectToBigRedButton : true});
     }
 
+    handleBuyCoins = () => {
+      this.setState({redirectToBuyCoins : true});
+    }
+
 
     handleNavAction = (action) => {
       if(action === 'new-bet'){
@@ -152,7 +158,7 @@ class Dashboard extends React.Component{
     }
 
     render(){
-      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, renderProfile, snackOpen, msg, msgType, openFindBetPane, username, redirectToLogIn, renderCreateNewLocationBet, redirectToBigRedButton} = this.state;
+      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, renderProfile, snackOpen, msg, msgType, openFindBetPane, username, redirectToLogIn, renderCreateNewLocationBet, redirectToBigRedButton, redirectToBuyCoins} = this.state;
       const {classes} = this.props;
       if(redirectToLogIn){
         return (
@@ -178,6 +184,11 @@ class Dashboard extends React.Component{
       if(redirectToBigRedButton){
         return(
           <Redirect to='/bigRedButton' push />
+        )
+      }
+      if(redirectToBuyCoins){
+        return(
+          <Redirect to='/payment' push />
         )
       }
       const drawer = (
@@ -214,6 +225,14 @@ class Dashboard extends React.Component{
                 </ListItemIcon>
                 <ListItemText>
                   Big Red Button
+                </ListItemText>
+              </ListItem>
+              <ListItem button onClick={this.handleBuyCoins}>
+                <ListItemIcon>
+                  <MonetizationOnIcon />
+                </ListItemIcon>
+                <ListItemText>
+                  Buy Coins
                 </ListItemText>
               </ListItem>
               <ListItem button onClick={this.handleLocationNavToggle}>
