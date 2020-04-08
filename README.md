@@ -26,9 +26,9 @@ Req is a 2nd year software engineering group project made to be an app where any
 
 |  |  |  | 
 | ------------- | :------------ | ------------- |
-| Eoin Mc Ardle|Front end UI/UX |![](https://img.shields.io/github/followers/EoinMcArdle99?label=Followers&style=social)  |
+| Eoin Mc Ardle|Back end infrastructure/Front end UI/UX |![](https://img.shields.io/github/followers/EoinMcArdle99?label=Followers&style=social)  |
 |Karl Gordon|Front end UI/UX |![](https://img.shields.io/github/followers/filthyhound?label=Followers&style=social) |
-|Rory Sweeney|Back end infrastructure/Front end UI |![](https://img.shields.io/github/followers/rorysweeney99?label=Followers&style=social) |
+|Rory Sweeney|Front end UI |![](https://img.shields.io/github/followers/rorysweeney99?label=Followers&style=social) |
 |Cathal O'Callaghan|Back end infrastructure/Front end UI |![](https://img.shields.io/github/followers/IamCathal?label=Followers&style=social)|
 
 ## Design Docs
