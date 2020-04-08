@@ -59,7 +59,7 @@ export default class DecideBetDialog extends React.Component{
                 betID : data.betID,
                 result : side
             }
-            fetch('http://localhost:9000/decideBet', {
+            fetch('http://localhost:9000/bets/decideBet', {
                 method : 'POST',
                 credentials : 'include',
                 headers: {

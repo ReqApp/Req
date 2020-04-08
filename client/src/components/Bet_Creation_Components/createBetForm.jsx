@@ -67,7 +67,7 @@ export default class CreateBetForm extends Component {
                 deadline : (+date) / 1000
             }
 
-            fetch('http://localhost:9000/makeBet', {
+            fetch('http://localhost:9000/bets/makeBet', {
                 method : 'POST',
                 credentials : 'include',
                 headers: {

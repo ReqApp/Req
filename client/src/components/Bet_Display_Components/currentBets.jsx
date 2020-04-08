@@ -17,7 +17,7 @@ export default class CurrentBets extends React.Component {
     }
 
     componentDidMount() {
-        fetch('http://localhost:9000/getBetsForUser', {
+        fetch('http://localhost:9000/bets/getBetsForUser', {
             method: 'POST',
             credentials: 'include',
             headers: {
