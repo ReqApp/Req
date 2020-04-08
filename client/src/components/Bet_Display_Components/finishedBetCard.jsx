@@ -53,7 +53,11 @@ export default class FinishedBetCard extends Component {
     generateDeadline(date){
         let betDate = new Date(date * 1000);
         let dateString = `${betDate.getDate()}/${betDate.getMonth()+1}/${betDate.getFullYear()}`;
-        let timeString = `${betDate.getHours()}:${betDate.getMinutes()}`;
+        let minutes = betDate.getMinutes().toString();
+        if(minutes.length == 1){
+            minutes += '0';
+        }
+        let timeString = `${betDate.getHours()}:${minutes}`;
         return `${dateString} @ ${timeString}`;
     }
 
