@@ -60,12 +60,9 @@ export default class CurrentBets extends React.Component {
             )
           }else{
             return(
-              <Paper style={styles.paper}>
-              <h2>Your Current Bets:</h2>
               <div style={{textAlign: 'center'}}>
                   <h6 style={styles.text}>{errorMsg}</h6>
               </div>
-            </Paper>
             )
           }
         }else{
