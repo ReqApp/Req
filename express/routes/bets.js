@@ -136,10 +136,8 @@ router.put('/updateBetWithLocData', (req, res) => {
 router.get('/getBetsInRegion', (req, res) => {
     if(req.query.id && req.query.lat && req.query.lng){
         if(!isNaN(req.query.lat) && !isNaN(req.query.lng) && utilFuncs.validate(req.query.id, 'id')){
-            utilFuncs.isSignedIn(req.cookies).then(profile => {
-                let username = '';
-                if(res){
-                    username = profile.user_name;
+            utilFuncs.isSignedIn(req.cookies).then(username => {
+                if(username){
                     utilFuncs.getBetsInRegion(req.query.id, username, req.query.lat, req.query.lng).then(bets => {
                         res.status(200).json({
                             'status' : 'success',
@@ -845,9 +843,9 @@ router.post('/getBets', (req, res) => {
 });
 
 router.post('/getFinishedBets', (req, res) => {
-    utilFuncs.isSignedIn(req.cookies).then(profile => {
-        if(profile){
-            utilFuncs.getFinishedBetsForUser(profile.user_name).then(bets => {
+    utilFuncs.isSignedIn(req.cookies).then(user_name => {
+        if(user_name){
+            utilFuncs.getFinishedBetsForUser(user_name).then(bets => {
                 res.status(200).json({
                     'status' : 'success',
                     'body' : bets
@@ -943,9 +941,9 @@ router.post('/getBetsForUser', (req, res) => {
 });
 
 router.post('/findNewBets', (req, res) => {
-    utilFuncs.isSignedIn(req.cookies).then(profile => {
-        if(profile){
-            utilFuncs.findNewBets(profile.user_name).then(bets => {
+    utilFuncs.isSignedIn(req.cookies).then(user_name => {
+        if(user_name){
+            utilFuncs.findNewBets(user_name).then(bets => {
                 if(bets){
                     res.status(200).json({
                         'status' : 'success',
