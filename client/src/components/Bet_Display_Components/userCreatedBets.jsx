@@ -38,18 +38,18 @@ export class UserCreatedBets extends Component {
             }
             else{
                 console.log(res);
-                this.setState({errorMsg : 'Could not get bets'});
+                this.setState({loadingBets : false, errorMsg : 'Could not get bets'});
             }
         })
         .catch(err => {
             console.log(err);
-            this.setState({errorMsg : 'Could not get bets'});
+            this.setState({loadingBets : false, errorMsg : 'Could not get bets'});
         });
     }
     
 
     render() {
-        const {bets, loadingBets} = this.state;
+        const {bets, loadingBets, errorMsg} = this.state;
         
         if(!loadingBets){
             if(bets.length){
@@ -67,7 +67,7 @@ export class UserCreatedBets extends Component {
                 <Paper style={styles.paper}>
                     <h2>Bets Created By You:</h2>
                     <div style={{textAlign: 'center'}}>
-                        <h6 style={styles.text}>You Have Not Created Any Ongoing Bets</h6>
+                        <h6 style={styles.text}>{errorMsg}</h6>
                     </div>
                 </Paper>
             )

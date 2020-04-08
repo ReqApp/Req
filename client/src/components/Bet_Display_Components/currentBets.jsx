@@ -36,21 +36,21 @@ export default class CurrentBets extends React.Component {
             }
             else if(res.status === 'error' && res.body === 'User not signed in'){
               console.log(res.body);
-              this.setState({errorMsg : 'User not signed in'});
+              this.setState({loadingBets : false, errorMsg : 'User not signed in'});
             }
             else{
                 console.log(res.body);
-                this.setState({errorMsg : 'Could not retrieve bets and error occured'});
+                this.setState({loadingBets : false, errorMsg : 'Could not retrieve bets and error occured'});
             }
           })
           .catch(err => {
             console.log(err);
-            this.setState({errorMsg : 'Could not retrieve bets and error occured'});
+            this.setState({loadingBets : false, errorMsg : 'Could not retrieve bets and error occured'});
           });
     }
     
     render() {
-        const {bets, loadingBets} = this.state;
+        const {bets, loadingBets, errorMsg} = this.state;
         if(!loadingBets){
           if(bets.length){
             return (
@@ -63,7 +63,7 @@ export default class CurrentBets extends React.Component {
               <Paper style={styles.paper}>
               <h2>Your Current Bets:</h2>
               <div style={{textAlign: 'center'}}>
-                  <h6 style={styles.text}>No Current Bets To Show</h6>
+                  <h6 style={styles.text}>{errorMsg}</h6>
               </div>
             </Paper>
             )

@@ -163,7 +163,11 @@ export default class CurrentBetInfo extends Component {
         const {data, userCreated} = this.props
         let betDate = new Date(data.deadline * 1000);
         let dateString = `${betDate.getDate()}/${betDate.getMonth()+1}/${betDate.getFullYear()}`;
-        let timeString = `${betDate.getHours()}:${betDate.getMinutes()}`;
+        let minutes = betDate.getMinutes().toString();
+        if(minutes.length == 1){
+            minutes += '0';
+        }
+        let timeString = `${betDate.getHours()}:${minutes}`;
         let deadlineRepresentation = (
             <Typography style={{marginTop: '5px'}}>
                 Deadline: {dateString} @ {timeString}
