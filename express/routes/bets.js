@@ -405,8 +405,8 @@ router.post('/makeBet', (req, res) => {
     utilFuncs.isSignedIn(req.cookies).then((signedIn) => {
         if (signedIn) {
             const firstPlaceCut = parseFloat(req.body.firstPlaceCut);
-    const secondPlaceCut = parseFloat(req.body.secondPlaceCut);
-    const thirdPlaceCut = parseFloat(req.body.thirdPlaceCut);
+            const secondPlaceCut = parseFloat(req.body.secondPlaceCut);
+            const thirdPlaceCut = parseFloat(req.body.thirdPlaceCut);
 
     // console.log(utilFuncs.validate(req.body.title, "title"));
     // console.log(utilFuncs.validate(req.body.type, "type"));

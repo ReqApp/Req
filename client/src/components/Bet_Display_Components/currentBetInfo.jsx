@@ -180,7 +180,7 @@ export default class CurrentBetInfo extends Component {
             )
         }
         if(userCreated){
-            if(Date.now() <= data.deadline){
+            if(Date.now() >= data.deadline){
                 deadlineRepresentation = (
                     <Button startIcon={<HourglassEmptyIcon /> } onClick={this.handleDecideBet}>Decide Bet</Button>
                 )
