@@ -1,7 +1,5 @@
 // React
 import React from 'react';
-// Material
-import {Paper} from '@material-ui/core';
 // Componentes
 import BetCard from '../Bet_Display_Components/betCard';
 
