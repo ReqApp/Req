@@ -36,7 +36,7 @@ Req is a 2nd year software engineering group project made to be an app where any
 <p align="center">
     <img
       alt="Req Stack"
-      src="https://i.imgur.com/XMHCNuz.png"
+      src="https://i.imgur.com/pMgaQfN.png"
       width="400"
     />
 </p>
@@ -48,15 +48,15 @@ Req is a MERN stack application. Mern meaning Mongo, Express, React and NodeJS. 
 <a href="https://docs.google.com/document/d/1VSiNX-g0KNztlQGvLeRhXwnbwbDW9phK2VmmVpqMUvw/edit?usp=sharing">
     <img
       alt="Design docs"
-      src="https://i.imgur.com/AU3s3xk.png"
+      src=https://i.imgur.com/0l39lbD.png"
       width="300"
     />
     </a>
    <a href="http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/docs">
     <img
       alt="API docs"
-      src="https://i.imgur.com/DvCvO1l.png"
-      width="250"
+      src="https://i.imgur.com/G0NOPKX.png"
+      width="300"
     />
     </a>
 </p>
