@@ -123,6 +123,15 @@ export default class CreateBetForm extends Component {
     }
 
     closeDialog = () => {
+        this.setState({
+            title: '',
+            betType: '',
+            sliderOne: 70,
+            sliderTwo: 20,
+            sliderThree: 10,
+            date: new Date(),
+            side: '',
+        });
         this.props.closeDialog();
     }
 

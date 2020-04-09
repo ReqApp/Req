@@ -1153,7 +1153,7 @@ function checkIfBetIsNew(bet, username){
     }
     else{
         bet.commonBets.forEach(user => {
-            if(user.user_name === user_name){
+            if(user.user_name === username){
                 return false
             }
         });
@@ -1171,7 +1171,7 @@ function getBetsForUser(data, user_name){
                 let flag = true;
                 element.forUsers.forEach(user => {
                     if(user.user_name === user_name){
-                        userAmounts.unshift(user.betAmount);
+                        userAmounts.push(user.betAmount);
                         betValues.push('For');
                         anonBets.push(element.toObject());
                         flag = false;
@@ -1180,7 +1180,7 @@ function getBetsForUser(data, user_name){
                 if(flag){
                     element.againstUsers.forEach(user => {
                         if(user.user_name === user_name){
-                            userAmounts.unshift(user.betAmount);
+                            userAmounts.push(user.betAmount);
                             betValues.push('Against');
                             anonBets.push(element.toObject());
                         }
@@ -1190,7 +1190,7 @@ function getBetsForUser(data, user_name){
             else if(element.type === 'multi'){
                 element.commonBets.forEach(user => {
                     if(user.user_name === user_name){
-                        userAmounts.unshift(user.betAmount);
+                        userAmounts.push(user.betAmount);
                         betValues.push(user.bet);
                         anonBets.push(element.toObject());
                     }

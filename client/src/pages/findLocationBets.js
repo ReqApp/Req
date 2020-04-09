@@ -28,7 +28,6 @@ import Alert from '../components/Miscellaneous/alertSnack';
 // Other
 import openSocket from 'socket.io-client';
 import './reset.css';
-import {Redirect} from 'react-router-dom';
 
 // Main page for location betting
 export default class FindBetPage extends React.Component{
@@ -57,7 +56,8 @@ export default class FindBetPage extends React.Component{
             windowWidth: window.innerWidth,
             snackOpen: false,
             msg: '',
-            msgType: 'info'
+            msgType: 'info',
+            username: ''
         }
         this.socket = openSocket("http://localhost:9000");
     }
@@ -68,12 +68,31 @@ export default class FindBetPage extends React.Component{
         this.setState({windowWidth : window.innerWidth});
         // Retrieve user's location
         this.getLocation();
+        fetch('http://localhost:9000/users/isSignedIn', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+        })
+        .then(res => res.json())
+        .then(res => {
+            if(res.status === 'success'){
+                this.setState({username : res.body});
+            }else{
+                console.log(res);
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        })
         this.socket.on('accurateUserPos', (data) => {
-            if(data.user_name === "testUser"){
+            if(data.user_name === this.state.username){
                 this.setState({hasLocation : true, latlng : data.location, accurate : true, locationError : ''});
                 //this.props.locationUpdate(data.location);
                 let response = {
-                  user : "testUser"
+                  user : this.state.username
                 }
                 this.socket.emit('locationResponse', response);
                 this.setState({snackOpen : true, msg : 'Location Retrieved!', msgType : 'success'});
@@ -108,11 +127,11 @@ export default class FindBetPage extends React.Component{
                 this.getRegions({lat : userPosition.coords.latitude, lng : userPosition.coords.longitude});
             }else{
                 //Temp
-                let location = {lat : 53.334482, lng : -9.182187 };
-                this.setState({hasLocation : true, latlng : location, accurate : true});
-                this.getRegions(location);
+                // let location = {lat : 53.334482, lng : -9.182187 };
+                // this.setState({hasLocation : true, latlng : location, accurate : true});
+                // this.getRegions(location);
 
-                //this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : false, locationError : "not-accurate", openError : true});
+                this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : false, locationError : "not-accurate", openError : true});
             }
             }));
         }
@@ -246,8 +265,10 @@ export default class FindBetPage extends React.Component{
         }
 
         let cards = null;
+        let mapData = betRegions;
         if(view === "bets"){
             cards = <LocationBetCards bets={bets} />;
+            mapData = bets;
         }
         else{
             cards = <BetRegionCards 
@@ -291,7 +312,7 @@ export default class FindBetPage extends React.Component{
                         <Col style={useStyles.fullMapContainer}>
                             <DisplayMap
                                 hasLocation={hasLocation}
-                                data={betRegions}
+                                data={mapData}
                                 userLocation={latlng}
                                 accurate={accurate}
                                 loadingData={loadingRegions} 
