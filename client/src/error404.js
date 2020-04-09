@@ -25,11 +25,6 @@ export class Error404 extends Component{
                     This is not the webpage I am looking for :0
                 </b></div>,
                 <div><i>
-                    This page can't be found, it died from Covid-19 <b>F</b>
-                </i><br/><br/><b>
-                    (*Cough Cough) Oh, how terrible! (*Cough Cough) Sorry for your loss!
-                </b></div>,
-                <div><i>
                     Nah, I dont wanna render this page, WAY above my pay-grade. Also idk where it is! >:-[
                 </i><br/><br/><b>
                     Bruh!
@@ -49,7 +44,7 @@ export class Error404 extends Component{
         }else if(random >= 50 && random <= 74){
             toSelect = 2;
         }else if(random >= 75 && random <= 100){
-            toSelect = 3;
+            toSelect = 2;
         }
         this.setState({displays: this.state.messages[toSelect]});
     }
