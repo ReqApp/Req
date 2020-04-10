@@ -17,7 +17,7 @@ export default class CurrentBets extends React.Component {
     }
 
     componentDidMount() {
-        fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/getBetsForUser', {
+        fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/bets/getBetsForUser', {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -28,36 +28,47 @@ export default class CurrentBets extends React.Component {
           .then((res) => res.json())
           .then((res) => {
             if(res.status === "success"){
-              console.log(res);
-              this.setState({loadingBets : false, bets : res.body});
+              if(res.body !== 'No bets'){
+                this.setState({loadingBets : false, bets : res.body});
+              }else{
+                this.setState({loadingBets : false, errorMsg : "No Current Bets To Show"});
+              }
             }
             else if(res.status === 'error' && res.body === 'User not signed in'){
               console.log(res.body);
-              this.setState({errorMsg : 'User not signed in'});
+              this.setState({loadingBets : false, errorMsg : 'User not signed in'});
             }
             else{
                 console.log(res.body);
-                this.setState({errorMsg : 'Could not retrieve bets and error occured'});
+                this.setState({loadingBets : false, errorMsg : 'Could not retrieve bets and error occured'});
             }
           })
           .catch(err => {
             console.log(err);
-            this.setState({errorMsg : 'Could not retrieve bets and error occured'});
+            this.setState({loadingBets : false, errorMsg : 'Could not retrieve bets and error occured'});
           });
     }
     
     render() {
-        const {bets, loadingBets} = this.state;
+        const {bets, loadingBets, errorMsg} = this.state;
         if(!loadingBets){
-          return (
-              <div>
-                  {bets.map((bet, index) => <CurrentBetInfo data={bet} key={index}/>)}
+          if(bets.length){
+            return (
+                <div>
+                    {bets.map((bet, index) => <CurrentBetInfo data={bet} key={index}/>)}
+                </div>
+            )
+          }else{
+            return(
+              <div style={{textAlign: 'center'}}>
+                  <h6 style={styles.text}>{errorMsg}</h6>
               </div>
-          )
+            )
+          }
         }else{
           return(
             <Paper style={styles.paper}>
-                <h2>Bets Created By You:</h2>
+                <h2>Your Current Bets:</h2>
                 <div style={{textAlign: 'center'}}>
                     <CircularProgress style={styles.progress}/>
                     <Typography style={styles.text}>Loading Bets...</Typography>
@@ -78,5 +89,8 @@ const styles = {
     display: 'block',
     marginRight: 'auto',
     marginLeft: 'auto',
-},
+  },
+  text: {
+    padding: '20px'
+  }
 }

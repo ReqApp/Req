@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Navbar from '../components/Page_Components/navbar';
 import {Container, Row, Col} from 'react-bootstrap';
-import {Paper} from '@material-ui/core';
+import {Paper, Typography} from '@material-ui/core';
 import Alert from '../components/Miscellaneous/alertSnack';
 import Snackbar from '@material-ui/core/Snackbar';
 
@@ -43,10 +43,10 @@ export class BigRedButton extends Component {
             if (res.status === "success") {
                 timesPressedLocal++;
                 this.setState(
-                    {
+                    {   
                         timesPressed: timesPressedLocal,
                         msg: `Pressed ${timesPressedLocal} times`,
-                        msgType: 'success',
+                        msgType: 'info',
                         snackOpen: true 
                     });
             } else {
@@ -85,18 +85,18 @@ export class BigRedButton extends Component {
                                 <img 
                                     src="https://media-exp1.licdn.com/dms/image/C560BAQHWXKz8rFb9FQ/company-logo_200_200/0?e=2159024400&v=beta&t=0LvbdnPyKQ7KjSGF-ZYBlY-nCkcN8DEgUBYm84r4xB4"
                                     alt="big red button"
-                                    width="350vh"
+                                    height='100%'
                                     onClick={this.pressRedButton}
                                 />
 
                                 <hr 
                                 />
-
-                                <h2 style={{fontWeight:'bold', paddingTop:'2vh'}}>What is this?</h2>
-                                <p>
-                                    Something something filler text about this. It starts every dat at 6pm and you bet
-                                </p>
-
+                                <div style={{width: '50%', marginRight: 'auto', marginLeft: 'auto'}}>
+                                <h2 style={{fontWeight:'bold', paddingTop:'2vh'}}>Don't Press The Button!</h2>
+                                <h5>
+                                    Starts at 6pm every day. Every user can press it (or not press it). Think you know how many times it will be pressed? Bet now!
+                                </h5>
+                                </div>
                             </Paper>
                         </Col>
                        

@@ -995,7 +995,7 @@ function getBetsInRegion(regionID, username, lat, lng){
                                     let arr = await anonymiseBetData([bet]).catch(err => resolve(err));
                                     let obj = arr[0];
                                     // Check if user is in bet radius
-                                    if(locationBet.radius <= calcDistance(locationBet, {lat : lat, lng : lng})){
+                                    if((locationBet.radius / 1000) >= calcDistance({lat : locationBet.latitude, lng : locationBet.longitude}, {lat : lat, lng : lng})){
                                         obj.inRadius = true;
                                     }else{
                                         obj.inRadius = false;
@@ -1153,7 +1153,7 @@ function checkIfBetIsNew(bet, username){
     }
     else{
         bet.commonBets.forEach(user => {
-            if(user.user_name === user_name){
+            if(user.user_name === username){
                 return false
             }
         });
@@ -1171,7 +1171,7 @@ function getBetsForUser(data, user_name){
                 let flag = true;
                 element.forUsers.forEach(user => {
                     if(user.user_name === user_name){
-                        userAmounts.unshift(user.betAmount);
+                        userAmounts.push(user.betAmount);
                         betValues.push('For');
                         anonBets.push(element.toObject());
                         flag = false;
@@ -1180,7 +1180,7 @@ function getBetsForUser(data, user_name){
                 if(flag){
                     element.againstUsers.forEach(user => {
                         if(user.user_name === user_name){
-                            userAmounts.unshift(user.betAmount);
+                            userAmounts.push(user.betAmount);
                             betValues.push('Against');
                             anonBets.push(element.toObject());
                         }
@@ -1190,7 +1190,7 @@ function getBetsForUser(data, user_name){
             else if(element.type === 'multi'){
                 element.commonBets.forEach(user => {
                     if(user.user_name === user_name){
-                        userAmounts.unshift(user.betAmount);
+                        userAmounts.push(user.betAmount);
                         betValues.push(user.bet);
                         anonBets.push(element.toObject());
                     }

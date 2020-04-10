@@ -14,6 +14,7 @@ import Icon from '@material-ui/core/Icon';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import Snackbar from '@material-ui/core/Snackbar';
 //Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Container, Row, Col} from 'react-bootstrap/';
@@ -23,10 +24,10 @@ import Navbar from '../components/Page_Components/navbar';
 import BetRegionCards from '../components/Location_Betting_Components/betRegionCards';
 import LocationBetCards from '../components/Location_Betting_Components/locationBetCards';
 import CreateLocationBet from '../components/Location_Betting_Components/createLocationBet';
+import Alert from '../components/Miscellaneous/alertSnack';
 // Other
 import openSocket from 'socket.io-client';
 import './reset.css';
-import {Redirect} from 'react-router-dom';
 
 // Main page for location betting
 export default class FindBetPage extends React.Component{
@@ -53,6 +54,10 @@ export default class FindBetPage extends React.Component{
             loadCreateRegion: false,
             selectedRegion: null,
             windowWidth: window.innerWidth,
+            snackOpen: false,
+            msg: '',
+            msgType: 'info',
+            username: ''
         }
         this.socket = openSocket("http://ec2-107-23-251-248.compute-1.amazonaws.com:9000");
     }
@@ -63,14 +68,35 @@ export default class FindBetPage extends React.Component{
         this.setState({windowWidth : window.innerWidth});
         // Retrieve user's location
         this.getLocation();
+        fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/isSignedIn', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+        })
+        .then(res => res.json())
+        .then(res => {
+            if(res.status === 'success'){
+                this.setState({username : res.body});
+            }else{
+                console.log(res);
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        })
         this.socket.on('accurateUserPos', (data) => {
-            if(data.user_name === "testUser"){
-                this.setState({hasLocation : true, latlng : data.location, accurate : true});
-                this.props.locationUpdate(data.location);
+            if(data.user_name === this.state.username){
+                this.setState({hasLocation : true, latlng : data.location, accurate : true, locationError : ''});
+                //this.props.locationUpdate(data.location);
                 let response = {
-                  user : "testUser"
+                  user : this.state.username
                 }
                 this.socket.emit('locationResponse', response);
+                this.setState({snackOpen : true, msg : 'Location Retrieved!', msgType : 'success'});
+                this.getRegions(data.location);
             }
         });
         window.addEventListener('resize', this.updateWindowDimensions);
@@ -79,6 +105,13 @@ export default class FindBetPage extends React.Component{
     updateWindowDimensions = () => {
         this.setState({windowWidth : window.innerWidth});
     }
+
+    handleSnackClose = (event, reason) => {
+        if(reason === 'clickaway'){
+            return;
+        }
+        this.setState({snackOpen : false});
+      }
 
     // Used to get user location
     getLocation = () => {
@@ -90,11 +123,11 @@ export default class FindBetPage extends React.Component{
                 // Set user's location
                 // let location = {lat : 53.28211, lng : -9.062186 };
                 // this.setState({hasLocation : true, latlng : location, accurate : true});
-                this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : true});
+                this.setState({hasLocation : true, latlng : {lat : userPosition.coords.latitude, lng : userPosition.coords.longitude}, accurate : true, locationError : ''});
                 this.getRegions({lat : userPosition.coords.latitude, lng : userPosition.coords.longitude});
             }else{
                 //Temp
-                // let location = {lat : 53.28211, lng : -9.062186 };
+                // let location = {lat : 53.334482, lng : -9.182187 };
                 // this.setState({hasLocation : true, latlng : location, accurate : true});
                 // this.getRegions(location);
 
@@ -110,7 +143,7 @@ export default class FindBetPage extends React.Component{
 
     // Retrieve regions when location found by map component
     getRegions = (location) => {
-        var url = new URL("http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/getBettingRegions"),
+        var url = new URL("http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/bets/getBettingRegions"),
         params = location
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
         fetch(url)
@@ -143,7 +176,7 @@ export default class FindBetPage extends React.Component{
         if(mode === 'find'){
             // Retrieve bets in selected region
             // Get bets in region and add to state
-            fetch(`http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/getBetsInRegion?id=${id}&lat=${latlng.lat}&lng=${latlng.lng}`, {
+            fetch(`http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/bets/getBetsInRegion?id=${id}&lat=${latlng.lat}&lng=${latlng.lng}`, {
                 method: 'GET',
                 credentials: 'include',
                 headers: {
@@ -187,7 +220,7 @@ export default class FindBetPage extends React.Component{
     }
 
     render(){
-        const {hasLocation, latlng, accurate, betRegions, bets, loadingRegions, sortBy, openError, view, loadCreateRegion, windowWidth, selectedRegion, loadCreateBet} = this.state;
+        const {hasLocation, latlng, accurate, betRegions, bets, loadingRegions, sortBy, openError, view, loadCreateRegion, windowWidth, selectedRegion, loadCreateBet, snackOpen, msg, msgType, locationError} = this.state;
         const {mode} = this.props;
         let useStyles = null;
 
@@ -232,8 +265,10 @@ export default class FindBetPage extends React.Component{
         }
 
         let cards = null;
+        let mapData = betRegions;
         if(view === "bets"){
             cards = <LocationBetCards bets={bets} />;
+            mapData = bets;
         }
         else{
             cards = <BetRegionCards 
@@ -243,12 +278,16 @@ export default class FindBetPage extends React.Component{
                         sort={sortBy} 
                         onSelection={this.handleSelection}
                         mode={mode}
+                        error={locationError}
                     />;
         }
 
         return(     
             // Create grid for parts
             <div>
+                <Snackbar open={snackOpen} autoHideDuration={6000} onClose={this.handleSnackClose}>
+                    <Alert onClose={this.handleSnackClose} severity={msgType}>{msg}</Alert>
+                </Snackbar>
                 <Dialog
                   open={openError}
                   onClose={this.handleErrorClose}
@@ -273,7 +312,7 @@ export default class FindBetPage extends React.Component{
                         <Col style={useStyles.fullMapContainer}>
                             <DisplayMap
                                 hasLocation={hasLocation}
-                                data={betRegions}
+                                data={mapData}
                                 userLocation={latlng}
                                 accurate={accurate}
                                 loadingData={loadingRegions} 
@@ -302,7 +341,7 @@ export default class FindBetPage extends React.Component{
                     </Row>
                     <Row>
                         <Col xs={12} md={6} style={useStyles.columns}>
-                        <InputLabel id="demo-simple-select-filled-label">Sort By</InputLabel>
+                        <InputLabel style={useStyles.label}>Sort By</InputLabel>
                             <Select
                             style={useStyles.sortBy}
                             labelId="demo-simple-select-filled-label"
@@ -376,6 +415,9 @@ const styles = {
     },
     columns: {
         padding: '0px'
+    },
+    label: {
+        marginTop: '0px'
     }
 }
 
@@ -394,7 +436,8 @@ const smallScreen = {
         height: '250px'
     },
     sortByTitle: {
-        paddingTop: '20px'
+        paddingTop: '20px',
+        marginTop: '40px'
     },
     fullMapContainer: {
         padding: '0px'
@@ -404,10 +447,13 @@ const smallScreen = {
         right: '0px'
     },
     sortBy: {
-        width: '200px'
+        width: '200px',
     },
     newRegionBtn: {
         bottom: '0px',
         right: '0px'
+    },
+    label: {
+        marginTop: '20px'
     }
 }

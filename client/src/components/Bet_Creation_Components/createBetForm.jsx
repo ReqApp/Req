@@ -67,7 +67,7 @@ export default class CreateBetForm extends Component {
                 deadline : (+date) / 1000
             }
 
-            fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/makeBet', {
+            fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/bets/makeBet', {
                 method : 'POST',
                 credentials : 'include',
                 headers: {
@@ -123,6 +123,15 @@ export default class CreateBetForm extends Component {
     }
 
     closeDialog = () => {
+        this.setState({
+            title: '',
+            betType: '',
+            sliderOne: 70,
+            sliderTwo: 20,
+            sliderThree: 10,
+            date: new Date(),
+            side: '',
+        });
         this.props.closeDialog();
     }
 

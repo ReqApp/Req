@@ -17,7 +17,7 @@ export class UserCreatedBets extends Component {
     }
 
     componentDidMount() {
-        fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/user/getUserCreatedBets', {
+        fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/bets/getUserCreatedBets', {
             method : 'POST',
             credentials : 'include',
             headers: {
@@ -33,34 +33,45 @@ export class UserCreatedBets extends Component {
                     this.setState({loadingBets : false, bets : res.body});
                 }else{
                     console.log("You have not created any bets");
-                    this.setState({errorMsg : 'You have not created any bets yet'});
+                    this.setState({loadingBets : false, errorMsg : 'You have not created any bets yet'});
                 }
             }
             else{
                 console.log(res);
-                this.setState({errorMsg : 'Could not get bets'});
+                this.setState({loadingBets : false, errorMsg : 'Could not get bets'});
             }
         })
         .catch(err => {
             console.log(err);
-            this.setState({errorMsg : 'Could not get bets'});
+            this.setState({loadingBets : false, errorMsg : 'Could not get bets'});
         });
     }
     
 
     render() {
-        const {bets, loadingBets} = this.state;
+        const {bets, loadingBets, errorMsg} = this.state;
         
         if(!loadingBets){
-            return (
-                <div>
-                    <Paper style={styles.paper}>
-                        <h3>Bets Created By You</h3>
-                        {bets.map((bet, index) => <CurrentBetInfo data={bet} key={index} userCreated/>)}
-                    </Paper>
-                    
-                </div>
+            if(bets.length){
+                return (
+                    <div>
+                        <Paper style={styles.paper}>
+                            <h3>Bets Created By You</h3>
+                            {bets.map((bet, index) => <CurrentBetInfo data={bet} key={index} userCreated/>)}
+                        </Paper>
+                        
+                    </div>
+                )
+            }else{
+            return(
+                <Paper style={styles.paper}>
+                    <h2>Bets Created By You:</h2>
+                    <div style={{textAlign: 'center'}}>
+                        <h6 style={styles.text}>{errorMsg}</h6>
+                    </div>
+                </Paper>
             )
+            }
         }else{
             return(
                 <Paper style={styles.paper}>
@@ -86,6 +97,9 @@ const styles = {
         marginRight: 'auto',
         marginLeft: 'auto',
     },
+    text: {
+        padding: '20px'
+    }
 }
 
 export default UserCreatedBets

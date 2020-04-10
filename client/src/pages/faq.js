@@ -23,9 +23,7 @@ export class FAQ extends Component {
                                 <p style={styles.bigText}>FAQ</p>
                                 <h2 style={{fontWeight:'bold', paddingTop:'2vh'}}>What is Req? </h2>
                                 <p>
-                                Req is a real life based betting app made to enable anyone to bet on anything. 
-                                With geolocation being an integral part of the app bets can be locked to users 
-                                within certain areas which incentivizes people to go out and get some fresh air.
+                                Req is a 2nd year software engineering group project made to be an app where anyone can bet on anything. Staying at home won't gain you the full experience offered by Req as many bets require you to physically be within a set radius of them in order to compete in them. All bet creators get 10% of the total amount of coins placed on their bets which incentives users to create the interesting and eye-catching bets to increase their wealth and (hopefully not) gamble it away.
                                 </p>
 
                                 <hr 
@@ -40,15 +38,33 @@ export class FAQ extends Component {
                                 />
 
                                 <h2 style={{fontWeight:'bold', paddingTop:'2vh'}}>Are there design docs?</h2>
-                                <p>
-                                Yes! The design docs can be viewed <a href="https://docs.google.com/document/d/1VSiNX-g0KNztlQGvLeRhXwnbwbDW9phK2VmmVpqMUvw/edit?usp=sharing">here</a>. 
-                                We also have documentation for the backend APIs which can be viewed <a href="/404">here</a>
-                                </p>
+                                <div style={{justifyContent:'center'}}>
+                                    <a href="https://docs.google.com/document/d/1VSiNX-g0KNztlQGvLeRhXwnbwbDW9phK2VmmVpqMUvw/edit?usp=sharing">
+                                    <img
+                                        src="https://i.imgur.com/RgGdo2s.png"
+                                        alt="Design docs"
+                                        width="30%"
+                                    />
+                                    </a>
 
+                                    <a href="http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/docs">
+                                    <img
+                                        src="https://i.imgur.com/VRvwAHU.png"
+                                        alt="API docs"
+                                        width="30%"
+                                    />
+                                    </a>
+
+                                </div>
                                 <hr 
                                 />
 
                                 <h2 style={{fontWeight:'bold', paddingTop:'2vh'}}>What stack does Req use?</h2>
+                                <img
+                                    src="https://i.imgur.com/uJI4eHo.png"
+                                    alt="Req Stack"
+                                    width="50%"
+                                />
                                 <p>
                                 For the most part Req uses a standard MERN stack, which is Mongo, Express, React and Node. Alongside this there are various scripts
                                 for automated tasks that are written in Go

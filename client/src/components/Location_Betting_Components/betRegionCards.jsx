@@ -26,10 +26,24 @@ export default class BetRegionCards extends React.Component{
     }
 
     render(){
-        let {loadingRegions, betRegions, sort, mode} = this.props;
+        let {loadingRegions, betRegions, sort, mode, error} = this.props;
         let searchFlag = false;
         // If regions are loaded display cards
-        if(!loadingRegions){
+        if(error === 'not-accurate'){
+            return(
+                <Paper style={{...styles.regionCards, ...styles.info}}>
+                    <h3>Location Inaccurate Please Use App</h3>
+                </Paper>
+            )
+        }
+        else if(error === 'not-supported'){
+            return(
+                <Paper style={{...styles.regionCards, ...styles.info}}>
+                    <h3>Location Not Supported</h3>
+                </Paper>
+            )
+        }
+        else if(!loadingRegions){
             var regionCards = [];
             const display_num_regions = 20;
             if(sort === "popular"){
@@ -65,45 +79,57 @@ export default class BetRegionCards extends React.Component{
                     var newCard = <Paper elevation={3} key={betRegions[i]._id} id={betRegions[i]._id} style={styles.regionCards}>
                         <Container>
                             <Row>
-                            <Col xs={12} md={8}>
-                            <Container>
-                                <Row>
-                                    <Col xs={12} md={4}>
-                                        <h3>{betRegions[i].region_name}</h3>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col xs={12} md={4}>
-                                        <h6>Number of Bets: {betRegions[i].num_bets}</h6>
-                                    </Col>
-                                    <Col xs={12} md={4}>
-                                        <h6>Description:</h6>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col xs={12} md={4}>
-                                        <h6>Distance: {betRegions[i].distanceFromUser}m</h6>
-                                    </Col>
-                                    <Col xs={12} md={4}>
-                                        {description}
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col xs={12} md={4}>
-                                        <Button onClick={this.handleClick.bind(this, betRegions[i]._id)} variant='contained' style={{marginTop: '40px'}}>{buttonText}</Button>
-                                    </Col>
-                                </Row>
-                            </Container>
-                            </Col>
-                            <Col>
-                            <Paper>
-                                <DisplayMap 
-                                    miniMap={true} 
-                                    regionDetails={betRegions[i]}
-                                    height='200px'
-                                />
-                            </Paper>
-                            </Col>
+                                <Col xs={12} md={4}>
+                                    <div>
+                                        <Row>
+                                            <Col>
+                                                <h3>{betRegions[i].region_name}</h3>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col>
+                                                <h6>Distance: {betRegions[i].distanceFromUser}m</h6>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col>
+                                                <h6>Number of Bets: {betRegions[i].num_bets}</h6>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col>
+                                            <Button onClick={this.handleClick.bind(this, betRegions[i]._id)} variant='contained' style={{marginTop: '40px'}}>{buttonText}</Button>
+                                            </Col>
+                                        </Row>
+                                    </div>
+                                </Col>
+                                <Col xs={12} md={4}>
+                                    <div>
+                                        <Row style={{marginTop : '30px'}}>
+                                            <Col>
+                                                <h6>Description:</h6>
+                                            </Col>
+                                        </Row>
+                                        <Row style={{marginBottom: '20px'}}>
+                                            <Col>
+                                                {description}
+                                            </Col>
+                                        </Row>
+                                    </div>
+                                </Col>
+                                <Col xs={12} md={4}>
+                                    <Row>
+                                    <Col>
+                                        <Paper>
+                                            <DisplayMap 
+                                                miniMap={true} 
+                                                regionDetails={betRegions[i]}
+                                                height='200px'
+                                            />
+                                        </Paper>
+                                        </Col>
+                                    </Row>
+                                </Col>
                             </Row>
                         </Container>
                     </Paper>
@@ -131,7 +157,7 @@ export default class BetRegionCards extends React.Component{
             }
         }else{
             return(
-                <Paper style={styles.regionCards, styles.info}>
+                <Paper style={{...styles.regionCards, ...styles.info}}>
                     <h3>Loading Regions...</h3>
                     <CircularProgress />
                 </Paper>
@@ -149,7 +175,6 @@ const styles = {
     info: {
         textAlign: 'center',
         marginTop: '30px',
-        height: '100px',
         paddingTop: '30px'
     },
 }

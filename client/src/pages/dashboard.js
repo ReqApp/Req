@@ -24,7 +24,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import Snackbar from '@material-ui/core/Snackbar';
 import SearchIcon from '@material-ui/icons/Search';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 // Bootstrap
 import {Container, Row, Col} from 'react-bootstrap';
 // Components
@@ -51,11 +51,11 @@ class Dashboard extends React.Component{
           createNewBetDialog: false,
           renderCreateNewLocationBet: false,
           redirectToBigRedButton: false,
-          renderLogin: false,
           snackOpen: false,
           msg: '',
           msgType: '',
           openFindBetPane: false,
+          redirectToBuyCoins: false
         }
     }
 
@@ -125,6 +125,10 @@ class Dashboard extends React.Component{
       this.setState({redirectToBigRedButton : true});
     }
 
+    handleBuyCoins = () => {
+      this.setState({redirectToBuyCoins : true});
+    }
+
 
     handleNavAction = (action) => {
       if(action === 'new-bet'){
@@ -153,14 +157,8 @@ class Dashboard extends React.Component{
       this.setState({renderProfile : true});
     }
 
-    handleLogout = () => {
-      console.log(document.cookie);
-      localStorage.clear('Authorization');
-      this.setState({renderLogin : true});
-    }
-
     render(){
-      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, renderProfile, snackOpen, msg, msgType, openFindBetPane, username, redirectToLogIn, renderCreateNewLocationBet, redirectToBigRedButton, renderLogin} = this.state;
+      const {loggedIn, mobileOpen, locationNavOpen, renderFindLocationBets, createNewBetDialog, renderProfile, snackOpen, msg, msgType, openFindBetPane, username, redirectToLogIn, renderCreateNewLocationBet, redirectToBigRedButton, redirectToBuyCoins} = this.state;
       const {classes} = this.props;
       if(redirectToLogIn){
         return (
@@ -188,9 +186,9 @@ class Dashboard extends React.Component{
           <Redirect to='/bigRedButton' push />
         )
       }
-      if(renderLogin){
-        return (
-          <Redirect to='/users/login' push />
+      if(redirectToBuyCoins){
+        return(
+          <Redirect to='/payment' push />
         )
       }
       const drawer = (
@@ -202,12 +200,6 @@ class Dashboard extends React.Component{
                   <PersonIcon />
                 </ListItemIcon>
                 <ListItemText primary='Profile' />
-              </ListItem>
-              <ListItem button onClick={this.handleLogout}>
-                <ListItemIcon>
-                  <ExitToAppIcon />
-                </ListItemIcon>
-                <ListItemText primary='Logout' />
               </ListItem>
               </List>
               <Divider />
@@ -233,6 +225,14 @@ class Dashboard extends React.Component{
                 </ListItemIcon>
                 <ListItemText>
                   Big Red Button
+                </ListItemText>
+              </ListItem>
+              <ListItem button onClick={this.handleBuyCoins}>
+                <ListItemIcon>
+                  <MonetizationOnIcon />
+                </ListItemIcon>
+                <ListItemText>
+                  Buy Coins
                 </ListItemText>
               </ListItem>
               <ListItem button onClick={this.handleLocationNavToggle}>

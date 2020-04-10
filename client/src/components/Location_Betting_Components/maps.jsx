@@ -40,7 +40,6 @@ export default class DisplayMap extends React.Component{
                             closeButton={false} 
                             ref={this.openPopUp}>
                             <h6>You are here</h6>
-                            <Button>Select</Button>
                           </Popup>
                         </Marker>;
         }

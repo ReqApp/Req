@@ -31,7 +31,7 @@ export default class Home extends React.Component {
           })
         }).then((res) => res.json()).then((res) => {
           if(res.status === "success"){
-            this.setState({user_name : "", password: ""});
+            //this.setState({user_name : "", password: ""});
             this.props.navigation.navigate('Dashboard');
           }else{
             Alert.alert("Incorrect username or password");
@@ -39,8 +39,16 @@ export default class Home extends React.Component {
         }).catch(err => Alert.alert("Could not login"));
     }
 
+    updatePassword = (text) => {
+      this.setState({password : text});
+    }
+
+    updateUsername = (text) => {
+      this.setState({user_name : text});
+    }
+
     render() {
-      console.disableYellowBox = true;
+      console.disableYellowBox = true;  
       return (
         <Container>
             <Header>
@@ -55,11 +63,11 @@ export default class Home extends React.Component {
             <H2 style={styles.title}>Login</H2>
             <Item floatingLabel>
               <Label>Username</Label>
-              <Input onChangeText={text => this.setState({user_name : text})}/>
+              <Input onChangeText={this.updateUsername}/>
             </Item>
             <Item floatingLabel>
               <Label>Password</Label>
-              <Input secureTextEntry={true} onChangeText={text => this.setState({password : text})}/>
+              <Input secureTextEntry={true} onChangeText={this.updatePassword}/>
             </Item>
             <Button onPress={this.login} block light style={styles.button}>
                 <Text style={styles.buttonText}>Login</Text>
