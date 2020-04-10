@@ -15,7 +15,7 @@
 <h4 align="center"><a href="http://ec2-107-23-251-248.compute-1.amazonaws.com:3000">http://ec2-107-23-251-248.compute-1.amazonaws.com:3000</a></h4>
 
 
-![](https://travis-ci.com/IamCathal/Req.svg?token=NxDPAobZPqQisyLUpivy&branch=master) [![CodeFactor](https://www.codefactor.io/repository/github/iamcathal/req/badge?s=d1515c510364f282930d5ead2e678f35656ce527)](https://www.codefactor.io/repository/github/iamcathal/req)   ![https://img.shields.io/badge/node-v13.12.0-brightgreen](https://img.shields.io/badge/node-v13.12.0-brightgreen) ![https://img.shields.io/badge/Released-April%202020-blue](https://img.shields.io/badge/Released-April%202020-blue)
+![](https://travis-ci.com/IamCathal/Req.svg?token=NxDPAobZPqQisyLUpivy&branch=master) [![CodeFactor](https://www.codefactor.io/repository/github/reqapp/req/badge)](https://www.codefactor.io/repository/github/reqapp/req)![https://img.shields.io/badge/node-v13.12.0-brightgreen](https://img.shields.io/badge/node-v13.12.0-brightgreen) ![https://img.shields.io/badge/Released-April%202020-blue](https://img.shields.io/badge/Released-April%202020-blue)
 
 
 Req is a 2nd year software engineering group project made to be an app where anyone can bet on anything. Staying at home won't gain you the full experience offered by Req as many bets require you to physically be within a set radius of them in order to compete in them. All bet creators get 10% of the total amount of coins placed on their bets which incentives users to create the interesting and eye-catching bets to increase their wealth and (hopefully not) gamble it away.
