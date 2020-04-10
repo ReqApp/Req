@@ -771,6 +771,142 @@ describe("============= Betting =============", () => {
                     expect(res.body.status).to.equals("error");
                     done();
                 });
+        }),
+        it("Invalid secret", done => {
+            chai
+                .request(app)
+                .post("/bets/getAllBetsDev")
+                .send({
+                    "secret":"verysecurepassword"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You are not authorized to do this");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("Fuzzing", done => {
+            chai
+                .request(app)
+                .post("/bets/getAllBetsDev")
+                .send({
+                    "secret":fuzzUsername
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You are not authorized to do this");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("Invalid secret", done => {
+            chai
+                .request(app)
+                .post("/bets/betExpired")
+                .send({
+                    "secret":fuzzUsername
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You are not authorized to do this");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("Fuzzing", done => {
+            chai
+                .request(app)
+                .post("/bets/betExpired")
+                .send({
+                    "secret":fuzzUsername
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You are not authorized to do this");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("No cookies", done => {
+            chai
+                .request(app)
+                .post("/bets/findNewBets")
+                .send({
+                    "secret":fuzzUsername
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You must be signed in to complete this action");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("No cookies", done => {
+            chai
+                .request(app)
+                .post("/bets/getBetsForUser")
+                .send({
+                    "secret":fuzzUsername
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You must be signed in to complete this action");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("No cookies", done => {
+            chai
+                .request(app)
+                .post("/bets/getUserCreatedBets")
+                .send({
+                    "secret":fuzzUsername
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body.body).to.equals("You must be signed in to complete this action");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("No cookies", done => {
+            chai
+                .request(app)
+                .post("/bets/getFinishedBets")
+                .send({
+                    "secret":fuzzUsername
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.body.body).to.equals("Not signed in");
+                    expect(res.body.status).to.equals("error");
+                    done();
+                });
+        }),
+        it("Valid search", done => {
+            chai
+                .request(app)
+                .post("/bets/getBets")
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.status).to.equals("success");
+                    done();
+                });
+        }),
+        it("Valid search", done => {
+            chai
+                .request(app)
+                .post("/bets/getBets")
+                .send({
+                    "_id":"oklads",
+                    "message":"somethingInteresting"
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.status).to.equals("success");
+                    done();
+                });
         })
 })
 

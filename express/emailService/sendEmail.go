@@ -373,36 +373,6 @@ func main() {
 					   </table> 
 					   <!--[if mso]></td></tr></table><![endif]--></td> 
 					 </tr> 
-					 <tr style="border-collapse:collapse;"> 
-					  <td align="left" style="Margin:0;padding-top:20px;padding-bottom:30px;padding-left:30px;padding-right:30px;background-color:#FFFFFF;" bgcolor="#ffffff"> 
-					   <!--[if mso]><table width="540" cellpadding="0" 
-								cellspacing="0"><tr><td width="218" valign="top"><![endif]--> 
-					   <table class="es-left" cellspacing="0" cellpadding="0" align="left" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;"> 
-						 <tr style="border-collapse:collapse;"> 
-						  <td class="es-m-p20b" width="218" align="left" style="padding:0;Margin:0;"> 
-						   <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
-							 <tr style="border-collapse:collapse;"> 
-							  <td align="left" style="padding:0;Margin:0;padding-bottom:10px;"><h2 style="Margin:0;line-height:29px;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:24px;font-style:normal;font-weight:bold;color:#212121;">Watch the video demo</h2></td> 
-							 </tr> 
-							 <tr style="border-collapse:collapse;"> 
-							  <td align="left" style="padding:0;Margin:0;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:24px;color:#131313;">some filler text</p></td> 
-							 </tr> 
-						   </table></td> 
-						 </tr> 
-					   </table> 
-					   <!--[if mso]></td><td width="20"></td><td width="302" valign="top"><![endif]--> 
-					   <table class="es-right" cellspacing="0" cellpadding="0" align="right" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;"> 
-						 <tr style="border-collapse:collapse;"> 
-						  <td width="302" align="left" style="padding:0;Margin:0;"> 
-						   <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
-							 <tr style="border-collapse:collapse;"> 
-							  <td align="center" style="padding:0;Margin:0;"><a target="_blank" href="https://www.youtube.com/watch?v=LQn8M0p6H8Q" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:16px;text-decoration:underline;color:#2CB543;"><img class="adapt-img" src="https://eadorv.stripocdn.email/content/guids/videoImgGuid/images/83941583785899775.png" alt="Get out ma gaff ya green cunt" title="Get out ma gaff ya green cunt" width="302" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;"></a></td> 
-							 </tr> 
-						   </table></td> 
-						 </tr> 
-					   </table> 
-					   <!--[if mso]></td></tr></table><![endif]--></td> 
-					 </tr> 
 				   </table></td> 
 				 </tr> 
 			   </table> 

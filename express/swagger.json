@@ -21,6 +21,10 @@
       "description": "Stored in routes/bets.js"
     },
     {
+      "name": "Task APIs",
+      "description": "Stored in routes/tasks.js"
+    },
+    {
       "name": "Location Betting APIs",
       "description": "Stored in routes/bets.js"
     },
@@ -47,6 +51,54 @@
   "host": "localhost:9000",
   "basePath": "/",
   "paths": {
+    "/decideBet": {
+      "post": {
+        "summary": "Closes Bet",
+        "tags": [
+          "Betting APIs"
+        ],
+        "description": "Finishes bet and pays out winnings",
+        "security": [
+          {
+            "myCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "betID": {
+                  "type": "string"
+                },
+                "result": {
+                  "type": "number"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Finished bet and payed out winnings",
+            "schema": {
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
+            }
+          },
+          "400": {
+            "description": "Bet not finished or winnings not payed out",
+            "schema": {
+              "$ref": "#/definitions/rest_API_ResponseError"
+            }
+          }
+        }
+      }
+    },
     "/makeBet": {
       "post": {
         "summary": "Create new bet and adds it to the database",
@@ -93,61 +145,13 @@
           "200": {
             "description": "Created and saved new bet",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
             }
           },
           "400": {
             "description": "Bet not created due to error",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
-            }
-          }
-        }
-      }
-    },
-    "/decideBet": {
-      "post": {
-        "summary": "Closes Bet",
-        "tags": [
-          "Betting APIs"
-        ],
-        "description": "Finishes bet and pays out winnings",
-        "security": [
-          {
-            "myCookie": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "properties": {
-                "betID": {
-                  "type": "string"
-                },
-                "result": {
-                  "type": "number"
-                },
-                "type": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Finished bet and payed out winnings",
-            "schema": {
-              "$ref": "#/definitions/rest_API_Response"
-            }
-          },
-          "400": {
-            "description": "Bet not finished or winnings not payed out",
-            "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           }
         }
@@ -193,13 +197,13 @@
           "200": {
             "description": "Bet placed",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
             }
           },
           "400": {
             "description": "Bet not placed",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           }
         }
@@ -252,7 +256,7 @@
           "400": {
             "description": "Bet not started or closed due to error",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           }
         }
@@ -269,13 +273,13 @@
           "200": {
             "description": "Pressed button",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
             }
           },
           "400": {
             "description": "Error pressing button",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           }
         }
@@ -283,7 +287,7 @@
     },
     "/betExpired": {
       "post": {
-        "summary": "Pays back bettors",
+        "summary": "Backend API for expiring bets automatically",
         "tags": [
           "Betting APIs"
         ],
@@ -306,19 +310,19 @@
           "200": {
             "description": "Penalised creator and paid back to bettors.",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
             }
           },
           "400": {
             "description": "Could not pay back bettors or error occured",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           },
           "401": {
             "description": "User not authorized to do this",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           }
         }
@@ -326,7 +330,7 @@
     },
     "/getAllBetsDev": {
       "get": {
-        "summary": "Retrieves bets from database",
+        "summary": "Retrieves bets from database in an anonymized format for displaying.",
         "tags": [
           "Betting APIs"
         ],
@@ -357,7 +361,7 @@
           "401": {
             "description": "Not authorized or error occured",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           }
         }
@@ -383,7 +387,216 @@
           "400": {
             "description": "Could not return bets due to error.",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
+            }
+          }
+        }
+      }
+    },
+    "/getFinishedBets": {
+      "post": {
+        "summary": "Returns all finished bets",
+        "tags": [
+          "Betting APIs"
+        ],
+        "description": "Send finished bets from database",
+        "responses": {
+          "200": {
+            "description": "Bet with anonymous user data.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/rest_API_ResponseSuccess"
+              }
+            }
+          },
+          "400": {
+            "description": "Could not return bets due to error.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_ResponseError"
+            }
+          }
+        }
+      }
+    },
+    "/getUserCreatedBets": {
+      "post": {
+        "summary": "Get all bets made by a specified user",
+        "tags": [
+          "Betting APIs"
+        ],
+        "description": "Get all bets made by a specified user",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "example": "testUser"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bet with anonymous user data.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
+            }
+          },
+          "400": {
+            "description": "Could not return bets due to error.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_ResponseError"
+            }
+          }
+        }
+      }
+    },
+    "/findNewBets": {
+      "post": {
+        "summary": "Find new bets for a usre",
+        "tags": [
+          "Betting APIs"
+        ],
+        "description": "Find bets that the user has not bet on yet or created",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "example": "testUser"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bet with anonymous user data.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
+            }
+          },
+          "400": {
+            "description": "Could not return bets due to error.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_ResponseError"
+            }
+          }
+        }
+      }
+    },
+    "/getBetsForUser": {
+      "post": {
+        "summary": "Get all bets for a specified user",
+        "tags": [
+          "Betting APIs"
+        ],
+        "description": "Get all bets made by a specified user",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "example": "testUser"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bet with anonymous user data.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
+            }
+          },
+          "400": {
+            "description": "Could not return bets due to error.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_ResponseError"
+            }
+          }
+        }
+      }
+    },
+    "/createLocationBet": {
+      "post": {
+        "summary": "Create a new location bet",
+        "tags": [
+          "Location Betting APIs"
+        ],
+        "description": "Stores bet object in bet collection",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/betSchema"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved bet object with added mongoose _id field",
+            "schema": {
+              "$ref": "#/definitions/betSchema"
+            }
+          }
+        }
+      }
+    },
+    "/updasteBetWithLocData": {
+      "post": {
+        "summary": "Update an existing bet with location data",
+        "tags": [
+          "Location Betting APIs"
+        ],
+        "description": "Stores bet object in bet collection",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "locationID": {
+                  "type": "string",
+                  "example": "Random bet"
+                },
+                "betID": {
+                  "type": "string",
+                  "example": "5e2f72253c750c169c7c816c"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved bet object with added mongoose _id field",
+            "schema": {
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
+            }
+          },
+          "400": {
+            "description": "Saved bet object with added mongoose _id field",
+            "schema": {
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           }
         }
@@ -471,7 +684,7 @@
           "500": {
             "description": "Error find bet objects",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           }
         }
@@ -513,13 +726,13 @@
           "400": {
             "description": "Invalid parameters",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           },
           "500": {
             "description": "Error retrieving bet regions from database.",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           }
         }
@@ -612,13 +825,13 @@
           "200": {
             "description": "Payment validated",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
             }
           },
           "400": {
             "description": "Payment not valid",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           }
         }
@@ -647,13 +860,48 @@
           "200": {
             "description": "Betting history was returned successfully",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
             }
           },
           "400": {
             "description": "Error retrieving betting history",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
+            }
+          }
+        }
+      }
+    },
+    "/getLocationByBetID": {
+      "post": {
+        "tags": [
+          "Analytics APIs"
+        ],
+        "summary": "Get a map location from a given betID",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "username": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Betting history was returned successfully",
+            "schema": {
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
+            }
+          },
+          "400": {
+            "description": "Error retrieving betting history",
+            "schema": {
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           }
         }
@@ -682,13 +930,13 @@
           "200": {
             "description": "Created betting history was returned successfully",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
             }
           },
           "400": {
             "description": "Error retrieving created betting history",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           }
         }
@@ -717,13 +965,13 @@
           "200": {
             "description": "Win loss ratio successfully returned",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
             }
           },
           "400": {
             "description": "Error retrieving win loss ratio",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           }
         }
@@ -752,13 +1000,13 @@
           "200": {
             "description": "Number of bets made and users reached successfully returned",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
             }
           },
           "400": {
             "description": "Error retrieving bets made and users reached",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           }
         }
@@ -787,13 +1035,13 @@
           "200": {
             "description": "Breakdown of bet types returned",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
             }
           },
           "400": {
             "description": "Error retrieving bets made and users reached",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           }
         }
@@ -1007,7 +1255,7 @@
           "400": {
             "description": "User could not be logged in due to invalid input",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           }
         }
@@ -1127,7 +1375,7 @@
         "tags": [
           "User APIs"
         ],
-        "description": "Allows user to change password from link sent to their email. The user will submit their new password from a unique code which will be used to map this new password to their account.",
+        "description": "Allows user to change password from link sent to their email. The user will submit their new password from a unique URL which will be used to map this new password to their account.",
         "parameters": [
           {
             "in": "body",
@@ -1139,7 +1387,7 @@
                 "newPassword": {
                   "type": "string"
                 },
-                "resetCode": {
+                "fromURL": {
                   "type": "string"
                 }
               }
@@ -1202,13 +1450,13 @@
           "200": {
             "description": "Returns profile picture in body if exists. Otherwise none exists or could not be found.",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
             }
           },
           "400": {
             "description": "Invalid parameters",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           }
         }
@@ -1231,45 +1479,6 @@
           },
           "400": {
             "description": "Could not get user"
-          }
-        }
-      }
-    },
-    "/users/uploadImage": {
-      "get": {
-        "summary": "Upload a profiler",
-        "tags": [
-          "User APIs"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "properties": {
-                "user_name": {
-                  "type": "string"
-                },
-                "file": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Returns profile picture in body if exists. Otherwise none exists or could not be found.",
-            "schema": {
-              "$ref": "#/definitions/rest_API_Response"
-            }
-          },
-          "400": {
-            "description": "Error in the process of uploading the profiler."
-          },
-          "401": {
-            "description": "An nsfw profiler was uploaded and rejected."
           }
         }
       }
@@ -1307,80 +1516,6 @@
         }
       }
     },
-    "/createArticleBet": {
-      "post": {
-        "summary": "Create new article bet",
-        "tags": [
-          "Index APIs"
-        ],
-        "description": "Allows user to create new article bet",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "betType": {
-                  "type": "string"
-                },
-                "sitename": {
-                  "type": "string"
-                },
-                "directory": {
-                  "type": "string"
-                },
-                "month": {
-                  "type": "string"
-                },
-                "year": {
-                  "type": "string"
-                },
-                "searchTerm": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Bet created",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string"
-                },
-                "body": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Error",
-            "schema": {
-              "properties": {
-                "status": {
-                  "type": "string"
-                },
-                "body": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Invalid data",
-            "schema": {
-              "$ref": "#/definitions/rest_API_Response"
-            }
-          }
-        }
-      }
-    },
     "/shortenLink": {
       "post": {
         "summary": "Used to shorten QR code url link",
@@ -1404,13 +1539,13 @@
           "200": {
             "description": "Sends back shortened URL in body of response.",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
             }
           },
           "400": {
             "description": "Link could not be shortened.",
             "schema": {
-              "$ref": "#/definitions/rest_API_Response"
+              "$ref": "#/definitions/rest_API_ResponseError"
             }
           }
         }
@@ -1426,69 +1561,6 @@
         "responses": {
           "200": {
             "description": "Array of user names"
-          }
-        }
-      }
-    },
-    "/getUsers/:id": {
-      "get": {
-        "summary": "Gets user by id and returns id and username",
-        "tags": [
-          "Index APIs"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "properties": {
-                "id": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User name and ID"
-          },
-          "400": {
-            "description": "Error"
-          }
-        }
-      }
-    },
-    "/members": {
-      "get": {
-        "summary": "Renders specific page depending if user is logged in.",
-        "tags": [
-          "Index APIs"
-        ],
-        "security": [
-          {
-            "myCookie": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Renders home page if user logged in or forgot password page if not."
-          }
-        }
-      }
-    },
-    "/getArticleBets": {
-      "get": {
-        "summary": "Returns all article bets.",
-        "tags": [
-          "Index APIs"
-        ],
-        "responses": {
-          "200": {
-            "description": "Array of article bets sorted by date created."
-          },
-          "400": {
-            "description": "Error"
           }
         }
       }
@@ -1510,6 +1582,42 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/uploadImage": {
+      "post": {
+        "summary": "Upload a profiler for your account. This only filters out bad files then uploads it to imgur",
+        "tags": [
+          "Task APIs"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "file": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns profile picture in body if exists. Otherwise none exists or could not be found.",
+            "schema": {
+              "$ref": "#/definitions/rest_API_ResponseSuccess"
+            }
+          },
+          "400": {
+            "description": "Error in the process of uploading the profiler."
+          },
+          "401": {
+            "description": "An nsfw profiler was uploaded and rejected."
           }
         }
       }
@@ -1877,7 +1985,7 @@
         }
       }
     },
-    "rest_API_Response": {
+    "rest_API_ResponseError": {
       "description": "Format used to send response messages from server to client",
       "properties": {
         "status": {
@@ -1887,6 +1995,19 @@
         "body": {
           "type": "string",
           "example": "Invalid input"
+        }
+      }
+    },
+    "rest_API_ResponseSuccess": {
+      "description": "Format used to send response messages from server to client",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "success"
+        },
+        "body": {
+          "type": "string",
+          "example": "details"
         }
       }
     }
