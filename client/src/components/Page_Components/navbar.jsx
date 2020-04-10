@@ -26,7 +26,7 @@ export default class Navbar extends React.Component{
         }).then((res) => res.json())
         .then((res) => {    
             if (res.body !== 'Not signed in') {
-                this.setState({username:res.body});
+                this.setState({username:res.body.user_name});
                 fetch('http://ec2-107-23-251-248.compute-1.amazonaws.com:9000/users/getProfilePicture', {
                 method: 'POST',
                 crossDomain: true,
@@ -41,7 +41,8 @@ export default class Navbar extends React.Component{
                 .then((res) => {
                     console.log(res)
                     if (res.status === "success") {
-                        console.log(`success`)
+                        console.log(`success`);
+			console.log(res.body);
                         this.setState({profilePicture:res.body, requestDone: true, signedIn: true});
                     } else if (res.body === "No profile picture") {
                         console.log(`no profiler`)
