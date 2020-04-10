@@ -66,7 +66,7 @@ Req is a MERN stack application. Mern meaning Mongo, Express, React and NodeJS. 
 <p align="center">
     <img
       alt="Req Screenshot demo"
-      src="./readmePic.png"
+      src="readmePic.png"
       width="900"
     />
 </p>
