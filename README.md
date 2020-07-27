@@ -12,7 +12,8 @@
 <br>
 
 <h1 align="center">Real life based betting app</h1>
-<h4 align="center"><a href="http://ec2-107-23-251-248.compute-1.amazonaws.com:3000">http://ec2-107-23-251-248.compute-1.amazonaws.com:3000</a></h4>
+<h4 align="center"><a href="http://ec2-107-23-251-248.compute-1.amazonaws.com:3000"><strike>http://ec2-107-23-251-248.compute-1.amazonaws.com:3000</strike></a></h4>
+<h4 align="center">Currently looking at alternative methods of hosting</h4>
 
 ***
 
