@@ -12,7 +12,7 @@
         "@testing-library/react": "^9.4.0",
         "@testing-library/user-event": "^7.2.1",
         "animejs": "^3.1.0",
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "bootstrap": "^4.4.1",
         "date-fns": "^2.11.0",
         "flexbox-react": "^4.4.0",
