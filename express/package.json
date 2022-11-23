@@ -38,7 +38,7 @@
         "passport-steam": "^1.0.12",
         "randomstring": "^1.1.5",
         "safe-buffer": "^5.2.0",
-        "socket.io": "^2.3.0",
+        "socket.io": "^2.5.0",
         "store": "^2.0.12",
         "stripe": "^8.32.0",
         "stripe-checkout": "^1.0.9",
